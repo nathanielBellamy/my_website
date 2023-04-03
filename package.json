@@ -10,6 +10,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
+    "@rollup/plugin-wasm": "^6.1.2",
     "@sveltejs/vite-plugin-svelte": "^2.0.3",
     "@tsconfig/svelte": "^3.0.0",
     "svelte": "^3.55.1",
@@ -21,6 +22,7 @@
     "vite": "^4.2.0"
   },
   "dependencies": {
+    "@wasm-tool/rollup-plugin-rust": "^2.3.3",
     "node-sass": "^8.0.0"
   }
 }
