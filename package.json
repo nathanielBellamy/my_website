@@ -22,7 +22,6 @@
     "vite": "^4.2.0"
   },
   "dependencies": {
-    "@wasm-tool/rollup-plugin-rust": "^2.3.3",
     "node-sass": "^8.0.0"
   }
 }
