@@ -1,27 +1,27 @@
 use wasm_bindgen::prelude::*;
+use js_sys::Array;
+use gloo_utils::format::JsValueSerdeExt;
 
 
 #[wasm_bindgen]
 pub struct AppState {
-    pub point: Point
+    pub points: Array,
 }
 
 
 #[wasm_bindgen]
 impl AppState {
     pub fn new() -> AppState {
-        AppState { point: Point::new(0,0)}
+        AppState { points: vec![] }
     }
 
     pub fn foo(x: String) -> String {
         format!("WASM: {x}")
     }
-
-    pub fn set_point(&mut self, x: usize, y: usize) -> String {
-        let before_x = self.point.x;
-        let before_y = self.point.y;
-        self.point = Point::new(x,y);
-        format!("before_x: {before_x}, before_y: {before_y} after: ({}, {})", self.point.x, self.point.y)
+ 
+    pub fn add_point(&mut self, x: usize, y: usize) -> JsValue {
+        self.points.push(Point::new(x,y));
+        JsValue::from_serde(self.points).unwrap()
     }
 }
 
@@ -34,6 +34,7 @@ pub struct Point {
 
 #[wasm_bindgen]
 impl Point {
+    #[wasm_bindgen(constructor)]
     pub fn new(x: usize, y: usize) -> Point {
         Point { x, y }
     }

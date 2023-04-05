@@ -15,7 +15,8 @@
     x = e.clientX
     y = e.clientY - 143
 
-    const newPoint = state.set_point(x, y)
+    state.set_point(x, y)
+    const newPointsLength = state.add_point(x,y)
     console.dir(newPoint)
   }
 
