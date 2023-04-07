@@ -12,6 +12,11 @@
     y = e.clientY
   }
 
+  const handleMouseLeave = () => {
+    x = -1 // negative indicates off element
+    y = -1
+  }
+
   // represents the loop used to capture mouse movement and deliver coordinates to WASM
   // this loop writes to the MagicSquareBuffer
   // an animation loop within a closure within WASM reads from the buffer
@@ -32,7 +37,8 @@
         id="magic_square_canvas_container">
     <canvas id="magic_square"
             class="magic_square_canvas"
-            on:mousemove={handleMouseMove}/>
+            on:mousemove={handleMouseMove}
+            on:mouseleave={handleMouseLeave}/>
   </div>
 </div>
 
