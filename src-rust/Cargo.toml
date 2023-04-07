@@ -10,3 +10,4 @@ crate-type = ["cdylib", "rlib"]
 wasm-bindgen = "0.2"
 gloo-utils = { version = "0.1", features = ["serde"] }
 js-sys = "0.3.61"
+web-sys = "0.3.61"
