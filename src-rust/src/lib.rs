@@ -1,38 +1,11 @@
 use wasm_bindgen::prelude::*;
 use std::collections::BTreeMap;
 
+pub mod magic_square;
+
 #[wasm_bindgen]
 pub fn init_message(message: String) -> String {
     format!("RUST RUST RUST {message}")
-}
-
-#[wasm_bindgen]
-pub struct AppBuffer {
-    pub x: i32,
-    pub y: i32,
-    pub r: u8,
-    pub g: u8,
-    pub b: u8,
-}
-
-#[wasm_bindgen]
-impl AppBuffer {
-    #[wasm_bindgen(constructor)]
-    pub fn new() -> AppBuffer {
-        AppBuffer {
-            x: 0,
-            y: 0,
-            r: 0,
-            g: 0,
-            b: 0
-        }
-    }
-
-    pub fn set_point(&mut self, x: i32, y: i32) -> String {
-        self.x = x;
-        self.y = y;
-        format!("({}, {})", self.x, self.y)
-    }
 }
 
 pub struct Point {
