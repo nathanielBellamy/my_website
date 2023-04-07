@@ -2,6 +2,11 @@ use wasm_bindgen::prelude::*;
 use std::collections::BTreeMap;
 
 #[wasm_bindgen]
+pub fn init_message(message: String) -> String {
+    format!("RUST RUST RUST {message}")
+}
+
+#[wasm_bindgen]
 pub struct AppBuffer {
     pub x: i32,
     pub y: i32,
@@ -21,6 +26,12 @@ impl AppBuffer {
             g: 0,
             b: 0
         }
+    }
+
+    pub fn set_point(&mut self, x: i32, y: i32) -> String {
+        self.x = x;
+        self.y = y;
+        format!("({}, {})", self.x, self.y)
     }
 }
 

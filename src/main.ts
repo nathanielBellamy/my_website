@@ -8,7 +8,7 @@ const app = new App({
 })
 
 init().then(() => {
-  console.dir(rust.AppState.foo("main.ts bar"))
+  console.dir(rust.init_message("WASM WASM WASM"))
 })
 
 

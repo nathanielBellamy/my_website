@@ -1,40 +1,44 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { onMount, onDestroy } from 'svelte'
   import * as rust from "../../src-rust/pkg/src_rust.js"
   
 
-  let x: number = 0
+  let buffer = new rust.AppBuffer
+ 
+  let x: number = 0 
   let y: number = 0
 
-  let state = rust.AppState.new()
-
-  $: state_x = state.point.x
-  $: state_y = state.point.y
-
-  const handleClick = (e: any) => {
-    x = e.clientX
-    y = e.clientY - 143
-
-    state.set_point(x, y)
-    const newPointsLength = state.add_point(x,y)
-    console.dir(newPoint)
+  const handleMouseMove = (e: any) => {
+    console.log(buffer.set_point(e.clientX, e.clientY))
+    x = buffer.x
+    y = buffer.y
   }
 
   let magicSquareWidth: number = 0
   let magicSquareHeight: number = 0
+  
+  let captureInterval: number
 
   onMount(async () => {
-    let magicSquare = document.getElementById("magic_square_canvas_container")
-    magicSquareWidth = magicSquare.offsetWidth
-    magicSquareHeight = magicSquare.offsetHeight
-	})
+    const pre = document.getElementById("magic_square_canvas_container")
+
+    const captureLoop = () => {
+      buffer.write()
+      requestAnimationFrame(renderLoop)
+    };
+    
+    captureInterval = requestAnimationFrame(captureLoop)
+   })
+
+// https://rustwasm.github.io/docs/wasm-bindgen/examples/request-animation-frame.html
+
+  onDestroy(() => {
+    window.cancelAnimationFrame(captureInterval) 
+	});
 
 </script>
 
 <div class="magic_square_container rounded-md flex flex-col justify-start">
-  <div>
-    {rust.AppState.foo("magicSquare bar")}
-  </div>
   <div class="flex flex-row justify-around">
     <div>
      x:: {x}
@@ -49,7 +53,7 @@
             class="magic_square_canvas"
             width={magicSquareWidth} 
             height={magicSquareHeight}
-            on:click={handleClick}/>
+            on:mousemove={handleMouseMove}/>
   </div>
 </div>
 
