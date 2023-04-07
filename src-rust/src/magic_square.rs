@@ -1,6 +1,36 @@
 use wasm_bindgen::prelude::*;
 
+// Animator exposes the buffer to JS
+// JS writes to the buffer
+// Animator reads from the buffer and renders to canvas
+
 #[wasm_bindgen]
+pub struct MagicSquare {
+    buffer: MagicSquareBuffer
+}
+
+#[wasm_bindgen]
+impl MagicSquare { 
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> MagicSquare {
+        MagicSquare { buffer: MagicSquareBuffer::new() }
+    }
+
+    pub fn write_to_buffer(&mut self, x: i32, y: i32) -> String {
+        let test_string = self.buffer.write(x, y);
+        self.read_buffer();
+        test_string
+    }
+}
+
+impl MagicSquare {
+    pub fn read_buffer(&self) {
+        if self.buffer.idx == 7 {
+            // batch process
+        }
+    }
+}
+
 pub struct MagicSquareBuffer {
     pub x_0: i32,
     pub x_1: i32,
@@ -21,27 +51,25 @@ pub struct MagicSquareBuffer {
     pub idx: u8,
 }
 
-#[wasm_bindgen]
 impl MagicSquareBuffer {
-    #[wasm_bindgen(constructor)]
     pub fn new() -> MagicSquareBuffer {
         MagicSquareBuffer {
-            x_0: 0,
-            x_1: 0,
-            x_2: 0,
-            x_3: 0,
-            x_4: 0,
-            x_5: 0,
-            x_6: 0,
-            x_7: 0,
-            y_0: 0,
-            y_1: 0,
-            y_2: 0,
-            y_3: 0,
-            y_4: 0,
-            y_5: 0,
-            y_6: 0,
-            y_7: 0,
+            x_0: -1,
+            x_1: -1,
+            x_2: -1,
+            x_3: -1,
+            x_4: -1,
+            x_5: -1,
+            x_6: -1,
+            x_7: -1,
+            y_0: -1,
+            y_1: -1,
+            y_2: -1,
+            y_3: -1,
+            y_4: -1,
+            y_5: -1,
+            y_6: -1,
+            y_7: -1,
             idx: 0,
         }
     }
@@ -105,4 +133,5 @@ impl MagicSquareBuffer {
         )
     }
 }
+
 

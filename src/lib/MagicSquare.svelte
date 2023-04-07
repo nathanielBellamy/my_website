@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte'
+  import { onDestroy } from 'svelte'
   import * as rust from "../../src-rust/pkg/src_rust.js"
 
-  let x: number = 0 
-  let y: number = 0
+  let x: number = -1 
+  let y: number = -1
 
-  let buffer = new rust.MagicSquareBuffer
+  let magicSquare = new rust.MagicSquare
 
   const handleMouseMove = (e: any) => {
     x = e.clientX
@@ -21,7 +21,7 @@
   // this loop writes to the MagicSquareBuffer
   // an animation loop within a closure within WASM reads from the buffer
   const captureLoop = () => {
-    console.log(buffer.write(x, y))
+    console.log(magicSquare.write_to_buffer(x, y))
     captureInterval = requestAnimationFrame(captureLoop)
   };
     
