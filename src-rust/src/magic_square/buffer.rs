@@ -1,37 +1,4 @@
-use wasm_bindgen::prelude::*;
-
-// Animator exposes the buffer to JS
-// JS writes to the buffer
-// Animator reads from the buffer and renders to canvas
-
-#[wasm_bindgen]
-pub struct MagicSquare {
-    buffer: MagicSquareBuffer
-}
-
-#[wasm_bindgen]
-impl MagicSquare { 
-    #[wasm_bindgen(constructor)]
-    pub fn new() -> MagicSquare {
-        MagicSquare { buffer: MagicSquareBuffer::new() }
-    }
-
-    pub fn write_to_buffer(&mut self, x: i32, y: i32) -> String {
-        let test_string = self.buffer.write(x, y);
-        self.read_buffer();
-        test_string
-    }
-}
-
-impl MagicSquare {
-    pub fn read_buffer(&self) {
-        if self.buffer.idx == 7 {
-            // batch process
-        }
-    }
-}
-
-pub struct MagicSquareBuffer {
+pub struct Buffer {
     pub x_0: i32,
     pub x_1: i32,
     pub x_2: i32,
@@ -51,9 +18,9 @@ pub struct MagicSquareBuffer {
     pub idx: u8,
 }
 
-impl MagicSquareBuffer {
-    pub fn new() -> MagicSquareBuffer {
-        MagicSquareBuffer {
+impl Buffer {
+    pub fn new() -> Buffer {
+        Buffer {
             x_0: -1,
             x_1: -1,
             x_2: -1,
@@ -74,7 +41,7 @@ impl MagicSquareBuffer {
         }
     }
 
-    pub fn write(&mut self, x: i32, y: i32) -> String {
+    pub fn write(&mut self, x: i32, y: i32) {
         let idx = self.idx;
         match idx {
             0 => {
@@ -112,26 +79,24 @@ impl MagicSquareBuffer {
             _ => (),
         }
         self.idx = (idx + 1) % 8;
-        format!(
-            "0.({}, {}), 1.({}, {}), 2.({}, {}), 3.({}, {}), 4.({}, {}), 5.({}, {}), 6.({}, {}), 7.({}, {})",
-            self.x_0,
-            self.y_0,
-            self.x_1,
-            self.y_1,
-            self.x_2,
-            self.y_2,
-            self.x_3,
-            self.y_3,
-            self.x_4,
-            self.y_4,
-            self.x_5,
-            self.y_5,
-            self.x_6,
-            self.y_6,
-            self.x_7,
-            self.y_7,
-        )
+        // format!(
+        //     "0.({}, {}), 1.({}, {}), 2.({}, {}), 3.({}, {}), 4.({}, {}), 5.({}, {}), 6.({}, {}), 7.({}, {})",
+        //     self.x_0,
+        //     self.y_0,
+        //     self.x_1,
+        //     self.y_1,
+        //     self.x_2,
+        //     self.y_2,
+        //     self.x_3,
+        //     self.y_3,
+        //     self.x_4,
+        //     self.y_4,
+        //     self.x_5,
+        //     self.y_5,
+        //     self.x_6,
+        //     self.y_6,
+        //     self.x_7,
+        //     self.y_7,
+        // )
     }
 }
-
-
