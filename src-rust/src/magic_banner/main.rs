@@ -1,5 +1,5 @@
 use wasm_bindgen::prelude::*;
-use crate::magic_buffer::buffer::Buffer;
+use crate::magic_banner::buffer::Buffer;
 
 #[wasm_bindgen]
 pub struct MagicBanner {

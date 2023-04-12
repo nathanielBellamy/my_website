@@ -1,11 +1,9 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte'
+  import { onMount, onDestroy } from 'svelte'
   import * as rust from "../../src-rust/pkg/src_rust.js"
 
   let x: number = -1 
   let y: number = -1
-
-  // let magicSquare = new rust.MagicSquare
 
   const handleMouseMove = (e: any) => {
     x = e.clientX
@@ -17,16 +15,28 @@
     y = -1
   }
 
-  // represents the loop used to capture mouse movement and deliver coordinates to WASM
-  // this loop writes to the MagicSquareBuffer
-  // an animation loop within a closure within WASM reads from the buffer
-  const captureLoop = () => {
-    // console.log(magicSquare.write_to_buffer(x, y))
-    console.log('foo')
-    captureInterval = requestAnimationFrame(captureLoop)
-  };
+  const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+  let magicBanner: any
+  let captureInterval: number
+
+  onMount(async () => {
+    await timeout(500) // TODO: make this better than a hack
+                       // must wait for wasm to load
+    magicBanner = new rust.MagicBanner
+
+    // represents the loop used to capture mouse movement and deliver coordinates to WASM
+    // this loop writes to the MagicSquareBuffer
+    // an animation loop within a closure within WASM reads from the buffer
+    const captureLoop = () => {
+      magicBanner.write_to_buffer(x, y)
+      console.log('foo')
+      captureInterval = requestAnimationFrame(captureLoop)
+    };
     
-  let captureInterval = requestAnimationFrame(captureLoop)
+    captureInterval = requestAnimationFrame(captureLoop)
+  })
+
     
   onDestroy(async () => {
     cancelAnimationFrame(captureInterval)
