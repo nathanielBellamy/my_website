@@ -32,7 +32,7 @@
   })
 </script>
 
-<div class="magic_square_container rounded-md flex flex-col justify-start">
+<div class="magic_square_container flex flex-col justify-start">
   <div  class="magic_square_canvas_container grow"
         id="magic_square_canvas_container">
     <canvas id="magic_square"
@@ -49,15 +49,12 @@
     &_container
       width: 100%
       height: 100%
-      border: 2px solid black
 
     &_canvas
-      background-color: gold
       width: 100%
       height: 100%
     
       &_container
         width: 100%
-        background-color: red
 
 </style>

@@ -43,31 +43,21 @@
   })
 </script>
 
-<div class="magic_banner_container rounded-md flex flex-col justify-start">
-  <div  class="magic_banner_canvas_container"
-        id="magic_banner_canvas_container">
-    <canvas id="magic_banner"
-            class="magic_banner_canvas"
-            on:mousemove={handleMouseMove}
-            on:mouseleave={handleMouseLeave}/>
-  </div>
+<div class="magic_banner flex flex-col justify-start">
+  <canvas id="magic_banner_canvas"
+          class="magic_banner_canvas"
+          on:mousemove={handleMouseMove}
+          on:mouseleave={handleMouseLeave}/>
 </div>
 
 <style lang="sass">
   @use "./../styles/color"
   
   .magic_banner
-    background-color: color.$black-4
-
-    &_container
-      border: 2px solid color.$black-3
-      width: 100%
-
     &_canvas
-      height: 100%
       width: 100%
-    
+      height: 100%
+
       &_container
         background: color.$black-grad
-
 </style>
