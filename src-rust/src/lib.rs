@@ -1,6 +1,7 @@
 use wasm_bindgen::prelude::*;
 use std::collections::BTreeMap;
 
+pub mod magic_banner;
 pub mod magic_square;
 
 #[wasm_bindgen]

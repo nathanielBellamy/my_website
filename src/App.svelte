@@ -1,5 +1,6 @@
 <script lang="ts">
   import AboutMe from "./lib/AboutMe.svelte"
+  import MagicBanner from "./lib/MagicBanner.svelte"
   import MagicSquare from "./lib/MagicSquare.svelte"
   import Title from "./lib/Title.svelte"
 
@@ -13,10 +14,10 @@
 <main class="main rounded-md text-xl flex flex-col justify-start">
   <div class="main_header grid grid-cols-10">
     <div class="title p-3 text-lg font-bold col-span-2">
-      Nate B. Schieber's Website  
+      It's A Website  
     </div>
     <div class="col-span-8">
-      Foo
+      <MagicBanner />
     </div>
   </div>
   <div class="main_header grid grid-cols-10">
@@ -68,6 +69,7 @@
     width: 100vw
     height: 100vh
     &_header
+      max-height: 100px
       width: 100%
       border: 2px solid black
       background: color.$black-grad
