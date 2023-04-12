@@ -45,11 +45,12 @@
         <div class="project grid grid-cols-4">
           <a class="project_title"
              title="See It On Github"
+             target="_blank"
              href={href}>
             {title}
           </a>
           <div class="project_description col-span-3">
-            {description}          
+            {description} 
           </div>
         </div>
       {/each}
@@ -107,6 +108,7 @@
       font-weight: 900
       padding: 0 5px 0 5px
       cursor: pointer
+      overflow-x: hidden
       &:hover
         background-color: color.$blue-3
         transition: background-color .25s
@@ -114,10 +116,11 @@
     &_description
       flex-grow: .9
       text-align: center
-      background: color.$yellow-grad
+      background: color.$green-cream-grad
       display: flex
       align-items: center
       text-align: left
       padding-left: 1em
       font-weight: 700
+      color: color.$black-4
 </style>

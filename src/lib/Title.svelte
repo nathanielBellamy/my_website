@@ -12,7 +12,7 @@
   
   .title
     background: color.$blue-grad
-    color: color.$black-4
+    color: color.$cream
     font-weight: text.$fw-xl
     text-align: left
     padding: .1em 0 .1em 1em

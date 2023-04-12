@@ -11,23 +11,30 @@
 </script>
 
 <main class="main rounded-md text-xl flex flex-col justify-start">
-  <div class="title font-bold text-xl p-7 underline text-left">
-    Nate B. Schieber's Website  
+  <div class="main_header grid grid-cols-10">
+    <div class="title p-3 text-lg font-bold col-span-2">
+      Nate B. Schieber's Website  
+    </div>
+    <div class="col-span-8">
+      Foo
+    </div>
   </div>
-  <div class="main_header flex flex-row gap-x-10 justify-start">
-    <div class="title p-7 text-xl font-bold underline">
+  <div class="main_header grid grid-cols-10">
+    <div class="title p-3 text-lg font-bold col-span-2">
       Things You Can Find Here:
     </div>
-    <button class="section_button"
-            class:current_section={currentSection == 'aboutMe'}
-            on:click={()=>setCurrentSection("aboutMe")}>
-      About Me
-    </button>
-    <button class="section_button"
-            class:current_section={currentSection == 'magicSquare'}
-            on:click={()=>setCurrentSection("magicSquare")}>
-      Magic Square
-    </button>
+    <div class="col-span-8 flex flex-row justify-start items-stretch">
+      <button class="section_button"
+              class:current_section={currentSection == 'aboutMe'}
+              on:click={()=>setCurrentSection("aboutMe")}>
+        About Me
+      </button>
+      <button class="section_button"
+              class:current_section={currentSection == 'magicSquare'}
+              on:click={()=>setCurrentSection("magicSquare")}>
+        Magic Square
+      </button>
+    </div>
   </div>
   <div class="main_body">
     {#if currentSection == "magicSquare"}
@@ -50,11 +57,7 @@
     font-weight: 900
     font-size: 1.25em
     background: color.$green-grad
-  
-  .section_button
-    padding: 0 1em 0 1em
-    margin: .25em
-    font-weight: 700
+    flex-grow: 1
   
   .current_section
     background-color: color.$grey-3
@@ -68,9 +71,7 @@
       width: 100%
       border: 2px solid black
       background: color.$black-grad
-      &_title
-        max-width: 400px
-        text-align: center
+
     &_body
       background: color.$blue-grad
       flex-grow: 1
