@@ -44,7 +44,8 @@
       {#each personal_projects as { title, description, href } }
         <div class="project grid grid-cols-4">
           <a class="project_title"
-               href={href}>
+             title="See It On Github"
+             href={href}>
             {title}
           </a>
           <div class="project_description col-span-3">
@@ -73,7 +74,7 @@
       display: flex
       justify-content: space-around
       align-items: center
-      background-color: color.$black-4
+      background: color.$black-grad
       color: color.$white
       flex-grow: .1
       font-size: 1.25em
@@ -113,7 +114,7 @@
     &_description
       flex-grow: .9
       text-align: center
-      background-color: color.$yellow-1
+      background: color.$yellow-grad
       display: flex
       align-items: center
       text-align: left
