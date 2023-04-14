@@ -20,7 +20,7 @@
       <MagicBanner />
     </div>
   </div>
-  <div class="flex flex-row justify-start items-stretch">
+  <div class="section_select flex flex-row justify-start items-stretch">
     <button class="section_button"
             class:current_section={currentSection == 'aboutMe'}
             on:click={()=>setCurrentSection("aboutMe")}>
@@ -55,8 +55,11 @@
     background: color.$blue-black-grad
     flex-grow: 1
   
+  .section_select
+    background: color.$red-grad
+
   .current_section
-    background-color: color.$grey-3
+    background: color.$grey-grad
     color: black
     transition: color .5s, background-color .5s
     
