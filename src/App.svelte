@@ -56,11 +56,11 @@
     flex-grow: 1
   
   .section_select
-    background: color.$red-grad
+    background: color.$black-grad
 
   .current_section
     background: color.$grey-grad
-    color: black
+    color: color.$black-4
     transition: color .5s, background-color .5s
     
   .main

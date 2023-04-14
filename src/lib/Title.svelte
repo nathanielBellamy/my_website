@@ -17,5 +17,9 @@
     text-align: left
     padding: .1em 0 .1em 1em
     font-size: 1.1em
+    border: solid
+    border-width: 3px 0 3px 0
+    border-color: color.$yellow-4
+    margin: .25em 0 .25em 0
     
 </style>
