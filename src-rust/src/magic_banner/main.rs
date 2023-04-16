@@ -1,6 +1,5 @@
 use wasm_bindgen::prelude::*;
-use std::cell::RefCell;
-use std::rc::Rc;
+use std::{rc::Rc};
 use crate::magic_banner::buffer::Buffer;
 
 use web_sys::{WebGl2RenderingContext, WebGlProgram, WebGlShader};
@@ -14,20 +13,48 @@ pub struct MagicBanner;
 
 #[wasm_bindgen]
 impl MagicBanner {
-    #[wasm_bindgen(constructor)]
-    pub fn new() -> MagicBanner { MagicBanner }
-
     // Entry point into Rust WASM from JS
     // https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
-    pub fn run(&self) -> Result<(), JsValue> {
-        let context: web_sys::WebGl2RenderingContext = MagicBanner::context().unwrap();
-        let vertices: [f32; 9] = [-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.7, 0.0];
+    pub fn run() -> Result<(), JsValue> {
+        let canvas = MagicBanner::canvas().dyn_into::<web_sys::HtmlCanvasElement>()?;
+        let canvas = Rc::new(canvas);
 
-        MagicBanner::render(&vertices, &context)
+        {   
+            // init mouse move listener
+            // write coordinates to buffer
+            let mut buffer = Buffer::new();
+
+            let canvas = canvas.clone();
+            let context: web_sys::WebGl2RenderingContext = MagicBanner::context(&canvas).unwrap();
+            let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::MouseEvent| {
+                // mutate buffer
+                buffer.write(event.offset_x(), event.offset_y());
+                if buffer.idx == 7 {
+                    let vertices = MagicBanner::get_vertices(&buffer);
+                    MagicBanner::render(&vertices, &context).unwrap();
+                }
+            });
+
+            canvas.add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())?;
+            closure.forget();
+        }
+
+        Ok(())
     }
 }
 
 impl MagicBanner {
+    fn get_vertices(buffer: &Buffer) -> [f32; 9] {
+        let mut result: [f32; 9] = [-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.9, 0.0];
+        let buffer = Buffer::read(&buffer);
+        
+        result[0] = (buffer.x_0 as f32) * 0.1 * result[0];
+        result[3] = (buffer.y_0 as f32) * 0.1 * result[3];
+        result[6] = (buffer.x_2 as f32) * 0.1 * result[6];
+
+        result
+    }
+
     fn window() -> web_sys::Window {
         web_sys::window().expect("no global `window` exists")
     }
@@ -44,10 +71,7 @@ impl MagicBanner {
             .expect("unable to find canvas element")
     }
 
-    pub fn context() -> Result<web_sys::WebGl2RenderingContext, JsValue> {
-        let canvas = MagicBanner::canvas();
-        let canvas: web_sys::HtmlCanvasElement = canvas.dyn_into::<web_sys::HtmlCanvasElement>()?;
-        
+    pub fn context(canvas: &web_sys::HtmlCanvasElement) -> Result<web_sys::WebGl2RenderingContext, JsValue> {
         let context = canvas
                         .get_context("webgl2")?
                         .expect("unable to get webgl2 context")
@@ -64,6 +88,7 @@ impl MagicBanner {
     }
 
     fn render(vertices: &[f32; 9], context: &web_sys::WebGl2RenderingContext) ->  Result<(), JsValue>  {
+
         let vert_shader = ShaderCompiler::vert_default(&context).unwrap();
         let frag_shader = ShaderCompiler::frag_default(&context).unwrap();
 

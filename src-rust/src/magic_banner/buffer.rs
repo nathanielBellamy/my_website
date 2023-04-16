@@ -1,3 +1,4 @@
+#[derive(Clone, Copy)]
 pub struct Buffer {
     pub x_0: i32,
     pub x_1: i32,
@@ -42,8 +43,7 @@ impl Buffer {
     }
 
     pub fn write(&mut self, x: i32, y: i32) {
-        let idx = self.idx;
-        match idx {
+        match self.idx {
             0 => {
                 self.x_0 = x;
                 self.y_0 = y;
@@ -78,7 +78,7 @@ impl Buffer {
             },
             _ => (),
         }
-        self.idx = (idx + 1) % 8;
+        self.idx = (self.idx + 1) % 8;
         // format!(
         //     "0.({}, {}), 1.({}, {}), 2.({}, {}), 3.({}, {}), 4.({}, {}), 5.({}, {}), 6.({}, {}), 7.({}, {})",
         //     self.x_0,
@@ -99,4 +99,8 @@ impl Buffer {
         //     self.y_7,
         // )
     }
+
+    pub fn read(buffer: &Buffer) -> Buffer {
+        buffer.clone()
+    } 
 }

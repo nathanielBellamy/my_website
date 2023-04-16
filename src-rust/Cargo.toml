@@ -14,9 +14,11 @@ js-sys = "0.3.61"
 [dependencies.web-sys]
 version = "0.3.61"
 features = [
+  'CanvasRenderingContext2d',
   'Document',
   'Element',
   'HtmlCanvasElement',
+  'MouseEvent',
   'WebGlBuffer',
   'WebGlVertexArrayObject',
   'WebGl2RenderingContext',

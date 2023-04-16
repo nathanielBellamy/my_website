@@ -8,9 +8,8 @@
   let captureInterval: number
 
   onMount(async () => {
-    await timeout(100) // await wasm init
-    magicBanner = new rust.MagicBanner
-    magicBanner.run()
+    await timeout(200) // await wasm init
+    rust.MagicBanner.run()
   })
 
     
