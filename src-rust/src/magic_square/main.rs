@@ -69,10 +69,10 @@ impl MagicSquare {
     fn get_rgba(buffer: &[i32; 2]) -> Rgba {
         let mut result: Rgba = [0.0, 0.0, 0.0, 0.0];
         
-        result[0] = ((buffer[0] as f64) * 0.1).sin();
-        result[1] = ((buffer[1] as f64) * 0.1).sin();
-        result[2] = ((-buffer[0] as f64) * 0.1).sin();
-        result[3] = ((buffer[1] as f64) * 0.1).sin();
+        result[0] = ((buffer[0] as f64) * 0.1).sin() / 3.0;
+        result[1] = ((buffer[1] as f64) * 0.1).sin() / 3.0;
+        result[2] = ((-buffer[0] as f64) * 0.1).sin() / 3.0;
+        result[3] = ((buffer[1] as f64) * 0.1).sin() / 3.0;
 
         result
     }
