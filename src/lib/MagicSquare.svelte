@@ -1,60 +1,26 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte'
+  import { onMount } from 'svelte'
   import * as rust from "../../src-rust/pkg/src_rust.js"
 
-  let x: number = -1 
-  let y: number = -1
+  const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-  let magicSquare = new rust.MagicSquare
-
-  const handleMouseMove = (e: any) => {
-    x = e.clientX
-    y = e.clientY
-  }
-
-  const handleMouseLeave = () => {
-    x = -1 // negative indicates off element
-    y = -1
-  }
-
-  // represents the loop used to capture mouse movement and deliver coordinates to WASM
-  // this loop writes to the MagicSquareBuffer
-  // an animation loop within a closure within WASM reads from the buffer
-  const captureLoop = () => {
-    console.log(magicSquare.write_to_buffer(x, y))
-    captureInterval = requestAnimationFrame(captureLoop)
-  };
-    
-  let captureInterval = requestAnimationFrame(captureLoop)
-    
-  onDestroy(async () => {
-    cancelAnimationFrame(captureInterval)
+  onMount(async () => {
+    await timeout(200) // await wasm init
+    rust.MagicSquare.run()
   })
 </script>
 
-<div class="magic_square_container flex flex-col justify-start">
-  <div  class="magic_square_canvas_container grow"
-        id="magic_square_canvas_container">
-    <canvas id="magic_square"
-            class="magic_square_canvas"
-            on:mousemove={handleMouseMove}
-            on:mouseleave={handleMouseLeave}/>
-  </div>
+<div class="magic_square flex flex-col justify-start">
+  <canvas id="magic_square_canvas"
+          class="magic_square_canvas"/>
 </div>
 
 <style lang="sass">
+  @use "./../styles/color"
+  
   .magic_square
-    background-color: black
-
-    &_container
-      width: 100%
-      height: 100%
-
     &_canvas
       width: 100%
       height: 100%
-    
-      &_container
-        width: 100%
 
 </style>

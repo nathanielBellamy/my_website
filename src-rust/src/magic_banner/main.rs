@@ -1,6 +1,5 @@
 use wasm_bindgen::prelude::*;
 use std::{rc::Rc};
-use crate::magic_banner::buffer::Buffer;
 
 use web_sys::{WebGl2RenderingContext, WebGlProgram, WebGlShader};
 
@@ -30,10 +29,9 @@ impl MagicBanner {
                 // mutate buffer
                 buffer[0] = event.offset_x();
                 buffer[1] = event.offset_y();
-                // if buffer.idx == 7 {
-                    let vertices = MagicBanner::get_vertices(&buffer);
-                    MagicBanner::render(&vertices, &context).unwrap();
-                // }
+                
+                let vertices = MagicBanner::get_vertices(&buffer);
+                MagicBanner::render(&vertices, &context).unwrap();
             });
 
             canvas.add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())?;
@@ -46,10 +44,10 @@ impl MagicBanner {
 
 impl MagicBanner {
     fn get_vertices(buffer: &[i32; 2]) -> [f32; 9] {
-        let mut result: [f32; 9] = [-0.7, 0.0, 0.0, 0.7, 0.2, 0.1, 0.1, 0.9, 0.0];
+        let mut result: [f32; 9] = [0.7, 0.0, 0.0, 0.7, 0.7, 0.1, 0.1, 0.9, 0.0];
         
-        result[6] = (buffer[0] as f32) * 0.1 * result[6];
-        result[3] = (buffer[1] as f32) * 0.1 * result[3];
+        result[6] = ((buffer[0] as f32) * 0.01 * result[6]) - 0.6;
+        result[3] = (buffer[1] as f32) * 0.03 * result[3];
 
 
         result

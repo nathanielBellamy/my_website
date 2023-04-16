@@ -1,20 +1,12 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte'
+  import { onMount } from 'svelte'
   import * as rust from "../../src-rust/pkg/src_rust.js"
 
   const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-  let magicBanner: any
-  let captureInterval: number
-
   onMount(async () => {
     await timeout(200) // await wasm init
     rust.MagicBanner.run()
-  })
-
-    
-  onDestroy(async () => {
-    cancelAnimationFrame(captureInterval)
   })
 </script>
 
