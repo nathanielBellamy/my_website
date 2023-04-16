@@ -1,6 +1,5 @@
 use wasm_bindgen::prelude::*;
-use std::{rc::Rc};
-use crate::magic_banner::buffer::Buffer;
+use std::rc::Rc;
 
 use web_sys::{WebGl2RenderingContext, WebGlProgram, WebGlShader};
 
@@ -31,7 +30,8 @@ impl MagicSquare {
                 buffer[1] = event.offset_y();
                 
                 let vertices = MagicSquare::get_vertices(&buffer);
-                MagicSquare::render(&vertices, &context).unwrap();
+                let rgba = MagicSquare::get_rgba(&buffer);
+                MagicSquare::render(&vertices, &rgba, &context).unwrap();
             });
 
             canvas.add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())?;
@@ -41,6 +41,9 @@ impl MagicSquare {
         Ok(())
     }
 }
+
+
+pub type Rgba = [f64; 4];
 
 impl MagicSquare {
     fn get_vertices(buffer: &[i32; 2]) -> [f32; 9] {
@@ -62,6 +65,19 @@ impl MagicSquare {
 
         result
     }
+
+    fn get_rgba(buffer: &[i32; 2]) -> Rgba {
+        let mut result: Rgba = [0.0, 0.0, 0.0, 0.0];
+        
+        result[0] = ((buffer[0] as f64) * 0.1).sin();
+        result[1] = ((buffer[1] as f64) * 0.1).sin();
+        result[2] = ((-buffer[0] as f64) * 0.1).sin();
+        result[3] = ((buffer[1] as f64) * 0.1).sin();
+
+        result
+    }
+
+
 
     fn window() -> web_sys::Window {
         web_sys::window().expect("no global `window` exists")
@@ -95,10 +111,9 @@ impl MagicSquare {
         context.draw_arrays(WebGl2RenderingContext::TRIANGLES, 0, vert_count);
     }
 
-    fn render(vertices: &[f32; 9], context: &web_sys::WebGl2RenderingContext) ->  Result<(), JsValue>  {
-
+    fn render(vertices: &[f32; 9], color: &Rgba, context: &web_sys::WebGl2RenderingContext) ->  Result<(), JsValue>  {
         let vert_shader = ShaderCompiler::vert_default(&context).unwrap();
-        let frag_shader = ShaderCompiler::frag_default(&context).unwrap();
+        let frag_shader = ShaderCompiler::frag_default(&context, &color).unwrap();
 
         let program = ProgramLinker::exec(&context, &vert_shader, &frag_shader)?;
         context.use_program(Some(&program));
@@ -180,19 +195,23 @@ impl ShaderCompiler {
     
     pub fn frag_default(
         context: &WebGl2RenderingContext,
+        rgba: &Rgba
     ) -> Result<WebGlShader, String> {
+        let string = format!(
+                r##"#version 300 es
+                precision highp float;
+                out vec4 outColor;
+                
+                void main() {{
+                    outColor = vec4({}, {}, {}, {});
+                }}
+                "##,rgba[0], rgba[1], rgba[2], rgba[3]);
+
+
         ShaderCompiler::exec(
             &context,
             WebGl2RenderingContext::FRAGMENT_SHADER,
-            r##"#version 300 es
-        
-            precision highp float;
-            out vec4 outColor;
-            
-            void main() {
-                outColor = vec4(1, 1, 1, 1);
-            }
-            "##,
+            &string
         )
     }
 
