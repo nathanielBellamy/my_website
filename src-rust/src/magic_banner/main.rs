@@ -22,17 +22,18 @@ impl MagicBanner {
         {   
             // init mouse move listener
             // write coordinates to buffer
-            let mut buffer = Buffer::new();
+            let mut buffer: [i32; 2] = [0,0];// Buffer::new();
 
             let canvas = canvas.clone();
             let context: web_sys::WebGl2RenderingContext = MagicBanner::context(&canvas).unwrap();
             let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::MouseEvent| {
                 // mutate buffer
-                buffer.write(event.offset_x(), event.offset_y());
-                if buffer.idx == 7 {
+                buffer[0] = event.offset_x();
+                buffer[1] = event.offset_y();
+                // if buffer.idx == 7 {
                     let vertices = MagicBanner::get_vertices(&buffer);
                     MagicBanner::render(&vertices, &context).unwrap();
-                }
+                // }
             });
 
             canvas.add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())?;
@@ -44,13 +45,12 @@ impl MagicBanner {
 }
 
 impl MagicBanner {
-    fn get_vertices(buffer: &Buffer) -> [f32; 9] {
-        let mut result: [f32; 9] = [-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.9, 0.0];
-        let buffer = Buffer::read(&buffer);
+    fn get_vertices(buffer: &[i32; 2]) -> [f32; 9] {
+        let mut result: [f32; 9] = [-0.7, 0.0, 0.0, 0.7, 0.2, 0.1, 0.1, 0.9, 0.0];
         
-        result[0] = (buffer.x_0 as f32) * 0.1 * result[0];
-        result[3] = (buffer.y_0 as f32) * 0.1 * result[3];
-        result[6] = (buffer.x_2 as f32) * 0.1 * result[6];
+        result[6] = (buffer[0] as f32) * 0.1 * result[6];
+        result[3] = (buffer[1] as f32) * 0.1 * result[3];
+
 
         result
     }
