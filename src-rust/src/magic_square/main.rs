@@ -49,7 +49,7 @@ impl MagicSquare {
     fn get_vertices(buffer: &[i32; 2]) -> [f32; 9] {
         let mut result: [f32; 9] = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.5];
 
-        result[0] = buffer[0] as f32 * 0.01;
+        result[0] = buffer[0] as f32 * 0.02;
         result[4] = -(buffer[1] as f32 * 0.01);
 
         // result[0] = (-buffer[0] as f32 - buffer[1] as f32) * 0.01 * result[0];

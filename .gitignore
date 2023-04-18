@@ -25,4 +25,4 @@ src-rust/target/*
 *.sln
 *.sw?
 
-src-rust/target/*
+src-rust/target/
