@@ -24,3 +24,5 @@ src-rust/target/*
 *.njsproj
 *.sln
 *.sw?
+
+src/src-rust/target/*
