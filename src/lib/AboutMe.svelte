@@ -33,14 +33,71 @@
     }
   ]
 
+  interface GeneralFact {
+    title: string,
+    description: string
+  }
+
+  let general_facts: GeneralFact[] = [
+    {
+      title: 'Job',
+      description: 'Software Engineer'
+    },
+    {
+      title: 'Location',
+      description: 'Portland, OR'
+    },
+    {
+      title: 'Contact',
+      description: 'nbschieber@gmail'
+    }
+  ]
+
+  interface ProfessionalThing {
+    title: string,
+    description: string
+  }
+
+  let prefessional_things: ProfessionalThing[] = [
+    {
+      title: 'Ruby',
+      description: 'Backend Rails'
+    },
+    {
+      title: 'JS',
+      description: 'React, Vue, Node, JQuery'
+    },
+    {
+      title: 'Heroku',
+      description: 'Dynos and stuff'
+    }
+  ]
+
 </script>
 
 <div class="about_me flex flex-col justify-start items-stretch">
-  <div class="section">
-    <div class="section_title text-xl font-extrabold">
+  <div class="section grid grid-cols-10">
+    <div class="section_title text-xl font-extrabold col-span-2">
+      General
+    </div>
+    <div class = "section_body col-span-8">
+      {#each general_facts as { title, description } }
+        <div class="general_fact grid grid-cols-4">
+          <div class="general_fact_title">
+            {title}
+          </div>
+          <div class="general_fact_description col-span-3">
+            {description} 
+          </div>
+        </div>
+      {/each}
+    </div>
+  </div>
+  <div class="section grid grid-cols-10">
+    <div class="section_title text-xl font-extrabold col-span-2">
       Personal Projects
     </div>
-    <div class="section_body">
+    <div class="section_body col-span-8">
       {#each personal_projects as { title, description, href } }
         <div class="project grid grid-cols-4">
           <a class="project_title"
@@ -49,6 +106,23 @@
              href={href}>
             {title}
           </a>
+          <div class="project_description col-span-3">
+            {description} 
+          </div>
+        </div>
+      {/each}
+    </div>
+  </div>
+  <div class="section grid grid-cols-10">
+    <div class="section_title text-xl font-extrabold col-span-2">
+      Professional Things
+    </div>
+    <div class = "section_body col-span-8">
+      {#each prefessional_things as { title, description } }
+        <div class="project grid grid-cols-4">
+          <div class="project_title">
+            {title}
+          </div>
           <div class="project_description col-span-3">
             {description} 
           </div>
@@ -66,10 +140,12 @@
     height: 100%
 
   .section
-    display: flex
-    justify-content: flex-start
     align-items: stretch
     min-height: 200px
+    border-top: 5px solid color.$green-4
+    border-bottom: 5px solid color.$green-4
+    margin-top: 5px
+    margin-bottom: 5px
 
     &_title
       display: flex
@@ -86,9 +162,14 @@
       flex-direction: column
       justify-content: flex-start
       align-items: stretch
-      background-color: color.$grey-1
+      background: color.$grey-grad
       color: color.$black-4
       flex-grow: .9
+   
+  .general_fact
+    &_title
+    
+    &_description 
 
   .project
     /* display: flex */

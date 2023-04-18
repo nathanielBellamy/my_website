@@ -47,20 +47,23 @@ pub type Rgba = [f64; 4];
 
 impl MagicSquare {
     fn get_vertices(buffer: &[i32; 2]) -> [f32; 9] {
-        let mut result: [f32; 9] = [0.1, 0.0, 0.1, 0.0, 0.1, 0.0, 0.0, 0.0, 0.1];
+        let mut result: [f32; 9] = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.5];
 
-        result[0] = (-buffer[0] as f32 - buffer[1] as f32) * 0.01 * result[0];
-        result[1] = (-buffer[0] as f32 - buffer[1] as f32) * 0.01 * result[1];
-        result[2] = (-buffer[0] as f32 - buffer[1] as f32) * 0.01 * result[2];
+        result[0] = buffer[0] as f32 * 0.01;
+        result[4] = -(buffer[1] as f32 * 0.01);
 
-        result[3] = (-buffer[1] as f32) * 0.01 * result[3];
-        result[4] = (-buffer[1] as f32) * 0.01 * result[4];
-        result[5] = (-buffer[1] as f32) * 0.01 * result[5];
+        // result[0] = (-buffer[0] as f32 - buffer[1] as f32) * 0.01 * result[0];
+        // result[1] = (-buffer[0] as f32 - buffer[1] as f32) * 0.01 * result[1];
+        // result[2] = (-buffer[0] as f32 - buffer[1] as f32) * 0.01 * result[2];
+
+        // result[3] = (-buffer[1] as f32) * 0.01 * result[3];
+        // result[4] = (-buffer[1] as f32) * 0.01 * result[4];
+        // result[5] = (-buffer[1] as f32) * 0.01 * result[5];
 
 
-        result[6] = ((-buffer[0] as f32) * 0.01 * result[6]) - 0.6;
-        result[7] = ((-buffer[0] as f32) * 0.01 * result[7]) - 0.6;
-        result[8] = ((-buffer[0] as f32) * 0.01 * result[8]) - 0.6;
+        // result[6] = ((-buffer[0] as f32) * 0.01 * result[6]) - 0.6;
+        // result[7] = ((-buffer[0] as f32) * 0.01 * result[7]) - 0.6;
+        // result[8] = ((-buffer[0] as f32) * 0.01 * result[8]) - 0.6;
 
 
         result
@@ -108,7 +111,7 @@ impl MagicSquare {
         context.clear_color(0.0, 0.0, 0.0, 1.0);
         context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
 
-        context.draw_arrays(WebGl2RenderingContext::TRIANGLES, 0, vert_count);
+        context.draw_arrays(WebGl2RenderingContext::LINES, 0, vert_count);
     }
 
     fn render(vertices: &[f32; 9], color: &Rgba, context: &web_sys::WebGl2RenderingContext) ->  Result<(), JsValue>  {

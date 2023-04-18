@@ -11,7 +11,6 @@
   @use "./../styles/text"
   
   .title
-    background: color.$blue-grad
     color: color.$cream
     font-weight: text.$fw-xl
     text-align: left
@@ -19,7 +18,7 @@
     font-size: 1.1em
     border: solid
     border-width: 3px 0 3px 0
-    border-color: color.$yellow-4
+    border-color: color.$blue-4
     margin: .25em 0 .25em 0
     
 </style>

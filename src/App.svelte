@@ -50,17 +50,17 @@
   
   .title
     color: color.$white
+    border: 5px solid color.$blue-4
+    margin-bottom: 5px
     font-weight: 900
     font-size: 1.25em
-    background: color.$blue-black-grad
     flex-grow: 1
   
   .section_select
-    background: color.$black-grad
 
   .current_section
-    background: color.$grey-grad
-    color: color.$black-4
+    background: color.$blue-black-grad
+    color: color.$cream
     transition: color .5s, background-color .5s
     
   .main
@@ -71,8 +71,9 @@
       background: color.$black-grad
       overflow: hidden
       max-height: 100px
+      min-height: 100px
 
     &_body
-      background: color.$blue-grad
       flex-grow: 1
+      padding-bottom: 3em
 </style>

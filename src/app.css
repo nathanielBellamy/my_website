@@ -60,7 +60,8 @@ button {
   font-weight: 800;
 }
 button:hover {
-  border-color: #9DBFCB;
+  border-color: #395A6D;
+  transition: border-color 0.25s;
 }
 button:focus,
 button:focus-visible {
