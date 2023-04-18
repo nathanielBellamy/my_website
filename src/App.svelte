@@ -56,8 +56,6 @@
     font-size: 1.25em
     flex-grow: 1
   
-  .section_select
-
   .current_section
     background: color.$blue-black-grad
     color: color.$cream

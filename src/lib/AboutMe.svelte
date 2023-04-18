@@ -133,11 +133,6 @@
       flex-grow: .9
       padding: 5px 0 5px 0
    
-  .general_fact
-    &_title
-    
-    &_description 
-
   .project
     /* display: flex */
     /* justify-content: flex-start */
