@@ -38,21 +38,6 @@
     description: string
   }
 
-  let general_facts: GeneralFact[] = [
-    {
-      title: 'Job',
-      description: 'Software Engineer'
-    },
-    {
-      title: 'Location',
-      description: 'Portland, OR'
-    },
-    {
-      title: 'Contact',
-      description: 'nbschieber@gmail'
-    }
-  ]
-
   interface ProfessionalThing {
     title: string,
     description: string
@@ -76,23 +61,6 @@
 </script>
 
 <div class="about_me flex flex-col justify-start items-stretch">
-  <div class="section grid grid-cols-10">
-    <div class="section_title text-xl font-extrabold col-span-2">
-      General
-    </div>
-    <div class = "section_body col-span-8">
-      {#each general_facts as { title, description } }
-        <div class="general_fact grid grid-cols-4">
-          <div class="general_fact_title">
-            {title}
-          </div>
-          <div class="general_fact_description col-span-3">
-            {description} 
-          </div>
-        </div>
-      {/each}
-    </div>
-  </div>
   <div class="section grid grid-cols-10">
     <div class="section_title text-xl font-extrabold col-span-2">
       Personal Projects
@@ -151,7 +119,6 @@
       display: flex
       justify-content: space-around
       align-items: center
-      background: color.$black-grad
       color: color.$white
       flex-grow: .1
       font-size: 1.25em
@@ -162,9 +129,9 @@
       flex-direction: column
       justify-content: flex-start
       align-items: stretch
-      background: color.$grey-grad
       color: color.$black-4
       flex-grow: .9
+      padding: 5px 0 5px 0
    
   .general_fact
     &_title
@@ -179,17 +146,18 @@
     border-bottom: 2px solid color.$black-4
     
     &_title
-      display: flex
-      justify-content: space-around
-      align-items: center
       flex-grow: .1
-      background-color: color.$blue-4
       transition: background-color .25s
+      text-align: left
       color: color.$white
-      font-weight: 900
+      font-weight: 700
       padding: 0 5px 0 5px
+      margin: 2px 5px 2px 5px
       cursor: pointer
       overflow-x: hidden
+      border-bottom: 3px solid color.$blue-4
+      border-right: 3px solid color.$blue-4
+      border-radius: 5px
       &:hover
         background-color: color.$blue-3
         transition: background-color .25s
@@ -197,11 +165,17 @@
     &_description
       flex-grow: .9
       text-align: center
-      background: color.$green-cream-grad
       display: flex
       align-items: center
       text-align: left
       padding-left: 1em
       font-weight: 700
-      color: color.$black-4
+      color: color.$white
+      margin: 2px 5px 2px 5px
+      border-bottom: 3px solid color.$green-4
+      border-left: 3px solid color.$green-4
+
+      border-radius: 5px
+
+      
 </style>

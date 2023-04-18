@@ -24,7 +24,7 @@
     <button class="section_button"
             class:current_section={currentSection == 'aboutMe'}
             on:click={()=>setCurrentSection("aboutMe")}>
-      About Me
+      About Me 
     </button>
     <button class="section_button"
             class:current_section={currentSection == 'magicSquare'}
@@ -38,7 +38,7 @@
       <MagicSquare />
     {:else}
       <div>
-        <Title title="About Me"/>
+        <Title title="About Me -- Software Engineer - Portland, OR - nbschieber@gmail.com"/>
         <AboutMe />
       </div>
     {/if}
