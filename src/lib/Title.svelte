@@ -1,9 +1,15 @@
 <script lang="ts">
   export let title: string = '--'
+  export let subTitle: string = ''
 </script>
 
-<div class="title">
-  {title}
+<div class="title flex flex-ro justify-between">
+  <div class="title_main">
+    {title}
+  </div>
+  <div class="title_sub pr-10">
+    {subTitle}
+  </div>
 </div>
 
 <style lang="sass">

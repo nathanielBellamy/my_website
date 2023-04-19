@@ -33,11 +33,6 @@
     }
   ]
 
-  interface GeneralFact {
-    title: string,
-    description: string
-  }
-
   interface ProfessionalThing {
     title: string,
     description: string
@@ -46,16 +41,41 @@
   let prefessional_things: ProfessionalThing[] = [
     {
       title: 'Ruby',
-      description: 'Backend Rails'
+      description: 'on Rails, Rspec, Capybara'
     },
     {
       title: 'JS',
-      description: 'React, Vue, Node, JQuery'
+      description: 'React, Vue, Node, JQuery, Mocha'
+    },
+    {
+      title: 'C#',
+      description: '.NET'
     },
     {
       title: 'Heroku',
-      description: 'Dynos and stuff'
+      description: 'Currently Hosts This Site'
+    },
+    {
+      title: 'CircleCI',
+      description: 'Testing and Deployment Pipelines'
+    },
+    {
+      title: 'Github',
+      description: 'github.com/nathanielBellamy, Actions'
+    },
+    {
+      title: 'Azure',
+      description: 'Cognitive Search'
+    },
+    {
+      title: 'AWS S3',
+      description: 'Prod Data Migrations'
+    },
+    {
+      title: 'Postman',
+      description: 'Api Stress Testing with Newman'
     }
+
   ]
 
 </script>
@@ -83,7 +103,7 @@
   </div>
   <div class="section grid grid-cols-10">
     <div class="section_title text-xl font-extrabold col-span-2">
-      Professional Things
+      Tools I Have Used Professionally
     </div>
     <div class = "section_body col-span-8">
       {#each prefessional_things as { title, description } }
@@ -150,8 +170,8 @@
       margin: 2px 5px 2px 5px
       cursor: pointer
       overflow-x: hidden
-      border-bottom: 3px solid color.$blue-4
-      border-right: 3px solid color.$blue-4
+      border-bottom: 3px solid color.$yellow-4
+      border-right: 3px solid color.$yellow-4
       border-radius: 5px
       &:hover
         background-color: color.$blue-3
@@ -167,8 +187,8 @@
       font-weight: 700
       color: color.$white
       margin: 2px 5px 2px 5px
-      border-bottom: 3px solid color.$green-4
-      border-left: 3px solid color.$green-4
+      border-bottom: 3px solid color.$blue-4
+      border-left: 3px solid color.$blue-4
 
       border-radius: 5px
 

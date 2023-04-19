@@ -38,7 +38,8 @@
       <MagicSquare />
     {:else}
       <div>
-        <Title title="About Me -- Software Engineer - Portland, OR - nbschieber@gmail.com"/>
+        <Title title="About Me"
+               subTitle="nbschieber@gmail.com -- Software Engineer -- Portland, OR"/>
         <AboutMe />
       </div>
     {/if}
