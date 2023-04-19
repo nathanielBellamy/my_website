@@ -52,15 +52,20 @@
   .title
     color: color.$white
     border: 5px solid color.$blue-4
+    border-radius: 5px
     margin-bottom: 5px
     font-weight: 900
     font-size: 1.25em
     flex-grow: 1
+    text-align: center
+    display: flex
+    flex-direction: column
+    justify-content: space-around
   
   .current_section
     background: color.$blue-black-grad
     color: color.$cream
-    transition: color .5s, background-color .5s
+    transition: color .5s, background .5s
     
   .main
     width: 100vw

@@ -7,8 +7,13 @@
   }
   let personal_projects: PersonalProject[] = [
     {
+      title: 'my_website (this)',
+      description: 'Svelte, Typescript, Rust, WebAssembly, WebGL, Sass, Tailwind, Vite',
+      href: 'https://github.com/nathanielBellamy/my_website'
+    },
+    {
       title: 'monthly_budget',
-      description: 'CSV Processing in Rust',
+      description: 'CSV Processing with Rust',
       href: 'https://github.com/nathanielBellamy/monthly_budget'
     },
     {
@@ -50,6 +55,10 @@
     {
       title: 'C#',
       description: '.NET'
+    },
+    {
+      title: 'SQL',
+      description: 'LINQ, ActiveRecord, Postgres'
     },
     {
       title: 'Heroku',
@@ -130,8 +139,8 @@
   .section
     align-items: stretch
     min-height: 200px
-    border-top: 5px solid color.$green-4
-    border-bottom: 5px solid color.$green-4
+    border-top: 3px solid color.$yellow-4
+    border-bottom: 3px solid color.$yellow-4
     margin-top: 5px
     margin-bottom: 5px
 
@@ -170,8 +179,8 @@
       margin: 2px 5px 2px 5px
       cursor: pointer
       overflow-x: hidden
-      border-bottom: 3px solid color.$yellow-4
-      border-right: 3px solid color.$yellow-4
+      border-bottom: 3px solid color.$blue-4
+      border-right: 3px solid color.$blue-4
       border-radius: 5px
       &:hover
         background-color: color.$blue-3
@@ -187,8 +196,8 @@
       font-weight: 700
       color: color.$white
       margin: 2px 5px 2px 5px
-      border-bottom: 3px solid color.$blue-4
-      border-left: 3px solid color.$blue-4
+      border-bottom: 3px solid color.$green-4
+      border-left: 3px solid color.$green-4
 
       border-radius: 5px
 

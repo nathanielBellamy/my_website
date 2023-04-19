@@ -3,6 +3,8 @@ use std::rc::Rc;
 
 use web_sys::{WebGl2RenderingContext, WebGlProgram, WebGlShader};
 
+const VERTEX_COUNT: usize = 12;
+
 // => keep buffer in RC
 // => one event listener has mutable reference to write
 // => another closure has the animation loop with an immutable reference
@@ -46,11 +48,13 @@ impl MagicSquare {
 pub type Rgba = [f64; 4];
 
 impl MagicSquare {
-    fn get_vertices(buffer: &[i32; 2]) -> [f32; 9] {
-        let mut result: [f32; 9] = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.5];
+    fn get_vertices(buffer: &[i32; 2]) -> [f32; VERTEX_COUNT] {
+        let mut result: [f32; VERTEX_COUNT] = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, -1.0, 0.0, 0.0, 0.0, -1.0, 0.0];
 
-        result[0] = buffer[0] as f32 * 0.02;
-        result[4] = -(buffer[1] as f32 * 0.02);
+        result[0] = buffer[0] as f32 * 0.002;
+        result[4] = -(buffer[1] as f32 * 0.002);
+        result[6] = buffer[0] as f32 * (- 0.002);
+        result[10] = -(buffer[1] as f32 * (- 0.002));
 
         // result[0] = (-buffer[0] as f32 - buffer[1] as f32) * 0.01 * result[0];
         // result[1] = (-buffer[0] as f32 - buffer[1] as f32) * 0.01 * result[1];
@@ -114,7 +118,7 @@ impl MagicSquare {
         context.draw_arrays(WebGl2RenderingContext::LINES, 0, vert_count);
     }
 
-    fn render(vertices: &[f32; 9], color: &Rgba, context: &web_sys::WebGl2RenderingContext) ->  Result<(), JsValue>  {
+    fn render(vertices: &[f32; VERTEX_COUNT], color: &Rgba, context: &web_sys::WebGl2RenderingContext) ->  Result<(), JsValue>  {
         let vert_shader = ShaderCompiler::vert_default(&context).unwrap();
         let frag_shader = ShaderCompiler::frag_default(&context, &color).unwrap();
 
