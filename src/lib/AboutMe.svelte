@@ -110,6 +110,9 @@
       {/each}
     </div>
   </div>
+  <div>
+    Embed
+  </div>
   <div class="section grid grid-cols-10">
     <div class="section_title text-xl font-extrabold col-span-2">
       Tools I Have Used Professionally

@@ -21,7 +21,7 @@
   .magic_square
     &_canvas
       width: 100%
-      height: 100%
+      height: calc(100vh - 200px)
       border: 5px solid color.$yellow-4
 
 </style>

@@ -78,6 +78,7 @@
       min-height: 100px
 
     &_body
-      flex-grow: 1
       padding-bottom: 3em
+      margin-bottom: 5px
+      height: calc(100vh - 200px)
 </style>
