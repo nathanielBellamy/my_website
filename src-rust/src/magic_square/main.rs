@@ -3,7 +3,9 @@ use std::rc::Rc;
 
 use web_sys::{WebGl2RenderingContext, WebGlProgram, WebGlShader};
 
-const VERTEX_COUNT: usize = 12;
+const VERTEX_COUNT: usize = 4;
+const COORDINATE_COUNT: usize = VERTEX_COUNT * 3;
+const VERTICES_EMPTY: [f32; VERTEX_COUNT * 3] = [0.0; VERTEX_COUNT * 3];
 
 // => keep buffer in RC
 // => one event listener has mutable reference to write
@@ -30,10 +32,7 @@ impl MagicSquare {
             let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::MouseEvent| {
                 buffer[0] = event.offset_x();
                 buffer[1] = event.offset_y();
-                
-                let vertices = MagicSquare::get_vertices(&buffer);
-                let rgba = MagicSquare::get_rgba(&buffer);
-                MagicSquare::render(&vertices, &rgba, &context).unwrap();
+                MagicSquare::render_all_lines(&buffer, &context)
             });
 
             canvas.add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())?;
@@ -48,38 +47,32 @@ impl MagicSquare {
 pub type Rgba = [f64; 4];
 
 impl MagicSquare {
-    fn get_vertices(buffer: &[i32; 2]) -> [f32; VERTEX_COUNT] {
-        let mut result: [f32; VERTEX_COUNT] = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, -1.0, 0.0, 0.0, 0.0, -1.0, 0.0];
 
-        result[0] = buffer[0] as f32 * 0.002;
-        result[4] = -(buffer[1] as f32 * 0.002);
-        result[6] = buffer[0] as f32 * (- 0.002);
-        result[10] = -(buffer[1] as f32 * (- 0.002));
-
-        // result[0] = (-buffer[0] as f32 - buffer[1] as f32) * 0.01 * result[0];
-        // result[1] = (-buffer[0] as f32 - buffer[1] as f32) * 0.01 * result[1];
-        // result[2] = (-buffer[0] as f32 - buffer[1] as f32) * 0.01 * result[2];
-
-        // result[3] = (-buffer[1] as f32) * 0.01 * result[3];
-        // result[4] = (-buffer[1] as f32) * 0.01 * result[4];
-        // result[5] = (-buffer[1] as f32) * 0.01 * result[5];
-
-
-        // result[6] = ((-buffer[0] as f32) * 0.01 * result[6]) - 0.6;
-        // result[7] = ((-buffer[0] as f32) * 0.01 * result[7]) - 0.6;
-        // result[8] = ((-buffer[0] as f32) * 0.01 * result[8]) - 0.6;
-
-
-        result
+    fn render_all_lines(buffer: &[i32; 2], context: &web_sys::WebGl2RenderingContext) {
+        for idx in 1..10 {
+            let vertices = MagicSquare::get_vertices(buffer, idx);
+            let rgba = MagicSquare::get_rgba(buffer, idx);
+            MagicSquare::render(&vertices, &rgba, context).expect("Render error");
+        }
     }
 
-    fn get_rgba(buffer: &[i32; 2]) -> Rgba {
+    fn get_vertices(buffer: &[i32; 2], idx: usize) -> [f32; 6] {
+        let mut vertices = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+
+        vertices[0] = buffer[0] as f32 * 0.002 + (idx as f32 / 10.0);
+        vertices[1] = buffer[0] as f32 * 0.002 + (idx as f32 / 10.0);
+        vertices[3] = -(buffer[1] as f32 * 0.002) - (idx as f32 / 10.0);
+
+        vertices
+    }
+
+    fn get_rgba(buffer: &[i32; 2], idx: usize) -> Rgba {
         let mut result: Rgba = [0.0, 0.0, 0.0, 0.0];
         
-        result[0] = ((buffer[0] as f64) * 0.1).sin() / 3.0;
-        result[1] = ((buffer[1] as f64) * 0.1).sin() / 3.0;
-        result[2] = ((-buffer[0] as f64) * 0.1).sin() / 3.0;
-        result[3] = ((buffer[1] as f64) * 0.1).sin() / 3.0;
+        result[0] = ((buffer[0] as f64) * 0.1).sin() / 3.0 + (0.1 * idx as f64);
+        result[1] = ((buffer[1] as f64) * 0.1).sin() / 3.0 + (0.1 * idx as f64);
+        result[2] = ((-buffer[0] as f64) * 0.1).sin() / 3.0 + (0.1 * idx as f64);
+        result[3] = ((buffer[1] as f64) * 0.1).sin() / 3.0 + (0.1 * idx as f64);
 
         result
     }
@@ -118,7 +111,7 @@ impl MagicSquare {
         context.draw_arrays(WebGl2RenderingContext::LINES, 0, vert_count);
     }
 
-    fn render(vertices: &[f32; VERTEX_COUNT], color: &Rgba, context: &web_sys::WebGl2RenderingContext) ->  Result<(), JsValue>  {
+    fn render(vertices: &[f32; 6], color: &Rgba, context: &web_sys::WebGl2RenderingContext) ->  Result<(), JsValue>  {
         let vert_shader = ShaderCompiler::vert_default(&context).unwrap();
         let frag_shader = ShaderCompiler::frag_default(&context, &color).unwrap();
 
