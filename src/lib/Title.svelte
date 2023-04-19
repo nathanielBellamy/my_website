@@ -3,7 +3,7 @@
   export let subTitle: string = ''
 </script>
 
-<div class="title flex flex-ro justify-between">
+<div class="title flex flex-row flex-wrap justify-between">
   <div class="title_main">
     {title}
   </div>

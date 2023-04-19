@@ -30,6 +30,8 @@ impl MagicSquare {
             let canvas = canvas.clone();
             let context: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
             let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::MouseEvent| {
+                context.clear_color(0.0, 0.0, 0.0, 0.0);
+                context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
                 buffer[0] = event.offset_x();
                 buffer[1] = event.offset_y();
                 MagicSquare::render_all_lines(&buffer, &context)
@@ -59,9 +61,10 @@ impl MagicSquare {
     fn get_vertices(buffer: &[i32; 2], idx: usize) -> [f32; 6] {
         let mut vertices = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
 
-        vertices[0] = buffer[0] as f32 * 0.002 + (idx as f32 / 10.0);
-        vertices[1] = buffer[0] as f32 * 0.002 + (idx as f32 / 10.0);
-        vertices[3] = -(buffer[1] as f32 * 0.002) - (idx as f32 / 10.0);
+        vertices[0] = buffer[0] as f32 * 0.001 + (5.0 * idx as f32 / 50.0);
+        vertices[1] = buffer[1] as f32 * 0.001 + (5.0 * idx as f32 / 50.0);
+        vertices[3] = -(buffer[1] as f32 * 0.001) - (5.0 * idx as f32 / 50.0);
+        vertices[4] = (buffer[0] as f32 * 0.001) - (5.0 * idx as f32 / 50.0);
 
         vertices
     }
@@ -105,8 +108,7 @@ impl MagicSquare {
     }
 
     fn draw(context: &WebGl2RenderingContext, vert_count: i32) {
-        context.clear_color(0.0, 0.0, 0.0, 0.0);
-        context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
+       ;
 
         context.draw_arrays(WebGl2RenderingContext::LINES, 0, vert_count);
     }

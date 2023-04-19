@@ -1,5 +1,4 @@
 <script lang="ts">
-  
   interface PersonalProject {
     title: string,
     description: string,
@@ -40,70 +39,89 @@
 
   interface ProfessionalThing {
     title: string,
-    description: string
+    description: string,
+    href: string
   }
 
   let prefessional_things: ProfessionalThing[] = [
     {
       title: 'Ruby',
-      description: 'on Rails, Rspec, Capybara'
+      description: 'on Rails, Rspec, Capybara',
+      href: 'https://www.ruby-lang.org/en/'
     },
     {
       title: 'JS',
-      description: 'React, Vue, Node, JQuery, Mocha'
+      description: 'React, Vue, Node, JQuery, Mocha',
+      href: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript'
     },
     {
       title: 'C#',
-      description: '.NET'
+      description: '.NET',
+      href: 'https://learn.microsoft.com/en-us/dotnet/csharp/'
     },
     {
       title: 'SQL',
-      description: 'LINQ, ActiveRecord, Postgres'
+      description: 'LINQ, ActiveRecord, Postgres',
+      href: 'https://www.postgresql.org/'
     },
     {
       title: 'Heroku',
-      description: 'Currently Hosts This Site'
+      description: 'Site Hosting',
+      href: 'https://www.heroku.com/?'
     },
     {
       title: 'CircleCI',
-      description: 'Testing and Deployment Pipelines'
+      description: 'Testing and Deployment Pipelines',
+      href: 'https://circleci.com/'
     },
     {
       title: 'Github',
-      description: 'github.com/nathanielBellamy, Actions'
+      description: 'github.com/nathanielBellamy, Actions',
+      href: 'https://github.com/'
     },
     {
       title: 'Azure',
-      description: 'Cognitive Search'
+      description: 'Cognitive Search',
+      href: 'https://azure.microsoft.com/en-us'
     },
     {
       title: 'AWS S3',
-      description: 'Prod Data Migrations'
+      description: 'Prod Data Migrations',
+      href: 'https://docs.aws.amazon.com/s3/?icmpid=docs_homepage_featuredsvcs'
     },
     {
       title: 'Postman',
-      description: 'Api Stress Testing with Newman'
-    }
+      description: 'Api Stress Testing with Newman',
+      href: 'https://www.postman.com/'
+    },
+    {
+      title: 'Bootstrap',
+      description: 'Responsive UI Design',
+      href: 'https://getbootstrap.com/docs/3.4/css/'
+    },
 
   ]
+
+  const openLinkInNewTab = (href: string) => {
+    window.open(href, '_blank');
+  }
 
 </script>
 
 <div class="about_me flex flex-col justify-start items-stretch">
-  <div class="section grid grid-cols-10">
-    <div class="section_title text-xl font-extrabold col-span-2">
+  <div class="section grid grid-rows-10 md:grid-cols-10 ">
+    <div class="section_title text-xl font-extrabold row-span-2 md:col-span-2 md:row-span-1">
       Personal Projects
     </div>
-    <div class="section_body col-span-8">
+    <div class="section_body row-span-8 md:col-span-8 md:row-span-1">
       {#each personal_projects as { title, description, href } }
-        <div class="project grid grid-cols-4">
-          <a class="project_title"
-             title="See It On Github"
-             target="_blank"
-             href={href}>
+        <div class="project grid grid-rows-1 md:grid-cols-4">
+          <button class="project_title"
+                  title="See It On Github"
+                  on:click={() => openLinkInNewTab(href)}>
             {title}
-          </a>
-          <div class="project_description col-span-3">
+          </button>
+          <div class="project_description row-span-3 md:col-span-3 md:row-span-1">
             {description} 
           </div>
         </div>
@@ -118,11 +136,13 @@
       Tools I Have Used Professionally
     </div>
     <div class = "section_body col-span-8">
-      {#each prefessional_things as { title, description } }
+      {#each prefessional_things as { title, description, href } }
         <div class="project grid grid-cols-4">
-          <div class="project_title">
+          <button class="project_title"
+                  title={`Open In a New Tab: ${href}`}
+                  on:click={() => openLinkInNewTab(href)}>
             {title}
-          </div>
+          </button>
           <div class="project_description col-span-3">
             {description} 
           </div>
@@ -184,6 +204,8 @@
       overflow-x: hidden
       border-bottom: 3px solid color.$blue-4
       border-right: 3px solid color.$blue-4
+      border-top: 0px solid white
+      border-left: 0px solid white
       border-radius: 5px
       &:hover
         background-color: color.$blue-3
