@@ -1,4 +1,17 @@
 <script lang="ts">
+  import Embed from "./Embed.svelte"
+  import GiveMeASine from "./GiveMeASine.svelte"
+  import PolynomialConsoleGraph from "./PolynomialConsoleGraph.svelte"
+
+
+  enum EmbeddedProgram {
+    giveMeASign,
+    polynomialConsoleGraph,
+    none
+  }
+
+  let showEmbed: EmbeddedProgram = EmbeddedProgram.none
+
   interface PersonalProject {
     title: string,
     description: string,
@@ -128,22 +141,26 @@
       {/each}
     </div>
   </div>
-  <div>
-    Embed
-  </div>
-  <div class="section grid grid-cols-10">
-    <div class="section_title text-xl font-extrabold col-span-2">
-      Tools I Have Used Professionally
+  <Embed>
+    {#if showEmbed == EmbeddedProgram.giveMeASign}
+      <GiveMeASine />
+    {:else if showEmbed == EmbeddedProgram.polynomialConsoleGraph}
+      <PolynomialConsoleGraph />
+    {/if}
+  </Embed>
+  <div class="section grid grid-rows-10 md:grid-cols-10">
+    <div class="section_title text-xl font-extrabold row-span-2 md:col-span-2 md:row-span-1">
+      Technical Knowledge
     </div>
-    <div class = "section_body col-span-8">
+    <div class = "section_body row-span-8 md:col-span-8 md:row-span-1">
       {#each prefessional_things as { title, description, href } }
-        <div class="project grid grid-cols-4">
+        <div class="project grid grid-rows-1 md:grid-cols-4">
           <button class="project_title"
                   title={`Open In a New Tab: ${href}`}
                   on:click={() => openLinkInNewTab(href)}>
             {title}
           </button>
-          <div class="project_description col-span-3">
+          <div class="project_description row-span-3 md:col-span-3 md:row-span-1">
             {description} 
           </div>
         </div>
