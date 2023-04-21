@@ -10,13 +10,14 @@
     none
   }
 
-  let showEmbed: EmbeddedProgram = EmbeddedProgram.none
+  let showEmbed: EmbeddedProgram = EmbeddedProgram.giveMeASign
 
   interface PersonalProject {
     title: string,
     description: string,
     href: string
   }
+
   let personal_projects: PersonalProject[] = [
     {
       title: 'my_website (this)',

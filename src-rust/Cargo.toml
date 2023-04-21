@@ -11,6 +11,7 @@ wasm-bindgen = "0.2.84"
 gloo-utils = { version = "0.1", features = ["serde"] }
 js-sys = "0.3.61"
 console_error_panic_hook = "0.1.7"
+give_me_a_sine = { path = "give_me_a_sine" }
 
 [dependencies.web-sys]
 version = "0.3.61"

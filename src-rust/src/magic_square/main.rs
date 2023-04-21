@@ -108,8 +108,6 @@ impl MagicSquare {
     }
 
     fn draw(context: &WebGl2RenderingContext, vert_count: i32) {
-       ;
-
         context.draw_arrays(WebGl2RenderingContext::LINES, 0, vert_count);
     }
 
