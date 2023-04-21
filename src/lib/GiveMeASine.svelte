@@ -32,5 +32,6 @@
 
   .gmas_graph_row
     text-align: left
+    font-variant-numeric: tabular-nums
 
 </style>
