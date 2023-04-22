@@ -15,39 +15,46 @@
   interface PersonalProject {
     title: string,
     description: string,
-    href: string
+    href: string,
+    program: EmbeddedProgram
   }
 
   let personal_projects: PersonalProject[] = [
     {
       title: 'my_website (this)',
       description: 'Svelte, Typescript, Rust, WebAssembly, WebGL, Sass, Tailwind, Vite',
-      href: 'https://github.com/nathanielBellamy/my_website'
+      href: 'https://github.com/nathanielBellamy/my_website',
+      program: EmbeddedProgram.none
     },
     {
       title: 'monthly_budget',
       description: 'CSV Processing with Rust',
-      href: 'https://github.com/nathanielBellamy/monthly_budget'
+      href: 'https://github.com/nathanielBellamy/monthly_budget',
+      program: EmbeddedProgram.none
     },
     {
       title: 'rustby',
       description: 'Inject Rust Optimizations into Ruby',
-      href: 'https://github.com/nathanielBellamy/rustby'
+      href: 'https://github.com/nathanielBellamy/rustby',
+      program: EmbeddedProgram.none
     },
     {
       title: 'trow',
       description: 'Multi-App React Redux Architecture in Typescript',
-      href: 'https://github.com/nathanielBellamy/trow'
+      href: 'https://github.com/nathanielBellamy/trow',
+      program: EmbeddedProgram.none
     },
     {
       title: 'polynomial_console_graph',
       description: 'ASCII Graph Polynomials Using C++',
-      href: 'https://github.com/nathanielBellamy/PolynomialConsoleGraph'
+      href: 'https://github.com/nathanielBellamy/PolynomialConsoleGraph',
+      program: EmbeddedProgram.polynomialConsoleGraph
     },
     {
       title: 'give_me_a_sine',
       description: 'ASCII Graph Sinusoidals Using Rust',
-      href: 'https://github.com/nathanielBellamy/give_me_a_sine'
+      href: 'https://github.com/nathanielBellamy/give_me_a_sine',
+      program: EmbeddedProgram.giveMeASign
     }
   ]
 
@@ -128,7 +135,7 @@
       Personal Projects
     </div>
     <div class="section_body row-span-8 md:col-span-8 md:row-span-1">
-      {#each personal_projects as { title, description, href } }
+      {#each personal_projects as { title, description, href, program } }
         <div class="project grid grid-rows-1 md:grid-cols-4">
           <button class="project_title"
                   title="See It On Github"
@@ -136,7 +143,18 @@
             {title}
           </button>
           <div class="project_description row-span-3 md:col-span-3 md:row-span-1">
-            {description} 
+            {description}
+            {#if program != EmbeddedProgram.none}
+              <button on:click={() => {
+                if (showEmbed == program) {
+                  showEmbed = EmbeddedProgram.none
+                } else {
+                  showEmbed = program
+                }
+              }}>
+                Open WebAssembly Build
+              </button>
+            {/if}
           </div>
         </div>
       {/each}
@@ -234,6 +252,8 @@
       text-align: center
       display: flex
       align-items: center
+      justify-content: space-between
+      flex-wrap: wrap
       text-align: left
       padding-left: 1em
       font-weight: 700
