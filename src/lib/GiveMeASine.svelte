@@ -4,10 +4,11 @@
 
   let title = "Give Me a Sine"
 
+
   const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
   onMount(async () => {
-    await timeout(200) // await wasm init
+    await timeout(50) // await wasm init
     new rust.GmasWasm
   })
 </script>
@@ -18,6 +19,36 @@
   </h3>
   <div id="give_me_a_sine_output"
        class="give_me_a_sine_output"/>
+  <div id="give_me_a_sine_form"
+       class="give_me_a_sine_form">
+    <div class="give_me_a_sine_form_cell font-bold">
+      f(x) = a * sin(b*x + c)
+    </div>
+    <div class="give_me_a_sine_form_cell">
+      <label for="gmas_form_input_a">
+        a
+      </label>
+      <input id="gmas_form_input_a"
+             type="number"
+             step="0.01"/>
+    </div>
+    <div class="give_me_a_sine_form_cell">
+      <label for="gmas_form_input_b">
+        b
+      </label>
+      <input id="gmas_form_input_b"
+             type="number"
+             step="0.01"/>
+    </div>
+    <div class="give_me_a_sine_form_cell">
+      <label for="gmas_form_input_c">
+        c
+      </label>
+      <input id="gmas_form_input_c"
+             type="number"
+             step="0.01"/>
+    </div>
+  </div>
 </div>
 
 <style lang="sass">
@@ -29,9 +60,15 @@
       flex-direction: column
       align-items: left
       justify-content: flex-start
+      overflow-x: scroll
 
-  .gmas_graph_row
-    text-align: left
-    font-variant-numeric: tabular-nums
-
+    &_form
+      display: flex
+      justify-content: space-around
+  
+      &_cell
+        display: flex
+        flex-direction: column
+        justify-content: space-around
+        align-items: stretch
 </style>

@@ -10,7 +10,7 @@
     none
   }
 
-  let showEmbed: EmbeddedProgram = EmbeddedProgram.giveMeASign
+  let showEmbed: EmbeddedProgram = EmbeddedProgram.none
 
   interface PersonalProject {
     title: string,
