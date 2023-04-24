@@ -30,7 +30,7 @@
       </label>
       <input id="gmas_form_input_a"
              type="number"
-             step="0.01"/>
+             step="0.5"/>
     </div>
     <div class="give_me_a_sine_form_cell">
       <label for="gmas_form_input_b">
@@ -38,7 +38,7 @@
       </label>
       <input id="gmas_form_input_b"
              type="number"
-             step="0.01"/>
+             step="0.5"/>
     </div>
     <div class="give_me_a_sine_form_cell">
       <label for="gmas_form_input_c">
@@ -46,7 +46,7 @@
       </label>
       <input id="gmas_form_input_c"
              type="number"
-             step="0.01"/>
+             step="0.5"/>
     </div>
   </div>
 </div>
