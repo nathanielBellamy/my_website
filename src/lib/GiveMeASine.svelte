@@ -11,6 +11,80 @@
     await timeout(50) // await wasm init
     new rust.GmasWasm
   })
+
+  interface GmasRangeInput {
+    id: string,
+    label: string,
+    min: number,
+    max: number,
+    step: number
+  }
+
+  const range_inputs: GmasRangeInput[] = [
+    {
+      id: "gmas_form_input_a",
+      label: "a",
+      min: -3,
+      max: 3,
+      step: 0.1
+    },
+    {
+      id: "gmas_form_input_b",
+      label: "b",
+      min: -12,
+      max: 12,
+      step: 0.1
+    },
+    {
+      id: "gmas_form_input_c",
+      label: "c",
+      min: -3,
+      max: 3,
+      step: 0.1
+    },
+    {
+      id: "gmas_form_input_ep",
+      label: "ep",
+      min: 0.01,
+      max: 1,
+      step: 0.01
+    },
+    {
+      id: "gmas_form_input_height",
+      label: "height",
+      min: 5,
+      max: 50,
+      step: 1
+    },
+    {
+      id: "gmas_form_input_width",
+      label: "width",
+      min: 10,
+      max: 255,
+      step: 1
+    },
+    {
+      id: "gmas_form_input_graph_char",
+      label: "graph color",
+      min: 0,
+      max: 7,
+      step: 1
+    },
+    {
+      id: "gmas_form_input_above_char",
+      label: "above color",
+      min: 0,
+      max: 7,
+      step: 1
+    },
+    {
+      id: "gmas_form_input_below_char",
+      label: "below color",
+      min: 0,
+      max: 7,
+      step: 1
+    }
+  ]
 </script>
 
 <div class="give_me_a_sine">
@@ -22,86 +96,18 @@
     <div class="give_me_a_sine_form_cell font-bold">
       f(x) = a * sin(b*x + c)
     </div>
-    <div class="give_me_a_sine_form_cell">
-      <label for="gmas_form_input_a">
-        a
-      </label>
-      <input id="gmas_form_input_a"
-             type="range"
-             min="-3"
-             max="3"
-             step="0.1"/>
-    </div>
-    <div class="give_me_a_sine_form_cell">
-      <label for="gmas_form_input_b">
-        b
-      </label>
-      <input id="gmas_form_input_b"
-             type="range"
-             min="-3"
-             max="3"
-             step="0.1"/>
-    </div>
-    <div class="give_me_a_sine_form_cell">
-      <label for="gmas_form_input_c">
-        c
-      </label>
-      <input id="gmas_form_input_c"
-             type="range"
-             min="-3"
-             max="3"
-             step="0.1"/>
-    </div>
-    <div class="give_me_a_sine_form_cell">
-      <label for="gmas_form_input_ep">
-        ep
-      </label>
-      <input id="gmas_form_input_ep"
-             type="range"
-             min="-1"
-             max="1"
-             step="0.1"/>
-    </div>
-    <div class="give_me_a_sine_form_cell">
-      <label for="gmas_form_input_x_min">
-        x_min
-      </label>
-      <input id="gmas_form_input_x_min"
-             type="range"
-             min="-3.14"
-             max="3.14"
-             step="0.1"/>
-    </div>
-    <div class="give_me_a_sine_form_cell">
-      <label for="gmas_form_input_height">
-        height
-      </label>
-      <input id="gmas_form_input_height"
-             type="range"
-             min="10"
-             max="50"
-             step="1"/>
-    </div>
-    <div class="give_me_a_sine_form_cell">
-      <label for="gmas_form_input_width">
-        width
-      </label>
-      <input id="gmas_form_input_width"
-             type="range"
-             min="3"
-             max="255"
-             step="1"/>
-    </div>
-    <div class="give_me_a_sine_form_cell">
-      <label for="gmas_form_input_c">
-        c
-      </label>
-      <input id="gmas_form_input_c"
-             type="range"
-             min="-3"
-             max="3"
-             step="0.5"/>
-    </div>
+    {#each range_inputs as {id, label, min, max, step}}
+      <div class="give_me_a_sine_form_cell">
+        <label for={id}>
+          {label}
+        </label>
+        <input id={id}
+               type="range"
+               min={min}
+               max={max}
+               step={step}/>
+      </div>
+    {/each}
   </div>
   <div id="give_me_a_sine_output"
        class="give_me_a_sine_output font-xs"/>
