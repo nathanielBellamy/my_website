@@ -1,2 +1,2 @@
-pub mod main;
 pub mod buffer;
+pub mod main;

@@ -1,5 +1,5 @@
+use std::rc::Rc;
 use wasm_bindgen::prelude::*;
-use std::{rc::Rc};
 
 use web_sys::{WebGl2RenderingContext, WebGlProgram, WebGlShader};
 
@@ -18,10 +18,10 @@ impl MagicBanner {
         let canvas = MagicBanner::canvas().dyn_into::<web_sys::HtmlCanvasElement>()?;
         let canvas = Rc::new(canvas);
 
-        {   
+        {
             // init mouse move listener
             // write coordinates to buffer
-            let mut buffer: [i32; 2] = [0,0];// Buffer::new();
+            let mut buffer: [i32; 2] = [0, 0]; // Buffer::new();
 
             let canvas = canvas.clone();
             let context: web_sys::WebGl2RenderingContext = MagicBanner::context(&canvas).unwrap();
@@ -29,12 +29,13 @@ impl MagicBanner {
                 // mutate buffer
                 buffer[0] = event.offset_x();
                 buffer[1] = event.offset_y();
-                
+
                 let vertices = MagicBanner::get_vertices(&buffer);
                 MagicBanner::render(&vertices, &context).unwrap();
             });
 
-            canvas.add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())?;
+            canvas
+                .add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())?;
             closure.forget();
         }
 
@@ -45,10 +46,9 @@ impl MagicBanner {
 impl MagicBanner {
     fn get_vertices(buffer: &[i32; 2]) -> [f32; 9] {
         let mut result: [f32; 9] = [0.7, 0.0, 0.0, 0.7, 0.7, 0.1, 0.1, 0.9, 0.0];
-        
+
         result[6] = ((buffer[0] as f32) * 0.01 * result[6]) - 0.6;
         result[3] = (buffer[1] as f32) * 0.03 * result[3];
-
 
         result
     }
@@ -63,17 +63,19 @@ impl MagicBanner {
             .expect("should have a document on window")
     }
 
-    fn canvas() -> web_sys::Element { 
+    fn canvas() -> web_sys::Element {
         MagicBanner::document()
             .get_element_by_id("magic_banner_canvas")
             .expect("unable to find canvas element")
     }
 
-    pub fn context(canvas: &web_sys::HtmlCanvasElement) -> Result<web_sys::WebGl2RenderingContext, JsValue> {
+    pub fn context(
+        canvas: &web_sys::HtmlCanvasElement,
+    ) -> Result<web_sys::WebGl2RenderingContext, JsValue> {
         let context = canvas
-                        .get_context("webgl2")?
-                        .expect("unable to get webgl2 context")
-                        .dyn_into::<WebGl2RenderingContext>()?;
+            .get_context("webgl2")?
+            .expect("unable to get webgl2 context")
+            .dyn_into::<WebGl2RenderingContext>()?;
 
         Ok(context)
     }
@@ -85,8 +87,10 @@ impl MagicBanner {
         context.draw_arrays(WebGl2RenderingContext::TRIANGLES, 0, vert_count);
     }
 
-    fn render(vertices: &[f32; 9], context: &web_sys::WebGl2RenderingContext) ->  Result<(), JsValue>  {
-
+    fn render(
+        vertices: &[f32; 9],
+        context: &web_sys::WebGl2RenderingContext,
+    ) -> Result<(), JsValue> {
         let vert_shader = ShaderCompiler::vert_default(&context).unwrap();
         let frag_shader = ShaderCompiler::frag_default(&context).unwrap();
 
@@ -120,7 +124,7 @@ impl MagicBanner {
             .ok_or("Could not create vertex array object")?;
 
         context.bind_vertex_array(Some(&vao));
-        
+
         context.vertex_attrib_pointer_with_i32(
             position_attribute_location as u32,
             3,
@@ -139,7 +143,6 @@ impl MagicBanner {
         Ok(())
     }
 }
-
 
 pub struct ShaderCompiler;
 
@@ -167,10 +170,8 @@ impl ShaderCompiler {
                 .unwrap_or_else(|| String::from("Unknown error creating shader")))
         }
     }
-    
-    pub fn frag_default(
-        context: &WebGl2RenderingContext,
-    ) -> Result<WebGlShader, String> {
+
+    pub fn frag_default(context: &WebGl2RenderingContext) -> Result<WebGlShader, String> {
         ShaderCompiler::exec(
             &context,
             WebGl2RenderingContext::FRAGMENT_SHADER,
@@ -186,10 +187,8 @@ impl ShaderCompiler {
         )
     }
 
-    pub fn vert_default(
-        context: &WebGl2RenderingContext,
-    ) -> Result<WebGlShader, String> {
-         ShaderCompiler::exec(
+    pub fn vert_default(context: &WebGl2RenderingContext) -> Result<WebGlShader, String> {
+        ShaderCompiler::exec(
             &context,
             WebGl2RenderingContext::VERTEX_SHADER,
             r##"#version 300 es
@@ -234,5 +233,3 @@ impl ProgramLinker {
         }
     }
 }
-
-

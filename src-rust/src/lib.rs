@@ -1,5 +1,5 @@
-use wasm_bindgen::prelude::*;
 use give_me_a_sine::GmasWasm;
+use wasm_bindgen::prelude::*;
 
 pub mod magic_banner;
 pub mod magic_square;

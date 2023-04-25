@@ -1,5 +1,5 @@
-use wasm_bindgen::prelude::*;
 use std::rc::Rc;
+use wasm_bindgen::prelude::*;
 
 use web_sys::{WebGl2RenderingContext, WebGlProgram, WebGlShader};
 
@@ -22,10 +22,10 @@ impl MagicSquare {
         let canvas = MagicSquare::canvas().dyn_into::<web_sys::HtmlCanvasElement>()?;
         let canvas = Rc::new(canvas);
 
-        {   
+        {
             // init mouse move listener
             // write coordinates to buffer
-            let mut buffer: [i32; 2] = [0,0];// Buffer::new();
+            let mut buffer: [i32; 2] = [0, 0]; // Buffer::new();
 
             let canvas = canvas.clone();
             let context: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
@@ -37,7 +37,8 @@ impl MagicSquare {
                 MagicSquare::render_all_lines(&buffer, &context)
             });
 
-            canvas.add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())?;
+            canvas
+                .add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())?;
             closure.forget();
         }
 
@@ -45,11 +46,9 @@ impl MagicSquare {
     }
 }
 
-
 pub type Rgba = [f64; 4];
 
 impl MagicSquare {
-
     fn render_all_lines(buffer: &[i32; 2], context: &web_sys::WebGl2RenderingContext) {
         for idx in 1..10 {
             let vertices = MagicSquare::get_vertices(buffer, idx);
@@ -71,7 +70,7 @@ impl MagicSquare {
 
     fn get_rgba(buffer: &[i32; 2], idx: usize) -> Rgba {
         let mut result: Rgba = [0.0, 0.0, 0.0, 0.0];
-        
+
         result[0] = ((buffer[0] as f64) * 0.1).sin() / 3.0 + (0.1 * idx as f64);
         result[1] = ((buffer[1] as f64) * 0.1).sin() / 3.0 + (0.1 * idx as f64);
         result[2] = ((-buffer[0] as f64) * 0.1).sin() / 3.0 + (0.1 * idx as f64);
@@ -79,8 +78,6 @@ impl MagicSquare {
 
         result
     }
-
-
 
     fn window() -> web_sys::Window {
         web_sys::window().expect("no global `window` exists")
@@ -92,17 +89,19 @@ impl MagicSquare {
             .expect("should have a document on window")
     }
 
-    fn canvas() -> web_sys::Element { 
+    fn canvas() -> web_sys::Element {
         MagicSquare::document()
             .get_element_by_id("magic_square_canvas")
             .expect("unable to find canvas element")
     }
 
-    pub fn context(canvas: &web_sys::HtmlCanvasElement) -> Result<web_sys::WebGl2RenderingContext, JsValue> {
+    pub fn context(
+        canvas: &web_sys::HtmlCanvasElement,
+    ) -> Result<web_sys::WebGl2RenderingContext, JsValue> {
         let context = canvas
-                        .get_context("webgl2")?
-                        .expect("unable to get webgl2 context")
-                        .dyn_into::<WebGl2RenderingContext>()?;
+            .get_context("webgl2")?
+            .expect("unable to get webgl2 context")
+            .dyn_into::<WebGl2RenderingContext>()?;
 
         Ok(context)
     }
@@ -111,7 +110,11 @@ impl MagicSquare {
         context.draw_arrays(WebGl2RenderingContext::LINES, 0, vert_count);
     }
 
-    fn render(vertices: &[f32; 6], color: &Rgba, context: &web_sys::WebGl2RenderingContext) ->  Result<(), JsValue>  {
+    fn render(
+        vertices: &[f32; 6],
+        color: &Rgba,
+        context: &web_sys::WebGl2RenderingContext,
+    ) -> Result<(), JsValue> {
         let vert_shader = ShaderCompiler::vert_default(&context).unwrap();
         let frag_shader = ShaderCompiler::frag_default(&context, &color).unwrap();
 
@@ -145,7 +148,7 @@ impl MagicSquare {
             .ok_or("Could not create vertex array object")?;
 
         context.bind_vertex_array(Some(&vao));
-        
+
         context.vertex_attrib_pointer_with_i32(
             position_attribute_location as u32,
             3,
@@ -164,7 +167,6 @@ impl MagicSquare {
         Ok(())
     }
 }
-
 
 pub struct ShaderCompiler;
 
@@ -192,33 +194,28 @@ impl ShaderCompiler {
                 .unwrap_or_else(|| String::from("Unknown error creating shader")))
         }
     }
-    
+
     pub fn frag_default(
         context: &WebGl2RenderingContext,
-        rgba: &Rgba
+        rgba: &Rgba,
     ) -> Result<WebGlShader, String> {
         let string = format!(
-                r##"#version 300 es
+            r##"#version 300 es
                 precision highp float;
                 out vec4 outColor;
                 
                 void main() {{
                     outColor = vec4({}, {}, {}, {});
                 }}
-                "##,rgba[0], rgba[1], rgba[2], rgba[3]);
+                "##,
+            rgba[0], rgba[1], rgba[2], rgba[3]
+        );
 
-
-        ShaderCompiler::exec(
-            &context,
-            WebGl2RenderingContext::FRAGMENT_SHADER,
-            &string
-        )
+        ShaderCompiler::exec(&context, WebGl2RenderingContext::FRAGMENT_SHADER, &string)
     }
 
-    pub fn vert_default(
-        context: &WebGl2RenderingContext,
-    ) -> Result<WebGlShader, String> {
-         ShaderCompiler::exec(
+    pub fn vert_default(context: &WebGl2RenderingContext) -> Result<WebGlShader, String> {
+        ShaderCompiler::exec(
             &context,
             WebGl2RenderingContext::VERTEX_SHADER,
             r##"#version 300 es
@@ -263,7 +260,3 @@ impl ProgramLinker {
         }
     }
 }
-
-
-
-

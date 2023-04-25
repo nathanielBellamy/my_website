@@ -117,6 +117,9 @@
 
 <style lang="sass">
   @use "./../styles/color"
+
+  .gmas_graph_row
+    margin: 0px
   
   .give_me_a_sine
     &_output

@@ -47,35 +47,35 @@ impl Buffer {
             0 => {
                 self.x_0 = x;
                 self.y_0 = y;
-            },
+            }
             1 => {
                 self.x_1 = x;
                 self.y_1 = y;
-            },
+            }
             2 => {
                 self.x_2 = x;
                 self.y_2 = y;
-            },
+            }
             3 => {
                 self.x_3 = x;
                 self.y_3 = y;
-            },
+            }
             4 => {
                 self.x_4 = x;
                 self.y_4 = y;
-            },
+            }
             5 => {
                 self.x_5 = x;
                 self.y_5 = y;
-            },
+            }
             6 => {
                 self.x_6 = x;
                 self.y_6 = y;
-            },
+            }
             7 => {
                 self.x_7 = x;
                 self.y_7 = y;
-            },
+            }
             _ => (),
         }
         self.idx = (idx + 1) % 8;

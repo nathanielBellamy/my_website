@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "cd src-rust & cargo fmt --all & wasm-pack build --target web & cd .. && vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
@@ -26,3 +26,4 @@
     "node-sass": "^8.0.0"
   }
 }
+
