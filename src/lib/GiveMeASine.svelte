@@ -87,30 +87,32 @@
   ]
 </script>
 
-<div class="give_me_a_sine">
-  <h3>
-    {title}
-  </h3>
-  <div id="give_me_a_sine_form"
-       class="give_me_a_sine_form">
-    <div class="give_me_a_sine_form_cell font-bold">
-      f(x) = a * sin(b*x + c)
-    </div>
-    {#each range_inputs as {id, label, min, max, step}}
-      <div class="give_me_a_sine_form_cell">
-        <label for={id}>
-          {label}
-        </label>
-        <input id={id}
-               type="range"
-               min={min}
-               max={max}
-               step={step}/>
+<div class="give_me_a_sine grid grid-cols-1 md:grid-cols-4">
+  <div class="give_me_a_sine_form_container">
+    <div id="give_me_a_sine_form"
+         class="give_me_a_sine_form grid grid-cols-2">
+      <h3 class="give_me_a_sine_form_cell">
+        Give Me A Sine
+      </h3>
+      <div class="give_me_a_sine_form_cell font-bold">
+        f(x) = a * sin(b*x + c)
       </div>
-    {/each}
+      {#each range_inputs as {id, label, min, max, step}}
+        <div class="give_me_a_sine_form_cell">
+          <label for={id}>
+            {label}
+          </label>
+          <input id={id}
+                 type="range"
+                 min={min}
+                 max={max}
+                 step={step}/>
+        </div>
+      {/each}
+    </div>
   </div>
   <div id="give_me_a_sine_output"
-       class="give_me_a_sine_output font-xs"/>
+       class="give_me_a_sine_output col-span-1 md:col-span-3 font-xs"/>
 </div>
 
 <style lang="sass">
@@ -123,20 +125,28 @@
       align-items: left
       justify-content: flex-start
       overflow-x: scroll
+      border: 5px solid color.$blue-2
+      border-radius: 5px
 
     &_form
-      display: flex
-      justify-content: space-around
-      flex-wrap: wrap
+      border: 5px solid color.$blue-4
+      border-radius: 5px
+      max-height: 500px
+
+      &_container
+        display: flex
+        flex-direction: column
+        justify-content: flex-start
+        align-items: stretch
   
       &_cell
         display: flex
         flex-direction: column
-        justify-content: space-around
-        align-items: stretch
-        margin: 15px
+        justify-content: flex-start
+        margin: 5px
         padding: 5px
         border: 5px solid color.$blue-4
         border-radius: 5px
+        max-height: 100px
 </style>
 
