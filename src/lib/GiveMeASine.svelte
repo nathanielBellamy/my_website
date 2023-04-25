@@ -67,21 +67,21 @@
       id: "gmas_form_input_graph_char",
       label: "graph color",
       min: 0,
-      max: 7,
+      max: 8,
       step: 1
     },
     {
       id: "gmas_form_input_above_char",
       label: "above color",
       min: 0,
-      max: 7,
+      max: 8,
       step: 1
     },
     {
       id: "gmas_form_input_below_char",
       label: "below color",
       min: 0,
-      max: 7,
+      max: 8,
       step: 1
     }
   ]

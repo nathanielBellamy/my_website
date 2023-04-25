@@ -6,7 +6,6 @@
 
   enum EmbeddedProgram {
     giveMeASign,
-    polynomialConsoleGraph,
     none
   }
 
@@ -48,7 +47,7 @@
       title: 'polynomial_console_graph',
       description: 'ASCII Graph Polynomials Using C++',
       href: 'https://github.com/nathanielBellamy/PolynomialConsoleGraph',
-      program: EmbeddedProgram.polynomialConsoleGraph
+      program: EmbeddedProgram.none
     },
     {
       title: 'give_me_a_sine',
