@@ -197,8 +197,8 @@
   .section
     align-items: stretch
     min-height: 200px
-    border-top: 3px solid color.$yellow-4
-    border-bottom: 3px solid color.$yellow-4
+    border-top: 10px double color.$yellow-4
+    border-bottom: 10px double color.$yellow-4
     margin-top: 5px
     margin-bottom: 5px
 

@@ -91,10 +91,10 @@
   <div class="give_me_a_sine_form_container device_form">
     <div id="give_me_a_sine_form"
          class="give_me_a_sine_form grid grid-cols-2">
-      <h3 class="give_me_a_sine_form_cell">
+      <div class="give_me_a_sine_form_cell font-bold title">
         Give Me A Sine
-      </h3>
-      <div class="give_me_a_sine_form_cell font-bold">
+      </div>
+      <div class="give_me_a_sine_form_cell font-bold sub_title">
         f(x) = a * sin(b*x + c)
       </div>
       {#each range_inputs as {id, label, min, max, step}}
@@ -124,10 +124,21 @@
     
       .device_form
         max-height: 100px
-        overflow-y: scroll
 
   .gmas_graph_row
     margin: 0px
+
+  .title
+    color: color.$blue-2
+    font-weight: 900
+    display: flex
+    flex-direction: column
+    justify-content: space-around
+    align-items: stretch
+    
+  .sub_title
+    color: color.$blue-2
+    font-weight: 700
   
   .give_me_a_sine
     &_output
@@ -143,6 +154,7 @@
       border: 5px solid color.$blue-4
       border-radius: 5px
       overflow-y:scroll
+      margin: 0 5px 0 5px
 
       &_container
         display: flex

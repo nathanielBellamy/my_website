@@ -1,3 +1,6 @@
+use ndarray::prelude::*;
+use ndarray::Array;
+use ndarray::Dim;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 
@@ -58,14 +61,29 @@ impl MagicSquare {
     }
 
     fn get_vertices(buffer: &[i32; 2], idx: usize) -> [f32; 6] {
-        let mut vertices = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+        let mut result: [f32; 6] = [0.0; 6];
 
-        vertices[0] = buffer[0] as f32 * 0.001 + (5.0 * idx as f32 / 50.0);
-        vertices[1] = buffer[1] as f32 * 0.001 + (5.0 * idx as f32 / 50.0);
-        vertices[3] = -(buffer[1] as f32 * 0.001) - (5.0 * idx as f32 / 50.0);
-        vertices[4] = (buffer[0] as f32 * 0.001) - (5.0 * idx as f32 / 50.0);
+        let basis: Array<f32, _> = array![
+            [1.0, 0.0, 0.0],
+            [0.0, -1.0, 0.0]
+        ];
+        
+        let mut counter: usize = 0;
+        for coord in basis.iter() {
+            result[counter] = *coord;
+            counter += 1;
+        }
 
-        vertices
+        result
+
+        // let mut vertices = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+
+        // vertices[0] = buffer[0] as f32 * 0.001 + (5.0 * idx as f32 / 50.0);
+        // vertices[1] = buffer[1] as f32 * 0.001 + (5.0 * idx as f32 / 50.0);
+        // vertices[3] = -(buffer[1] as f32 * 0.001) - (5.0 * idx as f32 / 50.0);
+        // vertices[4] = (buffer[0] as f32 * 0.001) - (5.0 * idx as f32 / 50.0);
+
+        // vertices
     }
 
     fn get_rgba(buffer: &[i32; 2], idx: usize) -> Rgba {
@@ -260,3 +278,4 @@ impl ProgramLinker {
         }
     }
 }
+
