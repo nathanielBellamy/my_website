@@ -11,7 +11,7 @@
   let currentSection: string = "aboutMe"
 </script>
 
-<main class="main rounded-md text-xl flex flex-col justify-start">
+<main class="main rounded-md flex flex-col justify-start">
   <div class="main_header grid grid-cols-10">
     <div class="title p-3 text-lg font-bold col-span-2">
       It's A Website  

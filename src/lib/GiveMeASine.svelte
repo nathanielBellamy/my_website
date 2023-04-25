@@ -88,7 +88,7 @@
 </script>
 
 <div class="give_me_a_sine grid grid-cols-1 md:grid-cols-4">
-  <div class="give_me_a_sine_form_container">
+  <div class="give_me_a_sine_form_container device_form">
     <div id="give_me_a_sine_form"
          class="give_me_a_sine_form grid grid-cols-2">
       <h3 class="give_me_a_sine_form_cell">
@@ -112,11 +112,19 @@
     </div>
   </div>
   <div id="give_me_a_sine_output"
-       class="give_me_a_sine_output col-span-1 md:col-span-3 font-xs"/>
+       class="give_me_a_sine_output device_graph_font col-span-1 md:col-span-3"/>
 </div>
 
 <style lang="sass">
   @use "./../styles/color"
+
+  @media (max-width : 700px) 
+      .device_graph_font
+        font-size: 3px
+    
+      .device_form
+        max-height: 100px
+        overflow-y: scroll
 
   .gmas_graph_row
     margin: 0px
@@ -134,7 +142,7 @@
     &_form
       border: 5px solid color.$blue-4
       border-radius: 5px
-      max-height: 500px
+      overflow-y:scroll
 
       &_container
         display: flex
