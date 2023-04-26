@@ -3,7 +3,6 @@ use ndarray::Array;
 use ndarray::Dim;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
-
 use web_sys::{WebGl2RenderingContext, WebGlProgram, WebGlShader};
 
 const VERTEX_COUNT: usize = 4;
@@ -60,16 +59,29 @@ impl MagicSquare {
         }
     }
 
-    fn get_vertices(buffer: &[i32; 2], idx: usize) -> [f32; 6] {
+    fn rotation_matrix(idx: usize) -> Array<f32, Ix2> {
+        let theta: f32 = (idx * 30) as f32;
+        array![
+            [1.0, 0.0, 0.0],
+            [0.0, theta.cos(), -theta.sin()],
+            [0.0, theta.sin(), theta.cos()],
+        ]
+    }
+
+    fn get_vertices(_buffer: &[i32; 2], idx: usize) -> [f32; 6] {
         let mut result: [f32; 6] = [0.0; 6];
 
-        let basis: Array<f32, _> = array![
-            [1.0, 0.0, 0.0],
-            [0.0, -1.0, 0.0]
+        let line_base: Array<f32, _> = array![
+            [-0.5, 0.0],
+            [0.5, 0.0],
+            [0.0, 0.0]
         ];
-        
+
+        let rotated_line: Array<f32, _> = MagicSquare::rotation_matrix(idx).dot(&line_base);
+
+        // flatten
         let mut counter: usize = 0;
-        for coord in basis.iter() {
+        for coord in rotated_line.iter() {
             result[counter] = *coord;
             counter += 1;
         }
@@ -278,4 +290,6 @@ impl ProgramLinker {
         }
     }
 }
+
+
 
