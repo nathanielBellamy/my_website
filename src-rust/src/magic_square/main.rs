@@ -1,15 +1,15 @@
 use ndarray::prelude::*;
 use ndarray::Array;
-use ndarray::Dim;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use web_sys::{WebGl2RenderingContext, WebGlProgram, WebGlShader};
+use crate::magic_square::vertices::Vertices;
 
 const VERTEX_COUNT: usize = 4;
 const COORDINATE_COUNT: usize = VERTEX_COUNT * 3;
 const VERTICES_EMPTY: [f32; VERTEX_COUNT * 3] = [0.0; VERTEX_COUNT * 3];
 
-// => keep buffer in RC
+// => keep buffer in a Refcell in an RC
 // => one event listener has mutable reference to write
 // => another closure has the animation loop with an immutable reference
 
@@ -53,53 +53,11 @@ impl MagicSquare {
 }
 
 pub type Rgba = [f64; 4];
-pub type Vertex = [f32; 4];
-pub type VertexArr = [f32; 400];
 
-pub struct Vertices {
-    arr: VertexArr,
-    idx: usize
-}
-
-impl Vertices {
-    pub fn new() -> Vertices {
-        Vertices { 
-            arr: [0.0; 400], 
-            idx: 0 
-        }
-    }
-
-    pub fn set_next(&mut self, vertex: Vertex) {
-        if self.idx > self.arr.len() - 1 { return; }
-        for i in 0..3 {
-            self.arr[self.idx + i] = vertex[i]
-        }
-        self.idx += 4;
-    }
-}
 
 impl MagicSquare {
     fn render_all_lines(buffer: &[i32; 2], context: &web_sys::WebGl2RenderingContext, height: i32, width: i32) {
-        let mut all_vertices = Vertices::new();
-
-        // for idx in 1..10 {
-            let v = MagicSquare::get_vertices(buffer, 1, 'x', height, width);
-            all_vertices.set_next([v[0], v[1], v[2], v[3]]);
-            all_vertices.set_next([v[4], v[5], v[6], v[7]]);
-        // }
-    
-        // for idx in 1..10 {
-        //     let v = MagicSquare::get_vertices(buffer, idx, 'y', height, width);
-        //     all_vertices.set_next([v[0], v[1], v[2], v[3]]);
-        //     all_vertices.set_next([v[4], v[5], v[6], v[7]]);
-        // }
-
-        // for idx in 1..10 {
-        //     let v = MagicSquare::get_vertices(buffer, idx, 'z', height, width);
-        //     all_vertices.set_next([v[0], v[1], v[2], v[3]]);
-        //     all_vertices.set_next([v[4], v[5], v[6], v[7]]);
-        // }
-
+        let mut all_vertices = Vertices::icosahedron(0.5);
 
         let rgba = MagicSquare::get_rgba(buffer, 1);
         MagicSquare::render(&all_vertices, &rgba, context).expect("Render error");
@@ -130,38 +88,6 @@ impl MagicSquare {
             [0.0, 0.0, 1.0, 0.0],
             [0.0, 0.0, 0.0, 1.0]
         ]
-    }
-
-    fn get_vertices(buffer: &[i32; 2], idx: usize, axis: char, height: i32, width: i32) -> [f32; 8] {
-        let mut result: [f32; 8] = [0.0; 8];
-        
-        let clip_x: f32 = (2.0 * (buffer[0] as f32) / width as f32) - 1.0;
-        let clip_y: f32 = 1.0 - ((2.0 * buffer[1] as f32) / height as f32);
-
-        let line_base: Array<f32, _> = array![
-            [clip_x, clip_y],
-            [0.0, 0.0],
-            [0.0, 0.0],
-            [0.0, 0.0],
-        ];
-        
-        let theta: f32 = buffer[0] as f32 / (100.0 * idx as f32);
-        let rot_matrix = match axis {
-            'y' => MagicSquare::roty_matrix(theta),
-            'z' => MagicSquare::rotz_matrix(theta),
-            _ => MagicSquare::rotx_matrix(theta),
-        };
-        let rotated_line: Array<f32, _> = rot_matrix.dot(&line_base);
-        // let rotated_line = line_base;
-
-        // flatten
-        let mut counter: usize = 0;
-        for coord in rotated_line.iter() {
-            result[counter] = *coord;
-            counter += 1;
-        }
-
-        result
     }
 
     fn get_rgba(buffer: &[i32; 2], idx: usize) -> Rgba {
@@ -202,7 +128,7 @@ impl MagicSquare {
     }
 
     fn draw(context: &WebGl2RenderingContext, vert_count: i32) {
-        context.draw_arrays(WebGl2RenderingContext::LINES, 0, vert_count);
+        context.draw_arrays(WebGl2RenderingContext::TRIANGLE_FAN, 0, vert_count);
     }
 
     fn render(
