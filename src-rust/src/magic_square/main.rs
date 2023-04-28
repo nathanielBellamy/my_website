@@ -24,6 +24,10 @@ impl MagicSquare {
         let canvas = MagicSquare::canvas().dyn_into::<web_sys::HtmlCanvasElement>()?;
         let canvas = Rc::new(canvas);
 
+        // TODO: handle resize
+        let height:i32 = canvas.client_height();
+        let width:i32 = canvas.client_width();
+
         {
             // init mouse move listener
             // write coordinates to buffer
@@ -36,7 +40,7 @@ impl MagicSquare {
                 context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
                 buffer[0] = event.offset_x();
                 buffer[1] = event.offset_y();
-                MagicSquare::render_all_lines(&buffer, &context)
+                MagicSquare::render_all_lines(&buffer, &context, height, width);
             });
 
             canvas
@@ -75,29 +79,26 @@ impl Vertices {
 }
 
 impl MagicSquare {
-    fn render_all_lines(buffer: &[i32; 2], context: &web_sys::WebGl2RenderingContext) {
+    fn render_all_lines(buffer: &[i32; 2], context: &web_sys::WebGl2RenderingContext, height: i32, width: i32) {
         let mut all_vertices = Vertices::new();
 
-        // red x
-        for idx in 1..10 {
-            let v = MagicSquare::get_vertices(buffer, idx, 'x');
+        // for idx in 1..10 {
+            let v = MagicSquare::get_vertices(buffer, 1, 'x', height, width);
             all_vertices.set_next([v[0], v[1], v[2], v[3]]);
             all_vertices.set_next([v[4], v[5], v[6], v[7]]);
-        }
+        // }
     
-        // green y
-        for idx in 1..10 {
-            let v = MagicSquare::get_vertices(buffer, idx, 'y');
-            all_vertices.set_next([v[0], v[1], v[2], v[3]]);
-            all_vertices.set_next([v[4], v[5], v[6], v[7]]);
-        }
+        // for idx in 1..10 {
+        //     let v = MagicSquare::get_vertices(buffer, idx, 'y', height, width);
+        //     all_vertices.set_next([v[0], v[1], v[2], v[3]]);
+        //     all_vertices.set_next([v[4], v[5], v[6], v[7]]);
+        // }
 
-        // blue z
-        for idx in 1..10 {
-            let v = MagicSquare::get_vertices(buffer, idx, 'z');
-            all_vertices.set_next([v[0], v[1], v[2], v[3]]);
-            all_vertices.set_next([v[4], v[5], v[6], v[7]]);
-        }
+        // for idx in 1..10 {
+        //     let v = MagicSquare::get_vertices(buffer, idx, 'z', height, width);
+        //     all_vertices.set_next([v[0], v[1], v[2], v[3]]);
+        //     all_vertices.set_next([v[4], v[5], v[6], v[7]]);
+        // }
 
 
         let rgba = MagicSquare::get_rgba(buffer, 1);
@@ -131,11 +132,14 @@ impl MagicSquare {
         ]
     }
 
-    fn get_vertices(buffer: &[i32; 2], idx: usize, axis: char) -> [f32; 8] {
+    fn get_vertices(buffer: &[i32; 2], idx: usize, axis: char, height: i32, width: i32) -> [f32; 8] {
         let mut result: [f32; 8] = [0.0; 8];
+        
+        let clip_x: f32 = (2.0 * (buffer[0] as f32) / width as f32) - 1.0;
+        let clip_y: f32 = 1.0 - ((2.0 * buffer[1] as f32) / height as f32);
 
         let line_base: Array<f32, _> = array![
-            [0.5, 0.0],
+            [clip_x, clip_y],
             [0.0, 0.0],
             [0.0, 0.0],
             [0.0, 0.0],
@@ -148,6 +152,7 @@ impl MagicSquare {
             _ => MagicSquare::rotx_matrix(theta),
         };
         let rotated_line: Array<f32, _> = rot_matrix.dot(&line_base);
+        // let rotated_line = line_base;
 
         // flatten
         let mut counter: usize = 0;
@@ -162,9 +167,9 @@ impl MagicSquare {
     fn get_rgba(buffer: &[i32; 2], idx: usize) -> Rgba {
         let mut result: Rgba = [0.0, 0.0, 0.0, 0.0];
 
-        result[0] = ((buffer[0] as f64) * 0.1).sin() / 3.0 + (0.3 * idx as f64);
-        result[1] = ((buffer[1] as f64) * 0.1).sin() / 3.0 + (0.3 * idx as f64);
-        result[2] = ((-buffer[0] as f64) * 0.1).sin() / 3.0 + (0.3 * idx as f64);
+        result[0] = ((buffer[0] as f64) * 0.1).sin() / 15.0 + (0.3 * idx as f64);
+        result[1] = ((buffer[1] as f64) * 0.1).sin() / 15.0 + (0.3 * idx as f64);
+        result[2] = ((-buffer[0] as f64) * 0.1).sin() / 15.0 + (0.3 * idx as f64);
         result[3] = 1.0;
         result
     }

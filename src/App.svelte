@@ -8,7 +8,7 @@
     currentSection = newSection
   }
 
-  let currentSection: string = "aboutMe"
+  let currentSection: string = "magicSquare"
 </script>
 
 <main class="main rounded-md flex flex-col justify-start">
