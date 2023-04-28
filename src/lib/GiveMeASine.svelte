@@ -153,7 +153,6 @@
     &_form
       border: 5px solid color.$blue-4
       border-radius: 5px
-      overflow-y:scroll
       margin: 0 5px 0 5px
 
       &_container

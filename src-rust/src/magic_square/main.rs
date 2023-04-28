@@ -49,35 +49,105 @@ impl MagicSquare {
 }
 
 pub type Rgba = [f64; 4];
+pub type Vertex = [f32; 4];
+pub type VertexArr = [f32; 400];
 
-impl MagicSquare {
-    fn render_all_lines(buffer: &[i32; 2], context: &web_sys::WebGl2RenderingContext) {
-        for idx in 1..10 {
-            let vertices = MagicSquare::get_vertices(buffer, idx);
-            let rgba = MagicSquare::get_rgba(buffer, idx);
-            MagicSquare::render(&vertices, &rgba, context).expect("Render error");
+pub struct Vertices {
+    arr: VertexArr,
+    idx: usize
+}
+
+impl Vertices {
+    pub fn new() -> Vertices {
+        Vertices { 
+            arr: [0.0; 400], 
+            idx: 0 
         }
     }
 
-    fn rotation_matrix(idx: usize) -> Array<f32, Ix2> {
-        let theta: f32 = (idx * 30) as f32;
+    pub fn set_next(&mut self, vertex: Vertex) {
+        if self.idx > self.arr.len() - 1 { return; }
+        for i in 0..3 {
+            self.arr[self.idx + i] = vertex[i]
+        }
+        self.idx += 4;
+    }
+}
+
+impl MagicSquare {
+    fn render_all_lines(buffer: &[i32; 2], context: &web_sys::WebGl2RenderingContext) {
+        let mut all_vertices = Vertices::new();
+
+        // red x
+        for idx in 1..10 {
+            let v = MagicSquare::get_vertices(buffer, idx, 'x');
+            all_vertices.set_next([v[0], v[1], v[2], v[3]]);
+            all_vertices.set_next([v[4], v[5], v[6], v[7]]);
+        }
+    
+        // green y
+        for idx in 1..10 {
+            let v = MagicSquare::get_vertices(buffer, idx, 'y');
+            all_vertices.set_next([v[0], v[1], v[2], v[3]]);
+            all_vertices.set_next([v[4], v[5], v[6], v[7]]);
+        }
+
+        // blue z
+        for idx in 1..10 {
+            let v = MagicSquare::get_vertices(buffer, idx, 'z');
+            all_vertices.set_next([v[0], v[1], v[2], v[3]]);
+            all_vertices.set_next([v[4], v[5], v[6], v[7]]);
+        }
+
+
+        let rgba = MagicSquare::get_rgba(buffer, 1);
+        MagicSquare::render(&all_vertices, &rgba, context).expect("Render error");
+    }
+
+   fn rotx_matrix(theta: f32) -> Array<f32, Ix2> {
         array![
-            [1.0, 0.0, 0.0],
-            [0.0, theta.cos(), -theta.sin()],
-            [0.0, theta.sin(), theta.cos()],
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, theta.cos(), theta.sin(), 0.0],
+            [0.0, -theta.sin(), theta.cos(), 0.0],
+            [0.0, 0.0, 0.0, 1.0],
         ]
     }
 
-    fn get_vertices(_buffer: &[i32; 2], idx: usize) -> [f32; 6] {
-        let mut result: [f32; 6] = [0.0; 6];
+    fn roty_matrix(theta: f32) -> Array<f32, Ix2> {
+        array![
+            [theta.cos(), 0.0, -theta.sin(), 0.0],
+            [0.0, 1.0, 0.0, 0.0],
+            [theta.sin(), 0.0, theta.cos(), 0.0],
+            [0.0, 0.0, 0.0, 0.0]
+        ]
+    }
+
+    fn rotz_matrix(theta: f32) -> Array<f32, Ix2> {
+        array![
+            [theta.cos(), theta.sin(), 0.0, 0.0],
+            [-theta.sin(), theta.cos(), 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0]
+        ]
+    }
+
+    fn get_vertices(buffer: &[i32; 2], idx: usize, axis: char) -> [f32; 8] {
+        let mut result: [f32; 8] = [0.0; 8];
 
         let line_base: Array<f32, _> = array![
-            [-0.5, 0.0],
             [0.5, 0.0],
-            [0.0, 0.0]
+            [0.0, 0.0],
+            [0.0, 0.0],
+            [0.0, 0.0],
         ];
-
-        let rotated_line: Array<f32, _> = MagicSquare::rotation_matrix(idx).dot(&line_base);
+        
+        let theta: f32 = buffer[0] as f32 / (100.0 * idx as f32);
+        let rot_matrix = match axis {
+            'y' => MagicSquare::roty_matrix(theta),
+            'z' => MagicSquare::rotz_matrix(theta),
+            _ => MagicSquare::rotx_matrix(theta),
+        };
+        let rotated_line: Array<f32, _> = rot_matrix.dot(&line_base);
 
         // flatten
         let mut counter: usize = 0;
@@ -87,25 +157,15 @@ impl MagicSquare {
         }
 
         result
-
-        // let mut vertices = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
-
-        // vertices[0] = buffer[0] as f32 * 0.001 + (5.0 * idx as f32 / 50.0);
-        // vertices[1] = buffer[1] as f32 * 0.001 + (5.0 * idx as f32 / 50.0);
-        // vertices[3] = -(buffer[1] as f32 * 0.001) - (5.0 * idx as f32 / 50.0);
-        // vertices[4] = (buffer[0] as f32 * 0.001) - (5.0 * idx as f32 / 50.0);
-
-        // vertices
     }
 
     fn get_rgba(buffer: &[i32; 2], idx: usize) -> Rgba {
         let mut result: Rgba = [0.0, 0.0, 0.0, 0.0];
 
-        result[0] = ((buffer[0] as f64) * 0.1).sin() / 3.0 + (0.1 * idx as f64);
-        result[1] = ((buffer[1] as f64) * 0.1).sin() / 3.0 + (0.1 * idx as f64);
-        result[2] = ((-buffer[0] as f64) * 0.1).sin() / 3.0 + (0.1 * idx as f64);
-        result[3] = ((buffer[1] as f64) * 0.1).sin() / 3.0 + (0.1 * idx as f64);
-
+        result[0] = ((buffer[0] as f64) * 0.1).sin() / 3.0 + (0.3 * idx as f64);
+        result[1] = ((buffer[1] as f64) * 0.1).sin() / 3.0 + (0.3 * idx as f64);
+        result[2] = ((-buffer[0] as f64) * 0.1).sin() / 3.0 + (0.3 * idx as f64);
+        result[3] = 1.0;
         result
     }
 
@@ -141,7 +201,7 @@ impl MagicSquare {
     }
 
     fn render(
-        vertices: &[f32; 6],
+        vertices: &Vertices,
         color: &Rgba,
         context: &web_sys::WebGl2RenderingContext,
     ) -> Result<(), JsValue> {
@@ -164,7 +224,7 @@ impl MagicSquare {
         // As a result, after `Float32Array::view` we have to be very careful not to
         // do any memory allocations before it's dropped.
         unsafe {
-            let positions_array_buf_view = js_sys::Float32Array::view(vertices);
+            let positions_array_buf_view = js_sys::Float32Array::view(&vertices.arr);
 
             context.buffer_data_with_array_buffer_view(
                 WebGl2RenderingContext::ARRAY_BUFFER,
@@ -191,7 +251,7 @@ impl MagicSquare {
 
         context.bind_vertex_array(Some(&vao));
 
-        let vert_count = (vertices.len() / 3) as i32;
+        let vert_count = (vertices.arr.len() / 4) as i32;
         MagicSquare::draw(&context, vert_count);
 
         Ok(())
