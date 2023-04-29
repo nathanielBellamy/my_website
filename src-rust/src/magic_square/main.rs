@@ -41,7 +41,7 @@ impl MagicSquare {
                 context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
                 buffer[0] = MagicSquare::clip_x(event.offset_x(), width);
                 buffer[1] = MagicSquare::clip_y(event.offset_y(), height);
-                MagicSquare::render_all_lines(&buffer, &context, height, width);
+                MagicSquare::render_all_lines(&buffer, &context);
             });
 
             canvas
@@ -67,9 +67,10 @@ impl MagicSquare {
         1.0 - ((2.0 * offset_y as f32) / height as f32)
     }
 
-    fn render_all_lines(buffer: &[f32; 2], context: &web_sys::WebGl2RenderingContext, height: i32, width: i32) {
-        let mut all_vertices = Vertices::icosahedron(buffer, 0.5);
-
+    fn render_all_lines(buffer: &[f32; 2], context: &web_sys::WebGl2RenderingContext) {
+        // let mut all_vertices = Vertices::icosahedron(buffer, 0.5);
+        
+        let all_vertices = Vertices::hexagon(buffer, 0.5);
         let rgba = MagicSquare::get_rgba(buffer, 1);
         MagicSquare::render(&all_vertices, &rgba, context).expect("Render error");
     }
