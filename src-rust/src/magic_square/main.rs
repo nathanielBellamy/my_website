@@ -1,9 +1,10 @@
-use ndarray::prelude::*;
-use ndarray::Array;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use web_sys::{WebGl2RenderingContext, WebGlProgram, WebGlShader};
 use crate::magic_square::vertices::Vertices;
+use crate::magic_square::shader_compiler::ShaderCompiler;
+use crate::magic_square::program_linker::ProgramLinker;
+
 
 const VERTEX_COUNT: usize = 4;
 const COORDINATE_COUNT: usize = VERTEX_COUNT * 3;
@@ -31,15 +32,15 @@ impl MagicSquare {
         {
             // init mouse move listener
             // write coordinates to buffer
-            let mut buffer: [i32; 2] = [0, 0]; // Buffer::new();
+            let mut buffer: [f32; 2] = [0.0, 0.0]; // Buffer::new();
 
             let canvas = canvas.clone();
             let context: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
             let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::MouseEvent| {
                 context.clear_color(0.0, 0.0, 0.0, 0.0);
                 context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
-                buffer[0] = event.offset_x();
-                buffer[1] = event.offset_y();
+                buffer[0] = MagicSquare::clip_x(event.offset_x(), width);
+                buffer[1] = MagicSquare::clip_y(event.offset_y(), height);
                 MagicSquare::render_all_lines(&buffer, &context, height, width);
             });
 
@@ -56,46 +57,29 @@ pub type Rgba = [f64; 4];
 
 
 impl MagicSquare {
-    fn render_all_lines(buffer: &[i32; 2], context: &web_sys::WebGl2RenderingContext, height: i32, width: i32) {
-        let mut all_vertices = Vertices::icosahedron(0.5);
+    pub fn clip_x(offset_x: i32, width: i32) -> f32 {
+        // x coordinate of mouse position in clip space
+        (2.0 * (offset_x as f32) / width as f32) - 1.0
+    }
+
+    pub fn clip_y(offset_y: i32, height: i32) -> f32 {
+        // y coordinate of mouse position in clip space
+        1.0 - ((2.0 * offset_y as f32) / height as f32)
+    }
+
+    fn render_all_lines(buffer: &[f32; 2], context: &web_sys::WebGl2RenderingContext, height: i32, width: i32) {
+        let mut all_vertices = Vertices::icosahedron(buffer, 0.5);
 
         let rgba = MagicSquare::get_rgba(buffer, 1);
         MagicSquare::render(&all_vertices, &rgba, context).expect("Render error");
     }
 
-   fn rotx_matrix(theta: f32) -> Array<f32, Ix2> {
-        array![
-            [1.0, 0.0, 0.0, 0.0],
-            [0.0, theta.cos(), theta.sin(), 0.0],
-            [0.0, -theta.sin(), theta.cos(), 0.0],
-            [0.0, 0.0, 0.0, 1.0],
-        ]
-    }
-
-    fn roty_matrix(theta: f32) -> Array<f32, Ix2> {
-        array![
-            [theta.cos(), 0.0, -theta.sin(), 0.0],
-            [0.0, 1.0, 0.0, 0.0],
-            [theta.sin(), 0.0, theta.cos(), 0.0],
-            [0.0, 0.0, 0.0, 0.0]
-        ]
-    }
-
-    fn rotz_matrix(theta: f32) -> Array<f32, Ix2> {
-        array![
-            [theta.cos(), theta.sin(), 0.0, 0.0],
-            [-theta.sin(), theta.cos(), 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
-            [0.0, 0.0, 0.0, 1.0]
-        ]
-    }
-
-    fn get_rgba(buffer: &[i32; 2], idx: usize) -> Rgba {
+    fn get_rgba(buffer: &[f32; 2], idx: usize) -> Rgba {
         let mut result: Rgba = [0.0, 0.0, 0.0, 0.0];
 
-        result[0] = ((buffer[0] as f64) * 0.1).sin() / 15.0 + (0.3 * idx as f64);
-        result[1] = ((buffer[1] as f64) * 0.1).sin() / 15.0 + (0.3 * idx as f64);
-        result[2] = ((-buffer[0] as f64) * 0.1).sin() / 15.0 + (0.3 * idx as f64);
+        result[0] = buffer[0] as f64;
+        result[1] = buffer[1] as f64;
+        result[2] = (buffer[0] * buffer[1]) as f64;
         result[3] = 1.0;
         result
     }
@@ -128,7 +112,7 @@ impl MagicSquare {
     }
 
     fn draw(context: &WebGl2RenderingContext, vert_count: i32) {
-        context.draw_arrays(WebGl2RenderingContext::TRIANGLE_FAN, 0, vert_count);
+        context.draw_arrays(WebGl2RenderingContext::LINES, 0, vert_count);
     }
 
     fn render(
@@ -188,99 +172,5 @@ impl MagicSquare {
         Ok(())
     }
 }
-
-pub struct ShaderCompiler;
-
-impl ShaderCompiler {
-    pub fn exec(
-        context: &WebGl2RenderingContext,
-        shader_type: u32,
-        source: &str,
-    ) -> Result<WebGlShader, String> {
-        let shader = context
-            .create_shader(shader_type)
-            .ok_or_else(|| String::from("Unable to create shader object"))?;
-        context.shader_source(&shader, source);
-        context.compile_shader(&shader);
-
-        if context
-            .get_shader_parameter(&shader, WebGl2RenderingContext::COMPILE_STATUS)
-            .as_bool()
-            .unwrap_or(false)
-        {
-            Ok(shader)
-        } else {
-            Err(context
-                .get_shader_info_log(&shader)
-                .unwrap_or_else(|| String::from("Unknown error creating shader")))
-        }
-    }
-
-    pub fn frag_default(
-        context: &WebGl2RenderingContext,
-        rgba: &Rgba,
-    ) -> Result<WebGlShader, String> {
-        let string = format!(
-            r##"#version 300 es
-                precision highp float;
-                out vec4 outColor;
-                
-                void main() {{
-                    outColor = vec4({}, {}, {}, {});
-                }}
-                "##,
-            rgba[0], rgba[1], rgba[2], rgba[3]
-        );
-
-        ShaderCompiler::exec(&context, WebGl2RenderingContext::FRAGMENT_SHADER, &string)
-    }
-
-    pub fn vert_default(context: &WebGl2RenderingContext) -> Result<WebGlShader, String> {
-        ShaderCompiler::exec(
-            &context,
-            WebGl2RenderingContext::VERTEX_SHADER,
-            r##"#version 300 es
-     
-            in vec4 position;
-
-            void main() {
-            
-                gl_Position = position;
-            }
-            "##,
-        )
-    }
-}
-
-pub struct ProgramLinker;
-
-impl ProgramLinker {
-    pub fn exec(
-        context: &WebGl2RenderingContext,
-        vert_shader: &WebGlShader,
-        frag_shader: &WebGlShader,
-    ) -> Result<WebGlProgram, String> {
-        let program = context
-            .create_program()
-            .ok_or_else(|| String::from("Unable to create shader object"))?;
-
-        context.attach_shader(&program, vert_shader);
-        context.attach_shader(&program, frag_shader);
-        context.link_program(&program);
-
-        if context
-            .get_program_parameter(&program, WebGl2RenderingContext::LINK_STATUS)
-            .as_bool()
-            .unwrap_or(false)
-        {
-            Ok(program)
-        } else {
-            Err(context
-                .get_program_info_log(&program)
-                .unwrap_or_else(|| String::from("Unknown error creating program object")))
-        }
-    }
-}
-
 
 
