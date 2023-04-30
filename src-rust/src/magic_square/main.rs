@@ -69,19 +69,30 @@ impl MagicSquare {
 
     fn render_all_lines(buffer: &[f32; 2], context: &web_sys::WebGl2RenderingContext) {
         // let mut all_vertices = Vertices::icosahedron(buffer, 0.5);
+        //
+        //
+        let mut all_vertices = Vertices::new();
+
+        for idx in 1..10 {
+            all_vertices = Vertices::hexagon(buffer, 0.025 * idx as f32);
+            let rgba = MagicSquare::get_rgba(buffer, idx);
+            MagicSquare::render(&all_vertices, &rgba, context).expect("Render error");
+        }
         
-        let all_vertices = Vertices::hexagon(buffer, 0.5);
-        let rgba = MagicSquare::get_rgba(buffer, 1);
-        MagicSquare::render(&all_vertices, &rgba, context).expect("Render error");
+
+        // all_vertices = Vertices::icosahedron(buffer, 0.5);
+        // let rgba = MagicSquare::get_rgba(buffer, 1);
+        // MagicSquare::render(&all_vertices, &rgba, context).expect("Render error");
+
     }
 
     fn get_rgba(buffer: &[f32; 2], idx: usize) -> Rgba {
         let mut result: Rgba = [0.0, 0.0, 0.0, 0.0];
 
-        result[0] = buffer[0] as f64;
-        result[1] = buffer[1] as f64;
-        result[2] = (buffer[0] * buffer[1]) as f64;
-        result[3] = 1.0;
+        result[0] = 1.0 - buffer[0] as f64;
+        result[1] = 1.0 - buffer[1] as f64;
+        result[2] = 1.0 - (buffer[0] * buffer[1]) as f64;
+        result[3] = 0.1 * idx as f64;
         result
     }
 
