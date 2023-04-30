@@ -1,9 +1,10 @@
 <script lang="ts">
   export let title: string = '--'
   export let subTitle: string = ''
+  export let css_class: string = ''
 </script>
 
-<div class="embed">
+<div class={`embed ${css_class}`}>
   <slot/>
 </div>
 

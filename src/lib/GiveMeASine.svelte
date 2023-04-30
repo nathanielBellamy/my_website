@@ -87,8 +87,8 @@
   ]
 </script>
 
-<div class="give_me_a_sine grid grid-cols-1 md:grid-cols-4">
-  <div class="give_me_a_sine_form_container device_form">
+<div class="give_me_a_sine grid grid-rows-10 md:grid-cols-4">
+  <div class="give_me_a_sine_form_container row-span-4 device_form">
     <div id="give_me_a_sine_form"
          class="give_me_a_sine_form grid grid-cols-2">
       <div class="give_me_a_sine_form_cell font-bold title">
@@ -112,7 +112,7 @@
     </div>
   </div>
   <div id="give_me_a_sine_output"
-       class="give_me_a_sine_output device_graph_font col-span-1 md:col-span-3"/>
+       class="give_me_a_sine_output device_graph_font row-span-8 md:col-span-3"/>
 </div>
 
 <style lang="sass">

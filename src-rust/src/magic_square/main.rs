@@ -10,6 +10,12 @@ const VERTEX_COUNT: usize = 4;
 const COORDINATE_COUNT: usize = VERTEX_COUNT * 3;
 const VERTICES_EMPTY: [f32; VERTEX_COUNT * 3] = [0.0; VERTEX_COUNT * 3];
 
+pub enum Axis {
+    X,
+    Y,
+    Z
+}
+
 // => keep buffer in a Refcell in an RC
 // => one event listener has mutable reference to write
 // => another closure has the animation loop with an immutable reference
@@ -74,12 +80,10 @@ impl MagicSquare {
         let mut all_vertices = Vertices::new();
 
         for idx in 1..10 {
-            all_vertices = Vertices::hexagon(buffer, 0.025 * idx as f32);
+            all_vertices = Vertices::hexagon(buffer, 0.025 * idx as f32, Axis::X, idx as f32 / 4.0);
             let rgba = MagicSquare::get_rgba(buffer, idx);
             MagicSquare::render(&all_vertices, &rgba, context).expect("Render error");
         }
-        
-
         // all_vertices = Vertices::icosahedron(buffer, 0.5);
         // let rgba = MagicSquare::get_rgba(buffer, 1);
         // MagicSquare::render(&all_vertices, &rgba, context).expect("Render error");

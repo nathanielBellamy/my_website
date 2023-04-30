@@ -159,7 +159,7 @@
       {/each}
     </div>
   </div>
-  <Embed>
+  <Embed css_class="row-span-2">
     {#if showEmbed == EmbeddedProgram.giveMeASign}
       <GiveMeASine />
     {:else if showEmbed == EmbeddedProgram.polynomialConsoleGraph}
