@@ -1,9 +1,8 @@
-use std::f32::consts::PI;
 use std::ops::{Index, IndexMut};
 use std::convert::From;
-use crate::magic_square::transformations::Rotate;
 use ndarray::prelude::*;
 use ndarray::Array;
+use crate::magic_square::transformations::RotationSequence;
 
 
 
@@ -38,14 +37,8 @@ impl Vertex {
         }
     }
 
-    pub fn rot(&self, axis: char, theta: f32) ->  Vertex {
-        let rot_matrix: Array<f32, Ix2> = match axis {
-            'y' => Rotate::roty_matrix(theta),
-            'z' => Rotate::rotz_matrix(theta),
-            _ => Rotate::rotx_matrix(theta)
-        };
-
-        self.lh_mult(rot_matrix)
+    pub fn rot(&self, rotation: RotationSequence) ->  Vertex {
+        self.lh_mult(rotation.matrix())
     }
 }
 
@@ -83,7 +76,7 @@ impl Vertices {
         self.idx += 3;
     }
 
-    pub fn hexagon(buffer: &[f32; 2], radius: f32, axis: Axis, theta: f32) -> Vertices {
+    pub fn hexagon(buffer: &[f32; 2], radius: f32, rotation: RotationSequence) -> Vertices {
         let mut vertices = Vertices::new();
 
         let center_x = buffer[0];
@@ -101,66 +94,66 @@ impl Vertices {
         // end east corner
         vertices.set_next(
             Vertex::new(center_x + x_shift, center_y + y_shift, xy)
-                .rot(axis, theta)
+                .rot(rotation)
         );
         vertices.set_next(
             Vertex::new(center_x + radius, center_y, xy)
-                .rot(axis, theta)
+                .rot(rotation)
         );
 
         // start east corner
         // end south east corner
         vertices.set_next(
             Vertex::new(center_x + radius, center_y, xy)
-                .rot(axis, theta)
+                .rot(rotation)
         );
         vertices.set_next(
             Vertex::new(center_x + x_shift, center_y - y_shift, xy)
-                .rot(axis, theta)
+                .rot(rotation)
         );
 
         // start east corner
         // end south east corner
         vertices.set_next(
             Vertex::new(center_x + radius, center_y, xy)
-                .rot(axis, theta)
+                .rot(rotation)
         );
         vertices.set_next(
             Vertex::new(center_x + x_shift, center_y - y_shift, xy)
-                .rot(axis, theta)
+                .rot(rotation)
         );
 
         // start south east corner
         // end south west corner
         vertices.set_next(
             Vertex::new(center_x + x_shift, center_y - y_shift, xy)
-                .rot(axis, theta)
+                .rot(rotation)
         );
         vertices.set_next(
             Vertex::new(center_x - x_shift, center_y - y_shift, xy)
-                .rot(axis, theta)
+                .rot(rotation)
         );
 
         // start south west corner
         // end west corner
         vertices.set_next(
             Vertex::new(center_x - x_shift, center_y - y_shift, xy)
-                .rot(axis, theta)
+                .rot(rotation)
         );
         vertices.set_next(
             Vertex::new(center_x - radius, center_y, xy)
-                .rot(axis, theta)
+                .rot(rotation)
         );
 
         // start west corner
         // end north west corner
         vertices.set_next(
             Vertex::new(center_x - radius, center_y, xy)
-                .rot(axis, theta)
+                .rot(rotation)
         );
         vertices.set_next(
             Vertex::new(center_x - x_shift, center_y + y_shift, xy)
-                .rot(axis, theta)
+                .rot(rotation)
         );
 
 
@@ -168,11 +161,11 @@ impl Vertices {
         // end north east corner
         vertices.set_next( 
             Vertex::new(center_x - x_shift, center_y + y_shift, xy)
-                .rot(axis, theta)
+                .rot(rotation)
         );
         vertices.set_next(
             Vertex::new(center_x + x_shift, center_y + y_shift, xy)
-                .rot(axis, theta)
+                .rot(rotation)
         );
 
         vertices

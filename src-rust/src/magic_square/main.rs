@@ -1,15 +1,17 @@
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
-use web_sys::{WebGl2RenderingContext, WebGlProgram, WebGlShader};
+use web_sys::WebGl2RenderingContext;
 use crate::magic_square::vertices::Vertices;
 use crate::magic_square::shader_compiler::ShaderCompiler;
 use crate::magic_square::program_linker::ProgramLinker;
+use crate::magic_square::transformations::{Rotation, RotationSequence};
 
 
 const VERTEX_COUNT: usize = 4;
 const COORDINATE_COUNT: usize = VERTEX_COUNT * 3;
 const VERTICES_EMPTY: [f32; VERTEX_COUNT * 3] = [0.0; VERTEX_COUNT * 3];
 
+#[derive(Clone, Copy)]
 pub enum Axis {
     X,
     Y,
@@ -77,10 +79,20 @@ impl MagicSquare {
         // let mut all_vertices = Vertices::icosahedron(buffer, 0.5);
         //
         //
-        let mut all_vertices = Vertices::new();
+        let mut all_vertices: Vertices;
+
 
         for idx in 1..10 {
-            all_vertices = Vertices::hexagon(buffer, 0.025 * idx as f32, Axis::X, idx as f32 / 4.0);
+            let rot_seq = RotationSequence::new(
+                Rotation::new(Axis::X, buffer[0] as f32 * 3.14),
+                Rotation::new(Axis::Y, buffer[1] as f32 * 3.14),
+                Rotation::new(Axis::Z, 0.0)
+            );
+
+            all_vertices = Vertices::hexagon(
+                buffer, 0.025 * idx as f32, 
+                rot_seq
+            );
             let rgba = MagicSquare::get_rgba(buffer, idx);
             MagicSquare::render(&all_vertices, &rgba, context).expect("Render error");
         }
