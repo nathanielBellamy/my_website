@@ -75,10 +75,9 @@ impl MagicSquare {
     }
 
     fn render_all_lines(buffer: &[f32; 2], context: &web_sys::WebGl2RenderingContext) {
-        // let mut all_vertices = Vertices::icosahedron(buffer, 0.5);
-        //
-        //
-        let mut all_vertices: Vertices;
+        // TODO: multithread
+        // stuff vertices
+        let mut vertices: Vertices = Vertices::new();
 
         for idx in 1..20 {
             let rot_seq = RotationSequence::new(
@@ -87,17 +86,15 @@ impl MagicSquare {
                 Rotation::new(Axis::Z, 0.0),// (buffer[0] as f32 * buffer[1] as f32) * (3.14 / 2.0) + idx as f32 * 0.05) 
             );
 
-            all_vertices = Geometry::hexagon(
+            Geometry::hexagon(
                 buffer, 0.025 * idx as f32, 
-                rot_seq
+                rot_seq,
+                &mut vertices
             );
-            let rgba = MagicSquare::get_rgba(buffer, idx);
-            MagicSquare::render(&all_vertices, &rgba, context).expect("Render error");
-        }
-        // all_vertices = Vertices::icosahedron(buffer, 0.5);
-        // let rgba = MagicSquare::get_rgba(buffer, 1);
-        // MagicSquare::render(&all_vertices, &rgba, context).expect("Render error");
 
+            let rgba = MagicSquare::get_rgba(buffer, idx);
+            MagicSquare::render(&vertices, &rgba, context).expect("Render error");
+        }
     }
 
     fn get_rgba(buffer: &[f32; 2], idx: usize) -> Rgba {
