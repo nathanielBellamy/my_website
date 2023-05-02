@@ -4,6 +4,8 @@ use ndarray::prelude::*;
 use ndarray::Array;
 use crate::magic_square::transformations::RotationSequence;
 
+use super::traits::CoordinateStore;
+
 // pub type Vertex = [f32; 3];
 pub type VertexArr = [f32; 21000];
 
@@ -59,6 +61,38 @@ pub struct Vertices {
     idx: usize
 }
 
+impl Index<usize> for Vertices {
+    type Output = f32;
+    fn index<'a>(&'a self, i: usize) -> &'a f32 {
+        &self.arr[i]
+    }
+}
+
+impl IndexMut<usize> for Vertices {
+    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut f32 {
+        &mut self.arr[i]
+    }
+}
+
+impl CoordinateStore<Vertices> for Vertices {
+    fn idx(&self) -> usize {
+        self.idx
+    }
+
+    fn set_idx(&mut self, new_idx: usize) -> usize {
+        self.idx = new_idx;
+        self.idx
+    }
+
+    fn set_next(&mut self, vertex: Vertex) {
+        if self.idx > self.arr.len() - 1 { return; }
+        for i in 0..2 {
+            self.arr[self.idx + i] = vertex[i]
+        }
+        self.idx += 3;
+    }
+}
+
 impl Vertices {
     pub fn new() -> Vertices {
         Vertices { 
@@ -68,14 +102,7 @@ impl Vertices {
     }
 
     pub fn add_geometry(&mut self) {
+        // TODO
         self.arr;
-    }
-
-    pub fn set_next(&mut self, vertex: Vertex) {
-        if self.idx > self.arr.len() - 1 { return; }
-        for i in 0..2 {
-            self.arr[self.idx + i] = vertex[i]
-        }
-        self.idx += 3;
     }
 }
