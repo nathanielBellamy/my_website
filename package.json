@@ -23,7 +23,7 @@
     "vite": "^4.2.0"
   },
   "dependencies": {
-    "node-sass": "^8.0.0"
+    "node-sass": "^8.0.0",
+    "svelte-watch-resize": "^1.0.3"
   }
 }
-

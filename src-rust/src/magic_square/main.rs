@@ -5,11 +5,7 @@ use crate::magic_square::vertices::Vertices;
 use crate::magic_square::shader_compiler::ShaderCompiler;
 use crate::magic_square::program_linker::ProgramLinker;
 use crate::magic_square::transformations::{Rotation, RotationSequence};
-
-
-const VERTEX_COUNT: usize = 4;
-const COORDINATE_COUNT: usize = VERTEX_COUNT * 3;
-const VERTICES_EMPTY: [f32; VERTEX_COUNT * 3] = [0.0; VERTEX_COUNT * 3];
+use crate::magic_square::geometry::Geometry;
 
 #[derive(Clone, Copy)]
 pub enum Axis {
@@ -34,6 +30,10 @@ impl MagicSquare {
         let canvas = Rc::new(canvas);
 
         // TODO: handle resize
+        // add height and width fields to MagicSquare
+        // run returns MagicSquare instance to js
+        // js uses svelte watch resize to update height and width
+        // pass immutable reference of h&w to closure
         let height:i32 = canvas.client_height();
         let width:i32 = canvas.client_width();
 
@@ -63,7 +63,6 @@ impl MagicSquare {
 
 pub type Rgba = [f64; 4];
 
-
 impl MagicSquare {
     pub fn clip_x(offset_x: i32, width: i32) -> f32 {
         // x coordinate of mouse position in clip space
@@ -81,15 +80,14 @@ impl MagicSquare {
         //
         let mut all_vertices: Vertices;
 
-
-        for idx in 1..10 {
+        for idx in 1..20 {
             let rot_seq = RotationSequence::new(
-                Rotation::new(Axis::X, buffer[0] as f32 * 3.14),
-                Rotation::new(Axis::Y, buffer[1] as f32 * 3.14),
-                Rotation::new(Axis::Z, 0.0)
+                Rotation::new(Axis::X, buffer[0] as f32 * 3.14 + idx as f32 * 0.05),
+                Rotation::new(Axis::Y, buffer[1] as f32 * 3.14 + idx as f32 * 0.05),
+                Rotation::new(Axis::Z, 0.0),// (buffer[0] as f32 * buffer[1] as f32) * (3.14 / 2.0) + idx as f32 * 0.05) 
             );
 
-            all_vertices = Vertices::hexagon(
+            all_vertices = Geometry::hexagon(
                 buffer, 0.025 * idx as f32, 
                 rot_seq
             );

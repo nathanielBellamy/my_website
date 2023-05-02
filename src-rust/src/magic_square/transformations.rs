@@ -43,8 +43,6 @@ impl Rotation {
             },
             Axis::Y => {
                 array![
-
-                    // dim 3
                     [self.theta.cos(), 0.0, self.theta.sin()],
                     [0.0, 1.0, 0.0],
                     [-self.theta.sin(), 0.0, self.theta.cos()],
@@ -52,8 +50,6 @@ impl Rotation {
             },           
             Axis::Z => {
                 array![
-
-                    // dim 3
                     [self.theta.cos(), self.theta.sin(), 0.0],
                     [self.theta.sin(), self.theta.cos(), 0.0],
                     [0.0, 0.0, 1.0],

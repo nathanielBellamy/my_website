@@ -68,6 +68,10 @@ impl Vertices {
         }
     }
 
+    pub fn add_geometry(&mut self) {
+        self.arr;
+    }
+
     pub fn set_next(&mut self, vertex: Vertex) {
         if self.idx > self.arr.len() - 1 { return; }
         for i in 0..2 {
@@ -82,7 +86,6 @@ impl Vertices {
         let center_x = buffer[0];
         let center_y = buffer[1];
         let xy = 0.02 * center_x * center_y;
-        let center: Vertex = Vertex { arr: [buffer[0], buffer[1], 0.0]};
 
         let x_shift = radius * 0.5; // r cos(pi/3)
         let y_shift = radius * 0.86602540378; // r sin(pi/3)
