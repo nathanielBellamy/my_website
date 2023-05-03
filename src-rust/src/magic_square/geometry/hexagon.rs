@@ -1,35 +1,15 @@
 
-us crate::magic_square::vertices::{Vertex, Vertices};
+use std::ops::{Index, IndexMut};
+use crate::magic_square::traits::CoordinateStore;
+use crate::magic_square::vertices::{Vertex, Vertices};
 use crate::magic_square::transformations::RotationSequence;
 
-// struct used to write geometry to vertex array that will be passed to GL
-pub struct Geometry;
 
-const HEXAGON_CACHE_LEN: usize = 14;
+pub struct Hexagon;
 
-struct HexagonCache {
-    pub arr: [f32; HEXAGON_CACHE_LEN], // # coordinates needed to define hexagon
-    idx: usize
-}
 
-// TODO: VertexArray trait
-// share indexing/adding/set_next
-// whatever function eats Geometry can impliment a trait bound
-impl HexagonCache {
-    pub fn new() -> HexagonCache {
-        HexagonCache { arr: [0.0; HEXAGON_CACHE_LEN], idx: 0 }
-    }
-}
-
-impl Geometry {
-    // per shape:
-    //  shape -> accepts &mut Vertices, writes directly to array that will be passed to GL
-    //  shape_cached -> Returns ShapeCache, array of vertices need to define the shape
-    pub fn hexagon_cache() -> HexagonCache {
-        HexagonCache::new()
-    }
-
-    pub fn hexagon(buffer: &[f32; 2], radius: f32, rotation: RotationSequence, vertices: &mut Vertices) {
+impl Hexagon {
+    pub fn new(buffer: &[f32; 2], radius: f32, rotation: RotationSequence, vertices: &mut Vertices) {
         let center_x = buffer[0];
         let center_y = buffer[1];
         let xy = 0.02 * center_x * center_y;
@@ -118,47 +98,50 @@ impl Geometry {
     }
 }
 
+const HEXAGON_STORE_LEN: usize = 14;
 
+struct HexagonStore {
+    pub arr: [f32; HEXAGON_STORE_LEN], // # coordinates needed to define hexagon
+    idx: usize
+}
 
-    //     let h_angle: f32 = PI / 180.0 * 72.0; // 72 degrees = 360/5
-    //     let v_angle: f32 = 0.5_f32.atan(); // elevation = 26.565 degrees
-    //     
-    //     let mut h_angle_1: f32 = -PI / 2.0 - h_angle / 2.0; // start from -126 degree 
-    //     let mut h_angle_2: f32 = -PI / 2.0; // start from -90 deg at 2nd row
-    //     
-    //     // coordinates
-    //     let mut z: f32;
-    //     let mut xy: f32;
+// TODO: VertexArray trait
+// share indexing/adding/set_next
+// whatever function eats Geometry can impliment a trait bound
+impl HexagonStore {
+    pub fn new() -> HexagonStore {
+        HexagonStore { arr: [0.0; HEXAGON_STORE_LEN], idx: 0 }
+    }
+}
 
-    //     // compute 10 vertices on 1st and 2nd rows
-    //     for _i in 1..5 {
-    //         let mut v1: Vertex = center;
-    //         let mut v2: Vertex = center;
-    //         
-    //         z = radius * v_angle.sin();
-    //         xy = radius * v_angle.cos();
+impl Index<usize> for HexagonStore {
+    type Output = f32;
+    fn index<'a>(&'a self, i: usize) -> &'a f32 {
+        &self.arr[i]
+    }
+}
 
-    //         v1[0] = xy * h_angle_1.cos() + center_x;
-    //         v2[0] = xy * h_angle_2.cos() + center_x;
-    //         v1[1] = xy * h_angle_1.sin() + center_y;
-    //         v2[1] = xy * h_angle_2.sin() + center_y;
-    //         v1[2] = z;
-    //         v2[2] = -z;
-    //         
-    //         vertices.set_next(center);
-    //         vertices.set_next(v1);
-    //         vertices.set_next(center);
-    //         vertices.set_next(v2);
+impl IndexMut<usize> for HexagonStore {
+    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut f32 {
+        &mut self.arr[i]
+    }
+}
 
-    //         h_angle_1 += h_angle;
-    //         h_angle_2 += h_angle;
-    //     }
+impl CoordinateStore<HexagonStore> for HexagonStore {
+    fn idx(&self) -> usize {
+        self.idx
+    }
 
-    //     // add bottom vertex (0, 0, -r)
-    //     vertices.set_next(center);
-    //     vertices.set_next([center_x, center_y, -radius]);
+    fn set_idx(&mut self, new_idx: usize) -> usize {
+        self.idx = new_idx;
+        self.idx
+    }
 
-    //     vertices
-
-        // TODO: subdivide the sides + edges
-    // }
+    fn set_next(&mut self, vertex: Vertex) {
+        if self.idx > self.arr.len() - 1 { return; }
+        for i in 0..2 {
+            self.arr[self.idx + i] = vertex[i]
+        }
+        self.idx += 3;
+    }
+}
