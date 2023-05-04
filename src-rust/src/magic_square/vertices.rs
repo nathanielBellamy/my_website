@@ -3,8 +3,7 @@ use std::convert::From;
 use ndarray::prelude::*;
 use ndarray::Array;
 use crate::magic_square::transformations::RotationSequence;
-
-use super::traits::CoordinateStore;
+use super::traits::VertexStore;
 
 // pub type Vertex = [f32; 3];
 pub type VertexArr = [f32; 21000];
@@ -74,7 +73,7 @@ impl IndexMut<usize> for Vertices {
     }
 }
 
-impl CoordinateStore<Vertices> for Vertices {
+impl VertexStore<Vertices> for Vertices {
     fn idx(&self) -> usize {
         self.idx
     }
@@ -84,12 +83,8 @@ impl CoordinateStore<Vertices> for Vertices {
         self.idx
     }
 
-    fn set_next(&mut self, vertex: Vertex) {
-        if self.idx > self.arr.len() - 1 { return; }
-        for i in 0..2 {
-            self.arr[self.idx + i] = vertex[i]
-        }
-        self.idx += 3;
+    fn arr(&mut self) -> &mut [f32] {
+        &mut self.arr
     }
 }
 
@@ -104,5 +99,9 @@ impl Vertices {
     pub fn add_geometry(&mut self) {
         // TODO
         self.arr;
+    }
+
+    pub fn set_slice<T>(geometry: T) {
+        //
     }
 }

@@ -14,12 +14,9 @@ impl Geometry {
     //  shape -> accepts &mut Vertices, writes directly to array that will be passed to GL
     //  shape_cached -> Returns ShapeCache, array of vertices need to define the shape
     pub fn hexagon(buffer: &[f32; 2], radius: f32, rotation: RotationSequence, vertices: &mut Vertices) {
-        Hexagon::new(buffer, radius, rotation, vertices)
+        Hexagon::new(buffer, radius, rotation);
     }
 }
-
-
-
 
 // struct used to write geometry to vertex array that will be passed to GL
 
