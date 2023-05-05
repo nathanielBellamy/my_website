@@ -5,11 +5,10 @@ use ndarray::Array;
 use crate::magic_square::transformations::RotationSequence;
 use super::traits::VertexStore;
 
-// pub type Vertex = [f32; 3];
-pub type VertexArr = [f32; 21000];
-
 const ORIGIN: Vertex = Vertex { arr: [0.0, 0.0, 0.0] };
-const VERTEX_ARRAY_SIZE: usize = 21_000;
+const VERTEX_ARRAY_SIZE: usize = 3_000; // allows 1000 vertices
+
+pub type VertexArr = [f32; VERTEX_ARRAY_SIZE];
 
 #[derive(Clone, Copy)]
 pub struct Vertex {

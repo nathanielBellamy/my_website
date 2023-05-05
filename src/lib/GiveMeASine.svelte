@@ -4,7 +4,6 @@
 
   let title = "Give Me a Sine"
 
-
   const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
   onMount(async () => {

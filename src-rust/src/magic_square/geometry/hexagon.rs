@@ -4,7 +4,7 @@ use crate::magic_square::traits::VertexStore;
 use crate::magic_square::vertices::{Vertex, Vertices};
 use crate::magic_square::transformations::RotationSequence;
 
-const HEXAGON_ARR_LEN: usize = 14;
+const HEXAGON_ARR_LEN: usize = 42;
 
 pub struct Hexagon {
     pub arr: [f32; HEXAGON_ARR_LEN], // # coordinates needed to define hexagon
@@ -25,7 +25,7 @@ impl Hexagon {
         let x_shift = radius * 0.5; // r cos(pi/3)
         let y_shift = radius * 0.86602540378; // r sin(pi/3)
         
-        let hexagon = Hexagon::init();
+        let mut hexagon = Hexagon::init();
 
         // draw hexagon boundary
         // start north east corner
@@ -105,7 +105,7 @@ impl Hexagon {
             Vertex::new(center_x + x_shift, center_y + y_shift, xy)
                 .rot(rotation)
         );
-
+        
         hexagon
     }
 }

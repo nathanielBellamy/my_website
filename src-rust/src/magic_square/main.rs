@@ -1,4 +1,5 @@
 use std::rc::Rc;
+use std::sync::{Arc, Mutex};
 use wasm_bindgen::prelude::*;
 use web_sys::WebGl2RenderingContext;
 use crate::magic_square::vertices::Vertices;
@@ -6,6 +7,7 @@ use crate::magic_square::shader_compiler::ShaderCompiler;
 use crate::magic_square::program_linker::ProgramLinker;
 use crate::magic_square::transformations::{Rotation, RotationSequence};
 use crate::magic_square::geometry::Geometry;
+use crate::magic_square::traits::VertexStore;
 
 #[derive(Clone, Copy)]
 pub enum Axis {
@@ -37,6 +39,8 @@ impl MagicSquare {
         let height:i32 = canvas.client_height();
         let width:i32 = canvas.client_width();
 
+        let mut vertices_gl = Vertices::new(); // array that will be read by GL
+        
         {
             // init mouse move listener
             // write coordinates to buffer
@@ -76,8 +80,6 @@ impl MagicSquare {
 
     fn render_all_lines(buffer: &[f32; 2], context: &web_sys::WebGl2RenderingContext) {
         // TODO: multithread
-        // stuff vertices
-        let mut vertices: Vertices = Vertices::new();
 
         for idx in 1..20 {
             let rot_seq = RotationSequence::new(
@@ -86,14 +88,14 @@ impl MagicSquare {
                 Rotation::new(Axis::Z, 0.0),// (buffer[0] as f32 * buffer[1] as f32) * (3.14 / 2.0) + idx as f32 * 0.05) 
             );
 
-            Geometry::hexagon(
-                buffer, 0.025 * idx as f32, 
-                rot_seq,
-                &mut vertices
-            );
+            let vertices_gl = Geometry::hexagon(
+                buffer, 
+                0.025 * idx as f32, 
+                rot_seq
+            ).arr;
 
             let rgba = MagicSquare::get_rgba(buffer, idx);
-            MagicSquare::render(&vertices, &rgba, context).expect("Render error");
+            MagicSquare::render(&vertices_gl, &rgba, context).expect("Render error");
         }
     }
 
@@ -139,7 +141,7 @@ impl MagicSquare {
     }
 
     fn render(
-        vertices: &Vertices,
+        vertices: &[f32],
         color: &Rgba,
         context: &web_sys::WebGl2RenderingContext,
     ) -> Result<(), JsValue> {
@@ -162,7 +164,7 @@ impl MagicSquare {
         // As a result, after `Float32Array::view` we have to be very careful not to
         // do any memory allocations before it's dropped.
         unsafe {
-            let positions_array_buf_view = js_sys::Float32Array::view(&vertices.arr);
+            let positions_array_buf_view = js_sys::Float32Array::view(vertices);
 
             context.buffer_data_with_array_buffer_view(
                 WebGl2RenderingContext::ARRAY_BUFFER,
@@ -189,7 +191,7 @@ impl MagicSquare {
 
         context.bind_vertex_array(Some(&vao));
 
-        let vert_count = (vertices.arr.len() / 4) as i32;
+        let vert_count = (vertices.len() / 3) as i32;
         MagicSquare::draw(&context, vert_count);
 
         Ok(())

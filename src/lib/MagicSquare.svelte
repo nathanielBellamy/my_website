@@ -6,7 +6,6 @@
   const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
   let height: number = 0
   let width: number = 0
-  let wasm: any // variable storing our wasm, only ever have one instance
 
   $: height
   $: width
@@ -16,8 +15,6 @@
     width = node.offsetWidth
 
     console.dir({height, width})
-    wasm = null
-    wasm = rust.MagicSquare.run()
   }
 
   onMount(async () => {
@@ -25,8 +22,8 @@
     height = element.offsetHeight
     width = element.offsetWidth
 
-    await timeout(200) // await wasm init
-    wasm = rust.MagicSquare.run()
+    await timeout(50) // await wasm init
+    rust.MagicSquare.run()
   })
 </script>
 

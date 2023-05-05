@@ -4,17 +4,14 @@ use crate::magic_square::transformations::RotationSequence;
 
 pub mod hexagon;
 
-
 pub struct Geometry;
-
-
 
 impl Geometry {
     // per shape:
     //  shape -> accepts &mut Vertices, writes directly to array that will be passed to GL
     //  shape_cached -> Returns ShapeCache, array of vertices need to define the shape
-    pub fn hexagon(buffer: &[f32; 2], radius: f32, rotation: RotationSequence, vertices: &mut Vertices) {
-        Hexagon::new(buffer, radius, rotation);
+    pub fn hexagon(buffer: &[f32; 2], radius: f32, rotation: RotationSequence) -> Hexagon {
+        Hexagon::new(buffer, radius, rotation)
     }
 }
 

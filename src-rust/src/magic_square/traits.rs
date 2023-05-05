@@ -24,7 +24,7 @@ pub trait VertexStore<T: Index<usize> + IndexMut<usize>> {
         self.set_idx(idx + 3);
     }
 
-    fn set_next_slice(&mut self, slice: &mut [f32]) {
+    fn set_next_slice(&mut self, slice: &[f32]) {
         let idx: usize = self.idx();
         let arr: &mut [f32] = self.arr();
         
@@ -36,5 +36,21 @@ pub trait VertexStore<T: Index<usize> + IndexMut<usize>> {
         }
 
         self.set_idx(idx + slice.len());
+    }
+
+    // allow partial clear of vertices
+    // we will have to see how performance goes
+    fn zero(&mut self, clear_to_idx: Option<usize>) {
+        let arr: &mut [f32] = self.arr();
+        let max_idx: usize = match clear_to_idx {
+            Some(int) => int,
+            None => arr.len() - 1
+        };
+
+        for i in 1..max_idx {
+            arr[i] = 0.0;
+        }
+
+        self.set_idx(0);
     }
 }
