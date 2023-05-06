@@ -1,5 +1,6 @@
 use std::rc::Rc;
 use std::sync::{Arc, Mutex};
+
 use wasm_bindgen::prelude::*;
 use web_sys::WebGl2RenderingContext;
 use crate::magic_square::vertices::Vertices;
@@ -38,8 +39,6 @@ impl MagicSquare {
         // pass immutable reference of h&w to closure
         let height:i32 = canvas.client_height();
         let width:i32 = canvas.client_width();
-
-        let mut vertices_gl = Vertices::new(); // array that will be read by GL
         
         {
             // init mouse move listener
@@ -53,7 +52,7 @@ impl MagicSquare {
                 context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
                 buffer[0] = MagicSquare::clip_x(event.offset_x(), width);
                 buffer[1] = MagicSquare::clip_y(event.offset_y(), height);
-                MagicSquare::render_all_lines(&buffer, &context);
+                MagicSquare::render_all_lines(buffer, &context);
             });
 
             canvas
@@ -78,14 +77,14 @@ impl MagicSquare {
         1.0 - ((2.0 * offset_y as f32) / height as f32)
     }
 
-    fn render_all_lines(buffer: &[f32; 2], context: &web_sys::WebGl2RenderingContext) {
-        // TODO: multithread
+    fn render_all_lines(buffer: [f32; 2], context: &web_sys::WebGl2RenderingContext) {
+        let mut results: [([f32; 42], Rgba); 26] = [([0.0; 42], [0.0, 0.0, 0.0, 0.0]); 26];
 
-        for idx in 1..20 {
+        for idx in 1..26 {
             let rot_seq = RotationSequence::new(
-                Rotation::new(Axis::X, buffer[0] as f32 * 3.14 + idx as f32 * 0.05),
-                Rotation::new(Axis::Y, buffer[1] as f32 * 3.14 + idx as f32 * 0.05),
-                Rotation::new(Axis::Z, 0.0),// (buffer[0] as f32 * buffer[1] as f32) * (3.14 / 2.0) + idx as f32 * 0.05) 
+                Rotation::new(Axis::X, buffer[0] * 3.14 + idx as f32 * 0.05),
+                Rotation::new(Axis::Y, buffer[1] * 3.14 + idx as f32 * 0.05),
+                Rotation::new(Axis::Z, 0.0),
             );
 
             let vertices_gl = Geometry::hexagon(
@@ -95,11 +94,17 @@ impl MagicSquare {
             ).arr;
 
             let rgba = MagicSquare::get_rgba(buffer, idx);
-            MagicSquare::render(&vertices_gl, &rgba, context).expect("Render error");
+
+            results[idx] = (vertices_gl, rgba);
+        }
+
+
+        for res in results {
+            MagicSquare::render(&res.0, &res.1, &context).expect("Render error");
         }
     }
 
-    fn get_rgba(buffer: &[f32; 2], idx: usize) -> Rgba {
+    fn get_rgba(buffer: [f32; 2], idx: usize) -> Rgba {
         let mut result: Rgba = [0.0, 0.0, 0.0, 0.0];
 
         result[0] = 1.0 - buffer[0] as f64;
@@ -145,10 +150,10 @@ impl MagicSquare {
         color: &Rgba,
         context: &web_sys::WebGl2RenderingContext,
     ) -> Result<(), JsValue> {
-        let vert_shader = ShaderCompiler::vert_default(&context).unwrap();
-        let frag_shader = ShaderCompiler::frag_default(&context, &color).unwrap();
+        let vert_shader = ShaderCompiler::vert_default(context).unwrap();
+        let frag_shader = ShaderCompiler::frag_default(context, color).unwrap();
 
-        let program = ProgramLinker::exec(&context, &vert_shader, &frag_shader)?;
+        let program = ProgramLinker::exec(context, &vert_shader, &frag_shader)?;
         context.use_program(Some(&program));
 
         let position_attribute_location = context.get_attrib_location(&program, "position");

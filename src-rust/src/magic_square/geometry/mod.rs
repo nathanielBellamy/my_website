@@ -1,3 +1,4 @@
+use std::sync::Arc;
 use crate::magic_square::geometry::hexagon::Hexagon;
 use crate::magic_square::vertices::Vertices;
 use crate::magic_square::transformations::RotationSequence;
@@ -10,7 +11,7 @@ impl Geometry {
     // per shape:
     //  shape -> accepts &mut Vertices, writes directly to array that will be passed to GL
     //  shape_cached -> Returns ShapeCache, array of vertices need to define the shape
-    pub fn hexagon(buffer: &[f32; 2], radius: f32, rotation: RotationSequence) -> Hexagon {
+    pub fn hexagon(buffer: [f32; 2], radius: f32, rotation: RotationSequence) -> Hexagon {
         Hexagon::new(buffer, radius, rotation)
     }
 }

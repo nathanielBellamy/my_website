@@ -1,4 +1,5 @@
 
+use std::sync::Arc;
 use std::ops::{Index, IndexMut};
 use crate::magic_square::traits::VertexStore;
 use crate::magic_square::vertices::{Vertex, Vertices};
@@ -17,7 +18,7 @@ impl Hexagon {
     }
     // write to vertices
     // return array to be cached 
-    pub fn new(buffer: &[f32; 2], radius: f32, rotation: RotationSequence) -> Hexagon {
+    pub fn new(buffer: [f32; 2], radius: f32, rotation: RotationSequence) -> Hexagon {
         let center_x = buffer[0];
         let center_y = buffer[1];
         let xy = 0.02 * center_x * center_y;

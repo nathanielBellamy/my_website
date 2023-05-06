@@ -13,8 +13,6 @@
   function handleResize(node: HTMLCanvasElement) {
     height = node.offsetHeight
     width = node.offsetWidth
-
-    console.dir({height, width})
   }
 
   onMount(async () => {
