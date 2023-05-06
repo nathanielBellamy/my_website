@@ -39,7 +39,7 @@ impl MagicSquare {
         // pass immutable reference of h&w to closure
         let height:i32 = canvas.client_height();
         let width:i32 = canvas.client_width();
-        
+
         {
             // init mouse move listener
             // write coordinates to buffer

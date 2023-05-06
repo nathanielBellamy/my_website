@@ -4,6 +4,7 @@ use crate::magic_square::vertices::Vertices;
 use crate::magic_square::transformations::RotationSequence;
 
 pub mod hexagon;
+pub mod cache;
 
 pub struct Geometry;
 
@@ -61,3 +62,5 @@ impl Geometry {
 
         // TODO: subdivide the sides + edges
     // }
+//
+
