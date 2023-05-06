@@ -8,6 +8,7 @@ use crate::magic_square::shader_compiler::ShaderCompiler;
 use crate::magic_square::program_linker::ProgramLinker;
 use crate::magic_square::transformations::{Rotation, RotationSequence};
 use crate::magic_square::geometry::Geometry;
+use crate::magic_square::geometry::cache::{Cache as GeometryCache, CACHE_CAPACITY};
 use crate::magic_square::traits::VertexStore;
 
 #[derive(Clone, Copy)]
@@ -39,6 +40,9 @@ impl MagicSquare {
         // pass immutable reference of h&w to closure
         let height:i32 = canvas.client_height();
         let width:i32 = canvas.client_width();
+        
+
+        let mut geometry_cache = GeometryCache::new(26, [&[0.0]; CACHE_CAPACITY], [&[0.0, 0.0, 0.0, 0.0]; CACHE_CAPACITY]);
 
         {
             // init mouse move listener
@@ -52,7 +56,7 @@ impl MagicSquare {
                 context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
                 buffer[0] = MagicSquare::clip_x(event.offset_x(), width);
                 buffer[1] = MagicSquare::clip_y(event.offset_y(), height);
-                MagicSquare::render_all_lines(buffer, &context);
+                MagicSquare::render_all_lines(buffer, &mut geometry_cache, &context);
             });
 
             canvas
@@ -64,7 +68,7 @@ impl MagicSquare {
     }
 }
 
-pub type Rgba = [f64; 4];
+pub type Rgba = [f32; 4];
 
 impl MagicSquare {
     pub fn clip_x(offset_x: i32, width: i32) -> f32 {
@@ -77,40 +81,36 @@ impl MagicSquare {
         1.0 - ((2.0 * offset_y as f32) / height as f32)
     }
 
-    fn render_all_lines(buffer: [f32; 2], context: &web_sys::WebGl2RenderingContext) {
-        let mut results: [([f32; 42], Rgba); 26] = [([0.0; 42], [0.0, 0.0, 0.0, 0.0]); 26];
+    fn render_all_lines(buffer: [f32; 2], geometry_cache: &mut GeometryCache, context: &web_sys::WebGl2RenderingContext) {
+        let idx = geometry_cache.idx + 1; // avoid 0 idx
+        let rot_seq = RotationSequence::new(
+            Rotation::new(Axis::X, buffer[0] * 3.14 + idx as f32 * 0.05),
+            Rotation::new(Axis::Y, buffer[1] * 3.14 + idx as f32 * 0.05),
+            Rotation::new(Axis::Z, 0.0),
+        );
 
-        for idx in 1..26 {
-            let rot_seq = RotationSequence::new(
-                Rotation::new(Axis::X, buffer[0] * 3.14 + idx as f32 * 0.05),
-                Rotation::new(Axis::Y, buffer[1] * 3.14 + idx as f32 * 0.05),
-                Rotation::new(Axis::Z, 0.0),
-            );
+        let hexagon = Geometry::hexagon(
+            buffer, 
+            0.025 * idx as f32, 
+            rot_seq
+        );
 
-            let vertices_gl = Geometry::hexagon(
-                buffer, 
-                0.025 * idx as f32, 
-                rot_seq
-            ).arr;
+        let rgba = MagicSquare::get_rgba(buffer, idx);
 
-            let rgba = MagicSquare::get_rgba(buffer, idx);
+        // geometry_cache.set_next(&hexagon.arr, &rgba);
 
-            results[idx] = (vertices_gl, rgba);
-        }
-
-
-        for res in results {
-            MagicSquare::render(&res.0, &res.1, &context).expect("Render error");
+        for idx in  0..geometry_cache.max_idx {
+            MagicSquare::render(geometry_cache.vertices[idx], geometry_cache.rgbas[idx], &context).expect("Render error");
         }
     }
 
     fn get_rgba(buffer: [f32; 2], idx: usize) -> Rgba {
         let mut result: Rgba = [0.0, 0.0, 0.0, 0.0];
 
-        result[0] = 1.0 - buffer[0] as f64;
-        result[1] = 1.0 - buffer[1] as f64;
-        result[2] = 1.0 - (buffer[0] * buffer[1]) as f64;
-        result[3] = 0.1 * idx as f64;
+        result[0] = 1.0 - buffer[0];
+        result[1] = 1.0 - buffer[1];
+        result[2] = 1.0 - buffer[0] * buffer[1];
+        result[3] = 0.1 * idx as f32;
         result
     }
 
