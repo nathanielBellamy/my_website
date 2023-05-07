@@ -58,3 +58,11 @@ impl Rotation {
         }
     } 
 }
+
+#[derive(Clone, Copy)]
+pub struct Translation {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32
+}
+

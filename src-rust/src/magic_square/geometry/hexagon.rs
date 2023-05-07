@@ -2,10 +2,10 @@
 use std::sync::Arc;
 use std::ops::{Index, IndexMut};
 use crate::magic_square::traits::VertexStore;
-use crate::magic_square::vertices::{Vertex, Vertices};
-use crate::magic_square::transformations::RotationSequence;
+use crate::magic_square::vertices::Vertex;
+use crate::magic_square::transformations::{RotationSequence, Translation};
 
-const HEXAGON_ARR_LEN: usize = 42;
+const HEXAGON_ARR_LEN: usize = 1200;
 
 pub struct Hexagon {
     pub arr: [f32; HEXAGON_ARR_LEN], // # coordinates needed to define hexagon
@@ -18,11 +18,12 @@ impl Hexagon {
     }
     // write to vertices
     // return array to be cached 
-    pub fn new(buffer: [f32; 2], radius: f32, rotation: RotationSequence) -> Hexagon {
-        let center_x = buffer[0];
-        let center_y = buffer[1];
-        let xy = 0.02 * center_x * center_y;
-
+    pub fn new(
+        radius: f32, 
+        rotation: RotationSequence,
+        translation: Translation
+    ) -> Hexagon {
+        let xy = 0.0;
         let x_shift = radius * 0.5; // r cos(pi/3)
         let y_shift = radius * 0.86602540378; // r sin(pi/3)
         
@@ -32,79 +33,93 @@ impl Hexagon {
         // start north east corner
         // end east corner
         hexagon.set_next(
-            Vertex::new(center_x + x_shift, center_y + y_shift, xy)
+            Vertex::new(x_shift, y_shift, xy)
                 .rot(rotation)
+                .translate(translation)
         );
         hexagon.set_next(
-            Vertex::new(center_x + radius, center_y, xy)
+            Vertex::new(radius, 0.0, xy)
                 .rot(rotation)
-        );
-
-        // start east corner
-        // end south east corner
-        hexagon.set_next(
-            Vertex::new(center_x + radius, center_y, xy)
-                .rot(rotation)
-        );
-        hexagon.set_next(
-            Vertex::new(center_x + x_shift, center_y - y_shift, xy)
-                .rot(rotation)
+                .translate(translation)
         );
 
         // start east corner
         // end south east corner
         hexagon.set_next(
-            Vertex::new(center_x + radius, center_y, xy)
+            Vertex::new(radius, 0.0, xy)
                 .rot(rotation)
+                .translate(translation)
         );
         hexagon.set_next(
-            Vertex::new(center_x + x_shift, center_y - y_shift, xy)
+            Vertex::new(x_shift, -y_shift, xy)
                 .rot(rotation)
+                .translate(translation)
+        );
+
+        // start east corner
+        // end south east corner
+        hexagon.set_next(
+            Vertex::new(radius, 0.0, xy)
+                .rot(rotation)
+                .translate(translation)
+        );
+        hexagon.set_next(
+            Vertex::new(x_shift, -y_shift, xy)
+                .rot(rotation)
+                .translate(translation)
         );
 
         // start south east corner
         // end south west corner
         hexagon.set_next(
-            Vertex::new(center_x + x_shift, center_y - y_shift, xy)
+            Vertex::new(x_shift, -y_shift, xy)
                 .rot(rotation)
+                .translate(translation)
         );
         hexagon.set_next(
-            Vertex::new(center_x - x_shift, center_y - y_shift, xy)
+            Vertex::new(-x_shift, -y_shift, xy)
                 .rot(rotation)
+                .translate(translation)
         );
 
         // start south west corner
         // end west corner
         hexagon.set_next(
-            Vertex::new(center_x - x_shift, center_y - y_shift, xy)
+            Vertex::new(-x_shift, -y_shift, xy)
                 .rot(rotation)
+                .translate(translation)
         );
         hexagon.set_next(
-            Vertex::new(center_x - radius, center_y, xy)
+            Vertex::new(-radius, 0.0, xy)
                 .rot(rotation)
+                .translate(translation)
         );
 
         // start west corner
         // end north west corner
         hexagon.set_next(
-            Vertex::new(center_x - radius, center_y, xy)
+            Vertex::new(-radius, 0.0, xy)
                 .rot(rotation)
+                .translate(translation)
         );
         hexagon.set_next(
-            Vertex::new(center_x - x_shift, center_y + y_shift, xy)
+            Vertex::new(-x_shift, y_shift, xy)
                 .rot(rotation)
+                .translate(translation)
         );
 
 
         // start north west corner
         // end north east corner
         hexagon.set_next( 
-            Vertex::new(center_x - x_shift, center_y + y_shift, xy)
+            Vertex::new(-x_shift, y_shift, xy)
                 .rot(rotation)
+                .translate(translation)
         );
         hexagon.set_next(
-            Vertex::new(center_x + x_shift, center_y + y_shift, xy)
+            Vertex::new(x_shift, y_shift, xy)
                 .rot(rotation)
+                .translate(translation)
         );
         
         hexagon

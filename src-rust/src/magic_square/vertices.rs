@@ -2,11 +2,11 @@ use std::ops::{Index, IndexMut};
 use std::convert::From;
 use ndarray::prelude::*;
 use ndarray::Array;
-use crate::magic_square::transformations::RotationSequence;
+use crate::magic_square::transformations::{RotationSequence, Translation};
 use super::traits::VertexStore;
 
 const ORIGIN: Vertex = Vertex { arr: [0.0, 0.0, 0.0] };
-const VERTEX_ARRAY_SIZE: usize = 3_000; // allows 1000 vertices
+const VERTEX_ARRAY_SIZE: usize = 1_200; // allows 400 vertices
 
 pub type VertexArr = [f32; VERTEX_ARRAY_SIZE];
 
@@ -38,6 +38,14 @@ impl Vertex {
 
     pub fn rot(&self, rotation: RotationSequence) ->  Vertex {
         self.lh_mult(rotation.matrix())
+    }
+
+    pub fn translate(&self, translation: Translation) -> Vertex {
+        Vertex {
+            arr: [
+                self[0] + translation.x, self[1] + translation.y, self[2] + translation.z
+            ]
+        }
     }
 }
 
