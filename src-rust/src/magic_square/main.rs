@@ -1,6 +1,5 @@
 use std::rc::Rc;
 use std::sync::{Arc, Mutex};
-
 use wasm_bindgen::prelude::*;
 use web_sys::WebGl2RenderingContext;
 use crate::magic_square::vertices::Vertices;
@@ -10,6 +9,7 @@ use crate::magic_square::transformations::{Rotation, RotationSequence, Translati
 use crate::magic_square::geometry::{Geometry, Shape};
 use crate::magic_square::geometry::cache::{Cache as GeometryCache, CACHE_CAPACITY};
 use crate::magic_square::traits::VertexStore;
+use super::geometry::icosohedron::Icosohedron;
 
 #[derive(Clone, Copy)]
 pub enum Axis {
@@ -41,13 +41,18 @@ impl MagicSquare {
         let height:i32 = canvas.client_height();
         let width:i32 = canvas.client_width();
         
-
         let mut geometry_cache = GeometryCache::new(
-            50, 
+            26, 
             [[0.0; 1_200]; CACHE_CAPACITY], 
             [[0.0, 0.0, 0.0, 0.0]; CACHE_CAPACITY],
             [Shape::None; CACHE_CAPACITY]
         );
+        
+
+        let context: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
+        context.clear_color(0.0, 0.0, 0.0, 0.0);
+        context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
+        MagicSquare::render_all_lines([0.0, 0.0], &mut geometry_cache, &context);
 
         {
             // init mouse move listener
@@ -91,29 +96,35 @@ impl MagicSquare {
         geometry_cache: &mut GeometryCache, 
         context: &web_sys::WebGl2RenderingContext
     ) {
-        for i in 1..CACHE_CAPACITY {
+        for _ in 1..geometry_cache.max_idx + 1 { //TODO: settings.cache_per
             let idx = geometry_cache.idx + 1;// avoid 0 idx
             let rot_seq = RotationSequence::new(
-                Rotation::new(Axis::X, buffer[0] * 3.14 * (idx as f32) * 0.05),
-                Rotation::new(Axis::Y, buffer[1] * 3.14 + idx as f32 * 0.05),
+                Rotation::new(Axis::X, buffer[0] * 3.14), // + (idx as f32) * 0.05),
+                Rotation::new(Axis::Y, buffer[1] * 3.14), // + (idx as f32) * 0.05),
                 Rotation::new(Axis::Z, 0.0),
             );
 
-            let translation = Translation { x: buffer[0], y: buffer[1], z: 0.0 };
+            let translation = Translation { x: 0.0, y: 0.0, z: 0.0 }; // { x: buffer[0], y: buffer[1], z: 0.0 };
 
-            let hexagon = Geometry::hexagon(
-                0.025 * idx as f32, 
+            // let hexagon = Geometry::hexagon(
+            //     0.025 * idx as f32, 
+            //     rot_seq,
+            //     translation
+            // );
+
+            let icosohedron = Geometry::icosohedron(
+                0.25 * idx as f32, 
                 rot_seq,
                 translation
             );
 
             let rgba = MagicSquare::get_rgba(buffer, idx);
 
-            geometry_cache.set_next(hexagon.arr, rgba, Shape::Hexagon);
+            geometry_cache.set_next(icosohedron.arr, rgba, Shape::Icosohedron);
         }
 
 
-        for idx in 0..geometry_cache.max_idx {
+        for idx in 0..geometry_cache.max_idx { // settings.
             MagicSquare::render(
                 geometry_cache.gl_vertices(idx), 
                 &geometry_cache.rgbas[idx], 

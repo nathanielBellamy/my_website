@@ -2,7 +2,7 @@ use crate::magic_square::main::Rgba;
 use crate::magic_square::vertices::VertexArr;
 use crate::magic_square::geometry::Shape;
 
-pub const CACHE_CAPACITY: usize = 26;
+pub const CACHE_CAPACITY: usize = 50;
 
 pub struct Cache {
     pub idx: usize, // get & set
@@ -52,6 +52,7 @@ impl Cache {
     pub fn gl_vert_len_from_shape(shape: Shape) -> usize {
         match shape {
             Shape::Hexagon => 42,
+            Shape::Icosohedron => 300,
             Shape::None => 0,
             _ => 0
         }

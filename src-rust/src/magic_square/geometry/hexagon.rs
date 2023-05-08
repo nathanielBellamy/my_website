@@ -2,19 +2,17 @@
 use std::sync::Arc;
 use std::ops::{Index, IndexMut};
 use crate::magic_square::traits::VertexStore;
-use crate::magic_square::vertices::Vertex;
+use crate::magic_square::vertices::{Vertex, VERTEX_ARRAY_SIZE};
 use crate::magic_square::transformations::{RotationSequence, Translation};
 
-const HEXAGON_ARR_LEN: usize = 1200;
-
 pub struct Hexagon {
-    pub arr: [f32; HEXAGON_ARR_LEN], // # coordinates needed to define hexagon
+    pub arr: [f32; VERTEX_ARRAY_SIZE], // # coordinates needed to define hexagon
     idx: usize
 }
 
 impl Hexagon {
     fn init() -> Hexagon {
-        Hexagon { arr: [0.0; HEXAGON_ARR_LEN], idx: 0 }
+        Hexagon { arr: [0.0; VERTEX_ARRAY_SIZE], idx: 0 }
     }
     // write to vertices
     // return array to be cached 

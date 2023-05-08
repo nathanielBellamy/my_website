@@ -1,10 +1,17 @@
 use std::sync::Arc;
 use crate::magic_square::geometry::hexagon::Hexagon;
+use crate::magic_square::geometry::icosohedron::Icosohedron;
 use crate::magic_square::vertices::Vertices;
 use crate::magic_square::transformations::{RotationSequence, Translation};
 
-pub mod hexagon;
+// store
 pub mod cache;
+
+// shapes
+pub mod hexagon;
+pub mod icosohedron;
+
+
 
 pub struct Geometry;
 
@@ -28,6 +35,14 @@ impl Geometry {
         translation: Translation
     ) -> Hexagon {
         Hexagon::new(radius, rotation, translation)
+    }
+
+    pub fn icosohedron(
+        radius: f32,
+        rotation: RotationSequence,
+        translation: Translation
+    ) -> Icosohedron {
+        Icosohedron::new(radius, rotation, translation)
     }
 }
 
