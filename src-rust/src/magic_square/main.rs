@@ -1,4 +1,5 @@
 use std::rc::Rc;
+use std::thread;
 use std::sync::{Arc, Mutex};
 use wasm_bindgen::prelude::*;
 use web_sys::WebGl2RenderingContext;
@@ -30,6 +31,19 @@ impl MagicSquare {
     // Entry point into Rust WASM from JS
     // https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
     pub fn run() -> Result<(), JsValue> {
+        // let mut handles = vec![];
+        // for i in 1..5 {
+        //     let handler = thread::spawn(|| {
+        //         let x = 1 + 1;
+        //     });
+        //     handles.push(handler);
+        // }
+
+        // for handle in handles {
+        //     handle.join().unwrap();
+        // }
+
+        ////////
         let canvas = MagicSquare::canvas().dyn_into::<web_sys::HtmlCanvasElement>()?;
         let canvas = Rc::new(canvas);
 
