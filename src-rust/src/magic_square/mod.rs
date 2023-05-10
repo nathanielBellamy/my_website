@@ -6,3 +6,4 @@ pub mod shader_compiler;
 pub mod traits;
 pub mod transformations;
 pub mod vertices;
+pub mod worker;

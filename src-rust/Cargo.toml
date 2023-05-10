@@ -29,4 +29,5 @@ features = [
   'WebGlProgram',
   'WebGlShader',
   'Window',
+  'Worker'
 ]

@@ -11,6 +11,7 @@ use crate::magic_square::geometry::{Geometry, Shape};
 use crate::magic_square::geometry::cache::{Cache as GeometryCache, CACHE_CAPACITY};
 use crate::magic_square::traits::VertexStore;
 use super::geometry::icosohedron::Icosohedron;
+use crate::magic_square::worker::Worker;
 
 #[derive(Clone, Copy)]
 pub enum Axis {
@@ -31,19 +32,15 @@ impl MagicSquare {
     // Entry point into Rust WASM from JS
     // https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
     pub fn run() -> Result<(), JsValue> {
-        // let mut handles = vec![];
-        // for i in 1..5 {
-        //     let handler = thread::spawn(|| {
-        //         let x = 1 + 1;
-        //     });
-        //     handles.push(handler);
-        // }
 
-        // for handle in handles {
-        //     handle.join().unwrap();
-        // }
+        // testing multithreading
+        //
+        let (to_worker, from_main) = std::sync::mpsc::channel();
+        let (to_main, from_worker) = std::sync::mpsc::channel();
+        Worker::spawn(move || { to_main.send(from_main.recv().unwrap() + 1.0); });
+        to_worker.send(1.0);
+        assert_eq!(from_worker.recv().unwrap(), 2.0);
 
-        ////////
         let canvas = MagicSquare::canvas().dyn_into::<web_sys::HtmlCanvasElement>()?;
         let canvas = Rc::new(canvas);
 
