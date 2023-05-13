@@ -1,6 +1,6 @@
 <script lang='ts'>
   import { onMount } from 'svelte'
-  import * as rust from "../../src-rust/pkg/src_rust.js"
+  // import * as rust from "../../src-rust/pkg/src_rust.js"
 
   let title = "Give Me a Sine"
 
@@ -8,7 +8,7 @@
 
   onMount(async () => {
     await timeout(50) // await wasm init
-    new rust.GmasWasm
+    // new rust.GmasWasm
   })
 
   interface GmasRangeInput {

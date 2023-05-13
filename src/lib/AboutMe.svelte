@@ -6,6 +6,7 @@
 
   enum EmbeddedProgram {
     giveMeASign,
+    polynomialConsoleGraph,
     none
   }
 

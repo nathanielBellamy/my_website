@@ -35,11 +35,11 @@ impl MagicSquare {
 
         // testing multithreading
         //
-        let (to_worker, from_main) = std::sync::mpsc::channel();
-        let (to_main, from_worker) = std::sync::mpsc::channel();
-        Worker::spawn(move || { to_main.send(from_main.recv().unwrap() + 1.0); });
-        to_worker.send(1.0);
-        assert_eq!(from_worker.recv().unwrap(), 2.0);
+        // let (to_worker, from_main) = std::sync::mpsc::channel();
+        // let (to_main, from_worker) = std::sync::mpsc::channel();
+        // Worker::spawn(move || { to_main.send(from_main.recv().unwrap() + 1.0); });
+        // to_worker.send(1.0);
+        // assert_eq!(from_worker.recv().unwrap(), 2.0);
 
         let canvas = MagicSquare::canvas().dyn_into::<web_sys::HtmlCanvasElement>()?;
         let canvas = Rc::new(canvas);
@@ -51,24 +51,26 @@ impl MagicSquare {
         // pass immutable reference of h&w to closure
         let height:i32 = canvas.client_height();
         let width:i32 = canvas.client_width();
-        
-        let mut geometry_cache = GeometryCache::new(
-            26, 
-            [[0.0; 1_200]; CACHE_CAPACITY], 
-            [[0.0, 0.0, 0.0, 0.0]; CACHE_CAPACITY],
-            [Shape::None; CACHE_CAPACITY]
-        );
+        let mut geometry_cache = Arc::new(Mutex::new(
+            GeometryCache::new(
+                26, 
+                [[0.0; 1_200]; CACHE_CAPACITY], 
+                [[0.0, 0.0, 0.0, 0.0]; CACHE_CAPACITY],
+                [Shape::None; CACHE_CAPACITY]
+            )
+        ));
         
 
         let context: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
         context.clear_color(0.0, 0.0, 0.0, 0.0);
         context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
-        MagicSquare::render_all_lines([0.0, 0.0], &mut geometry_cache, &context);
+        MagicSquare::render_all_lines([0.0, 0.0], geometry_cache.clone(), &context);
 
         {
             // init mouse move listener
             // write coordinates to buffer
             let mut buffer: [f32; 2] = [0.0, 0.0]; // Buffer::new();
+            let geometry_cache = geometry_cache.clone();
 
             let canvas = canvas.clone();
             let context: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
@@ -77,7 +79,7 @@ impl MagicSquare {
                 context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
                 buffer[0] = MagicSquare::clip_x(event.offset_x(), width);
                 buffer[1] = MagicSquare::clip_y(event.offset_y(), height);
-                MagicSquare::render_all_lines(buffer, &mut geometry_cache, &context);
+                MagicSquare::render_all_lines(buffer, geometry_cache.clone(), &context);
             });
 
             canvas
@@ -104,11 +106,12 @@ impl MagicSquare {
 
     fn render_all_lines(
         buffer: [f32; 2], 
-        geometry_cache: &mut GeometryCache, 
+        geometry_cache: Arc<Mutex<GeometryCache>>, 
         context: &web_sys::WebGl2RenderingContext
     ) {
-        for _ in 1..geometry_cache.max_idx + 1 { //TODO: settings.cache_per
-            let idx = geometry_cache.idx + 1;// avoid 0 idx
+        for idx in 0..2 { // geometry_cache.max_idx + 1 { //TODO: settings.cache_per
+            let geometry_cache = geometry_cache.clone();
+            // let  idx = geometry_cache.idx + 1;// avoid 0 idx
             let rot_seq = RotationSequence::new(
                 Rotation::new(Axis::X, buffer[0] * 3.14), // + (idx as f32) * 0.05),
                 Rotation::new(Axis::Y, buffer[1] * 3.14), // + (idx as f32) * 0.05),
@@ -124,18 +127,20 @@ impl MagicSquare {
             // );
 
             let icosohedron = Geometry::icosohedron(
-                0.25 * idx as f32, 
+                0.25 * idx as f32 + 0.01, 
                 rot_seq,
                 translation
             );
 
             let rgba = MagicSquare::get_rgba(buffer, idx);
-
-            geometry_cache.set_next(icosohedron.arr, rgba, Shape::Icosohedron);
+            
+            Worker::spawn(move || {
+                geometry_cache.lock().unwrap().set_next(icosohedron.arr, rgba, Shape::Icosohedron);
+            });
         }
 
-
-        for idx in 0..geometry_cache.max_idx { // settings.
+        let geometry_cache = geometry_cache.lock().unwrap();
+        for idx in 0..2 {//geometry_cache.max_idx { // settings.
             MagicSquare::render(
                 geometry_cache.gl_vertices(idx), 
                 &geometry_cache.rgbas[idx], 
