@@ -2,7 +2,6 @@
   import Embed from "./Embed.svelte"
     import GiveMeASine from "./GiveMeASine.svelte";
   import PolynomialConsoleGraph from "./PolynomialConsoleGraph.svelte"
-  import Wasm from "./Wasm.svelte"
 
   enum EmbeddedProgram {
     giveMeASign,
@@ -120,7 +119,6 @@
       description: 'Responsive UI Design',
       href: 'https://getbootstrap.com/docs/3.4/css/'
     },
-
   ]
 
   const openLinkInNewTab = (href: string) => {
@@ -162,7 +160,7 @@
   </div>
   <Embed css_class="row-span-2">
     {#if showEmbed == EmbeddedProgram.giveMeASign}
-      <Wasm program="giveMeASine"/>
+      <GiveMeASine />
     {:else if showEmbed == EmbeddedProgram.polynomialConsoleGraph}
       <PolynomialConsoleGraph />
     {/if}

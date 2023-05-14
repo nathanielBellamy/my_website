@@ -1,8 +1,8 @@
 <script lang="ts">
   import AboutMe from "./lib/AboutMe.svelte"
   import MagicBanner from "./lib/MagicBanner.svelte"
+  import MagicSquare from "./lib/MagicSquare.svelte"
   import Title from "./lib/Title.svelte"
-  import Wasm from "./lib/Wasm.svelte"
   
   const setCurrentSection = (newSection: string) => {
     currentSection = newSection
@@ -35,7 +35,7 @@
   <div class="main_body">
     {#if currentSection == "magicSquare"}
       <Title title="Magic Square"/>
-      <Wasm program="magicSquare"/>
+      <MagicSquare />
     {:else}
       <div>
         <Title title="About Me"

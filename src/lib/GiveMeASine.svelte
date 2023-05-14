@@ -8,7 +8,6 @@
   onMount(async () => {
     await wasm_bindgen()
     const { GmasWasm, init_message } = wasm_bindgen
-    console.log({GmasWasm})
     console.log(init_message("Wasm Running for GMAS"))
     new GmasWasm
   })
