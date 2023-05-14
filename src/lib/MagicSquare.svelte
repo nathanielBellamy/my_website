@@ -12,14 +12,11 @@
     let element = document.getElementById("magic_square")
     height = element.offsetHeight
     width = element.offsetWidth
-
-    await timeout(150) // await wasm init
-
+    
+    await wasm_bindgen()
     const { MagicSquare, init_message } = wasm_bindgen
-    wasm_bindgen('./src-rust/pkg/src_rust_bg.wasm').then(() => {
-      console.log(init_message("Wasm Running for Magic Square"))
-      MagicSquare.run()
-    }).catch(console.error)
+    console.log(init_message("Wasm Running for Magic Square"))
+    MagicSquare.run()
   })
 </script>
 

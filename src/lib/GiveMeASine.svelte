@@ -1,14 +1,16 @@
 <script lang='ts'>
   import { onMount } from 'svelte'
-  // import * as rust from "../../src-rust/pkg/src_rust.js"
 
   let title = "Give Me a Sine"
 
   const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-
+  
   onMount(async () => {
-    await timeout(50) // await wasm init
-    // new rust.GmasWasm
+    await wasm_bindgen()
+    const { GmasWasm, init_message } = wasm_bindgen
+    console.log({GmasWasm})
+    console.log(init_message("Wasm Running for GMAS"))
+    new GmasWasm
   })
 
   interface GmasRangeInput {

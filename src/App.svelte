@@ -3,14 +3,13 @@
   import MagicBanner from "./lib/MagicBanner.svelte"
   import Title from "./lib/Title.svelte"
   import Wasm from "./lib/Wasm.svelte"
-
+  
   const setCurrentSection = (newSection: string) => {
     currentSection = newSection
   }
 
-  let currentSection: string = "magicSquare"
+  let currentSection: string = "aboutMe"// "magicSquare"
 </script>
-
 
 <main class="main rounded-md flex flex-col justify-start">
   <div class="main_header grid grid-cols-10">

@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "cd src-rust && cargo build --release && cd .. && wasm-bindgen ./src-rust/target/wasm32-unknown-unknown/release/src_rust.wasm --target=no-modules --out-dir=pkg && vite",
     "build": "cd src-rust & cargo fmt --all & wasm-pack build --target web & cd .. && vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json"

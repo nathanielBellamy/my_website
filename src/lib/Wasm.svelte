@@ -1,16 +1,19 @@
 <script lang="ts">
+  import GiveMeASine from "./GiveMeASine.svelte"
   import MagicSquare from "./MagicSquare.svelte"
 
   export let program: string = "magicSquare"
+
+
 </script>
 
 <div class="wasm_container">
-  <script src="./src-rust/pkg/src_rust.js"></script>
-  {#if program == "magicSquare"}
+  {#if program == "giveMeASine"}
+    <GiveMeASine />
+  {:else if program == "magicSquare"}
     <MagicSquare />
   {/if}
 </div>
-
 
 <style lang="sass">
   .wasm_container

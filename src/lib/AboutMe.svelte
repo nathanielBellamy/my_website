@@ -1,8 +1,8 @@
 <script lang="ts">
   import Embed from "./Embed.svelte"
-  import GiveMeASine from "./GiveMeASine.svelte"
+    import GiveMeASine from "./GiveMeASine.svelte";
   import PolynomialConsoleGraph from "./PolynomialConsoleGraph.svelte"
-
+  import Wasm from "./Wasm.svelte"
 
   enum EmbeddedProgram {
     giveMeASign,
@@ -162,7 +162,7 @@
   </div>
   <Embed css_class="row-span-2">
     {#if showEmbed == EmbeddedProgram.giveMeASign}
-      <GiveMeASine />
+      <Wasm program="giveMeASine"/>
     {:else if showEmbed == EmbeddedProgram.polynomialConsoleGraph}
       <PolynomialConsoleGraph />
     {/if}

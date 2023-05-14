@@ -1,4 +1,5 @@
-//
-//
-// import("./main.ts")
-//   .catch((e) => console.error("Error importing src/main.ts", e))
+
+
+import("./main.ts")
+  .then(() => wasm_bindgen())
+  .catch((e) => console.error("Error importing src/main.ts", e))
