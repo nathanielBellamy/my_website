@@ -1,15 +1,11 @@
 <script lang='ts'>
   import { onMount } from 'svelte'
 
-  let title = "Give Me a Sine"
-
-  const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-  
   onMount(async () => {
     await wasm_bindgen()
     const { GmasWasm, init_message } = wasm_bindgen
     console.log(init_message("Wasm Running for GMAS"))
-    new GmasWasm
+    GmasWasm.run()
   })
 
   interface GmasRangeInput {
@@ -124,9 +120,6 @@
     
       .device_form
         max-height: 100px
-
-  .gmas_graph_row
-    margin: 0px
 
   .title
     color: color.$blue-2

@@ -1,17 +1,25 @@
 use std::rc::Rc;
-use std::thread;
 use std::sync::{Arc, Mutex};
 use wasm_bindgen::prelude::*;
 use web_sys::WebGl2RenderingContext;
-use crate::magic_square::vertices::Vertices;
+// use crate::magic_square::vertices::Vertices;
 use crate::magic_square::shader_compiler::ShaderCompiler;
 use crate::magic_square::program_linker::ProgramLinker;
 use crate::magic_square::transformations::{Rotation, RotationSequence, Translation};
 use crate::magic_square::geometry::{Geometry, Shape};
 use crate::magic_square::geometry::cache::{Cache as GeometryCache, CACHE_CAPACITY};
-use crate::magic_square::traits::VertexStore;
-use super::geometry::icosohedron::Icosohedron;
+// use crate::magic_square::traits::VertexStore;
+// use super::geometry::icosohedron::Icosohedron;
 use crate::magic_square::worker::Worker;
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
+
+    #[wasm_bindgen(js_name = "performance")]
+    pub static PERFORMANCE: web_sys::Performance;
+}
 
 #[derive(Clone, Copy)]
 pub enum Axis {
@@ -29,9 +37,12 @@ pub struct MagicSquare;
 
 #[wasm_bindgen]
 impl MagicSquare {
+
     // Entry point into Rust WASM from JS
     // https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
     pub fn run() -> Result<(), JsValue> {
+
+        log("fooooo");
 
         // testing multithreading
         //
@@ -51,7 +62,7 @@ impl MagicSquare {
         // pass immutable reference of h&w to closure
         let height:i32 = canvas.client_height();
         let width:i32 = canvas.client_width();
-        let mut geometry_cache = Arc::new(Mutex::new(
+        let geometry_cache = Arc::new(Mutex::new(
             GeometryCache::new(
                 26, 
                 [[0.0; 1_200]; CACHE_CAPACITY], 
@@ -60,12 +71,14 @@ impl MagicSquare {
             )
         ));
         
+        log("here!");
 
         let context: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
-        context.clear_color(0.0, 0.0, 0.0, 0.0);
+        context.clear_color(1.0, 1.0, 0.0, 0.0);
         context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
         MagicSquare::render_all_lines([0.0, 0.0], geometry_cache.clone(), &context);
-
+        
+        log("there!");
         {
             // init mouse move listener
             // write coordinates to buffer
@@ -134,7 +147,7 @@ impl MagicSquare {
 
             let rgba = MagicSquare::get_rgba(buffer, idx);
             
-            Worker::spawn(move || {
+            let _ = Worker::spawn(move || {
                 geometry_cache.lock().unwrap().set_next(icosohedron.arr, rgba, Shape::Icosohedron);
             });
         }

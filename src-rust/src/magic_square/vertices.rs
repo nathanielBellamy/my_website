@@ -5,7 +5,7 @@ use ndarray::Array;
 use crate::magic_square::transformations::{RotationSequence, Translation};
 use super::traits::VertexStore;
 
-const ORIGIN: Vertex = Vertex { arr: [0.0, 0.0, 0.0] };
+// const ORIGIN: Vertex = Vertex { arr: [0.0, 0.0, 0.0] };
 pub const VERTEX_ARRAY_SIZE: usize = 1_200; // allows 400 vertices
 
 pub type VertexArr = [f32; VERTEX_ARRAY_SIZE];
@@ -108,7 +108,7 @@ impl Vertices {
         self.arr;
     }
 
-    pub fn set_slice<T>(geometry: T) {
-        //
-    }
+    // pub fn set_slice<T>(geometry: T) {
+    //     //
+    // }
 }

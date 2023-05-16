@@ -1,7 +1,5 @@
-use std::sync::Arc;
 use crate::magic_square::geometry::hexagon::Hexagon;
 use crate::magic_square::geometry::icosohedron::Icosohedron;
-use crate::magic_square::vertices::Vertices;
 use crate::magic_square::transformations::{RotationSequence, Translation};
 
 // store

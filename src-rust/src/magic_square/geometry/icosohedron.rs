@@ -4,9 +4,8 @@ use crate::magic_square::vertices::{Vertex, VERTEX_ARRAY_SIZE};
 use crate::magic_square::transformations::{RotationSequence, Translation};
 
 const PI: f32 = std::f32::consts::PI;
-const PHI: f32 = 1.618033988749; // golden ratio (1 + 5.sqrt())/2
 
-const H_ANGLE: f32 = PI / (180.0 * 72.0); // 72 degrees = 2pi/5; rotate horizontal
+// const H_ANGLE: f32 = PI / (180.0 * 72.0); // 72 degrees = 2pi/5; rotate horizontal
 // const V_ANGLE: f32 = 0.5_f32.atan(); // elevation = 26.565 degrees
 // const V_ANGLE_SIN: f32 = V_ANGLE.sin();
 // const V_ANGLE_COS: f32 = V_ANGLE.cos();

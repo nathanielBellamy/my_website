@@ -1,7 +1,6 @@
 <script lang="ts" type="module">
   import { onMount } from 'svelte'
 
-  const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
   let height: number = 0
   let width: number = 0
 
@@ -16,6 +15,7 @@
     await wasm_bindgen()
     const { MagicSquare, init_message } = wasm_bindgen
     console.log(init_message("Wasm Running for Magic Square"))
+    
     MagicSquare.run()
   })
 </script>

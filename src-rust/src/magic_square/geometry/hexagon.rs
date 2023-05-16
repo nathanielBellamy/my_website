@@ -1,5 +1,4 @@
 
-use std::sync::Arc;
 use std::ops::{Index, IndexMut};
 use crate::magic_square::traits::VertexStore;
 use crate::magic_square::vertices::{Vertex, VERTEX_ARRAY_SIZE};
