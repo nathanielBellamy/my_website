@@ -4,10 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "cd src-rust && wasm-pack && wasm-bindgen ./target/wasm32-unknown-unknown/release/src_rust.wasm --target=no-modules --out-dir=pkg && cd .. && vite",
+    "dev": "vite",
     "build": "cd src-rust & cargo fmt --all & wasm-pack build --target web & cd .. && vite build",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "build-rust-wasm": "cd src-rust && wasm-pack build --target no-modules --out-dir ../pkg && cd .."
   },
   "devDependencies": {
     "@rollup/plugin-wasm": "^6.1.2",

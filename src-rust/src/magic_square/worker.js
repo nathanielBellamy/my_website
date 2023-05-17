@@ -1,7 +1,7 @@
 // js loaded using workers to achieve multithreading
 // https://www.tweag.io/blog/2022-11-24-wasm-threads-and-messages/
 
-importScripts("../../pkg/src_rust.js")
+importScripts("../../../pkg/src_rust.js")
 
 const { child_entry_point } = wasm_bindgen
 

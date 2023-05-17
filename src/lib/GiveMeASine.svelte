@@ -2,7 +2,7 @@
   import { onMount } from 'svelte'
 
   onMount(async () => {
-    await wasm_bindgen()
+    await wasm_bindgen() // loaded in index.html from pkg/src_rust.js
     const { GmasWasm, init_message } = wasm_bindgen
     console.log(init_message("Wasm Running for GMAS"))
     GmasWasm.run()
