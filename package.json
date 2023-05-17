@@ -24,6 +24,7 @@
     "vite": "^4.2.0"
   },
   "dependencies": {
+    "@jaames/iro": "^5.5.2",
     "node-sass": "^8.0.0",
     "svelte-watch-resize": "^1.0.3"
   }

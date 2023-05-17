@@ -1,5 +1,6 @@
 use std::rc::Rc;
-use std::sync::{Arc, Mutex};
+use std::cell::RefCell;
+// use std::sync::{Arc, Mutex};
 use wasm_bindgen::prelude::*;
 use web_sys::WebGl2RenderingContext;
 // use crate::magic_square::vertices::Vertices;
@@ -8,9 +9,10 @@ use crate::magic_square::program_linker::ProgramLinker;
 use crate::magic_square::transformations::{Rotation, RotationSequence, Translation};
 use crate::magic_square::geometry::{Geometry, Shape};
 use crate::magic_square::geometry::cache::{Cache as GeometryCache, CACHE_CAPACITY};
+use crate::magic_square::ui_buffer::UiBuffer;
 // use crate::magic_square::traits::VertexStore;
 // use super::geometry::icosohedron::Icosohedron;
-use crate::magic_square::worker::Worker;
+// use crate::magic_square::worker::Worker;
 
 #[wasm_bindgen]
 extern "C" {
@@ -37,7 +39,6 @@ pub struct MagicSquare;
 
 #[wasm_bindgen]
 impl MagicSquare {
-
     // Entry point into Rust WASM from JS
     // https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
     pub fn run() -> Result<(), JsValue> {
@@ -68,24 +69,58 @@ impl MagicSquare {
             );
         // )); 
         
+        let form = MagicSquare::form();
+        let form = Rc::new(form);
+        let mut ui_buffer = UiBuffer::new();
+
+        let mut mouse_pos_buffer: [f32; 2] = [0.0, 0.0]; // Buffer::new();
+
+
+        
         let context: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
         context.clear_color(1.0, 1.0, 0.0, 0.0);
         context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
-        MagicSquare::render_all_lines([0.0, 0.0], &mut geometry_cache, &context);
+        MagicSquare::render_all_lines([0.0, 0.0], &ui_buffer, &mut geometry_cache, &context);
+    
+        {
+            // init UI control settings listener
+            let form = form.clone();
+
+            let closure_handle_input =
+                Closure::<dyn FnMut(_)>::new(move |event: web_sys::Event| {
+                    let input = event
+                        .target()
+                        .unwrap()
+                        .dyn_into::<web_sys::HtmlInputElement>()
+                        .unwrap();
+                    let id = input.id();
+                    log(&id);
+                    let val = input.value();
+                    let ui_buffer = &mut ui_buffer;
+
+                    ui_buffer.update(id, val);
+                });
+
+            form.add_event_listener_with_callback(
+                "input",
+                closure_handle_input.as_ref().unchecked_ref(),
+            )
+            .unwrap();
+            closure_handle_input.forget(); // allow JS to garbage collect the listener
+        }
         
         {
             // init mouse move listener
-            // write coordinates to buffer
-            let mut buffer: [f32; 2] = [0.0, 0.0]; // Buffer::new();
+            // write coordinates to mouse_pos_buffer
 
             let canvas = canvas.clone();
             let context: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
             let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::MouseEvent| {
                 context.clear_color(0.0, 0.0, 0.0, 0.0);
                 context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
-                buffer[0] = MagicSquare::clip_x(event.offset_x(), width);
-                buffer[1] = MagicSquare::clip_y(event.offset_y(), height);
-                MagicSquare::render_all_lines(buffer, &mut geometry_cache, &context);
+                mouse_pos_buffer[0] = MagicSquare::clip_x(event.offset_x(), width);
+                mouse_pos_buffer[1] = MagicSquare::clip_y(event.offset_y(), height);
+                MagicSquare::render_all_lines(mouse_pos_buffer, &ui_buffer, &mut geometry_cache, &context);
             });
 
             canvas
@@ -111,7 +146,8 @@ impl MagicSquare {
     }
 
     fn render_all_lines(
-        buffer: [f32; 2], 
+        mouse_pos_buffer: [f32; 2],
+        ui_buffer: &UiBuffer,
         // geometry_cache: Arc<Mutex<GeometryCache>>,
         geometry_cache: &mut GeometryCache,
         context: &web_sys::WebGl2RenderingContext
@@ -119,8 +155,8 @@ impl MagicSquare {
         for idx in 0..13 { // geometry_cache.max_idx + 1 { //TODO: settings.cache_per
             // let  idx = geometry_cache.idx + 1;// avoid 0 idx
             let rot_seq = RotationSequence::new(
-                Rotation::new(Axis::X, buffer[0] * 3.14), // + (idx as f32) * 0.05),
-                Rotation::new(Axis::Y, buffer[1] * 3.14), // + (idx as f32) * 0.05),
+                Rotation::new(Axis::X, mouse_pos_buffer[0] * 3.14 + 0.08 * mouse_pos_buffer[0] * idx as f32),
+                Rotation::new(Axis::Y, mouse_pos_buffer[1] * 3.14 +  0.08 * mouse_pos_buffer[1] * idx as f32),
                 Rotation::new(Axis::Z, 0.0),
             );
 
@@ -139,7 +175,7 @@ impl MagicSquare {
                     translation
                 );
 
-                let rgba = MagicSquare::get_rgba(buffer, idx);
+                let rgba = MagicSquare::get_rgba(mouse_pos_buffer, ui_buffer, idx);
                 geometry_cache.set_next(icosohedron.arr, rgba, Shape::Icosohedron);
             // });
         }
@@ -154,11 +190,11 @@ impl MagicSquare {
         }
     }
 
-    fn get_rgba(buffer: [f32; 2], idx: usize) -> Rgba {
+    fn get_rgba(mouse_pos_buffer: [f32; 2], ui_buffer: &UiBuffer, idx: usize) -> Rgba {
         let mut result: Rgba = [0.0, 0.0, 0.0, 0.0];
-
-        result[0] = 1.0 - buffer[0];
-        result[1] = 1.0 - buffer[1];
+        log(&format!("color_origin_r: {}", ui_buffer.settings.color_origin_r));
+        result[0] = 1.0 - mouse_pos_buffer[0];
+        result[1] = 1.0 - mouse_pos_buffer[1];
         result[2] = 1.0 - (idx as f32 / CACHE_CAPACITY as f32);
         result[3] = 0.1 * idx as f32;
         result
@@ -168,7 +204,7 @@ impl MagicSquare {
         web_sys::window().expect("no global `window` exists")
     }
 
-    fn document() -> web_sys::Document {
+    pub fn document() -> web_sys::Document {
         MagicSquare::window()
             .document()
             .expect("should have a document on window")
@@ -178,6 +214,12 @@ impl MagicSquare {
         MagicSquare::document()
             .get_element_by_id("magic_square_canvas")
             .expect("unable to find canvas element")
+    }
+
+    fn form() -> web_sys::Element {
+        MagicSquare::document()
+            .get_element_by_id("magic_square_control")
+            .expect("unable to find control element")
     }
 
     pub fn context(
@@ -192,6 +234,7 @@ impl MagicSquare {
     }
 
     fn draw(context: &WebGl2RenderingContext, vert_count: i32) {
+        // context.line_width(2.0) // TODO: test to see if this works
         context.draw_arrays(WebGl2RenderingContext::LINES, 0, vert_count);
     }
 

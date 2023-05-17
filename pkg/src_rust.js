@@ -216,6 +216,13 @@ function __wbg_adapter_23(arg0, arg1, arg2) {
 }
 
 /**
+* @param {number} addr
+*/
+__exports.worker_entry_point = function(addr) {
+    wasm.worker_entry_point(addr);
+};
+
+/**
 * @param {string} message
 * @returns {string}
 */
@@ -236,13 +243,6 @@ __exports.init_message = function(message) {
         wasm.__wbindgen_add_to_stack_pointer(16);
         wasm.__wbindgen_free(deferred2_0, deferred2_1);
     }
-};
-
-/**
-* @param {number} addr
-*/
-__exports.worker_entry_point = function(addr) {
-    wasm.worker_entry_point(addr);
 };
 
 function isLikeNone(x) {
@@ -401,6 +401,9 @@ function __wbg_get_imports() {
     imports.wbg = {};
     imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
         takeObject(arg0);
+    };
+    imports.wbg.__wbg_log_76f458adaa29a4eb = function(arg0, arg1) {
+        console.log(getStringFromWasm0(arg0, arg1));
     };
     imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
         const ret = getStringFromWasm0(arg0, arg1);
@@ -650,11 +653,11 @@ function __wbg_get_imports() {
         getInt32Memory0()[arg0 / 4 + 1] = len1;
         getInt32Memory0()[arg0 / 4 + 0] = ptr1;
     };
-    imports.wbg.__wbindgen_closure_wrapper85 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 17, __wbg_adapter_20);
+    imports.wbg.__wbindgen_closure_wrapper95 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 19, __wbg_adapter_20);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper1413 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper1414 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 90, __wbg_adapter_23);
         return addHeapObject(ret);
     };

@@ -1,5 +1,6 @@
 <script lang="ts" type="module">
   import { onMount } from 'svelte'
+  import MagicSquareControl from './MagicSquareControl.svelte'
 
   let height: number = 0
   let width: number = 0
@@ -12,7 +13,7 @@
     height = element.offsetHeight
     width = element.offsetWidth
     
-    await wasm_bindgen()
+    await wasm_bindgen() // loaded in index.html from ./pkg/src_rust.js
     const { MagicSquare, init_message } = wasm_bindgen
     console.log(init_message("Wasm Running for Magic Square"))
     
@@ -26,6 +27,7 @@
           class="magic_square_canvas"
           height={height}
           width={width}/>
+  <MagicSquareControl />
 </div>
 
 <style lang="sass">

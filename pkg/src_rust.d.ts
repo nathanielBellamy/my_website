@@ -2,14 +2,14 @@ declare namespace wasm_bindgen {
 	/* tslint:disable */
 	/* eslint-disable */
 	/**
+	* @param {number} addr
+	*/
+	export function worker_entry_point(addr: number): void;
+	/**
 	* @param {string} message
 	* @returns {string}
 	*/
 	export function init_message(message: string): string;
-	/**
-	* @param {number} addr
-	*/
-	export function worker_entry_point(addr: number): void;
 	/**
 	*/
 	export class GmasWasm {
@@ -53,8 +53,8 @@ declare interface InitOutput {
   readonly __wbg_magicsquare_free: (a: number) => void;
   readonly magicbanner_run: (a: number) => void;
   readonly __wbg_magicbanner_free: (a: number) => void;
-  readonly init_message: (a: number, b: number, c: number) => void;
   readonly worker_entry_point: (a: number) => void;
+  readonly init_message: (a: number, b: number, c: number) => void;
   readonly gmaswasm_run: () => void;
   readonly __wbg_gmaswasm_free: (a: number) => void;
   readonly wasm_run: () => void;
