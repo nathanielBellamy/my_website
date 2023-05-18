@@ -1,33 +1,49 @@
 use crate::magic_square::main::Rgba;
 
 #[derive(Clone, Copy)]
+pub enum DrawPattern {
+    All,
+    One,
+    Two,
+    Three,
+    Four,
+    Five,
+    Six,
+    Seven,
+    Eight,
+    Out1,
+    Out2,
+    Out3,
+    Out4,
+    Out5,
+    Out6,
+    Out7,
+    Out8,
+    In1,
+    In2,
+    In3,
+    In4,
+    In5,
+    In6,
+    In7,
+    In8,
+    Conv,
+    Div,
+    Random
+}
+
+#[derive(Clone, Copy)]
 pub struct Settings {
-    // exchanging f32's with JS is easy 
-    pub color_origin_r: f32,
-    pub color_origin_g: f32,
-    pub color_origin_b: f32,
-    pub color_origin_a: f32,
-    
-    pub color_ne_r: f32,
-    pub color_ne_g: f32,
-    pub color_ne_b: f32,
-    pub color_ne_a: f32,
+    pub draw_pattern: DrawPattern,
 
-    pub color_nw_r: f32,
-    pub color_nw_g: f32,
-    pub color_nw_b: f32,
-    pub color_nw_a: f32,
-
-    pub color_se_r: f32,
-    pub color_se_g: f32,
-    pub color_se_b: f32,
-    pub color_se_a: f32,
-
-    pub color_sw_r: f32,
-    pub color_sw_g: f32,
-    pub color_sw_b: f32,
-    pub color_sw_a: f32,
-
+    pub color_1: Rgba,
+    pub color_2: Rgba,
+    pub color_3: Rgba,
+    pub color_4: Rgba,
+    pub color_5: Rgba,
+    pub color_6: Rgba,
+    pub color_7: Rgba,
+    pub color_8: Rgba,
 
     // x_rot_coeff: f32,
     // y_rot_coeff: f32,
@@ -56,125 +72,61 @@ pub struct Settings {
 impl Settings {
     pub fn new() -> Settings {
         Settings {
-            color_origin_r: 0.5,
-            color_origin_g: 0.5,
-            color_origin_b: 0.5,
-            color_origin_a: 1.0,
-            
-            color_ne_r: 1.0,
-            color_ne_g: 0.0,
-            color_ne_b: 0.0,
-            color_ne_a: 1.0,
+            draw_pattern: DrawPattern::Three,
 
-            color_nw_r: 0.0,
-            color_nw_g: 1.0,
-            color_nw_b: 0.0,
-            color_nw_a: 1.0,
-
-            color_se_r: 0.0,
-            color_se_g: 0.0,
-            color_se_b: 1.0,
-            color_se_a: 1.0,
-
-            color_sw_r: 1.0,
-            color_sw_g: 0.0,
-            color_sw_b: 1.0,
-            color_sw_a: 1.0,
+            color_1: [255.0, 0.0, 255.0, 1.0],
+            color_2: [0.0, 1.0, 1.0, 1.0],
+            color_3: [0.0, 1.0, 1.0, 1.0],
+            color_4: [0.0, 1.0, 1.0, 1.0],
+            color_5: [0.0, 1.0, 1.0, 1.0],
+            color_6: [0.0, 1.0, 1.0, 1.0],
+            color_7: [0.0, 1.0, 1.0, 1.0],
+            color_8: [0.0, 1.0, 1.0, 1.0],
         }
     }
 
-    pub fn origin_rgba(&self) -> Rgba {
-        [
-            self.color_origin_r,
-            self.color_origin_g,
-            self.color_origin_b,
-            self.color_origin_a
-        ]
+    pub fn draw_pattern_from_string(pattern: String) -> DrawPattern {
+        match pattern.as_str() {
+            "All" => DrawPattern::All,
+            "One" => DrawPattern::One,
+            "Two" => DrawPattern::Two,
+            "Three" => DrawPattern::Three,
+            "Four" => DrawPattern::Four,
+            "Five" => DrawPattern::Five,
+            "Six" => DrawPattern::Six,
+            "Seven" => DrawPattern::Seven,
+            "Eight" => DrawPattern::Eight,
+            "Out1" => DrawPattern::Out1,
+            "Out2" => DrawPattern::Out2,
+            "Out3" => DrawPattern::Out3,
+            "Out4" => DrawPattern::Out4,
+            "Out5" => DrawPattern::Out5,
+            "Out6" => DrawPattern::Out6,
+            "Out7" => DrawPattern::Out7,
+            "Out8" => DrawPattern::Out8,
+            "In1" => DrawPattern::In1,
+            "In2" => DrawPattern::In2,
+            "In3" => DrawPattern::In3,
+            "In4" => DrawPattern::In4,
+            "In5" => DrawPattern::In5,
+            "In6" => DrawPattern::In6,
+            "In7" => DrawPattern::In7,
+            "In8" => DrawPattern::In8,
+            "Conv" => DrawPattern::Conv,
+            "Div" => DrawPattern::Div,
+            "Random" => DrawPattern::Random,
+            _ => DrawPattern::Three
+        }
     }
 
-    pub fn origin_rgba_string(&self) -> String {
+    pub fn rgba_string(arr: Rgba) -> String {
         format!(
-            "rgba({}, {}, {}, {})",
-            self.color_origin_r,
-            self.color_origin_g,
-            self.color_origin_b,
-            self.color_origin_a
-        )
-    }
-
-    pub fn nw_rgba(&self) -> Rgba {
-        [
-            self.color_nw_r,
-            self.color_nw_g,
-            self.color_nw_b,
-            self.color_nw_a
-        ]
-    }
-
-    pub fn nw_rgba_string(&self) -> String {
-        format!(
-            "rgba({}, {}, {}, {})",
-            self.color_nw_r,
-            self.color_nw_g,
-            self.color_nw_b,
-            self.color_nw_a
-        )
-    }
-
-    pub fn ne_rgba(&self) -> Rgba {
-        [
-            self.color_ne_r,
-            self.color_ne_g,
-            self.color_ne_b,
-            self.color_ne_a
-        ]
-    }
-
-    pub fn ne_rgba_string(&self) -> String {
-        format!(
-            "rgba({}, {}, {}, {})",
-            self.color_ne_r,
-            self.color_ne_g,
-            self.color_ne_b,
-            self.color_ne_a
-        )
-    }
-
-    pub fn se_rgba(&self) -> Rgba {
-        [
-            self.color_se_r,
-            self.color_se_g,
-            self.color_se_b,
-            self.color_se_a
-        ]
-    }
-
-    pub fn se_rgba_string(&self) -> String {
-        format!(
-            "rgba({}, {}, {}, {})",
-            self.color_se_r,
-            self.color_se_g,
-            self.color_se_b,
-            self.color_se_a
-        )
-    }
-
-    pub fn sw_rgba(&self) -> Rgba {
-        [
-            self.color_sw_r,
-            self.color_sw_g,
-            self.color_sw_b,
-            self.color_sw_a
-        ]
-    }
-
-    pub fn sw_rgba_string(&self) -> String {
-        format!(
-            "rgba({}, {}, {}, {})",
-            self.color_sw_r,
-            self.color_sw_g,
-            self.color_sw_b,
-            self.color_sw_a
+            "{},{},{},{}",
+            arr[0],
+            arr[1],
+            arr[2],
+            arr[3]
         )
     }
 }
+

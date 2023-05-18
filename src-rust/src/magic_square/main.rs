@@ -189,16 +189,10 @@ impl MagicSquare {
 
     fn get_rgba(mouse_pos_buffer: [f32; 2], ui_buffer: &UiBuffer, idx: usize) -> Rgba {
         let mut result: Rgba = [0.0, 0.0, 0.0, 0.0];
-        log(&format!("color_origin: rgba({}, {}, {}, {})", 
-            ui_buffer.settings.color_origin_r,
-            ui_buffer.settings.color_origin_g,
-            ui_buffer.settings.color_origin_b,
-            ui_buffer.settings.color_origin_a
-        ));
-        result[0] = ui_buffer.settings.color_origin_r / 255.0;// 1.0 - mouse_pos_buffer[0];
-        result[1] = ui_buffer.settings.color_origin_g / 255.0;// 1.0 - mouse_pos_buffer[1];
-        result[2] = ui_buffer.settings.color_origin_b / 255.0; // 1.0 - (idx as f32 / CACHE_CAPACITY as f32);
-        result[3] = ui_buffer.settings.color_origin_a/ 255.0; // 0.1 * idx as f32;
+        result[0] = ui_buffer.settings.color_1[0] / 255.0;// 1.0 - mouse_pos_buffer[0];
+        result[1] = ui_buffer.settings.color_1[1] / 255.0;// 1.0 - mouse_pos_buffer[1];
+        result[2] = ui_buffer.settings.color_1[2] / 255.0; // 1.0 - (idx as f32 / CACHE_CAPACITY as f32);
+        result[3] = ui_buffer.settings.color_1[3] / 255.0; // 0.1 * idx as f32;
         result
     }
 

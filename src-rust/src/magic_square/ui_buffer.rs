@@ -1,8 +1,7 @@
 use crate::magic_square::settings::Settings;
 use crate::magic_square::ui_manifest::{
     INPUT_IDS,
-    INPUT_COLOR_ORIGIN, 
-    INPUT_COLOR_NW, INPUT_COLOR_NE, INPUT_COLOR_SE, INPUT_COLOR_SW
+    INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8
 };
 use crate::magic_square::main::MagicSquare;
 
@@ -19,45 +18,36 @@ impl UiBuffer {
     }
 
     pub fn update(&mut self, input_id: String, val: String) {
-        let rgba: Vec<&str> = val.split(", ").collect();
-        
-        let r: f32 = rgba[0].parse::<f32>().unwrap();
-        let g: f32 = rgba[1].parse::<f32>().unwrap();
-        let b: f32 = rgba[2].parse::<f32>().unwrap();
-        let a: f32 = rgba[3].parse::<f32>().unwrap();
         match input_id.as_str() {
-            // INPUT_A => self.function.a = val.parse::<f64>().unwrap(),
-            INPUT_COLOR_ORIGIN => {
-                self.settings.color_origin_r = r;
-                self.settings.color_origin_g = g;
-                self.settings.color_origin_b = b;
-                self.settings.color_origin_a = a;
-            },
-            INPUT_COLOR_NW  => {
-                self.settings.color_nw_r = r;
-                self.settings.color_nw_g = g;
-                self.settings.color_nw_b = b;
-                self.settings.color_nw_a = a;
-            },
-            INPUT_COLOR_NE => {
-                self.settings.color_ne_r = r;
-                self.settings.color_ne_g = g;
-                self.settings.color_ne_b = b;
-                self.settings.color_ne_a = a;
-            },
-            INPUT_COLOR_SE => {
-                self.settings.color_se_r = r;
-                self.settings.color_se_g = g;
-                self.settings.color_se_b = b;
-                self.settings.color_se_a = a;
-            },
-            INPUT_COLOR_SW => {
-                self.settings.color_sw_r = r;
-                self.settings.color_sw_g = g;
-                self.settings.color_sw_b = b;
-                self.settings.color_sw_a = a;
-            },
+            INPUT_COLOR_1
+                | INPUT_COLOR_2
+                | INPUT_COLOR_3
+                | INPUT_COLOR_4
+                | INPUT_COLOR_5
+                | INPUT_COLOR_6
+                | INPUT_COLOR_7
+                | INPUT_COLOR_8 => {
+                    let rgba: Vec<&str> = val.split(",").collect();
+                    
+                    let r: f32 = rgba[0].parse::<f32>().unwrap();
+                    let g: f32 = rgba[1].parse::<f32>().unwrap();
+                    let b: f32 = rgba[2].parse::<f32>().unwrap();
+                    let a: f32 = rgba[3].parse::<f32>().unwrap();
+                    match input_id.as_str() {
+                        // INPUT_A => self.function.a = val.parse::<f64>().unwrap(),
+                        INPUT_COLOR_1 => self.settings.color_1 = [r,g,b,a],
+                        INPUT_COLOR_2 => self.settings.color_2 = [r,g,b,a],
+                        INPUT_COLOR_3 => self.settings.color_3 = [r,g,b,a],
+                        INPUT_COLOR_4 => self.settings.color_4 = [r,g,b,a],
+                        INPUT_COLOR_5 => self.settings.color_5 = [r,g,b,a],
+                        INPUT_COLOR_6 => self.settings.color_6 = [r,g,b,a],
+                        INPUT_COLOR_7 => self.settings.color_7 = [r,g,b,a],
+                        INPUT_COLOR_8 => self.settings.color_8 = [r,g,b,a],
+                        _ => {}
+                    }
+                },
             _ => {}
+
         }
     }
 
@@ -71,11 +61,14 @@ impl UiBuffer {
         let element: web_sys::Element = MagicSquare::document().get_element_by_id(&input_id)
             .expect("to get element {input_id}");
         let val: String = match input_id.as_str() {
-            INPUT_COLOR_ORIGIN => self.settings.origin_rgba_string(),
-            INPUT_COLOR_NW => self.settings.nw_rgba_string(),
-            INPUT_COLOR_NE => self.settings.ne_rgba_string(),
-            INPUT_COLOR_SE => self.settings.se_rgba_string(),
-            INPUT_COLOR_SW => self.settings.sw_rgba_string(),
+            INPUT_COLOR_1 => Settings::rgba_string(self.settings.color_1),
+            INPUT_COLOR_2 => Settings::rgba_string(self.settings.color_2),
+            INPUT_COLOR_3 => Settings::rgba_string(self.settings.color_3),
+            INPUT_COLOR_4 => Settings::rgba_string(self.settings.color_4),
+            INPUT_COLOR_5 => Settings::rgba_string(self.settings.color_5),
+            INPUT_COLOR_6 => Settings::rgba_string(self.settings.color_6),
+            INPUT_COLOR_7 => Settings::rgba_string(self.settings.color_7),
+            INPUT_COLOR_8 => Settings::rgba_string(self.settings.color_8),
             _ => "-1".to_string()
         };
         element.set_attribute("value", &val).expect("to set attribute value on {input_id}"); 
