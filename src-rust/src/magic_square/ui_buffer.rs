@@ -19,11 +19,12 @@ impl UiBuffer {
     }
 
     pub fn update(&mut self, input_id: String, val: String) {
-        let val = val;
-        let r: f32 = 0.0;
-        let g: f32 = 0.0;
-        let b: f32 = 0.0;
-        let a: f32 = 0.0;
+        let rgba: Vec<&str> = val.split(", ").collect();
+        
+        let r: f32 = rgba[0].parse::<f32>().unwrap();
+        let g: f32 = rgba[1].parse::<f32>().unwrap();
+        let b: f32 = rgba[2].parse::<f32>().unwrap();
+        let a: f32 = rgba[3].parse::<f32>().unwrap();
         match input_id.as_str() {
             // INPUT_A => self.function.a = val.parse::<f64>().unwrap(),
             INPUT_COLOR_ORIGIN => {

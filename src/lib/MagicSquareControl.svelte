@@ -10,26 +10,23 @@
     layoutDirection: 'horizontal'
   }
 
-  const colors = {
-    'magic_square_input_color_origin': "rgba(0.0, 0.0, 0.0, 1.0)",
-    'magic_square_input_color_nw': "rgba(0.0, 0.0, 0.0, 1.0)",
-    'magic_square_input_color_ne': "rgba(0.0, 0.0, 0.0, 1.0)",
-    'magic_square_input_color_se': "rgba(0.0, 0.0, 0.0, 1.0)",
-    'magic_square_input_color_sw': "rgba(0.0, 0.0, 0.0, 1.0)",
-  }
-
-  $: colors
-
-  const colorPickerIds = Object.keys(colors)
+  const colorPickerIds: string[] = [
+    'magic_square_input_color_origin',
+    'magic_square_input_color_nw',
+    'magic_square_input_color_ne',
+    'magic_square_input_color_se',
+    'magic_square_input_color_sw'
+  ]
 
   onMount(() => {
+    var form = document.getElementById("magic_square_control")
     colorPickerIds.forEach((id:string) => {
+      var input = document.getElementById(id)
       const picker = iro.ColorPicker(`#${id}_picker`, colorPickerOptions)
 
       picker.on('color:change', (color: any) => {
-        colors[id] = `rgba( ${color.rgba.r}, ${color.rgba.g}, ${color.rgba.b}, ${color.rgba.a} )`
-        var form = document.getElementById("magic_square_control")
-        form.dispatchEvent(new Event('input'))
+        input.value = `${color.rgba.r}, ${color.rgba.g}, ${color.rgba.b}, ${color.rgba.a}`
+        input.dispatchEvent(new Event('input', {bubbles: true}))
       })
     })
   })
@@ -46,7 +43,6 @@
       <div id={`${id}_picker`} 
            class="color_picker"/>
       <input id={id}
-             value={colors[id]}
              class="hidden_input">
     </div>
   {/each}

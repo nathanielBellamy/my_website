@@ -2,14 +2,14 @@ declare namespace wasm_bindgen {
 	/* tslint:disable */
 	/* eslint-disable */
 	/**
-	* @param {number} addr
-	*/
-	export function worker_entry_point(addr: number): void;
-	/**
 	* @param {string} message
 	* @returns {string}
 	*/
 	export function init_message(message: string): string;
+	/**
+	* @param {number} addr
+	*/
+	export function worker_entry_point(addr: number): void;
 	/**
 	*/
 	export class GmasWasm {
@@ -51,10 +51,10 @@ declare interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly magicsquare_run: (a: number) => void;
   readonly __wbg_magicsquare_free: (a: number) => void;
+  readonly init_message: (a: number, b: number, c: number) => void;
+  readonly worker_entry_point: (a: number) => void;
   readonly magicbanner_run: (a: number) => void;
   readonly __wbg_magicbanner_free: (a: number) => void;
-  readonly worker_entry_point: (a: number) => void;
-  readonly init_message: (a: number, b: number, c: number) => void;
   readonly gmaswasm_run: () => void;
   readonly __wbg_gmaswasm_free: (a: number) => void;
   readonly wasm_run: () => void;
@@ -62,7 +62,7 @@ declare interface InitOutput {
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
-  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hc021f0b73bb97848: (a: number, b: number, c: number) => void;
+  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h01d821f397412929: (a: number, b: number, c: number) => void;
   readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hce71e34eef973e77: (a: number, b: number, c: number) => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_free: (a: number, b: number) => void;
