@@ -45,6 +45,9 @@ pub struct Settings {
     pub color_7: Rgba,
     pub color_8: Rgba,
 
+    // mouse settings
+    // MouseFollow - Always, Click + Drag, DoubleClick On/Off
+
     // x_rot_coeff: f32,
     // y_rot_coeff: f32,
     // z_rot_coeff: f32,

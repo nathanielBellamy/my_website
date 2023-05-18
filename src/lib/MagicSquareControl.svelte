@@ -56,7 +56,6 @@
   // this method reads those values into the iro elmeents
 
   onMount(() => {
-    var form = document.getElementById("magic_square_control")
     colorPickerIds.forEach((id:string) => {
       var input = document.getElementById(id)
       const picker = iro.ColorPicker(`#${id}_picker`, colorPickerOptions)
