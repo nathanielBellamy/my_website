@@ -1,9 +1,11 @@
 use crate::magic_square::settings::Settings;
 use crate::magic_square::ui_manifest::{
     INPUT_IDS,
-    INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8
+    INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8,
+    INPUT_DRAW_PATTERN
 };
 use crate::magic_square::main::MagicSquare;
+// use crate::magic_square::main::log;
 
 #[derive(Clone, Copy)]
 pub struct UiBuffer {
@@ -46,6 +48,9 @@ impl UiBuffer {
                         _ => {}
                     }
                 },
+            INPUT_DRAW_PATTERN => {
+                self.settings.draw_pattern = Settings::draw_pattern_from_string(val)
+            },
             _ => {}
 
         }

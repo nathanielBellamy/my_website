@@ -10,6 +10,8 @@ use crate::magic_square::transformations::{Rotation, RotationSequence, Translati
 use crate::magic_square::geometry::{Geometry, Shape};
 use crate::magic_square::geometry::cache::{Cache as GeometryCache, CACHE_CAPACITY};
 use crate::magic_square::ui_buffer::UiBuffer;
+
+use super::settings::Settings;
 // use crate::magic_square::traits::VertexStore;
 // use super::geometry::icosohedron::Icosohedron;
 // use crate::magic_square::worker::Worker;
@@ -17,7 +19,7 @@ use crate::magic_square::ui_buffer::UiBuffer;
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(js_namespace = console)]
-    fn log(s: &str);
+    pub fn log(s: &str);
 
     #[wasm_bindgen(js_name = "performance")]
     pub static PERFORMANCE: web_sys::Performance;
@@ -78,7 +80,12 @@ impl MagicSquare {
         let context: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
         context.clear_color(1.0, 1.0, 0.0, 0.0);
         context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
-        MagicSquare::render_all_lines([0.0, 0.0], &ui_buffer.clone().borrow(), &mut geometry_cache, &context);
+        MagicSquare::render_all_lines(
+            [0.0, 0.0], 
+            &ui_buffer.clone().borrow(), 
+            &mut geometry_cache, 
+            &context
+        );
     
         {
             // init UI control settings listener
@@ -149,7 +156,8 @@ impl MagicSquare {
         geometry_cache: &mut GeometryCache,
         context: &web_sys::WebGl2RenderingContext
     ) {
-        for idx in 0..13 { // geometry_cache.max_idx + 1 { //TODO: settings.cache_per
+        let max_idx = Settings::max_idx_from_draw_pattern(ui_buffer.settings.draw_pattern);
+        for idx in 0..max_idx { // geometry_cache.max_idx + 1 { //TODO: settings.cache_per
             // let  idx = geometry_cache.idx + 1;// avoid 0 idx
             let rot_seq = RotationSequence::new(
                 Rotation::new(Axis::X, mouse_pos_buffer[0] * 3.14 + 0.08 * mouse_pos_buffer[0] * idx as f32),

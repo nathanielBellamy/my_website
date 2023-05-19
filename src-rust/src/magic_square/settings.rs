@@ -75,16 +75,16 @@ pub struct Settings {
 impl Settings {
     pub fn new() -> Settings {
         Settings {
-            draw_pattern: DrawPattern::Three,
+            draw_pattern: DrawPattern::Seven,
 
             color_1: [255.0, 0.0, 255.0, 1.0],
-            color_2: [0.0, 1.0, 1.0, 1.0],
-            color_3: [0.0, 1.0, 1.0, 1.0],
-            color_4: [0.0, 1.0, 1.0, 1.0],
-            color_5: [0.0, 1.0, 1.0, 1.0],
+            color_2: [0.0, 255.0, 255.0, 1.0],
+            color_3: [255.0, 255.0, 1.0, 1.0],
+            color_4: [100.0, 1.0, 101.0, 1.0],
+            color_5: [0.0, 120.0, 140.0, 1.0],
             color_6: [0.0, 1.0, 1.0, 1.0],
-            color_7: [0.0, 1.0, 1.0, 1.0],
-            color_8: [0.0, 1.0, 1.0, 1.0],
+            color_7: [150.0, 140.0, 225.0, 1.0],
+            color_8: [110.0, 1.0, 1.0, 1.0],
         }
     }
 
@@ -119,6 +119,39 @@ impl Settings {
             "Div" => DrawPattern::Div,
             "Random" => DrawPattern::Random,
             _ => DrawPattern::Three
+        }
+    }
+
+    pub fn max_idx_from_draw_pattern(pattern: DrawPattern) -> usize {
+        match pattern {
+                DrawPattern::All => 16,
+                DrawPattern::One => 1,
+                DrawPattern::Two => 2,
+                DrawPattern::Three => 3,
+                DrawPattern::Four => 4,
+                DrawPattern::Five => 5,
+                DrawPattern::Six => 6,
+                DrawPattern::Seven => 7,
+                DrawPattern::Eight => 8,
+                DrawPattern::Out1 => 1,
+                DrawPattern::Out2 => 2,
+                DrawPattern::Out3 => 3,
+                DrawPattern::Out4 => 4,
+                DrawPattern::Out5 => 5,
+                DrawPattern::Out6 => 6,
+                DrawPattern::Out7 => 7,
+                DrawPattern::Out8 => 8,
+                DrawPattern::In1 => 1,
+                DrawPattern::In2 => 2,
+                DrawPattern::In3 => 3,
+                DrawPattern::In4 => 4,
+                DrawPattern::In5 => 5,
+                DrawPattern::In6 => 6,
+                DrawPattern::In7 => 7,
+                DrawPattern::In8 => 8,
+                DrawPattern::Conv => 4,
+                DrawPattern::Div => 4,
+                DrawPattern::Random => 3
         }
     }
 

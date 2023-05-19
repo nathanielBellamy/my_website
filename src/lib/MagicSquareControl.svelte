@@ -65,7 +65,25 @@
         input.dispatchEvent(new Event('input', {bubbles: true}))
       })
     })
+
+    // wasm listens to input events on the forms
+    // within the manual call to dispatchEvent we must
+    // explicitly set bubbles:true so that wasm can catch the event
+    // while listening to the form
+    // this way a single wasm closure can handle all ui data updates
+    var select = document.getElementById("draw_pattern_select")
+    select.addEventListener('change', (e: Event) => {
+      var input = document.getElementById("magic_square_input_draw_pattern")
+      input.value = e.target.value
+      input.dispatchEvent(new Event('input', {bubbles: true}))
+    })
   })
+
+  const handleSelectChange = (e: Event) => {
+    var input = document.getElementById("magic_square_input_draw_pattern")
+    input.value = e.target.value
+    input.dispatchEvent(new Event('input', {bubbles: true}))
+  } 
 </script>
 
 <div id="magic_square_control"
@@ -83,17 +101,19 @@
     </div>
   {/each}
   <div class="magic_square_input flex flex-col space-between">
-    <label for="magic_square_draw_pattern"
+    <label for="draw_pattern_select"
            class="title">
       DRAW PATTERN
     </label>
-    <select id="magic_square_draw_pattern p-5"
+    <select id="draw_pattern_select" 
             value="Three">
       {#each drawPatterns as pattern}
         <option value={pattern}>
           {pattern.toUpperCase()}
         </option>
       {/each}
+      <input id="magic_square_input_draw_pattern"
+             class="hidden_input">
     </select>
   </div>
 </div>
@@ -103,6 +123,11 @@
   @use "./../styles/text"
   
   .magic_square
+    &_control
+      width: 100%
+      overflow-x: scroll
+      padding: 3px 20px 3px 20px
+
     &_input
       max-width: 300px
       align-items: stretch
