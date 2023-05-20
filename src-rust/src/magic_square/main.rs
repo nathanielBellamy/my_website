@@ -181,7 +181,7 @@ impl MagicSquare {
 
             // let _ = Worker::spawn(move || {
                 let icosohedron = Geometry::icosohedron(
-                    0.25 * idx as f32 + 0.1, 
+                    ui_buffer.settings.radius_step * idx as f32 + ui_buffer.settings.radius_min, 
                     rot_seq,
                     translation
                 );

@@ -46,6 +46,9 @@ pub struct Settings {
     pub draw_pattern: DrawPattern,
     pub mouse_tracking: MouseTracking,
 
+    pub radius_min: f32,
+    pub radius_step: f32,
+
     pub color_1: Rgba,
     pub color_2: Rgba,
     pub color_3: Rgba,
@@ -87,6 +90,9 @@ impl Settings {
         Settings {
             draw_pattern: DrawPattern::Seven,
             mouse_tracking: MouseTracking::Off,
+            
+            radius_min: 0.1,
+            radius_step: 0.1,
 
             color_1: [255.0, 0.0, 255.0, 1.0],
             color_2: [0.0, 255.0, 255.0, 1.0],

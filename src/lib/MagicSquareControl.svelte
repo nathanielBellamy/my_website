@@ -20,12 +20,39 @@
     'magic_square_input_color_7',
     'magic_square_input_color_8',
   ]
+  
+  //TODO: generalize RangeInput
+  interface RangeInput {
+    id: string,
+    label: string,
+    min: number,
+    max: number,
+    step: number
+  }
+
+  const radiusSliders: RangeInput[] = [
+    {
+      id: "magic_square_input_radius_min",
+      label: "MIN",
+      min: 0.1,
+      max: 1,
+      step: 0.01
+    },
+    {
+      id: "magic_square_input_radius_step",
+      label: "STEP",
+      min: 0.01,
+      max: 0.5,
+      step: 0.01
+    }
+  ]
 
   // { [selectId]: hiddehInputId}
   const selects: { [key: string]: string; }= {
     'draw_pattern_select': 'magic_square_input_draw_pattern',
     'mouse_tracking_select': 'magic_square_input_mouse_tracking'
   }
+
 
   const drawPatterns: string[] = [
     'All',
@@ -117,6 +144,25 @@
              class="hidden_input">
     </div>
   {/each}
+  <div class="magic_square_input flex flex-col space-between">
+    <label for="radius_sliders"
+           class="title">
+      RADIUS
+    </label>
+    <div id="radius_sliders" 
+         class="flex flex-col space-between">
+      {#each radiusSliders as  {id, label, min, max, step}}
+        <label for={id}>
+          {label}
+        </label>
+        <input id={id}
+               type="range"
+               min={min}
+               max={max}
+               step={step}/>
+      {/each}
+    </div>
+  </div>
   <div class="magic_square_input flex flex-col space-between">
     <label for="draw_pattern_select"
            class="title">

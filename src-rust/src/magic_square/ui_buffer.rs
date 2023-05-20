@@ -2,7 +2,8 @@ use crate::magic_square::settings::Settings;
 use crate::magic_square::ui_manifest::{
     INPUT_IDS,
     INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8,
-    INPUT_DRAW_PATTERN, INPUT_MOUSE_TRACKING
+    INPUT_DRAW_PATTERN, INPUT_MOUSE_TRACKING,
+    INPUT_RADIUS_MIN, INPUT_RADIUS_STEP
 };
 use crate::magic_square::main::MagicSquare;
 use crate::magic_square::main::log;
@@ -21,6 +22,7 @@ impl UiBuffer {
 
     pub fn update(&mut self, input_id: String, val: String) {
         log(&input_id);
+        log(&val);
         match input_id.as_str() {
             INPUT_COLOR_1
                 | INPUT_COLOR_2
@@ -54,7 +56,13 @@ impl UiBuffer {
             },
             INPUT_MOUSE_TRACKING => {
                 self.settings.mouse_tracking = Settings::mouse_tracking_from_string(val)
-            }
+            },
+            INPUT_RADIUS_MIN => {
+                self.settings.radius_min = val.parse::<f32>().unwrap() 
+            },
+            INPUT_RADIUS_STEP => {
+                self.settings.radius_step = val.parse::<f32>().unwrap()
+            },
             _ => {}
 
         }
