@@ -11,7 +11,7 @@ use crate::magic_square::geometry::{Geometry, Shape};
 use crate::magic_square::geometry::cache::{Cache as GeometryCache, CACHE_CAPACITY};
 use crate::magic_square::ui_buffer::UiBuffer;
 
-use super::settings::Settings;
+use super::settings::{MouseTracking, Settings};
 // use crate::magic_square::traits::VertexStore;
 // use super::geometry::icosohedron::Icosohedron;
 // use crate::magic_square::worker::Worker;
@@ -165,7 +165,13 @@ impl MagicSquare {
                 Rotation::new(Axis::Z, 0.0),
             );
 
-            let translation = Translation { x: 0.0, y: 0.0, z: 0.0 }; // { x: buffer[0], y: buffer[1], z: 0.0 };
+            let translation = match ui_buffer.settings.mouse_tracking {
+                MouseTracking::On => Translation { x: mouse_pos_buffer[0], y: mouse_pos_buffer[1], z: 0.0 },
+                MouseTracking::Off => Translation { x: 0.0, y: 0.0, z: 0.0 },
+                MouseTracking::InvX =>  Translation { x: - mouse_pos_buffer[0], y: mouse_pos_buffer[1], z: 0.0 },
+                MouseTracking::InvY =>  Translation { x: mouse_pos_buffer[0], y: - mouse_pos_buffer[1], z: 0.0 },
+                MouseTracking::InvXY =>  Translation { x: - mouse_pos_buffer[0], y: - mouse_pos_buffer[1], z: 0.0 },
+            };
 
                 // let hexagon = Geometry::hexagon(
                 //     0.20 * idx as f32, 
@@ -196,12 +202,33 @@ impl MagicSquare {
     }
 
     fn get_rgba(mouse_pos_buffer: [f32; 2], ui_buffer: &UiBuffer, idx: usize) -> Rgba {
-        let mut result: Rgba = [0.0, 0.0, 0.0, 0.0];
-        result[0] = ui_buffer.settings.color_1[0] / 255.0;// 1.0 - mouse_pos_buffer[0];
-        result[1] = ui_buffer.settings.color_1[1] / 255.0;// 1.0 - mouse_pos_buffer[1];
-        result[2] = ui_buffer.settings.color_1[2] / 255.0; // 1.0 - (idx as f32 / CACHE_CAPACITY as f32);
-        result[3] = ui_buffer.settings.color_1[3] / 255.0; // 0.1 * idx as f32;
-        result
+        // let mut result: Rgba = [0.0, 0.0, 0.0, 0.0];
+        // result[0] = ui_buffer.settings.color_1[0] / 255.0;// 1.0 - mouse_pos_buffer[0];
+        // result[1] = ui_buffer.settings.color_1[1] / 255.0;// 1.0 - mouse_pos_buffer[1];
+        // result[2] = ui_buffer.settings.color_1[2] / 255.0; // 1.0 - (idx as f32 / CACHE_CAPACITY as f32);
+        // result[3] = ui_buffer.settings.color_1[3] / 255.0; // 0.1 * idx as f32;
+        // result
+        //
+        // log(&format!("{idx}"));
+        match idx {
+            0 => ui_buffer.settings.color_1,
+            1 => ui_buffer.settings.color_2,
+            2 => ui_buffer.settings.color_3,
+            3 => ui_buffer.settings.color_4,
+            4 => ui_buffer.settings.color_5,
+            5 => ui_buffer.settings.color_6,
+            6 => ui_buffer.settings.color_7,
+            7 => ui_buffer.settings.color_8,
+            8 => ui_buffer.settings.color_1,
+            9 => ui_buffer.settings.color_2,
+            10 => ui_buffer.settings.color_3,
+            11 => ui_buffer.settings.color_4,
+            12 => ui_buffer.settings.color_5,
+            13 => ui_buffer.settings.color_6,
+            14 => ui_buffer.settings.color_7,
+            15 => ui_buffer.settings.color_8,
+            _ => ui_buffer.settings.color_1
+        }
     }
 
     fn window() -> web_sys::Window {
@@ -238,7 +265,6 @@ impl MagicSquare {
     }
 
     fn draw(context: &WebGl2RenderingContext, vert_count: i32) {
-        // context.line_width(2.0) // TODO: test to see if this works
         context.draw_arrays(WebGl2RenderingContext::LINES, 0, vert_count);
     }
 

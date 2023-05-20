@@ -33,8 +33,18 @@ pub enum DrawPattern {
 }
 
 #[derive(Clone, Copy)]
+pub enum MouseTracking {
+    On,
+    Off,
+    InvX,
+    InvY,
+    InvXY
+}
+
+#[derive(Clone, Copy)]
 pub struct Settings {
     pub draw_pattern: DrawPattern,
+    pub mouse_tracking: MouseTracking,
 
     pub color_1: Rgba,
     pub color_2: Rgba,
@@ -76,6 +86,7 @@ impl Settings {
     pub fn new() -> Settings {
         Settings {
             draw_pattern: DrawPattern::Seven,
+            mouse_tracking: MouseTracking::Off,
 
             color_1: [255.0, 0.0, 255.0, 1.0],
             color_2: [0.0, 255.0, 255.0, 1.0],
@@ -119,6 +130,17 @@ impl Settings {
             "Div" => DrawPattern::Div,
             "Random" => DrawPattern::Random,
             _ => DrawPattern::Three
+        }
+    }
+
+    pub fn mouse_tracking_from_string(mt: String) -> MouseTracking {
+        match mt.as_str() {
+            "On" => MouseTracking::On,
+            "Off" => MouseTracking::Off,
+            "Inv X" => MouseTracking::InvX,
+            "Inv Y" => MouseTracking::InvY,
+            "Inv XY" => MouseTracking::InvXY,
+            _ => MouseTracking::Off
         }
     }
 

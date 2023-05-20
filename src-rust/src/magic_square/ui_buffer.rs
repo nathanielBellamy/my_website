@@ -2,10 +2,10 @@ use crate::magic_square::settings::Settings;
 use crate::magic_square::ui_manifest::{
     INPUT_IDS,
     INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8,
-    INPUT_DRAW_PATTERN
+    INPUT_DRAW_PATTERN, INPUT_MOUSE_TRACKING
 };
 use crate::magic_square::main::MagicSquare;
-// use crate::magic_square::main::log;
+use crate::magic_square::main::log;
 
 #[derive(Clone, Copy)]
 pub struct UiBuffer {
@@ -20,6 +20,7 @@ impl UiBuffer {
     }
 
     pub fn update(&mut self, input_id: String, val: String) {
+        log(&input_id);
         match input_id.as_str() {
             INPUT_COLOR_1
                 | INPUT_COLOR_2
@@ -31,9 +32,9 @@ impl UiBuffer {
                 | INPUT_COLOR_8 => {
                     let rgba: Vec<&str> = val.split(",").collect();
                     
-                    let r: f32 = rgba[0].parse::<f32>().unwrap();
-                    let g: f32 = rgba[1].parse::<f32>().unwrap();
-                    let b: f32 = rgba[2].parse::<f32>().unwrap();
+                    let r: f32 = rgba[0].parse::<f32>().unwrap() / 255.0;
+                    let g: f32 = rgba[1].parse::<f32>().unwrap() / 255.0;
+                    let b: f32 = rgba[2].parse::<f32>().unwrap() / 255.0;
                     let a: f32 = rgba[3].parse::<f32>().unwrap();
                     match input_id.as_str() {
                         // INPUT_A => self.function.a = val.parse::<f64>().unwrap(),
@@ -51,6 +52,9 @@ impl UiBuffer {
             INPUT_DRAW_PATTERN => {
                 self.settings.draw_pattern = Settings::draw_pattern_from_string(val)
             },
+            INPUT_MOUSE_TRACKING => {
+                self.settings.mouse_tracking = Settings::mouse_tracking_from_string(val)
+            }
             _ => {}
 
         }

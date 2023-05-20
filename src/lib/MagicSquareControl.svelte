@@ -21,6 +21,12 @@
     'magic_square_input_color_8',
   ]
 
+  // { [selectId]: hiddehInputId}
+  const selects: { [key: string]: string; }= {
+    'draw_pattern_select': 'magic_square_input_draw_pattern',
+    'mouse_tracking_select': 'magic_square_input_mouse_tracking'
+  }
+
   const drawPatterns: string[] = [
     'All',
     'One',
@@ -51,6 +57,14 @@
     'Div',
     'Random'
   ]
+
+  const mouseTrackingOptions: string[] = [
+    'On',
+    'Off',
+    'Inv X',
+    'Inv Y',
+    'Inv XY'
+  ]
   
   // rust sets values on hidden inputs
   // this method reads those values into the iro elmeents
@@ -71,12 +85,15 @@
     // explicitly set bubbles:true so that wasm can catch the event
     // while listening to the form
     // this way a single wasm closure can handle all ui data updates
-    var select = document.getElementById("draw_pattern_select")
-    select.addEventListener('change', (e: Event) => {
-      var input = document.getElementById("magic_square_input_draw_pattern")
-      input.value = e.target.value
-      input.dispatchEvent(new Event('input', {bubbles: true}))
-    })
+
+    for (const [selectId, hiddenInputId] of Object.entries(selects)) {
+      var select = document.getElementById(selectId)
+      select.addEventListener('change', (e: Event) => {
+        var input = document.getElementById(hiddenInputId)
+        input.value = e.target.value
+        input.dispatchEvent(new Event('input', {bubbles: true}))
+      })
+    }
   })
 
   const handleSelectChange = (e: Event) => {
@@ -113,6 +130,22 @@
         </option>
       {/each}
       <input id="magic_square_input_draw_pattern"
+             class="hidden_input">
+    </select>
+  </div>
+  <div class="magic_square_input flex flex-col space-between">
+    <label for="draw_pattern_select"
+           class="title">
+      MOUSE TRACKING
+    </label>
+    <select id="mouse_tracking_select" 
+            value="Off">
+      {#each mouseTrackingOptions as mto}
+        <option value={mto}>
+          {mto.toUpperCase()}
+        </option>
+      {/each}
+      <input id="magic_square_input_mouse_tracking"
              class="hidden_input">
     </select>
   </div>
