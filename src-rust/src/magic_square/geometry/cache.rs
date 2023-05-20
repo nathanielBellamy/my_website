@@ -35,11 +35,11 @@ impl Cache {
         }
     }
 
-    pub fn set_next(&mut self, vertices: VertexArr, rgba: Rgba, shape: Shape) {
+    pub fn set_next(&mut self, vertices: VertexArr, rgba: Rgba, shape: Shape, max_idx: usize) {
         self.vertices[self.idx] = vertices;
         self.rgbas[self.idx] = rgba;
         self.shapes[self.idx] = shape;
-        self.idx = (self.idx + 1) % self.max_idx;
+        self.idx = (self.idx + 1) % max_idx;
     }
 
     pub fn gl_vertices(&self, idx: usize) -> &[f32] {

@@ -167,11 +167,11 @@ impl MagicSquare {
 
             let translation = Translation { x: 0.0, y: 0.0, z: 0.0 }; // { x: buffer[0], y: buffer[1], z: 0.0 };
 
-            // let hexagon = Geometry::hexagon(
-            //     0.025 * idx as f32, 
-            //     rot_seq,
-            //     translation
-            // );
+                // let hexagon = Geometry::hexagon(
+                //     0.20 * idx as f32, 
+                //     rot_seq,
+                //     translation
+                // );
 
             // let _ = Worker::spawn(move || {
                 let icosohedron = Geometry::icosohedron(
@@ -181,12 +181,12 @@ impl MagicSquare {
                 );
 
                 let rgba = MagicSquare::get_rgba(mouse_pos_buffer, ui_buffer, idx);
-                geometry_cache.set_next(icosohedron.arr, rgba, Shape::Icosohedron);
+                geometry_cache.set_next(icosohedron.arr, rgba, Shape::Icosohedron, max_idx);
             // });
         }
 
         // let geometry_cache = geometry_cache.lock().unwrap();
-        for idx in 0..13 {//geometry_cache.max_idx { // settings.
+        for idx in 0..max_idx {//geometry_cache.max_idx { // settings.
             MagicSquare::render(
                 geometry_cache.gl_vertices(idx), 
                 &geometry_cache.rgbas[idx], 
