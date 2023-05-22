@@ -1,5 +1,5 @@
 <script lang="ts" type="module">
-  import { onMount } from 'svelte'
+  import { onMount, onDestroy } from 'svelte'
   import MagicSquareControl from './MagicSquareControl.svelte'
 
   let height: number = 0
@@ -7,6 +7,8 @@
 
   $: height
   $: width
+
+  var animation_id: number
 
   onMount(async () => {
     let element = document.getElementById("magic_square")
@@ -17,7 +19,13 @@
     const { MagicSquare, init_message } = wasm_bindgen
     console.log(init_message("Wasm Running for Magic Square"))
     
-    MagicSquare.run()
+    animation_id = MagicSquare.run()
+  })
+
+  onDestroy(async () => {
+    console.log("onDestroy")
+    console.log(animation_id)
+    cancelAnimationFrame(animation_id)
   })
 </script>
 
