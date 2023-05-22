@@ -22,7 +22,7 @@
 </script>
 
 <div id="magic_square"
-     class="magic_square flex flex-col justify-start">
+     class="magic_square flex flex justify-start">
   <canvas id="magic_square_canvas"
           class="magic_square_canvas"
           height={height}

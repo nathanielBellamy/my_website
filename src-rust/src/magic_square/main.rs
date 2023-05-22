@@ -62,6 +62,10 @@ impl MagicSquare {
         // pass immutable reference of h&w to closure
         let height:i32 = canvas.client_height();
         let width:i32 = canvas.client_width();
+        // incriment idx_delay each render
+        // when idx_delay reaches a desired delay value
+        // incriment idx_offset
+        let mut color_idx_offset_delay: [usize; 2] = [0, 0];
         //Arc::new(Mutex::new(
         let mut geometry_cache = GeometryCache::new(
                 26, 
@@ -83,6 +87,7 @@ impl MagicSquare {
         MagicSquare::render_all_lines(
             [0.0, 0.0], 
             &ui_buffer.clone().borrow(), 
+            &mut [0_usize, 0_usize],
             &mut geometry_cache, 
             &context
         );
@@ -120,11 +125,12 @@ impl MagicSquare {
             let canvas = canvas.clone();
             let context: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
             let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::MouseEvent| {
+                log(&format!("{},{}", color_idx_offset_delay[0], color_idx_offset_delay[1]));
                 context.clear_color(0.0, 0.0, 0.0, 0.0);
                 context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
                 mouse_pos_buffer[0] = MagicSquare::clip_x(event.offset_x(), width);
                 mouse_pos_buffer[1] = MagicSquare::clip_y(event.offset_y(), height);
-                MagicSquare::render_all_lines(mouse_pos_buffer, &ui_buffer.clone().borrow(), &mut geometry_cache, &context);
+                MagicSquare::render_all_lines(mouse_pos_buffer, &ui_buffer.clone().borrow(), &mut color_idx_offset_delay, &mut geometry_cache, &context);
             });
 
             canvas
@@ -153,16 +159,37 @@ impl MagicSquare {
         mouse_pos_buffer: [f32; 2],
         ui_buffer: &UiBuffer,
         // geometry_cache: Arc<Mutex<GeometryCache>>,
+        color_idx_offset_delay: &mut [usize; 2],
         geometry_cache: &mut GeometryCache,
         context: &web_sys::WebGl2RenderingContext
     ) {
         let max_idx = Settings::max_idx_from_draw_pattern(ui_buffer.settings.draw_pattern);
         for idx in 0..max_idx { // geometry_cache.max_idx + 1 { //TODO: settings.cache_per
-            // let  idx = geometry_cache.idx + 1;// avoid 0 idx
             let rot_seq = RotationSequence::new(
-                Rotation::new(Axis::X, mouse_pos_buffer[0] * 3.14 + 0.08 * mouse_pos_buffer[0] * idx as f32),
-                Rotation::new(Axis::Y, mouse_pos_buffer[1] * 3.14 +  0.08 * mouse_pos_buffer[1] * idx as f32),
-                Rotation::new(Axis::Z, 0.0),
+                Rotation::new(
+                    Axis::X, 
+                    ui_buffer.settings.x_rot_coeff * (
+                        mouse_pos_buffer[0] * ui_buffer.settings.x_axis_x_rot_coeff
+                        + mouse_pos_buffer[1] * ui_buffer.settings.y_axis_x_rot_coeff
+                        + idx as f32 * ui_buffer.settings.x_rot_spread
+                    )
+                ),
+                Rotation::new(
+                    Axis::Y,
+                    ui_buffer.settings.y_rot_coeff * (
+                        mouse_pos_buffer[0] * ui_buffer.settings.x_axis_y_rot_coeff
+                            + mouse_pos_buffer[1] * ui_buffer.settings.y_axis_y_rot_coeff
+                            + idx as f32 * ui_buffer.settings.y_rot_spread
+                    )
+                ),
+                Rotation::new(
+                    Axis::Z,
+                    ui_buffer.settings.z_rot_coeff * (
+                        mouse_pos_buffer[0] + ui_buffer.settings.x_axis_z_rot_coeff
+                            + mouse_pos_buffer[1] + ui_buffer.settings.y_axis_z_rot_coeff
+                            + idx as f32 * ui_buffer.settings.z_rot_spread
+                    )
+                ),
             );
 
             let translation = match ui_buffer.settings.mouse_tracking {
@@ -173,21 +200,28 @@ impl MagicSquare {
                 MouseTracking::InvXY =>  Translation { x: - mouse_pos_buffer[0], y: - mouse_pos_buffer[1], z: 0.0 },
             };
 
-                // let hexagon = Geometry::hexagon(
-                //     0.20 * idx as f32, 
-                //     rot_seq,
-                //     translation
-                // );
-
-            // let _ = Worker::spawn(move || {
-                let icosohedron = Geometry::icosohedron(
+                let hexagon = Geometry::hexagon(
                     ui_buffer.settings.radius_step * idx as f32 + ui_buffer.settings.radius_min, 
                     rot_seq,
                     translation
                 );
 
-                let rgba = MagicSquare::get_rgba(mouse_pos_buffer, ui_buffer, idx);
-                geometry_cache.set_next(icosohedron.arr, rgba, Shape::Icosohedron, max_idx);
+            // let _ = Worker::spawn(move || {
+                // let icosohedron = Geometry::icosohedron(
+                //     ui_buffer.settings.radius_step * idx as f32 + ui_buffer.settings.radius_min, 
+                //     rot_seq,
+                //     translation
+                // );
+                
+                let color_idx_offset: usize = color_idx_offset_delay[0];
+                let color_idx_delay: usize = color_idx_offset_delay[1];
+                let rgba = MagicSquare::get_rgba(mouse_pos_buffer, ui_buffer, (idx + color_idx_offset) % 8);
+                color_idx_offset_delay[1] = color_idx_delay + 1;
+                if color_idx_delay == 50 {
+                    color_idx_offset_delay[0] = color_idx_offset + 1_usize % 8;
+                    color_idx_offset_delay[1] = 0;
+                }
+                geometry_cache.set_next(hexagon.arr, rgba, Shape::Icosohedron, max_idx);
             // });
         }
 

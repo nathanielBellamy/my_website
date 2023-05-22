@@ -60,19 +60,23 @@ pub struct Settings {
 
     // mouse settings
     // MouseFollow - Always, Click + Drag, DoubleClick On/Off
+    //
+    pub x_rot_coeff: f32,
+    pub y_rot_coeff: f32,
+    pub z_rot_coeff: f32,
 
-    // x_rot_coeff: f32,
-    // y_rot_coeff: f32,
-    // z_rot_coeff: f32,
+    pub x_rot_spread: f32,
+    pub y_rot_spread: f32,
+    pub z_rot_spread: f32,
 
-    // // rotation sensitivity
-    // x_axis_x_rot_corr: f32,
-    // x_axis_y_rot_corr: f32,
-    // x_axis_z_rot_corr: f32,
+    // rotation sensitivity
+    pub x_axis_x_rot_coeff: f32,
+    pub x_axis_y_rot_coeff: f32,
+    pub x_axis_z_rot_coeff: f32,
 
-    // y_axis_x_rot_corr: f32,
-    // y_axis_y_rot_corr: f32,
-    // y_axis_z_rot_corr: f32,
+    pub y_axis_x_rot_coeff: f32,
+    pub y_axis_y_rot_coeff: f32,
+    pub y_axis_z_rot_coeff: f32,
 
 
     // color_gradient: f32,
@@ -90,6 +94,22 @@ impl Settings {
         Settings {
             draw_pattern: DrawPattern::Seven,
             mouse_tracking: MouseTracking::Off,
+
+            x_rot_coeff: 0.0,
+            y_rot_coeff: 0.0, 
+            z_rot_coeff: 0.0,
+
+            x_rot_spread: 0.0,
+            y_rot_spread: 0.0, 
+            z_rot_spread: 0.0,
+
+            x_axis_x_rot_coeff: 0.0,
+            x_axis_y_rot_coeff: 0.0,
+            x_axis_z_rot_coeff: 0.0,
+
+            y_axis_x_rot_coeff: 0.0,
+            y_axis_y_rot_coeff: 0.0,
+            y_axis_z_rot_coeff: 0.0,
             
             radius_min: 0.1,
             radius_step: 0.1,
@@ -102,6 +122,7 @@ impl Settings {
             color_6: [0.0, 1.0, 1.0, 1.0],
             color_7: [150.0, 140.0, 225.0, 1.0],
             color_8: [110.0, 1.0, 1.0, 1.0],
+
         }
     }
 
@@ -136,6 +157,40 @@ impl Settings {
             "Div" => DrawPattern::Div,
             "Random" => DrawPattern::Random,
             _ => DrawPattern::Three
+        }
+    }
+
+    pub fn string_from_draw_pattern(pattern: DrawPattern) -> String {
+        match pattern {
+            DrawPattern::All => "All".to_string(),
+            DrawPattern::One => "One".to_string(),
+            DrawPattern::Two => "Two".to_string(),
+            DrawPattern::Three => "Three".to_string(),
+            DrawPattern::Four => "Four".to_string(),
+            DrawPattern::Five =>  "Five".to_string(),
+            DrawPattern::Six => "Six".to_string(),
+            DrawPattern::Seven => "Seven".to_string(),
+            DrawPattern::Eight => "Eight".to_string(),
+            DrawPattern::Out1 => "Out1".to_string(), 
+            DrawPattern::Out2 => "Out2".to_string(),
+            DrawPattern::Out3 => "Out3".to_string(),
+            DrawPattern::Out4 => "Out4".to_string(),
+            DrawPattern::Out5 => "Out5".to_string(),
+            DrawPattern::Out6 => "Out6".to_string(),
+            DrawPattern::Out7 => "Out7".to_string(),
+            DrawPattern::Out8 => "Out8".to_string(),
+            DrawPattern::In1 => "In1".to_string(),
+            DrawPattern::In2 => "In2".to_string(),
+            DrawPattern::In3 => "In3".to_string(),
+            DrawPattern::In4 => "In4".to_string(),
+            DrawPattern::In5 => "In5".to_string(),
+            DrawPattern::In6 => "In6".to_string(),
+            DrawPattern::In7 => "In7".to_string(),
+            DrawPattern::In8 => "In8".to_string(),
+            DrawPattern::Conv => "Conv".to_string(),
+            DrawPattern::Div => "Div".to_string(),
+            DrawPattern::Random => "Random".to_string(),
+            _ => "Three".to_string()
         }
     }
 

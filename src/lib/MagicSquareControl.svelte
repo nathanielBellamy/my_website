@@ -47,12 +47,99 @@
     }
   ]
 
+  const rotationSliders: RangeInput[] = [
+    {
+      id: "magic_square_input_x_rot_coeff",
+      label: "Roll Coeff",
+      min: -3.14,
+      max: 3.14,
+      step: 0.1
+    },
+    {
+      id: "magic_square_input_y_rot_coeff",
+      label: "Pitch Coeff",
+      min: -3.14,
+      max: 3.14,
+      step: 0.1
+    },
+    {
+      id: "magic_square_input_z_rot_coeff",
+      label: "Yaw Coeff",
+      min: -3.14,
+      max: 3.14,
+      step: 0.1
+    },
+    {
+      id: "magic_square_input_x_rot_spread",
+      label: "Roll Spread",
+      min: -3.14,
+      max: 3.14,
+      step: 0.1
+    },
+    {
+      id: "magic_square_input_y_rot_spread",
+      label: "Pitch Spread",
+      min: -3.14,
+      max: 3.14,
+      step: 0.1
+    },
+    {
+      id: "magic_square_input_z_rot_spread",
+      label: "Yaw Spread",
+      min: -3.14,
+      max: 3.14,
+      step: 0.1
+    },
+    {
+      id: "magic_square_input_x_axis_x_rot_coeff",
+      label: "X Axis - Roll Coeff",
+      min: 0.1,
+      max: 1,
+      step: 0.01
+    },
+    {
+      id: "magic_square_input_x_axis_y_rot_coeff",
+      label: "X Axis - Pitch Coeff",
+      min: 0.01,
+      max: 0.5,
+      step: 0.01
+    },
+    {
+      id: "magic_square_input_x_axis_Z_rot_coeff",
+      label: "X Axis - Yaw Coeff",
+      min: 0.01,
+      max: 0.5,
+      step: 0.01
+    },
+    {
+      id: "magic_square_input_y_axis_x_rot_coeff",
+      label: "Y Axis - Roll Coeff",
+      min: 0.1,
+      max: 1,
+      step: 0.01
+    },
+    {
+      id: "magic_square_input_y_axis_y_rot_coeff",
+      label: "Y Axis - Pitch Coeff",
+      min: 0.01,
+      max: 0.5,
+      step: 0.01
+    },
+    {
+      id: "magic_square_input_y_axis_Z_rot_coeff",
+      label: "Y Axis - Yaw Coeff",
+      min: 0.01,
+      max: 0.5,
+      step: 0.01
+    }
+
+  ]
+
   // { [selectId]: hiddehInputId}
   const selects: { [key: string]: string; }= {
     'draw_pattern_select': 'magic_square_input_draw_pattern',
     'mouse_tracking_select': 'magic_square_input_mouse_tracking'
   }
-
 
   const drawPatterns: string[] = [
     'All',
@@ -164,6 +251,25 @@
     </div>
   </div>
   <div class="magic_square_input flex flex-col space-between">
+    <label for="radius_sliders"
+           class="title">
+      ROTATION
+    </label>
+    <div id="radius_sliders" 
+         class="flex flex-col space-between">
+      {#each rotationSliders as  {id, label, min, max, step}}
+        <label for={id}>
+          {label}
+        </label>
+        <input id={id}
+               type="range"
+               min={min}
+               max={max}
+               step={step}/>
+      {/each}
+    </div>
+  </div>
+  <div class="magic_square_input flex flex-col space-between">
     <label for="draw_pattern_select"
            class="title">
       DRAW PATTERN
@@ -215,10 +321,12 @@
       border-radius: 5px
       margin: 5px
       padding: 5px
+      overlfow-y: scroll
       
   .title
     font-size: text.$fs_l
     font-weight: text.$fw_l
+    text-align: left
   
   .color_picker
     display: flex
