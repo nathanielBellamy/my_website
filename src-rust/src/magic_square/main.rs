@@ -94,6 +94,7 @@ impl MagicSquare {
     
         {
             // init UI control settings listener
+            let canvas = canvas.clone();
             let form = form.clone();
             let ui_buffer = ui_buffer.clone();
 
@@ -108,6 +109,8 @@ impl MagicSquare {
                     let val = input.value();
                     
                     ui_buffer.clone().borrow_mut().update(id, val);
+                    //trigger re-render
+                    canvas.dispatch_event(&web_sys::Event::new("mousemove").unwrap()).unwrap();
                 });
 
             form.add_event_listener_with_callback(
@@ -117,7 +120,7 @@ impl MagicSquare {
             .unwrap();
             closure_handle_input.forget(); // allow JS to garbage collect the listener
         }
-        
+
         {
             // init mouse move listener
             // write coordinates to mouse_pos_buffer
@@ -125,7 +128,6 @@ impl MagicSquare {
             let canvas = canvas.clone();
             let context: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
             let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::MouseEvent| {
-                log(&format!("{},{}", color_idx_offset_delay[0], color_idx_offset_delay[1]));
                 context.clear_color(0.0, 0.0, 0.0, 0.0);
                 context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
                 mouse_pos_buffer[0] = MagicSquare::clip_x(event.offset_x(), width);
@@ -133,8 +135,10 @@ impl MagicSquare {
                 MagicSquare::render_all_lines(mouse_pos_buffer, &ui_buffer.clone().borrow(), &mut color_idx_offset_delay, &mut geometry_cache, &context);
             });
 
-            canvas
-                .add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())?;
+            canvas.add_event_listener_with_callback(
+                "mousemove", 
+                closure.as_ref().unchecked_ref()
+            )?;
             closure.forget();
         }
 
@@ -168,27 +172,21 @@ impl MagicSquare {
             let rot_seq = RotationSequence::new(
                 Rotation::new(
                     Axis::X, 
-                    ui_buffer.settings.x_rot_coeff * (
-                        mouse_pos_buffer[0] * ui_buffer.settings.x_axis_x_rot_coeff
+                    mouse_pos_buffer[0] * ui_buffer.settings.x_axis_x_rot_coeff
                         + mouse_pos_buffer[1] * ui_buffer.settings.y_axis_x_rot_coeff
                         + idx as f32 * ui_buffer.settings.x_rot_spread
-                    )
                 ),
                 Rotation::new(
                     Axis::Y,
-                    ui_buffer.settings.y_rot_coeff * (
-                        mouse_pos_buffer[0] * ui_buffer.settings.x_axis_y_rot_coeff
-                            + mouse_pos_buffer[1] * ui_buffer.settings.y_axis_y_rot_coeff
-                            + idx as f32 * ui_buffer.settings.y_rot_spread
-                    )
+                    mouse_pos_buffer[0] * ui_buffer.settings.x_axis_y_rot_coeff
+                        + mouse_pos_buffer[1] * ui_buffer.settings.y_axis_y_rot_coeff
+                        + idx as f32 * ui_buffer.settings.y_rot_spread
                 ),
                 Rotation::new(
                     Axis::Z,
-                    ui_buffer.settings.z_rot_coeff * (
-                        mouse_pos_buffer[0] + ui_buffer.settings.x_axis_z_rot_coeff
-                            + mouse_pos_buffer[1] + ui_buffer.settings.y_axis_z_rot_coeff
-                            + idx as f32 * ui_buffer.settings.z_rot_spread
-                    )
+                    mouse_pos_buffer[0] + ui_buffer.settings.x_axis_z_rot_coeff
+                        + mouse_pos_buffer[1] + ui_buffer.settings.y_axis_z_rot_coeff
+                        + idx as f32 * ui_buffer.settings.z_rot_spread
                 ),
             );
 

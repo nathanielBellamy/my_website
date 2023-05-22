@@ -6,7 +6,6 @@ use crate::magic_square::ui_manifest::{
     INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8,
     INPUT_DRAW_PATTERN, INPUT_MOUSE_TRACKING,
     INPUT_RADIUS_MIN, INPUT_RADIUS_STEP,
-    INPUT_X_ROT_COEFF, INPUT_Y_ROT_COEFF, INPUT_Z_ROT_COEFF,
     INPUT_X_ROT_SPREAD, INPUT_Y_ROT_SPREAD, INPUT_Z_ROT_SPREAD,
     INPUT_X_AXIS_X_ROT_COEFF, INPUT_X_AXIS_Y_ROT_COEFF, INPUT_X_AXIS_Z_ROT_COEFF,
     INPUT_Y_AXIS_X_ROT_COEFF, INPUT_Y_AXIS_Y_ROT_COEFF, INPUT_Y_AXIS_Z_ROT_COEFF
@@ -70,15 +69,6 @@ impl UiBuffer {
             INPUT_RADIUS_STEP => {
                 self.settings.radius_step = val.parse::<f32>().unwrap()
             },
-            INPUT_X_ROT_COEFF => {
-                self.settings.x_rot_coeff = val.parse::<f32>().unwrap()
-            },
-            INPUT_Y_ROT_COEFF => {
-                self.settings.y_rot_coeff = val.parse::<f32>().unwrap()
-            },
-            INPUT_Z_ROT_COEFF => {
-                self.settings.z_rot_coeff = val.parse::<f32>().unwrap()
-            },
             INPUT_X_ROT_SPREAD => {
                 self.settings.x_rot_spread = val.parse::<f32>().unwrap()
             },
@@ -132,9 +122,6 @@ impl UiBuffer {
             INPUT_COLOR_7 => Settings::rgba_string(self.settings.color_7),
             INPUT_COLOR_8 => Settings::rgba_string(self.settings.color_8),
             INPUT_DRAW_PATTERN => Settings::string_from_draw_pattern(self.settings.draw_pattern),
-            INPUT_X_ROT_COEFF => format!("{}", self.settings.x_rot_coeff),
-            INPUT_Y_ROT_COEFF => format!("{}", self.settings.y_rot_coeff),
-            INPUT_Z_ROT_COEFF => format!("{}", self.settings.z_rot_coeff),
             INPUT_X_ROT_SPREAD => format!("{}", self.settings.x_rot_spread),
             INPUT_Y_ROT_SPREAD => format!("{}", self.settings.y_rot_spread),
             INPUT_Z_ROT_SPREAD => format!("{}", self.settings.z_rot_spread),

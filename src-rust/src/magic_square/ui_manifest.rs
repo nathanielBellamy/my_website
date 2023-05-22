@@ -11,10 +11,6 @@ pub const INPUT_MOUSE_TRACKING: &'static str = "magic_square_input_mouse_trackin
 pub const INPUT_RADIUS_MIN: &'static str = "magic_square_input_radius_min";
 pub const INPUT_RADIUS_STEP: &'static str = "magic_square_input_radius_step";
 
-pub const INPUT_X_ROT_COEFF: &'static str = "magic_square_input_x_rot_coeff";
-pub const INPUT_Y_ROT_COEFF: &'static str = "magic_square_input_y_rot_coeff";
-pub const INPUT_Z_ROT_COEFF: &'static str = "magic_square_input_z_rot_coeff";
-
 pub const INPUT_X_ROT_SPREAD: &'static str = "magic_square_input_x_rot_spread";
 pub const INPUT_Y_ROT_SPREAD: &'static str = "magic_square_input_y_rot_spread";
 pub const INPUT_Z_ROT_SPREAD: &'static str = "magic_square_input_z_rot_spread";
@@ -27,7 +23,7 @@ pub const INPUT_Y_AXIS_X_ROT_COEFF: &'static str = "magic_square_input_y_axis_x_
 pub const INPUT_Y_AXIS_Y_ROT_COEFF: &'static str = "magic_square_input_y_axis_y_rot_coeff";
 pub const INPUT_Y_AXIS_Z_ROT_COEFF: &'static str = "magic_square_input_y_axis_z_rot_coeff";
 
-pub const INPUT_IDS: [&'static str; 24] = [
+pub const INPUT_IDS: [&'static str; 21] = [
     INPUT_COLOR_1,
     INPUT_COLOR_2,
     INPUT_COLOR_3,
@@ -40,9 +36,6 @@ pub const INPUT_IDS: [&'static str; 24] = [
     INPUT_MOUSE_TRACKING,
     INPUT_RADIUS_MIN,
     INPUT_RADIUS_STEP,
-    INPUT_X_ROT_COEFF,
-    INPUT_Y_ROT_COEFF,
-    INPUT_Z_ROT_COEFF,
     INPUT_X_ROT_SPREAD,
     INPUT_Y_ROT_SPREAD,
     INPUT_Z_ROT_SPREAD,

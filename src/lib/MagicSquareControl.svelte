@@ -49,27 +49,6 @@
 
   const rotationSliders: RangeInput[] = [
     {
-      id: "magic_square_input_x_rot_coeff",
-      label: "Roll Coeff",
-      min: -3.14,
-      max: 3.14,
-      step: 0.1
-    },
-    {
-      id: "magic_square_input_y_rot_coeff",
-      label: "Pitch Coeff",
-      min: -3.14,
-      max: 3.14,
-      step: 0.1
-    },
-    {
-      id: "magic_square_input_z_rot_coeff",
-      label: "Yaw Coeff",
-      min: -3.14,
-      max: 3.14,
-      step: 0.1
-    },
-    {
       id: "magic_square_input_x_rot_spread",
       label: "Roll Spread",
       min: -3.14,
