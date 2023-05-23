@@ -84,56 +84,56 @@
     },
     {
       id: "magic_square_input_x_axis_x_rot_coeff",
-      initialValue: 0.1,
-      value: 0.0,
+      initialValue: 0,
+      value: 0,
       label: "X Axis - Roll Coeff",
-      min: 0.1,
+      min: -1,
       max: 1,
       step: 0.01
     },
     {
       id: "magic_square_input_x_axis_y_rot_coeff",
-      initialValue: 0.1,
-      value: 0.0,
+      initialValue: 0,
+      value: 0,
       label: "X Axis - Pitch Coeff",
-      min: 0.01,
-      max: 0.5,
+      min: -1,
+      max: 1,
       step: 0.01
     },
     {
       id: "magic_square_input_x_axis_Z_rot_coeff",
-      initialValue: 0.1,
-      value: 0.0,
+      initialValue: 0,
+      value: 0,
       label: "X Axis - Yaw Coeff",
-      min: 0.01,
-      max: 0.5,
+      min: -1,
+      max: 1,
       step: 0.01
     },
     {
       id: "magic_square_input_y_axis_x_rot_coeff",
-      initialValue: 0.1,
-      value: 0.0,
+      initialValue: 0,
+      value: 0,
       label: "Y Axis - Roll Coeff",
-      min: 0.1,
+      min: -1,
       max: 1,
       step: 0.01
     },
     {
       id: "magic_square_input_y_axis_y_rot_coeff",
-      initialValue: 0.0,
-      value: 0.0,
+      initialValue: 0,
+      value: 0,
       label: "Y Axis - Pitch Coeff",
-      min: 0.01,
-      max: 0.5,
+      min: -1,
+      max: 1,
       step: 0.01
     },
     {
       id: "magic_square_input_y_axis_Z_rot_coeff",
-      initialValue: 0.1,
-      value: 0.0,
+      initialValue: 0,
+      value: 0,
       label: "Y Axis - Yaw Coeff",
-      min: 0.01,
-      max: 0.5,
+      min: -1,
+      max: 1,
       step: 0.01
     }
 

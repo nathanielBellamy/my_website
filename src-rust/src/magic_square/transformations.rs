@@ -51,7 +51,7 @@ impl Rotation {
             Axis::Z => {
                 array![
                     [self.theta.cos(), self.theta.sin(), 0.0],
-                    [self.theta.sin(), self.theta.cos(), 0.0],
+                    [-self.theta.sin(), self.theta.cos(), 0.0],
                     [0.0, 0.0, 1.0],
                 ]
             },
