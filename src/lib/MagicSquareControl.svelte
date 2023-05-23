@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import iro from '@jaames/iro'
+  import Range from './Range.svelte'
 
   const colorPickerOptions = {
     width: 150,
@@ -27,29 +28,37 @@
     label: string,
     min: number,
     max: number,
-    step: number
+    step: number,
+    initialValue: number,
+    value: number
   }
 
-  const radiusSliders: RangeInput[] = [
+  var radiusSliders: RangeInput[] = [
     {
       id: "magic_square_input_radius_min",
       label: "MIN",
       min: 0.1,
       max: 1,
-      step: 0.01
+      step: 0.01,
+      initialValue: 0.5,
+      value: 0.5
     },
     {
       id: "magic_square_input_radius_step",
       label: "STEP",
       min: 0.01,
       max: 0.5,
-      step: 0.01
+      step: 0.01,
+      initialValue:  0.5,
+      value: 0.5
     }
   ]
 
-  const rotationSliders: RangeInput[] = [
+  var rotationSliders: RangeInput[] = [
     {
       id: "magic_square_input_x_rot_spread",
+      initialValue: 0.0,
+      value: 0.0,
       label: "Roll Spread",
       min: -3.14,
       max: 3.14,
@@ -57,6 +66,8 @@
     },
     {
       id: "magic_square_input_y_rot_spread",
+      initialValue: 0.0,
+      value: 0.0,
       label: "Pitch Spread",
       min: -3.14,
       max: 3.14,
@@ -64,6 +75,8 @@
     },
     {
       id: "magic_square_input_z_rot_spread",
+      initialValue: 0.0,
+      value: 0.0,
       label: "Yaw Spread",
       min: -3.14,
       max: 3.14,
@@ -71,6 +84,8 @@
     },
     {
       id: "magic_square_input_x_axis_x_rot_coeff",
+      initialValue: 0.1,
+      value: 0.0,
       label: "X Axis - Roll Coeff",
       min: 0.1,
       max: 1,
@@ -78,6 +93,8 @@
     },
     {
       id: "magic_square_input_x_axis_y_rot_coeff",
+      initialValue: 0.1,
+      value: 0.0,
       label: "X Axis - Pitch Coeff",
       min: 0.01,
       max: 0.5,
@@ -85,6 +102,8 @@
     },
     {
       id: "magic_square_input_x_axis_Z_rot_coeff",
+      initialValue: 0.1,
+      value: 0.0,
       label: "X Axis - Yaw Coeff",
       min: 0.01,
       max: 0.5,
@@ -92,6 +111,8 @@
     },
     {
       id: "magic_square_input_y_axis_x_rot_coeff",
+      initialValue: 0.1,
+      value: 0.0,
       label: "Y Axis - Roll Coeff",
       min: 0.1,
       max: 1,
@@ -99,6 +120,8 @@
     },
     {
       id: "magic_square_input_y_axis_y_rot_coeff",
+      initialValue: 0.0,
+      value: 0.0,
       label: "Y Axis - Pitch Coeff",
       min: 0.01,
       max: 0.5,
@@ -106,6 +129,8 @@
     },
     {
       id: "magic_square_input_y_axis_Z_rot_coeff",
+      initialValue: 0.1,
+      value: 0.0,
       label: "Y Axis - Yaw Coeff",
       min: 0.01,
       max: 0.5,
@@ -194,6 +219,22 @@
     input.value = e.target.value
     input.dispatchEvent(new Event('input', {bubbles: true}))
   } 
+
+  function handleRadiusChange(e: any, id: string, idx: number) {
+    radiusSliders[idx].value = e.detail.value
+    radiusSliders = radiusSliders
+    var input = document.getElementById(id)
+    input.value = e.detail.value
+    input.dispatchEvent(new Event('input', {bubbles: true}))
+  }
+
+  function handleRotationChange(e: any, id: string, idx: number) {
+    rotationSliders[idx].value = e.detail.value
+    rotationSliders = rotationSliders
+    var input = document.getElementById(id)
+    input.value = e.detail.value
+    input.dispatchEvent(new Event('input', {bubbles: true}))
+  }
 </script>
 
 <div id="magic_square_control"
@@ -217,15 +258,18 @@
     </label>
     <div id="radius_sliders" 
          class="flex flex-col space-between">
-      {#each radiusSliders as  {id, label, min, max, step}}
+      {#each radiusSliders as  {id, label, min, max, initialValue, value}, idx}
         <label for={id}>
           {label}
         </label>
-        <input id={id}
-               type="range"
+        <Range id={`${id}_range`}
                min={min}
                max={max}
-               step={step}/>
+               initialValue={initialValue}
+               value={value}
+               on:change={(e) => handleRadiusChange(e, id, idx)}/>
+        <input id={id}
+               class="hidden_input"/>
       {/each}
     </div>
   </div>
@@ -236,15 +280,18 @@
     </label>
     <div id="radius_sliders" 
          class="flex flex-col space-between">
-      {#each rotationSliders as  {id, label, min, max, step}}
+      {#each rotationSliders as  {id, label, min, max, initialValue, value}, idx}
         <label for={id}>
           {label}
         </label>
-        <input id={id}
-               type="range"
+        <Range id={`${id}_range`}
                min={min}
                max={max}
-               step={step}/>
+               initialValue={initialValue}
+               value={value}
+               on:change={(e) => handleRotationChange(e, id, idx)}/>
+        <input id={id}
+               class="hidden_input"/>
       {/each}
     </div>
   </div>

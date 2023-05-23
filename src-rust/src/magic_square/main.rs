@@ -106,8 +106,8 @@ impl MagicSquare {
                         .unwrap();
                     let id = input.id();
                     let val = input.value();
-                    log(&id);
-                    log(&val);
+                    // log(&id);
+                    // log(&val);
                     ui_buffer.clone().borrow_mut().update(id, val);
                     //trigger re-render
                     magic_square.dispatch_event(&web_sys::Event::new("render").unwrap()).unwrap();
@@ -231,9 +231,7 @@ impl MagicSquare {
         color_idx_offset_delay: &mut [usize; 2],
         geometry_cache: &Rc<RefCell<GeometryCache>>,
     ) {
-        log("duuuude");
         let max_idx = Settings::max_idx_from_draw_pattern(ui_buffer.settings.draw_pattern);
-        log("wowy");
         let mouse_pos_buffer = *mouse_pos_buffer.clone().borrow();
         for idx in 0..max_idx { // geometry_cache.max_idx + 1 { //TODO: settings.cache_per
             let rot_seq = RotationSequence::new(
@@ -265,18 +263,18 @@ impl MagicSquare {
                 MouseTracking::InvXY =>  Translation { x: - mouse_pos_buffer[0], y: - mouse_pos_buffer[1], z: 0.0 },
             };
 
-                let hexagon = Geometry::hexagon(
-                    ui_buffer.settings.radius_step * idx as f32 + ui_buffer.settings.radius_min, 
-                    rot_seq,
-                    translation
-                );
-
-            // let _ = Worker::spawn(move || {
-                // let icosohedron = Geometry::icosohedron(
+                // let hexagon = Geometry::hexagon(
                 //     ui_buffer.settings.radius_step * idx as f32 + ui_buffer.settings.radius_min, 
                 //     rot_seq,
                 //     translation
                 // );
+
+            // let _ = Worker::spawn(move || {
+                let icosohedron = Geometry::icosohedron(
+                    ui_buffer.settings.radius_step * idx as f32 + ui_buffer.settings.radius_min, 
+                    rot_seq,
+                    translation
+                );
                 
                 let color_idx_offset: usize = color_idx_offset_delay[0];
                 let color_idx_delay: usize = color_idx_offset_delay[1];
@@ -290,8 +288,7 @@ impl MagicSquare {
                     color_idx_offset_delay[0] = color_idx_offset + 1_usize % 8;
                     color_idx_offset_delay[1] = 0;
                 }
-                log("zowy");
-                geometry_cache.borrow_mut().set_next(hexagon.arr, rgba, Shape::Icosohedron, max_idx);
+                geometry_cache.borrow_mut().set_next(icosohedron.arr, rgba, Shape::Icosohedron, max_idx);
             // });
         }
 

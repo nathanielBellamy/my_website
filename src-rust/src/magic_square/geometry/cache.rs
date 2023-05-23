@@ -41,7 +41,6 @@ impl Cache {
         self.rgbas[self.idx] = rgba;
         self.shapes[self.idx] = shape;
         self.idx = (self.idx + 1) % max_idx;
-        log("POW!");
     }
 
     pub fn gl_vertices(&self, idx: usize) -> &[f32] {

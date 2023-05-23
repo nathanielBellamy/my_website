@@ -27,8 +27,8 @@ impl UiBuffer {
     }
 
     pub fn update(&mut self, input_id: String, val: String) {
-        log(&input_id);
-        log(&val);
+        // log(&input_id);
+        // log(&val);
         match input_id.as_str() {
             INPUT_COLOR_1
                 | INPUT_COLOR_2
