@@ -1,6 +1,7 @@
 use crate::magic_square::main::Rgba;
 use crate::magic_square::vertices::VertexArr;
 use crate::magic_square::geometry::Shape;
+use crate::magic_square::main::log;
 
 pub const CACHE_CAPACITY: usize = 50;
 
@@ -40,6 +41,7 @@ impl Cache {
         self.rgbas[self.idx] = rgba;
         self.shapes[self.idx] = shape;
         self.idx = (self.idx + 1) % max_idx;
+        log("POW!");
     }
 
     pub fn gl_vertices(&self, idx: usize) -> &[f32] {

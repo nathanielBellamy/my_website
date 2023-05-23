@@ -51,7 +51,10 @@ impl MagicSquare {
         // Worker::spawn(move || { to_main.send(from_main.recv().unwrap() + 1.0); });
         // to_worker.send(1.0);
         // assert_eq!(from_worker.recv().unwrap(), 2.0);
+        
 
+        let magic_square = MagicSquare::magic_square(); // awesome naming, great job!
+        let magic_square = Rc::new(magic_square);
         let canvas = MagicSquare::canvas().dyn_into::<web_sys::HtmlCanvasElement>()?;
         let canvas = Rc::new(canvas);
 
@@ -67,38 +70,30 @@ impl MagicSquare {
         // incriment idx_offset
         let mut color_idx_offset_delay: [usize; 2] = [0, 0];
         //Arc::new(Mutex::new(
-        let mut geometry_cache = GeometryCache::new(
+        let geometry_cache = GeometryCache::new(
                 26, 
                 [[0.0; 1_200]; CACHE_CAPACITY], 
                 [[0.0, 0.0, 0.0, 0.0]; CACHE_CAPACITY],
                 [Shape::None; CACHE_CAPACITY]
             );
 
-        let geometry_cache = Rc::new(RefCell::new(geometry_cache));
+        let mut geometry_cache = Rc::new(RefCell::new(geometry_cache));
         // )); 
         
         let form = MagicSquare::form();
         let form = Rc::new(form);
         let ui_buffer = UiBuffer::new();
         let ui_buffer = Rc::new(RefCell::new(ui_buffer));
-        let mut mouse_pos_buffer: [f32; 2] = [0.0, 0.0]; // Buffer::new();
+        let mouse_pos_buffer: [f32; 2] = [0.0, 0.0];
+        let mouse_pos_buffer: Rc<RefCell<[f32; 2]>> = Rc::new(RefCell::new(mouse_pos_buffer));
 
         let context: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
         context.clear_color(1.0, 1.0, 0.0, 0.0);
         context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
 
-        // -- initial render
-        //     MagicSquare::render_all_lines(
-        //         [0.0, 0.0], 
-        //         &ui_buffer.clone().borrow(), 
-        //         &mut [0_usize, 0_usize],
-        //         &geometry_cache, 
-        //         &context
-        //     );
-        // 
         {
             // init UI control settings listener
-            let canvas = canvas.clone();
+            let magic_square = magic_square.clone();
             let form = form.clone();
             let ui_buffer = ui_buffer.clone();
 
@@ -111,10 +106,11 @@ impl MagicSquare {
                         .unwrap();
                     let id = input.id();
                     let val = input.value();
-                    
+                    log(&id);
+                    log(&val);
                     ui_buffer.clone().borrow_mut().update(id, val);
                     //trigger re-render
-                    canvas.dispatch_event(&web_sys::Event::new("mousemove").unwrap()).unwrap();
+                    magic_square.dispatch_event(&web_sys::Event::new("render").unwrap()).unwrap();
                 });
 
             form.add_event_listener_with_callback(
@@ -128,22 +124,18 @@ impl MagicSquare {
         {
             // init mouse move listener
             // write coordinates to mouse_pos_buffer
-
+            let magic_square = magic_square.clone();
+            let mouse_pos_buffer = mouse_pos_buffer.clone();
             let canvas = canvas.clone();
             let context: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
-            let ui_buffer = ui_buffer.clone();
-            let geometry_cache = geometry_cache.clone();
             let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::MouseEvent| {
                 context.clear_color(0.0, 0.0, 0.0, 0.0);
                 context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
-                mouse_pos_buffer[0] = MagicSquare::clip_x(event.offset_x(), width);
-                mouse_pos_buffer[1] = MagicSquare::clip_y(event.offset_y(), height);
-                MagicSquare::render_all_lines(
-                    mouse_pos_buffer, 
-                    &ui_buffer.borrow(), 
-                    &mut color_idx_offset_delay, 
-                    &geometry_cache,
-                );
+                mouse_pos_buffer.clone().borrow_mut()[0] = MagicSquare::clip_x(event.offset_x(), width);
+                mouse_pos_buffer.clone().borrow_mut()[1] = MagicSquare::clip_x(event.offset_y(), height);
+                // mouse_pos_buffer[0] = MagicSquare::clip_x(event.offset_x(), width);
+                // mouse_pos_buffer[1] = MagicSquare::clip_y(event.offset_y(), height);
+                magic_square.dispatch_event(&web_sys::Event::new("render").unwrap()).unwrap();
             });
 
             canvas.add_event_listener_with_callback(
@@ -153,20 +145,49 @@ impl MagicSquare {
             closure.forget();
         }
 
-        let mut animation_id: i32 = 0;
+        {
+            let magic_square = magic_square.clone();
+            // let mouse_pos_buffer = &mouse_pos_buffer;
+            let geometry_cache = geometry_cache.clone();
+            let mouse_pos_buffer = mouse_pos_buffer.clone();
+            let ui_buffer = ui_buffer.clone();
 
+            // set up render listener
+            let closure = Closure::<dyn FnMut(_)>::new(move |_event: web_sys::Event| {
+                MagicSquare::render_all_lines(
+                    &mouse_pos_buffer,
+                    &ui_buffer.clone().borrow(), 
+                    &mut color_idx_offset_delay, 
+                    &geometry_cache,
+                );
+            });
+
+            magic_square.add_event_listener_with_callback(
+                "render",
+                closure.as_ref().unchecked_ref()
+            )?;
+            closure.forget();
+        }
+
+        
+        let animation_id: i32;
         {
             // set up animation loop
             let geometry_cache = geometry_cache.clone();
+            let ui_buffer = ui_buffer.clone();
             let max_idx = Settings::max_idx_from_draw_pattern(ui_buffer.borrow().settings.draw_pattern);
 
             // closures used to allocate and clean up resources
             let f: Rc<RefCell<Option<wasm_bindgen::prelude::Closure<_>> >> = Rc::new(RefCell::new(None));
             let g = f.clone();
-            let mut counter: usize = 0;
 
             *g.borrow_mut() = Some(Closure::new(move || {
-                log("{counter}");
+                // TODO SOON: DEBUG cancelAnimationFrame
+                // seemingly passing valid requestId back to js
+                // but passing the id to cancleAnimationFrame in onDestroy callback
+                // does not seem to be cancelling the animation frame
+                // thus we can wind up with multiple (performance killing) instances
+                // by navigating back and forth
                 for idx in 0..max_idx {
                     MagicSquare::render(
                         geometry_cache.borrow().gl_vertices(idx), 
@@ -174,7 +195,6 @@ impl MagicSquare {
                         &context
                     ).expect("Render error");
                 }
-                counter += 1;
                 MagicSquare::request_animation_frame(f.borrow().as_ref().unwrap());
             }));
 
@@ -205,13 +225,16 @@ impl MagicSquare {
     }
 
     fn render_all_lines(
-        mouse_pos_buffer: [f32; 2],
+        mouse_pos_buffer: &Rc<RefCell<[f32; 2]>>,
         ui_buffer: &UiBuffer,
         // geometry_cache: Arc<Mutex<GeometryCache>>,
         color_idx_offset_delay: &mut [usize; 2],
         geometry_cache: &Rc<RefCell<GeometryCache>>,
     ) {
+        log("duuuude");
         let max_idx = Settings::max_idx_from_draw_pattern(ui_buffer.settings.draw_pattern);
+        log("wowy");
+        let mouse_pos_buffer = *mouse_pos_buffer.clone().borrow();
         for idx in 0..max_idx { // geometry_cache.max_idx + 1 { //TODO: settings.cache_per
             let rot_seq = RotationSequence::new(
                 Rotation::new(
@@ -257,12 +280,17 @@ impl MagicSquare {
                 
                 let color_idx_offset: usize = color_idx_offset_delay[0];
                 let color_idx_delay: usize = color_idx_offset_delay[1];
-                let rgba = MagicSquare::get_rgba(mouse_pos_buffer, ui_buffer, (idx + color_idx_offset) % 8);
+                let rgba = MagicSquare::get_rgba(
+                    mouse_pos_buffer.clone(),
+                    ui_buffer, 
+                    (idx + color_idx_offset) % 8
+                );
                 color_idx_offset_delay[1] = color_idx_delay + 1;
                 if color_idx_delay == 50 {
                     color_idx_offset_delay[0] = color_idx_offset + 1_usize % 8;
                     color_idx_offset_delay[1] = 0;
                 }
+                log("zowy");
                 geometry_cache.borrow_mut().set_next(hexagon.arr, rgba, Shape::Icosohedron, max_idx);
             // });
         }
@@ -308,6 +336,12 @@ impl MagicSquare {
         MagicSquare::window()
             .document()
             .expect("should have a document on window")
+    }
+
+    pub fn magic_square() -> web_sys::Element {
+        MagicSquare::document()
+            .get_element_by_id("magic_square")
+            .expect("unable to find magic_square element")
     }
 
     fn canvas() -> web_sys::Element {

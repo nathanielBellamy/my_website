@@ -8,7 +8,7 @@
   $: height
   $: width
 
-  var animation_id: number
+  var animation_id: any
 
   onMount(async () => {
     let element = document.getElementById("magic_square")
@@ -25,12 +25,13 @@
   onDestroy(async () => {
     console.log("onDestroy")
     console.log(animation_id)
-    cancelAnimationFrame(animation_id)
+    window.cancelAnimationFrame(animation_id)
+    animation_id = undefined
   })
 </script>
 
 <div id="magic_square"
-     class="magic_square flex flex justify-start">
+     class="magic_square flex justify-start">
   <canvas id="magic_square_canvas"
           class="magic_square_canvas"
           height={height}
