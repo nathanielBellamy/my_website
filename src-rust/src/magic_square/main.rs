@@ -357,7 +357,7 @@ impl MagicSquare {
 
     fn form() -> web_sys::Element {
         MagicSquare::document()
-            .get_element_by_id("magic_square_control")
+            .get_element_by_id("magic_square_control_rack")
             .expect("unable to find control element")
     }
 

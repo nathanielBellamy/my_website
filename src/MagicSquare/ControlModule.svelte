@@ -16,6 +16,7 @@
   @use "./../styles/text"
 
   .control_module
+    flex-grow: 1
     border: 5px solid color.$blue-4
     align-items: stretch 
     border-radius: 5px
