@@ -60,17 +60,17 @@
       initialValue: 0.0,
       value: 0.0,
       label: "Roll Spread",
-      min: -3.14,
-      max: 3.14,
-      step: 0.1
+      min: -0.3,
+      max: 0.3,
+      step: 0.01
     },
     {
       id: "magic_square_input_y_rot_spread",
       initialValue: 0.0,
       value: 0.0,
       label: "Pitch Spread",
-      min: -3.14,
-      max: 3.14,
+      min: -0.3,
+      max: 0.3,
       step: 0.1
     },
     {
@@ -78,8 +78,8 @@
       initialValue: 0.0,
       value: 0.0,
       label: "Yaw Spread",
-      min: -3.14,
-      max: 3.14,
+      min: -0.3,
+      max: 0.3,
       step: 0.1
     },
     {

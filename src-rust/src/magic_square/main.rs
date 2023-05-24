@@ -201,6 +201,14 @@ impl MagicSquare {
             animation_id = MagicSquare::request_animation_frame(g.borrow().as_ref().unwrap());
         }
 
+        // initial render
+        MagicSquare::render_all_lines(
+            &mouse_pos_buffer,
+            &ui_buffer.clone().borrow(), 
+            &mut color_idx_offset_delay, 
+            &geometry_cache,
+        );
+
         Ok(animation_id)
     }
 }
@@ -249,17 +257,17 @@ impl MagicSquare {
                 ),
                 Rotation::new(
                     Axis::Z,
-                    mouse_pos_buffer[0] + ui_buffer.settings.x_axis_z_rot_coeff
-                        + mouse_pos_buffer[1] + ui_buffer.settings.y_axis_z_rot_coeff
+                    mouse_pos_buffer[0] * ui_buffer.settings.x_axis_z_rot_coeff
+                        + mouse_pos_buffer[1] * ui_buffer.settings.y_axis_z_rot_coeff
                         + idx as f32 * ui_buffer.settings.z_rot_spread
                 ),
             );
 
             let translation = match ui_buffer.settings.mouse_tracking {
-                MouseTracking::On => Translation { x: mouse_pos_buffer[0], y: mouse_pos_buffer[1], z: 0.0 },
+                MouseTracking::On => Translation { x: mouse_pos_buffer[0], y: - mouse_pos_buffer[1], z: 0.0 },
                 MouseTracking::Off => Translation { x: 0.0, y: 0.0, z: 0.0 },
                 MouseTracking::InvX =>  Translation { x: - mouse_pos_buffer[0], y: mouse_pos_buffer[1], z: 0.0 },
-                MouseTracking::InvY =>  Translation { x: mouse_pos_buffer[0], y: - mouse_pos_buffer[1], z: 0.0 },
+                MouseTracking::InvY =>  Translation { x: mouse_pos_buffer[0], y: mouse_pos_buffer[1], z: 0.0 },
                 MouseTracking::InvXY =>  Translation { x: - mouse_pos_buffer[0], y: - mouse_pos_buffer[1], z: 0.0 },
             };
 
