@@ -251,10 +251,10 @@
   }
 
   .range__track--highlighted {
-    background-color: var(--track-highlight-bgcolor, #6185ff);
+    background-color: var(--track-highlight-bgcolor, #395A6D);
     background: var(
       --track-highlight-bg,
-      linear-gradient(90deg, #6185ff, #9c65ff)
+      linear-gradient(90deg, #9DBFCB, #395A6D)
     );
     width: 0;
     height: 6px;
@@ -269,7 +269,7 @@
     position: absolute;
     width: 20px;
     height: 20px;
-    background-color: var(--thumb-bgcolor, white);
+    background-color: var(--thumb-bgcolor,  #EFF0E9);
     cursor: pointer;
     border-radius: 999px;
     margin-top: -8px;
@@ -292,13 +292,15 @@
     pointer-events: none;
     position: absolute;
     top: -33px;
-    color: var(--tooltip-text, white);
+    color: var(--tooltip-text, #EFF0E9);
     width: 38px;
-    padding: 4px 0;
+    padding: 4px 4px;
+    width: fit-content;
+    min-width: 50px;
     border-radius: 4px;
     text-align: center;
-    background-color: var(--tooltip-bgcolor, #6185ff);
-    background: var(--tooltip-bg, linear-gradient(45deg, #6185ff, #9c65ff));
+    background-color: var(--tooltip-bgcolor, #395A6D);
+    background: var(--tooltip-bg, linear-gradient(45deg, #5F7686, #395A6D));
   }
 
   .range__tooltip::after {
@@ -307,7 +309,7 @@
     position: absolute;
     height: 7px;
     width: 7px;
-    background-color: var(--tooltip-bgcolor, #6185ff);
+    background-color: var(--tooltip-bgcolor, #395A6D);
     bottom: -3px;
     left: calc(50% - 3px);
     clip-path: polygon(0% 0%, 100% 100%, 0% 100%);

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { watchResize } from "svelte-watch-resize"
-  import MagicSquare from "./MagicSquare.svelte"
+  import MagicSquare from "./Main.svelte"
   
   let magicSquareInstance = 0
 

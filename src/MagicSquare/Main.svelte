@@ -1,6 +1,6 @@
 <script lang="ts" type="module">
   import { onMount, onDestroy } from 'svelte'
-  import MagicSquareControl from './MagicSquareControl.svelte'
+  import ControlRack from './ControlRack.svelte'
 
   let height: number = 0
   let width: number = 0
@@ -36,7 +36,7 @@
           class="magic_square_canvas"
           height={height}
           width={width}/>
-  <MagicSquareControl />
+  <ControlRack />
 </div>
 
 <style lang="sass">
