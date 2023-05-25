@@ -23,44 +23,6 @@
 
   let curr_mod_left: string = 'color'
   let curr_mod_right: string = 'rotation'
-
-  const getModule = (modName: string) => {
-    switch(modName) {
-      case 'color':
-        return Color
-      case 'drawPattern':
-        return DrawPattern
-      case 'mouseTracking':
-        return MouseTracking
-      case 'radius':
-        return Radius
-      case 'rotation':
-        return Rotation
-      case 'none':
-        return null
-    }
-  }
-
-  // rust sets values on hidden inputs
-  // this method reads those values into the iro elmeents
-  onMount(() => {
-    // wasm listens to input events on the forms
-    // within the manual call to dispatchEvent we must
-    // explicitly set bubbles:true so that wasm can catch the event
-    // while listening to the form
-    // this way a single wasm closure can handle all ui data updates
-
-
-    document.getElementById("magic_square_control_rack").addEventListener("click", (_e:any) => {
-      console.dir({curr_mod_left, curr_mod_right})
-    })
-  })
-
-  const handleSelectChange = (e: Event) => {
-    var input = document.getElementById("magic_square_input_draw_pattern")
-    input.value = e.target.value
-    input.dispatchEvent(new Event('input', {bubbles: true}))
-  }
 </script>
 
 <div id="magic_square_control_rack"
@@ -68,30 +30,34 @@
   <Select modules={modules}
           bind:curr_mod_left={curr_mod_left}
           bind:curr_mod_right={curr_mod_right}/>
-  
-  {#if curr_mod_left == 'color'}
-    <Color />
-  {:else if curr_mod_left == 'drawPattern'}
-    <DrawPattern />
-  {:else if curr_mod_left == 'mouseTracking'}
-    <MouseTracking />
-  {:else if curr_mod_left == 'radius'}
-    <Radius />
-  {:else if curr_mod_left == 'rotation'}
-    <Rotation />
-  {/if}
-
-  {#if curr_mod_right == 'color'}
-    <Color />
-  {:else if curr_mod_right == 'drawPattern'}
-    <DrawPattern />
-  {:else if curr_mod_right == 'mouseTracking'}
-    <MouseTracking />
-  {:else if curr_mod_right == 'radius'}
-    <Radius />
-  {:else if curr_mod_right == 'rotation'}
-    <Rotation />
-  {/if}
+  <div class="left_right_slots grid grid-cols-2">
+    <div class="left_slot">
+      {#if curr_mod_left == 'color'}
+        <Color />
+      {:else if curr_mod_left == 'drawPattern'}
+        <DrawPattern />
+      {:else if curr_mod_left == 'mouseTracking'}
+        <MouseTracking />
+      {:else if curr_mod_left == 'radius'}
+        <Radius />
+      {:else if curr_mod_left == 'rotation'}
+        <Rotation />
+      {/if}
+    </div>
+    <div class="right_slot">
+      {#if curr_mod_right == 'color'}
+        <Color />
+      {:else if curr_mod_right == 'drawPattern'}
+        <DrawPattern />
+      {:else if curr_mod_right == 'mouseTracking'}
+        <MouseTracking />
+      {:else if curr_mod_right == 'radius'}
+        <Radius />
+      {:else if curr_mod_right == 'rotation'}
+        <Rotation />
+      {/if}
+    </div>
+  </div>
 </div>
 
 <style lang="sass">
@@ -99,8 +65,22 @@
   @use "./../styles/text"
   
   .magic_square_control_rack
-      height: 100%
-      width: 100%
-      overflow: hidden
-      padding: 3px 20px 3px 20px
+    flex-grow: 1
+    overflow: hidden
+    padding: 3px 20px 3px 20px
+
+  .left_right_slots
+    width: 100%
+    grid-template-areas: "left_slot right_slot"
+    grid-template-columns: 50% 50%
+
+  .left_slot
+    grid-area: "left_slot"
+    overflow: hidden
+  
+  .right_slot
+    grid-area: "right_slot"
+    overflow: hidden
+  
+
 </style>

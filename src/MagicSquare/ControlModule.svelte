@@ -1,6 +1,5 @@
 <script lang="ts">
   export let title: string = ""
-
 </script>
 
 <div class="control_module flex flex-col">
@@ -10,13 +9,11 @@
   <slot class="control_module_slot"/> 
 </div>
 
-
 <style lang="sass">
   @use "./../styles/color"
   @use "./../styles/text"
 
   .control_module
-    flex-grow: 1
     border: 5px solid color.$blue-4
     align-items: stretch 
     border-radius: 5px
@@ -30,5 +27,4 @@
       font-size: text.$fs_l
       font-weight: text.$fw_l
       text-align: center
-
 </style>

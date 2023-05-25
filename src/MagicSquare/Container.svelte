@@ -19,11 +19,7 @@
 
 <div class="magic_square_container"
      use:watchResize={handleResize}>
-  {#if magicSquareInstance}
     <MagicSquare />
-  {:else}
-    <MagicSquare />
-  {/if}
 </div>
 
 <style lang="sass">

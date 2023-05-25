@@ -1,7 +1,7 @@
 <script lang="ts">
   import AboutMe from "./lib/AboutMe.svelte"
   import MagicBanner from "./lib/MagicBanner.svelte"
-  import MagicSquareContainer from "./MagicSquare/Container.svelte"
+  import Container from "./MagicSquare/Container.svelte"
   import Title from "./lib/Title.svelte"
   
   const setCurrentSection = (newSection: string) => {
@@ -35,7 +35,7 @@
   <div class="main_body">
     {#if currentSection == "magicSquare"}
       <Title title="Magic Square"/>
-      <MagicSquareContainer />
+      <Container />
     {:else}
       <div>
         <Title title="About Me"
