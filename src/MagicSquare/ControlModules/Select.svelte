@@ -51,6 +51,8 @@
     border: 5px solid color.$red-4
     border-radius: 5px
     cursor: pointer
+    font-size: text.$fs-s
+    font-weight: text.$fw-l
 
   .selected
     background-color: color.$red-2

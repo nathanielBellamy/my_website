@@ -26,11 +26,11 @@
 </script>
 
 <div id="magic_square_control_rack"
-     class="magic_square_control_rack flex flex-row-reverse">
+     class="magic_square_control_rack flex flex-row-reverse justify-end">
   <Select modules={modules}
           bind:curr_mod_left={curr_mod_left}
           bind:curr_mod_right={curr_mod_right}/>
-  <div class="left_right_slots grid grid-cols-2 gap-4">
+  <div class="left_right_slots grid grid-cols-2 gap-2">
     <div class="left_slot">
       {#if curr_mod_left == 'color'}
         <Color />
@@ -71,8 +71,12 @@
   .magic_square_control_rack
     flex-grow: 1
     overflow: hidden
-    padding: 3px 20px 3px 20px
+    padding: 5px 40px 5px 40px
+    margin: 0 5px 0 5px
     height: 100%
+    border: 10px double color.$blue-4
+    border-radius: 5px
+    background: color.$black-blue-grad
 
   .left_right_slots
     width: 100%

@@ -8,12 +8,12 @@
 
   onMount(async () => {
     let element = document.getElementById("magic_square_canvas_container")
-    sideLength = Math.min(Math.floor(element.offsetWidth / 1), Math.floor(element.offsetHeight /1)) - 25
+    sideLength = Math.floor(Math.min(element.offsetWidth, element.offsetHeight) / 1) - 25
     
     await wasm_bindgen() // loaded in index.html from ./pkg/src_rust.js
     const { MagicSquare, init_message } = wasm_bindgen
     console.log(
-      init_message("Wasm Running for Magic Square")
+      init_message("Magic Square Wasm!")
     )
     
     MagicSquare.run()
@@ -46,25 +46,26 @@
   .magic_square
     height: 100%
     width: 100%
+    display: grid
     grid-template-areas: "display control"
-    grid-template-columns: 27% 73%
+    grid-template-columns: 30% 70%
+    grid-template-rows: 100%
     overflow: hidden
 
     &_canvas
-      border: 5px solid color.$yellow-4
-      border-radius: 5px
-      margin: 0 -500px 0 -500px
+      border-top: 5px double color.$blue-4
+      border-bottom: 5px double color.$blue-4
+      border-radius: 10px
       &_container
         height: 100%
-        margin: 5px 0 10px 0
-        flex-grow: 1
+        background: color.$black-blue-horiz-grad
+        border: 10px double color.$blue-4
+        border-radius: 5px
 
   .display
     grid-area: display
     align-items: center
-    height: 100%
 
   .control
     grid-area: control
-    height: 100%
 </style>
