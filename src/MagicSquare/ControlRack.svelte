@@ -26,11 +26,11 @@
 </script>
 
 <div id="magic_square_control_rack"
-     class="magic_square_control_rack flex">
+     class="magic_square_control_rack flex flex-row-reverse">
   <Select modules={modules}
           bind:curr_mod_left={curr_mod_left}
           bind:curr_mod_right={curr_mod_right}/>
-  <div class="left_right_slots grid grid-cols-2">
+  <div class="left_right_slots grid grid-cols-2 gap-4">
     <div class="left_slot">
       {#if curr_mod_left == 'color'}
         <Color />
@@ -42,6 +42,8 @@
         <Radius />
       {:else if curr_mod_left == 'rotation'}
         <Rotation />
+      {:else}
+        <div class="left_slot"/>
       {/if}
     </div>
     <div class="right_slot">
@@ -55,6 +57,8 @@
         <Radius />
       {:else if curr_mod_right == 'rotation'}
         <Rotation />
+      {:else}
+        <div class="right_slot"/>
       {/if}
     </div>
   </div>
@@ -68,18 +72,20 @@
     flex-grow: 1
     overflow: hidden
     padding: 3px 20px 3px 20px
+    height: 100%
 
   .left_right_slots
     width: 100%
     grid-template-areas: "left_slot right_slot"
-    grid-template-columns: 50% 50%
+    grid-template-columns: 45% 45%
+    height: 100%
 
   .left_slot
-    grid-area: "left_slot"
+    grid-area: left_slot
     overflow: hidden
   
   .right_slot
-    grid-area: "right_slot"
+    grid-area: right_slot
     overflow: hidden
   
 

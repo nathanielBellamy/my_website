@@ -28,7 +28,7 @@
   })
 </script>
 
-<ControlModule title="MOUSE TRACKING">
+<ControlModule title="MOUSE">
   <select id={selectId}
           value="Off">
     {#each mouseTrackingOptions as mto}

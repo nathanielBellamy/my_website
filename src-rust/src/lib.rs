@@ -7,7 +7,7 @@ pub mod magic_banner;
 
 #[wasm_bindgen]
 pub fn init_message(message: String) -> String {
-    format!("RUST RUST RUST {message}")
+    format!("Hello! {message} From Rust->Wasm!")
 }
 
 #[cfg(test)]

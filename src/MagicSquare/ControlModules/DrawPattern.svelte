@@ -52,19 +52,17 @@
 
 </script>
 
-<ControlModule title="DRAW PATTERN">
-  <div class="flex flex-col space-between">
-    <select id={selectId} 
-            value="Three">
-      {#each drawPatterns as pattern}
-        <option value={pattern}>
-          {pattern.toUpperCase()}
-        </option>
-      {/each}
-      <input id="magic_square_input_draw_pattern"
-             class="hidden_input">
-    </select>
-  </div>
+<ControlModule title="PATTERN">
+  <select id={selectId} 
+          value="Three">
+    {#each drawPatterns as pattern}
+      <option value={pattern}>
+        {pattern.toUpperCase()}
+      </option>
+    {/each}
+    <input id="magic_square_input_draw_pattern"
+           class="hidden_input">
+  </select>
 </ControlModule>
 
 <style lang="sass">

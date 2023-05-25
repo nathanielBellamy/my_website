@@ -35,7 +35,7 @@
   })
 </script>
 
-<ControlModule title="COLORS">
+<ControlModule title="COLOR">
   <div class="flex flex-col">
     {#each colorPickerIds as id}
       <div class="flex flex-col space-between">

@@ -43,7 +43,7 @@ pub struct MagicSquare;
 impl MagicSquare {
     // Entry point into Rust WASM from JS
     // https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
-    pub fn run() -> Result<i32, JsValue> {
+    pub fn run() -> Result<(), JsValue> {
         // testing multithreading
         //
         // let (to_worker, from_main) = std::sync::mpsc::channel();
@@ -57,6 +57,10 @@ impl MagicSquare {
         let magic_square = Rc::new(magic_square);
         let canvas = MagicSquare::canvas().dyn_into::<web_sys::HtmlCanvasElement>()?;
         let canvas = Rc::new(canvas);
+        
+        // triggers cleanup requestAnimationFrame closure
+        let destroy_flag: bool = false;
+        let destroy_flag: Rc<RefCell<bool>> = Rc::new(RefCell::new(destroy_flag));
 
         // TODO: handle resize
         // add height and width fields to MagicSquare
@@ -90,6 +94,26 @@ impl MagicSquare {
         let context: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
         context.clear_color(1.0, 1.0, 0.0, 0.0);
         context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
+
+        {
+            // init destroy listener on app_main
+            // onDestroy hook in Main.svelte dispatches destroymswasm event
+            // this closure flips destroy_flag
+            // requestAnimationFrame checks value, cleans up resources
+
+            let app_main = MagicSquare::app_main();
+            let destroy_flag = destroy_flag.clone();
+            let closure = Closure::<dyn FnMut(_)>::new(move |_event: web_sys::Event| {
+                *destroy_flag.clone().borrow_mut() = true;
+            });
+
+            app_main.add_event_listener_with_callback(
+                "destroymswasm",
+                closure.as_ref().unchecked_ref()
+            ).unwrap();
+
+            closure.forget();
+        }
 
         {
             // init UI control settings listener
@@ -169,19 +193,23 @@ impl MagicSquare {
             closure.forget();
         }
 
-        
-        let animation_id: i32;
         {
             // set up animation loop
             let geometry_cache = geometry_cache.clone();
             let ui_buffer = ui_buffer.clone();
             let max_idx = Settings::max_idx_from_draw_pattern(ui_buffer.borrow().settings.draw_pattern);
+            let destroy_flag = destroy_flag.clone();
 
             // closures used to allocate and clean up resources
             let f: Rc<RefCell<Option<wasm_bindgen::prelude::Closure<_>> >> = Rc::new(RefCell::new(None));
             let g = f.clone();
 
             *g.borrow_mut() = Some(Closure::new(move || {
+                if *destroy_flag.clone().borrow() {
+                    // cleanup resource
+                    let _ = f.borrow_mut().take();
+                    return;
+                }
                 // TODO SOON: DEBUG cancelAnimationFrame
                 // seemingly passing valid requestId back to js
                 // but passing the id to cancleAnimationFrame in onDestroy callback
@@ -198,7 +226,7 @@ impl MagicSquare {
                 MagicSquare::request_animation_frame(f.borrow().as_ref().unwrap());
             }));
 
-            animation_id = MagicSquare::request_animation_frame(g.borrow().as_ref().unwrap());
+            MagicSquare::request_animation_frame(g.borrow().as_ref().unwrap());
         }
 
         // initial render
@@ -209,7 +237,7 @@ impl MagicSquare {
             &geometry_cache,
         );
 
-        Ok(animation_id)
+        Ok(())
     }
 }
 
@@ -341,6 +369,12 @@ impl MagicSquare {
         MagicSquare::window()
             .document()
             .expect("should have a document on window")
+    }
+
+    pub fn app_main() -> web_sys::Element {
+        MagicSquare::document()
+            .get_element_by_id("app_main")
+            .expect("unable to find app_main element")
     }
 
     pub fn magic_square() -> web_sys::Element {
