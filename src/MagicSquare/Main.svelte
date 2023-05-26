@@ -9,6 +9,9 @@
   onMount(async () => {
     let element = document.getElementById("magic_square_canvas_container")
     sideLength = Math.floor(Math.min(element.offsetWidth, element.offsetHeight) / 1) - 25
+
+    // clear old ui_buffer from localStorage
+    localStorage.clear()
     
     await wasm_bindgen() // loaded in index.html from ./pkg/src_rust.js
     const { MagicSquare, init_message } = wasm_bindgen
@@ -49,13 +52,13 @@
     overflow-y: scroll
 
     &_canvas
-      border-top: 5px double color.$blue-4
-      border-bottom: 5px double color.$blue-4
+      border-top: 5px double color.$blue-7
+      border-bottom: 5px double color.$blue-7
       border-radius: 10px
       &_container
         height: 100%
         background: color.$black-blue-horiz-grad
-        border: 10px double color.$blue-4
+        border: 10px double color.$blue-7
         border-radius: 5px
         flex-grow: 1
 

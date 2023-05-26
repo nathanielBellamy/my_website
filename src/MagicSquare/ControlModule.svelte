@@ -16,7 +16,7 @@
   @use "./../styles/text"
 
   .control_module
-    border: 5px solid color.$blue-4
+    border: 5px solid color.$blue-7
     margin: 2px 0 2px 0
     align-items: stretch 
     border-radius: 5px
@@ -37,5 +37,5 @@
       font-size: text.$fs_m
       font-weight: text.$fw_xl
       text-align: center
-      border-bottom: 5px solid color.$blue-4
+      border-bottom: 5px solid color.$blue-7
 </style>

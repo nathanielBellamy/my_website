@@ -264,14 +264,6 @@ impl MagicSquare {
             MagicSquare::request_animation_frame(g.borrow().as_ref().unwrap());
         }
 
-        // initial render
-        MagicSquare::render_all_lines(
-            &mouse_pos_buffer,
-            &ui_buffer.clone().borrow(), 
-            &mut color_idx_offset_delay, 
-            &geometry_cache,
-        );
-
         Ok(())
     }
 }

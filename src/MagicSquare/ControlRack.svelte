@@ -74,7 +74,7 @@
     overflow-y: scroll
     padding: 5px 40px 5px 40px
     height: 100%
-    border: 10px double color.$blue-4
+    border: 10px double color.$blue-7
     border-radius: 5px
     background: color.$black-blue-grad
 

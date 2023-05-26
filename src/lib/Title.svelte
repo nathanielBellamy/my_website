@@ -24,7 +24,7 @@
     font-size: 1.1em
     border: solid
     border-width: 3px 0 3px 0
-    border-color: color.$blue-4
+    border-color: color.$blue-7
     margin: .25em 0 .25em 0
     
 </style>

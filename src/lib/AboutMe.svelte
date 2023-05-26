@@ -236,13 +236,13 @@
       margin: 2px 5px 2px 5px
       cursor: pointer
       overflow-x: hidden
-      border-bottom: 3px solid color.$blue-4
-      border-right: 3px solid color.$blue-4
+      border-bottom: 3px solid color.$blue-7
+      border-right: 3px solid color.$blue-7
       border-top: 0px solid white
       border-left: 0px solid white
       border-radius: 5px
       &:hover
-        background-color: color.$blue-3
+        background-color: color.$blue-6
         transition: background-color .25s
 
     &_description

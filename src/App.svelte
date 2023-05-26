@@ -52,7 +52,7 @@
   
   .title
     color: color.$white
-    border: 5px solid color.$blue-4
+    border: 5px solid color.$blue-7
     border-radius: 5px
     margin-bottom: 5px
     font-weight: 900

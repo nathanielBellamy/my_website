@@ -140,11 +140,11 @@
       align-items: left
       justify-content: flex-start
       overflow-x: scroll
-      border: 5px solid color.$blue-2
+      border: 5px solid color.$blue-7
       border-radius: 5px
 
     &_form
-      border: 5px solid color.$blue-4
+      border: 5px solid color.$blue-7
       border-radius: 5px
       margin: 0 5px 0 5px
 
@@ -160,7 +160,7 @@
         justify-content: flex-start
         margin: 5px
         padding: 5px
-        border: 5px solid color.$blue-4
+        border: 5px solid color.$blue-7
         border-radius: 5px
         max-height: 100px
 </style>

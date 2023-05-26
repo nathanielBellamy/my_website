@@ -218,10 +218,10 @@
       font-size: text.$fs-l
       transform: rotate(-90deg)
       max-width: 15px
-      color: color.$blue-4
+      color: color.$blue-7
 
     &_body
-      border-top: 5px double color.$blue-4
+      border-top: 5px double color.$blue-7
       border-radius: 10px
       flex-grow: 1
     
