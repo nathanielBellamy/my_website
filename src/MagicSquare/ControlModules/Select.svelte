@@ -7,14 +7,18 @@
 
   let sideToSet:string = 'left'
 
-  function handleModClick(mod: any) {
-    {
-      if (mod === curr_mod_left || mod === curr_mod_right) return
-      if (sideToSet == 'left') {
-        curr_mod_left = mod
-      } else {
-        curr_mod_right = mod
-      }
+  function handleModKeydown(e: any, mod: string) {
+    if (e.keyCode === 13){
+      setMod(mod)
+    }
+  }
+
+  function setMod(mod) {
+    if (mod === curr_mod_left || mod === curr_mod_right) return
+    if (sideToSet == 'left') {
+      curr_mod_left = mod
+    } else {
+      curr_mod_right = mod
     }
   }
 </script>
@@ -37,8 +41,8 @@
       <button class="module_option"
               class:selected_left="{curr_mod_left === mod}"
               class:selected_right="{curr_mod_right === mod}"
-              on:click={() => handleModClick(mod)}
-              on:keydown={() => handleModClick(mod)}>
+              on:click={() => setMod(mod)}
+              on:keydown={(e) => handleModKeydown(e, mod)}>
           {mod.toUpperCase()}
         <input id={`mod_radio_${mod}`}
                value={mod}
@@ -64,11 +68,9 @@
     font-weight: text.$fw-l
     color: color.$cream
     &_left
-      border: 5px solid color.$green-4
       &_selected
         background-color: color.$green-4
     &_right
-      border: 5px solid color.$red-4
       &_selected
         background-color: color.$red-4
 

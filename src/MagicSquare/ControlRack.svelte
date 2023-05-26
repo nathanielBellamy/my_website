@@ -82,7 +82,7 @@
     grid-template-areas: "left_slot right_slot"
     grid-template-columns: 45% 45%
     height: 100%
-    min-width: 400px
+    min-width: 500px
     flex-grow: 1
 
   .left_slot
