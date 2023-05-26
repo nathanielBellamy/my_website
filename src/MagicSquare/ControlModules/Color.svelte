@@ -142,7 +142,10 @@
   }
 
   function rgbaToString(rgba: number[]) {
-    return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, ${rgba[3]})`
+    // while we have some infrastructure set up to accept opacity values
+    // our WebGl implimentation does not make use of them at the moment
+    // so we keep everything rgb in practice
+    return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, 1)`
   }
 </script>
 
