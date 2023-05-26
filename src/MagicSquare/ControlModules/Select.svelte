@@ -7,38 +7,46 @@
 
   let sideToSet:string = 'left'
 
-  function onChange(mod:string, side: string) {
-    if (side == 'left') {
-      curr_mod_left = mod
-    } else {
-      curr_mod_right = mod
+  function handleModClick(mod: any) {
+    {
+      if (mod === curr_mod_left || mod === curr_mod_right) return
+      if (sideToSet == 'left') {
+        curr_mod_left = mod
+      } else {
+        curr_mod_right = mod
+      }
     }
   }
 </script>
 
 <ControlModule title="MODS">
   <div class="module_selector flex flex-col">
+    <div class="module_selector_side_set flex">
+      <button class="side_set side_set_left"
+              class:side_set_left_selected="{sideToSet === 'left'}"
+              on:click={() => sideToSet = 'left'}>
+        LEFT
+      </button>
+      <button class="side_set side_set_right"
+              class:side_set_right_selected="{sideToSet === 'right'}"
+              on:click={() => sideToSet = 'right'}>
+        RIGHT
+      </button>
+    </div>
     {#each modules as mod}
-      <label for={`mod_radio_${mod}_left`}
-             class="module_option left"
-             class:selected="{curr_mod_left === mod}"
-             on:click={() => {
-               const input = document.getElementById(`mod_radio_${mod}_left`)
-               input.dispatchEvent(new Event("input", {bubbles: true}))
-             }}
-             on:keydown={() => {
-               const input = document.getElementById(`mod_radio_${mod}_left`)
-               input.dispatchEvent(new Event("input", {bubbles: true}))
-             }}>
+      <button class="module_option"
+              class:selected_left="{curr_mod_left === mod}"
+              class:selected_right="{curr_mod_right === mod}"
+              on:click={() => handleModClick(mod)}
+              on:keydown={() => handleModClick(mod)}>
           {mod.toUpperCase()}
-        <input id={`mod_radio_${mod}_left`}
+        <input id={`mod_radio_${mod}`}
                value={mod}
                type="radio"
                name="wow"
                checked={curr_mod_left === mod}
-               on:change={() => onChange(mod, 'left')}
                class="hidden_input"/>
-      </label>
+      </button>
     {/each}
   </div>
 </ControlModule>
@@ -47,22 +55,46 @@
   @use "../../styles/color"
   @use "../../styles/text"
 
-  .module_option
-    border: 5px solid color.$red-4
+  .side_set
+    flex-grow: 1
+    margin: 5px
+    padding: 5px
     border-radius: 5px
+    font-size: text.$fs-m
+    font-weight: text.$fw-l
+    color: color.$cream
+    &_left
+      border: 5px solid color.$green-4
+      &_selected
+        background-color: color.$green-4
+    &_right
+      border: 5px solid color.$red-4
+      &_selected
+        background-color: color.$red-4
+
+  .module_option
+    color: color.$cream
+    display: flex
+    justify-content: space-around
+    align-items: center
     cursor: pointer
     font-size: text.$fs-s
     font-weight: text.$fw-l
+    flex-grow: 1
+    cursor: pointer
 
-  .selected
-    background-color: color.$red-2
+
+  .selected_left
+    background-color: color.$green-4
+  .selected_right
+    background-color: color.$red-4
 
   .module_selector
-    align-items: stretch
-    justify-content: space-around
-    border: 3px solid color.$red-2
+    justify-content: space-between
     border-radius: 5px
-    padding-top: 25px
+    height: 100%
+    &_module_selector_side_to_set
+      background-color: blue
 
   .hidden_input
     display: none

@@ -27,7 +27,7 @@
 </script>
 
 <div id="magic_square"
-     class="magic_square flex">
+     class="magic_square flex flex-wrap gap-2">
   <div id="magic_square_canvas_container"
        class="magic_square_canvas_container flex flex-col justify-around display">
     <canvas id="magic_square_canvas"
@@ -46,11 +46,7 @@
   .magic_square
     height: 100%
     width: 100%
-    display: grid
-    grid-template-areas: "display control"
-    grid-template-columns: 30% 70%
-    grid-template-rows: 100%
-    overflow: hidden
+    overflow-y: scroll
 
     &_canvas
       border-top: 5px double color.$blue-4
@@ -61,11 +57,13 @@
         background: color.$black-blue-horiz-grad
         border: 10px double color.$blue-4
         border-radius: 5px
+        flex-grow: 1
 
   .display
-    grid-area: display
     align-items: center
-
+  
   .control
-    grid-area: control
+    flex-grow: 1
+    height: 100%
+
 </style>

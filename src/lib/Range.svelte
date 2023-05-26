@@ -7,8 +7,7 @@
   export let max = 100;
   export let initialValue = 0;
   export let id = null;
-  export let value =
-    typeof initialValue === "string" ? parseInt(initialValue) : initialValue;
+  export let value = initialValue;
 
   // Node Bindings
   let container = null;
@@ -182,11 +181,12 @@
     aria-valuemin={min}
     aria-valuemax={max}
     aria-valuenow={value}
-    {id}
+    id={id}
     on:mousedown={onTrackEvent}
     on:touchstart={onTrackEvent}
   >
-    <div class="range__track" bind:this={container}>
+    <div id={`range__track_${id}`}
+         class="range__track" bind:this={container}>
       <div class="range__track--highlighted" bind:this={progressBar} />
       <div
         class="range__thumb"
@@ -195,7 +195,9 @@
         on:touchstart={onDragStart}
         on:mousedown={onDragStart}
         on:mouseover={() => (thumbHover = true)}
+        on:focus={() => (thumbHover = true)}
         on:mouseout={() => (thumbHover = false)}
+        on:blur={() => (thumbHover = false)}
       >
         {#if holding || thumbHover}
           <div

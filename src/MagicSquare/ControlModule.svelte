@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let title: string = ""
+  export let title: string = "EMPTY"
 </script>
 
 <div class="control_module flex flex-col">
@@ -21,7 +21,7 @@
     align-items: stretch 
     border-radius: 5px
     height: 100%
-    min-width: 150px
+    min-width: 226px
     &_slot
       height: 100%
       
@@ -32,9 +32,10 @@
         width: 100%
 
     &_title
+      color: color.$cream
       text-align: center
       font-size: text.$fs_m
-      font-weight: text.$fw_l
+      font-weight: text.$fw_xl
       text-align: center
       border-bottom: 5px solid color.$blue-4
 </style>

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import Color from './ControlModules/Color.svelte'
+  import ControlModule from './ControlModule.svelte'
   import DrawPattern from './ControlModules/DrawPattern.svelte'
   import Radius from './ControlModules/Radius.svelte'
   import Rotation from './ControlModules/Rotation.svelte'
@@ -26,7 +27,7 @@
 </script>
 
 <div id="magic_square_control_rack"
-     class="magic_square_control_rack flex flex-row-reverse justify-end">
+     class="magic_square_control_rack flex flex-row-reverse justify-between flex-wrap-reverse">
   <Select modules={modules}
           bind:curr_mod_left={curr_mod_left}
           bind:curr_mod_right={curr_mod_right}/>
@@ -43,7 +44,7 @@
       {:else if curr_mod_left == 'rotation'}
         <Rotation />
       {:else}
-        <div class="left_slot"/>
+        <ControlModule />
       {/if}
     </div>
     <div class="right_slot">
@@ -58,7 +59,7 @@
       {:else if curr_mod_right == 'rotation'}
         <Rotation />
       {:else}
-        <div class="right_slot"/>
+        <ControlModule />
       {/if}
     </div>
   </div>
@@ -70,25 +71,27 @@
   
   .magic_square_control_rack
     flex-grow: 1
-    overflow: hidden
+    overflow-y: scroll
     padding: 5px 40px 5px 40px
-    margin: 0 5px 0 5px
     height: 100%
     border: 10px double color.$blue-4
     border-radius: 5px
     background: color.$black-blue-grad
 
   .left_right_slots
-    width: 100%
     grid-template-areas: "left_slot right_slot"
     grid-template-columns: 45% 45%
     height: 100%
+    min-width: 400px
+    flex-grow: 1
 
   .left_slot
+    min-width: 200px
     grid-area: left_slot
     overflow: hidden
   
   .right_slot
+    min-width: 200px
     grid-area: right_slot
     overflow: hidden
   

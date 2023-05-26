@@ -182,7 +182,6 @@
             <Range id={`${id}_range`}
                    min={min}
                    max={max}
-                   initialValue={initialValue}
                    bind:value={value}
                    on:change={(e) => handleRotationChange(e, id)}/>
             <input id={id}
