@@ -1,5 +1,6 @@
 use web_sys::HtmlInputElement;
 use wasm_bindgen::JsCast;
+use serde::{Deserialize, Serialize};
 use crate::magic_square::settings::Settings;
 use crate::magic_square::ui_manifest::{
     INPUT_IDS,
@@ -14,7 +15,7 @@ use crate::magic_square::ui_manifest::{
 use crate::magic_square::main::MagicSquare;
 use crate::magic_square::main::log;
 
-#[derive(Clone, Copy)]
+#[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub struct UiBuffer {
     pub settings: Settings,
 }

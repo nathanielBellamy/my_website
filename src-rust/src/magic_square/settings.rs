@@ -1,6 +1,7 @@
 use crate::magic_square::main::Rgba;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Copy)]
+#[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub enum DrawPattern {
     All,
     One,
@@ -17,6 +18,7 @@ pub enum DrawPattern {
     Out4,
     Out5,
     Out6,
+    #[default]
     Out7,
     Out8,
     In1,
@@ -32,16 +34,17 @@ pub enum DrawPattern {
     Random
 }
 
-#[derive(Clone, Copy)]
+#[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub enum MouseTracking {
     On,
+    #[default]
     Off,
     InvX,
     InvY,
     InvXY
 }
 
-#[derive(Clone, Copy)]
+#[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub struct Settings {
     pub draw_pattern: DrawPattern,
     pub mouse_tracking: MouseTracking,

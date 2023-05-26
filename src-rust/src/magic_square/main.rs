@@ -15,6 +15,9 @@ use super::settings::{MouseTracking, Settings};
 // use crate::magic_square::traits::VertexStore;
 // use super::geometry::icosohedron::Icosohedron;
 // use crate::magic_square::worker::Worker;
+//
+
+pub const MAGIC_SQUARE_STORAGE_KEY: &'static str = "magic_square_storage";
 
 #[wasm_bindgen]
 extern "C" {
@@ -57,6 +60,9 @@ impl MagicSquare {
         let magic_square = Rc::new(magic_square);
         let canvas = MagicSquare::canvas().dyn_into::<web_sys::HtmlCanvasElement>()?;
         let canvas = Rc::new(canvas);
+        
+        let storage: web_sys::Storage = MagicSquare::window().local_storage().unwrap().unwrap().into();
+        let storage = Rc::new(storage);
         
         // triggers cleanup requestAnimationFrame closure
         let destroy_flag: bool = false;
@@ -120,6 +126,13 @@ impl MagicSquare {
             let magic_square = magic_square.clone();
             let form = form.clone();
             let ui_buffer = ui_buffer.clone();
+            let storage = storage.clone();
+            // set initial values
+            storage.set_item(
+                MAGIC_SQUARE_STORAGE_KEY,
+                &serde_json::to_string(&ui_buffer.clone().borrow().clone()).expect("error serializaing to json")
+            );
+            
 
             let closure_handle_input =
                 Closure::<dyn FnMut(_)>::new(move |event: web_sys::Event| {
@@ -133,6 +146,28 @@ impl MagicSquare {
                     // log(&id);
                     // log(&val);
                     ui_buffer.clone().borrow_mut().update(id, val);
+                    
+                    // set updated ui_buffer value in localStorage
+                    storage.clone().set_item(
+                        MAGIC_SQUARE_STORAGE_KEY,
+                        &serde_json::to_string(&ui_buffer.clone().borrow().clone()).expect("error serializaing to json")
+                    );
+
+                    // trigger storage event,
+                    // ui is listening for storage events
+                    // on storage event ui reads values we just updated from localStorage  
+                    let storage_event = web_sys::StorageEvent::new_with_event_init_dict(
+                        "storage",
+                        web_sys::StorageEventInit::new().bubbles(true)
+                    ).unwrap();
+                    storage_event.init_storage_event_with_can_bubble_and_cancelable_and_key(
+                        "storage",
+                        true, // bubbles
+                        false, // non-cancellable
+                        Some(MAGIC_SQUARE_STORAGE_KEY),
+                    );
+                    // update ui elements listening to localStorage
+                    magic_square.dispatch_event(&storage_event).unwrap();
                     //trigger re-render
                     magic_square.dispatch_event(&web_sys::Event::new("render").unwrap()).unwrap();
                 });

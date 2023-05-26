@@ -13,6 +13,7 @@ gloo-utils = { version = "0.1", features = ["serde"] }
 js-sys = "0.3.61"
 console_error_panic_hook = "0.1.7"
 give_me_a_sine = { path = "give_me_a_sine" }
+serde = { version = "1.0.163", features = ["derive"] }
 serde_json = "1.0.96"
 
 [dependencies.web-sys]
@@ -28,6 +29,9 @@ features = [
   'KeyboardEvent',
   'MouseEvent',
   'Performance',
+  'Storage',
+  'StorageEvent',
+  'StorageEventInit',
   'WebGlBuffer',
   'WebGlVertexArrayObject',
   'WebGl2RenderingContext',
