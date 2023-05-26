@@ -95,7 +95,7 @@
       freedom: Freedom.Yaw
     },
     {
-      id: "magic_square_input_x_axis_Z_rot_coeff",
+      id: "magic_square_input_x_axis_z_rot_coeff",
       initialValue: 0,
       value: 0,
       label: "Mouse X",
@@ -105,7 +105,7 @@
       freedom: Freedom.Yaw
     },
     {
-      id: "magic_square_input_y_axis_Z_rot_coeff",
+      id: "magic_square_input_y_axis_z_rot_coeff",
       initialValue: 0,
       value: 0,
       label: "Mouse Y",
