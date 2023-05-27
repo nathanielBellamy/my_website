@@ -115,9 +115,9 @@
     }
   ]
 
-  var pitch_sliders = rotationSliders.filter(x => x.freedom === Freedom.Pitch)
-  var roll_sliders = rotationSliders.filter(x => x.freedom === Freedom.Roll)
-  var yaw_sliders = rotationSliders.filter(x => x.freedom === Freedom.Yaw)
+  $: pitch_sliders = rotationSliders.filter(x => x.freedom === Freedom.Pitch)
+  $: roll_sliders = rotationSliders.filter(x => x.freedom === Freedom.Roll)
+  $: yaw_sliders = rotationSliders.filter(x => x.freedom === Freedom.Yaw)
 
   function freedomToString(freedom: Freedom) {
     switch(freedom) {
@@ -144,7 +144,8 @@
   const freedoms = [Freedom.Pitch, Freedom.Roll, Freedom.Yaw]
 
   function handleRotationChange(e: any, id: string) {
-    rotationSliders.find(x => x.id === id).value = e.detail.value
+    var slider = rotationSliders.find(x => x.id === id)
+    slider.value = e.detail.value
     rotationSliders = rotationSliders
     var input = document.getElementById(id)
     input.value = e.detail.value
@@ -182,6 +183,7 @@
                    type="range"
                    min={min}
                    max={max}
+                   bind:value={value}
                    step={.01}/>
           </div>
         {/each}
