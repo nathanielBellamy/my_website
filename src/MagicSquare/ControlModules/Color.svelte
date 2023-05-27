@@ -142,43 +142,41 @@
   }
 </script>
 
-<ControlModule title="COLOR">
-  <div class="color_container flex flex-col justify-around">
-    <div class="curr_picker flex justify-around">
-      <div class="flex justify-around items-stretch">
-        {#each Object.values(colorData) as { id }}
-          <div id={`${id}_picker`}
-               class="color_picker"
-               class:hidden_input={curr_id !== id}/>
-        {/each}
-      </div>
-    </div>
-    <div class="color_rows grid grid-rows-2">
-      <div class="color_row">
-        {#each [colorData.color1, colorData.color2, colorData.color3, colorData.color4] as { id, rgba }}
-          <button class="color_button"
-                  on:click={() => onClick(id)}
-                  style:background-color={rgbaToString(rgba)}>
-            {idAsNumber(id)}
-            <input id={id}
-                   class="hidden_input">
-          </button>
-        {/each}
-      </div>
-      <div class="color_row">
-        {#each [colorData.color5, colorData.color6, colorData.color7, colorData.color8] as { id, rgba }}
-          <button class="color_button"
-                  on:click={() => onClick(id)}
-                  style:background-color={rgbaToString(rgba)}>
-            {idAsNumber(id)}
-            <input id={id}
-                   class="hidden_input">
-          </button>
-        {/each}
-      </div>
+<div class="color_container flex flex-col justify-around">
+  <div class="curr_picker flex justify-around">
+    <div class="flex justify-around items-stretch">
+      {#each Object.values(colorData) as { id }}
+        <div id={`${id}_picker`}
+             class="color_picker"
+             class:hidden_input={curr_id !== id}/>
+      {/each}
     </div>
   </div>
-</ControlModule>
+  <div class="color_rows grid grid-rows-2">
+    <div class="color_row">
+      {#each [colorData.color1, colorData.color2, colorData.color3, colorData.color4] as { id, rgba }}
+        <button class="color_button"
+                on:click={() => onClick(id)}
+                style:background-color={rgbaToString(rgba)}>
+          {idAsNumber(id)}
+          <input id={id}
+                 class="hidden_input">
+        </button>
+      {/each}
+    </div>
+    <div class="color_row">
+      {#each [colorData.color5, colorData.color6, colorData.color7, colorData.color8] as { id, rgba }}
+        <button class="color_button"
+                on:click={() => onClick(id)}
+                style:background-color={rgbaToString(rgba)}>
+          {idAsNumber(id)}
+          <input id={id}
+                 class="hidden_input">
+        </button>
+      {/each}
+    </div>
+  </div>
+</div>
 
 <style lang="sass">
   @use "./../../styles/color"

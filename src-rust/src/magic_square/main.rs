@@ -97,7 +97,7 @@ impl MagicSquare {
         let mouse_pos_buffer: Rc<RefCell<[f32; 2]>> = Rc::new(RefCell::new(mouse_pos_buffer));
 
         let context: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
-        context.clear_color(1.0, 1.0, 0.0, 0.0);
+        context.clear_color(0.0, 0.0, 0.0, 0.0);
         context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
 
         {
@@ -270,6 +270,12 @@ impl MagicSquare {
 
             MagicSquare::request_animation_frame(g.borrow().as_ref().unwrap());
         }
+
+        form.dispatch_event(
+            // hack to trigger initial write of ui_buffer to localStorage
+            &web_sys::Event::new("input").unwrap()
+        ).unwrap();
+        magic_square.dispatch_event(&web_sys::Event::new("render").unwrap()).unwrap();
 
         Ok(())
     }

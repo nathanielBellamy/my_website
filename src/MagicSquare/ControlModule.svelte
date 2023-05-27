@@ -1,9 +1,12 @@
 <script lang="ts">
   export let title: string = "EMPTY"
+  export let side: string = ''
 </script>
 
 <div class="control_module flex flex-col">
-  <div class="control_module_title">
+  <div class="control_module_title"
+       class:left="{side == 'left'}"
+       class:right="{side == 'right'}">
     {title}
   </div>
   <div class="control_module_slot_container">
@@ -38,4 +41,9 @@
       font-weight: text.$fw_xl
       text-align: center
       border-bottom: 5px solid color.$blue-7
+
+  .left
+    background-color: color.$green-4
+  .right
+    background-color: color.$red-4
 </style>

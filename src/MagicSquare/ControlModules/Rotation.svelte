@@ -1,6 +1,4 @@
 <script lang="ts">
-  import ControlModule from "../ControlModule.svelte"
-
   enum Freedom {
     Pitch,
     Roll,
@@ -164,7 +162,7 @@
   }
 </script>
 
-<ControlModule title="ROTATION">
+<div class="rotation_container">
   {#each freedoms as freedom}
     <div class="freedom_group flex gap-2">
       <div class="freedom_group_title">
@@ -190,7 +188,7 @@
       </div>
     </div>
   {/each}
-</ControlModule>
+</div>
 
 <style lang="sass">
   @use "../../styles/color"

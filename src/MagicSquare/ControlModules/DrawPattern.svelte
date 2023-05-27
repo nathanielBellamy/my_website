@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte"
-  import ControlModule from "../ControlModule.svelte"
 
   const storageKey = 'magic_square_storage'
 
@@ -83,23 +82,21 @@
 
 </script>
 
-<ControlModule title="PATTERN">
-  <div id={formId}
-       class="draw_pattern_container justify-around">
-    <div class="draw_pattern_options flex flex-col">
-      {#each drawPatterns as pattern}
-        <button class="draw_pattern_option"
-                class:selected="{curr_pattern === pattern}"
-                on:click={() => handlePatternClick(pattern)}
-                on:keydown={(e) => handlePatternKeydown(e, pattern)}>
-            {pattern.toUpperCase()}
-        </button>
-      {/each}
-    </div>
-    <input id={hiddenInputId}
-           class="hidden_input"/>
+<div id={formId}
+     class="draw_pattern_container justify-around">
+  <div class="draw_pattern_options flex flex-col">
+    {#each drawPatterns as pattern}
+      <button class="draw_pattern_option"
+              class:selected="{curr_pattern === pattern}"
+              on:click={() => handlePatternClick(pattern)}
+              on:keydown={(e) => handlePatternKeydown(e, pattern)}>
+          {pattern.toUpperCase()}
+      </button>
+    {/each}
   </div>
-</ControlModule>
+  <input id={hiddenInputId}
+         class="hidden_input"/>
+</div>
 
 <style lang="sass">
   @use "./../../styles/color"

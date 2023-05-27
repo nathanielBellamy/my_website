@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import ControlModule from "../ControlModule.svelte"
 
   const storageKey = 'magic_square_storage'
   
@@ -59,21 +58,19 @@
   } 
 </script>
 
-<ControlModule title="MOUSE">
-  <div id={formId}
-       class="mouse_tracking_container flex flex-col justify-around">
-    {#each mouseTrackingOptions as opt}
-      <button class="mouse_tracking_option"
-              class:selected="{curr_option === opt}"
-              on:click={() => handleOptClick(opt)}
-              on:keydown={(e) => handleOptKeydown(e, opt)}>
-          {opt.toUpperCase()}
-      </button>
-    {/each}
-    <input id={hiddenInputId}
-           class="hidden_input"/>
-  </div>
-</ControlModule>
+<div id={formId}
+     class="mouse_tracking_container flex flex-col justify-around">
+  {#each mouseTrackingOptions as opt}
+    <button class="mouse_tracking_option"
+            class:selected="{curr_option === opt}"
+            on:click={() => handleOptClick(opt)}
+            on:keydown={(e) => handleOptKeydown(e, opt)}>
+        {opt.toUpperCase()}
+    </button>
+  {/each}
+  <input id={hiddenInputId}
+         class="hidden_input"/>
+</div>
 
 <style lang="sass">
   @use "./../../styles/color"

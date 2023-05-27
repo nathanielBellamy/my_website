@@ -28,36 +28,68 @@
 
 <div id="magic_square_control_rack"
      class="magic_square_control_rack flex flex-row-reverse justify-between flex-wrap-reverse">
-  <Select modules={modules}
-          bind:curr_mod_left={curr_mod_left}
-          bind:curr_mod_right={curr_mod_right}/>
+  <ControlModule title="MODS">
+    <Select modules={modules}
+            bind:curr_mod_left={curr_mod_left}
+            bind:curr_mod_right={curr_mod_right}/>
+  </ControlModule>
   <div class="left_right_slots grid grid-cols-2 gap-2">
     <div class="left_slot">
       {#if curr_mod_left == 'color'}
-        <Color />
+        <ControlModule title="COLOR"
+                       side="left">
+         <Color />
+        </ControlModule>
       {:else if curr_mod_left == 'drawPattern'}
-        <DrawPattern />
+        <ControlModule title="PATTERN"
+                       side="left">
+          <DrawPattern />
+        </ControlModule>
       {:else if curr_mod_left == 'mouseTracking'}
-        <MouseTracking />
+        <ControlModule title="MOUSE"
+                       side="left">
+          <MouseTracking />
+        </ControlModule>
       {:else if curr_mod_left == 'radius'}
-        <Radius />
+        <ControlModule title="MOUSE"
+                       side="left">
+          <Radius />
+        </ControlModule>
       {:else if curr_mod_left == 'rotation'}
-        <Rotation />
+        <ControlModule title="ROTATION"
+                       side="left">
+          <Rotation />
+        </ControlModule>
       {:else}
         <ControlModule />
       {/if}
     </div>
     <div class="right_slot">
       {#if curr_mod_right == 'color'}
-        <Color />
+        <ControlModule title="COLOR"
+                       side="right">
+         <Color />
+        </ControlModule>
       {:else if curr_mod_right == 'drawPattern'}
-        <DrawPattern />
+        <ControlModule title="PATTERN"
+                       side="right">
+          <DrawPattern />
+        </ControlModule>
       {:else if curr_mod_right == 'mouseTracking'}
-        <MouseTracking />
+        <ControlModule title="MOUSE"
+                       side="right">
+          <MouseTracking />
+        </ControlModule>
       {:else if curr_mod_right == 'radius'}
-        <Radius />
+        <ControlModule title="RADIUS"
+                       side="right">
+          <Radius />
+        </ControlModule>
       {:else if curr_mod_right == 'rotation'}
-        <Rotation />
+        <ControlModule title="ROTATION"
+                       side="right">
+          <Rotation />
+        </ControlModule>
       {:else}
         <ControlModule />
       {/if}

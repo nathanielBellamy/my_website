@@ -1,6 +1,4 @@
 <script lang="ts">
-  import ControlModule from "../ControlModule.svelte"
-
   export let modules: string[] = []
   export let curr_mod_left: string = 'color'
   export let curr_mod_right: string = 'rotation'
@@ -23,37 +21,35 @@
   }
 </script>
 
-<ControlModule title="MODS">
-  <div class="module_selector flex flex-col">
-    <div class="module_selector_side_set flex">
-      <button class="side_set side_set_left"
-              class:side_set_left_selected="{sideToSet === 'left'}"
-              on:click={() => sideToSet = 'left'}>
-        LEFT
-      </button>
-      <button class="side_set side_set_right"
-              class:side_set_right_selected="{sideToSet === 'right'}"
-              on:click={() => sideToSet = 'right'}>
-        RIGHT
-      </button>
-    </div>
-    {#each modules as mod}
-      <button class="module_option"
-              class:selected_left="{curr_mod_left === mod}"
-              class:selected_right="{curr_mod_right === mod}"
-              on:click={() => setMod(mod)}
-              on:keydown={(e) => handleModKeydown(e, mod)}>
-          {mod.toUpperCase()}
-        <input id={`mod_radio_${mod}`}
-               value={mod}
-               type="radio"
-               name="wow"
-               checked={curr_mod_left === mod}
-               class="hidden_input"/>
-      </button>
-    {/each}
+<div class="module_selector flex flex-col">
+  <div class="module_selector_side_set flex">
+    <button class="side_set side_set_left"
+            class:side_set_left_selected="{sideToSet === 'left'}"
+            on:click={() => sideToSet = 'left'}>
+      LEFT
+    </button>
+    <button class="side_set side_set_right"
+            class:side_set_right_selected="{sideToSet === 'right'}"
+            on:click={() => sideToSet = 'right'}>
+      RIGHT
+    </button>
   </div>
-</ControlModule>
+  {#each modules as mod}
+    <button class="module_option"
+            class:selected_left="{curr_mod_left === mod}"
+            class:selected_right="{curr_mod_right === mod}"
+            on:click={() => setMod(mod)}
+            on:keydown={(e) => handleModKeydown(e, mod)}>
+        {mod.toUpperCase()}
+      <input id={`mod_radio_${mod}`}
+             value={mod}
+             type="radio"
+             name="wow"
+             checked={curr_mod_left === mod}
+             class="hidden_input"/>
+    </button>
+  {/each}
+</div>
 
 <style lang="sass">
   @use "../../styles/color"

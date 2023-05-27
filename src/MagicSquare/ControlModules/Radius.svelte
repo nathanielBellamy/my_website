@@ -1,5 +1,4 @@
 <script lang="ts">
-  import ControlModule from "../ControlModule.svelte"
   import Range from "../../lib/Range.svelte"
 
   //TODO: generalize RangeInput
@@ -43,28 +42,39 @@
   }
 </script>
 
-<ControlModule title="RADIUS">
-  <div class="flex flex-col space-between">
-    <div id="radius_sliders" 
-         class="flex flex-col space-between">
-      {#each radiusSliders as  {id, label, min, max, initialValue, value}, idx}
-        <label for={id}>
-          {label}
-        </label>
-        <Range id={`${id}_range`}
-               min={min}
-               max={max}
-               initialValue={initialValue}
-               value={value}
-               on:change={(e) => handleRadiusChange(e, id, idx)}/>
-        <input id={id}
-               class="hidden_input"/>
-      {/each}
-    </div>
+<div class="flex flex-col space-between">
+  <div id="radius_sliders" 
+       class="flex flex-col space-between items-center">
+    {#each radiusSliders as  {id, label, min, max, initialValue, value}, idx}
+      <label class="radius_input_label flex justify-between" 
+             for={id}>
+        <div> {label} </div>
+        <div> {value} </div>
+      </label>
+      <input id={id}
+             class="radius_input"
+             type="range"
+             min={min}
+             max={max}
+             bind:value={value}
+             step={.01}/>
+    {/each}
   </div>
-</ControlModule>
+</div>
 
 <style lang="sass">
+  @use "../../styles/color"
+  @use "../../styles/text"
+
+  .radius_input
+    width: 90%
+    &_label
+      width: 100%
+      font-weight: text.$fw-l
+      font-size: text.$fs-m
+      padding-left: 10px
+      padding-right: 10px
+
   .hidden_input
     display: none
 </style>
