@@ -1,4 +1,3 @@
-use crate::magic_square::main::Rgba;
 use crate::magic_square::vertices::VertexArr;
 use crate::magic_square::geometry::Shape;
 use crate::magic_square::main::log;
@@ -9,7 +8,6 @@ pub struct Cache {
     pub idx: usize, // get & set
     pub max_idx: usize, // <= CACHE_CAPACITY
     pub vertices: [VertexArr; CACHE_CAPACITY], // TODO: refactor into an array of Struc vertices,rgba, shape
-    pub rgbas: [Rgba; CACHE_CAPACITY],
     pub shapes: [Shape; CACHE_CAPACITY],
 }
 
@@ -17,7 +15,6 @@ impl Cache {
     pub fn new(
         max_idx: usize, 
         vertices: [VertexArr; CACHE_CAPACITY], 
-        rgbas: [Rgba; CACHE_CAPACITY], 
         shapes: [Shape; CACHE_CAPACITY]
     ) -> Cache {
         let max_idx_loc: usize;
@@ -31,14 +28,12 @@ impl Cache {
             idx: 0,
             max_idx: max_idx_loc,
             vertices,
-            rgbas,
             shapes
         }
     }
 
-    pub fn set_next(&mut self, vertices: VertexArr, rgba: Rgba, shape: Shape, max_idx: usize) {
+    pub fn set_next(&mut self, vertices: VertexArr, shape: Shape, max_idx: usize) {
         self.vertices[self.idx] = vertices;
-        self.rgbas[self.idx] = rgba;
         self.shapes[self.idx] = shape;
         self.idx = (self.idx + 1) % max_idx;
     }

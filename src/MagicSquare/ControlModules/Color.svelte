@@ -109,7 +109,7 @@
       picker.color.rgb = { r: color.rgba[0], g: color.rgba[1], b: color.rgba[2] }
 
       picker.on('color:change', (color: any) => {
-        input.value = `${color.rgba.r},${color.rgba.g},${color.rgba.b},${color.rgba.a}`
+        input.value = `${color.rgba.r},${color.rgba.g},${color.rgba.b},1`
         input.dispatchEvent(new Event('input', {bubbles: true}))
       })
 
@@ -117,19 +117,12 @@
     })
   })
 
-  function handleStorageEvent (e:Event) {
-    if (e.key === storageKey){
-      const storageData = getStorageData()
-      setColorData(storageData)
-      colorData = colorData
-      console.dir({
-        storage: storageData.settings.color_1,
-        local: colorData.color1.rgba
-      })
-    }
-  }
+  function handleStorageEvent () {
+    setColorData(getStorageData())
+    colorData = colorData
+   }
 
-  window.addEventListener("storage", (e:any) => handleStorageEvent(e))
+  window.addEventListener("storage", handleStorageEvent)
 
   let curr_id: string = 'magic_square_input_color_1'
   

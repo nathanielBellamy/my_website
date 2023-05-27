@@ -83,7 +83,6 @@ impl MagicSquare {
         let geometry_cache = GeometryCache::new(
                 26, 
                 [[0.0; 1_200]; CACHE_CAPACITY], 
-                [[0.0, 0.0, 0.0, 0.0]; CACHE_CAPACITY],
                 [Shape::None; CACHE_CAPACITY]
             );
 
@@ -216,7 +215,6 @@ impl MagicSquare {
                 MagicSquare::render_all_lines(
                     &mouse_pos_buffer,
                     &ui_buffer.clone().borrow(), 
-                    &mut color_idx_offset_delay, 
                     &geometry_cache,
                 );
             });
@@ -245,6 +243,15 @@ impl MagicSquare {
                     let _ = f.borrow_mut().take();
                     return;
                 }
+
+                let color_idx_offset: usize = color_idx_offset_delay[0];
+                let color_idx_delay: usize = color_idx_offset_delay[1];
+
+                color_idx_offset_delay[1] = color_idx_delay + 1;
+                if color_idx_delay == 13 {
+                    color_idx_offset_delay[0] = color_idx_offset + 1_usize % 8;
+                    color_idx_offset_delay[1] = 0;
+                }
                 // TODO SOON: DEBUG cancelAnimationFrame
                 // seemingly passing valid requestId back to js
                 // but passing the id to cancleAnimationFrame in onDestroy callback
@@ -254,7 +261,7 @@ impl MagicSquare {
                 for idx in 0..max_idx {
                     MagicSquare::render(
                         geometry_cache.borrow().gl_vertices(idx), 
-                        &geometry_cache.borrow().rgbas[idx], 
+                        &MagicSquare::get_rgba(&ui_buffer.clone().borrow(), idx, color_idx_offset), 
                         &context
                     ).expect("Render error");
                 }
@@ -291,7 +298,6 @@ impl MagicSquare {
         mouse_pos_buffer: &Rc<RefCell<[f32; 2]>>,
         ui_buffer: &UiBuffer,
         // geometry_cache: Arc<Mutex<GeometryCache>>,
-        color_idx_offset_delay: &mut [usize; 2],
         geometry_cache: &Rc<RefCell<GeometryCache>>,
     ) {
         let max_idx = Settings::max_idx_from_draw_pattern(ui_buffer.settings.draw_pattern);
@@ -339,26 +345,14 @@ impl MagicSquare {
                     translation
                 );
                 
-                let color_idx_offset: usize = color_idx_offset_delay[0];
-                let color_idx_delay: usize = color_idx_offset_delay[1];
-                let rgba = MagicSquare::get_rgba(
-                    mouse_pos_buffer.clone(),
-                    ui_buffer, 
-                    (idx + color_idx_offset) % 8
-                );
-                color_idx_offset_delay[1] = color_idx_delay + 1;
-                if color_idx_delay == 50 {
-                    color_idx_offset_delay[0] = color_idx_offset + 1_usize % 8;
-                    color_idx_offset_delay[1] = 0;
-                }
-                geometry_cache.borrow_mut().set_next(icosohedron.arr, rgba, Shape::Icosohedron, max_idx);
+                geometry_cache.borrow_mut().set_next(icosohedron.arr, Shape::Icosohedron, max_idx);
             // });
         }
 
 
     }
 
-    fn get_rgba(mouse_pos_buffer: [f32; 2], ui_buffer: &UiBuffer, idx: usize) -> Rgba {
+    fn get_rgba(ui_buffer: &UiBuffer, idx: usize, offset: usize) -> Rgba {
         // let mut result: Rgba = [0.0, 0.0, 0.0, 0.0];
         // result[0] = ui_buffer.settings.color_1[0] / 255.0;// 1.0 - mouse_pos_buffer[0];
         // result[1] = ui_buffer.settings.color_1[1] / 255.0;// 1.0 - mouse_pos_buffer[1];
@@ -367,7 +361,8 @@ impl MagicSquare {
         // result
         //
         // log(&format!("{idx}"));
-        match idx {
+        let local_idx = (idx + offset) % 16;
+        match local_idx {
             0 => ui_buffer.settings.color_1,
             1 => ui_buffer.settings.color_2,
             2 => ui_buffer.settings.color_3,
