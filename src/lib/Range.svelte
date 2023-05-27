@@ -36,7 +36,7 @@
   });
 
   function resizeWindow() {
-    elementX = element.getBoundingClientRect().left;
+    elementX = element.getBoundingClientRect().left - 100;
   }
 
   // Allows both bind:value and on:change for parent value retrieval
@@ -143,7 +143,7 @@
   }
 
   // React to left position of element relative to window
-  $: if (element) elementX = element.getBoundingClientRect().left;
+  $: if (element) elementX = element.getBoundingClientRect().left + 75;
 
   // Set a class based on if dragging
   $: holding = Boolean(currentThumb);
@@ -155,7 +155,7 @@
     value = value < max ? value : max;
 
     let percent = ((value - min) * 100) / (max - min);
-    let offsetLeft = (container.clientWidth - 10) * (percent / 100) + 5;
+    let offsetLeft = (container.clientWidth - 10) * (percent / 100);
 
     // Update thumb position + active range track width
     thumb.style.left = `${offsetLeft}px`;
@@ -185,7 +185,7 @@
     on:mousedown={onTrackEvent}
     on:touchstart={onTrackEvent}
   >
-    <div id={`range__track_${id}`}
+    <div id={`7range__track_${id}`}
          class="range__track" bind:this={container}>
       <div class="range__track--highlighted" bind:this={progressBar} />
       <div

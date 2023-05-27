@@ -1,6 +1,5 @@
 <script lang="ts">
   import ControlModule from "../ControlModule.svelte"
-  import Range from "../../lib/Range.svelte"
 
   enum Freedom {
     Pitch,
@@ -171,7 +170,7 @@
         {freedomToString(freedom)}
       </div>
       <div class="freedom_group_body">
-        {#each freedomToSliders(freedom) as  {id, label, min, max, initialValue, value}}
+        {#each freedomToSliders(freedom) as  {id, label, min, max, value}}
           <div class="rotation_input flex flex-col"
                on:dblclick={(e) => handleDoubleClick(e,id)}>
             <label class="rotation_input_label flex justify-between" 
@@ -179,13 +178,11 @@
               <div> {label} </div>
               <div> {value} </div>
             </label>
-            <Range id={`${id}_range`}
+            <input id={id}
+                   type="range"
                    min={min}
                    max={max}
-                   bind:value={value}
-                   on:change={(e) => handleRotationChange(e, id)}/>
-            <input id={id}
-                   class="hidden_input"/>
+                   step={.01}/>
           </div>
         {/each}
       </div>
