@@ -16,10 +16,11 @@
   const modules: string[] = [
     'color',
     'drawPattern',
+    'geometry',
     'mouseTracking',
     'radius',
     'rotation',
-    'none'
+    'lfos'
   ]
 
   let curr_mod_left: string = 'color'

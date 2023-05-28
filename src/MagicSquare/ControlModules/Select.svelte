@@ -19,17 +19,25 @@
       curr_mod_right = mod
     }
   }
+
+  function swap() {
+    const old_left = JSON.parse(JSON.stringify(curr_mod_left))
+    curr_mod_left = curr_mod_right
+    curr_mod_right = old_left
+  }
 </script>
 
 <div class="module_selector flex flex-col">
   <div class="module_selector_side_set flex">
     <button class="side_set side_set_left"
             class:side_set_left_selected="{sideToSet === 'left'}"
+            on:dblclick={() => swap()}
             on:click={() => sideToSet = 'left'}>
       LEFT
     </button>
     <button class="side_set side_set_right"
             class:side_set_right_selected="{sideToSet === 'right'}"
+            on:dblclick={() => swap()}
             on:click={() => sideToSet = 'right'}>
       RIGHT
     </button>

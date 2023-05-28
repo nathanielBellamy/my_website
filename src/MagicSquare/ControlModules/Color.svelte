@@ -209,6 +209,7 @@
     height: 100%
 
   .curr_picker_id
+    margin-right: -150px
     font-weight: text.$fw-m
     font-size: text.$fs-xl
     max-width: 5px
