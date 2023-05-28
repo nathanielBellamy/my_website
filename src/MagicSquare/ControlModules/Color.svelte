@@ -90,7 +90,6 @@
     colorData.color6.rgba = source.settings.color_6.map((x: number) => 255 * x)
     colorData.color7.rgba = source.settings.color_7.map((x: number) => 255 * x)
     colorData.color8.rgba = source.settings.color_8.map((x: number) => 255 * x)
-
   }
   
   const storageKey = 'magic_square_storage'
@@ -144,6 +143,9 @@
 
 <div class="color_container flex flex-col justify-around">
   <div class="curr_picker flex justify-around">
+    <div class="curr_picker_id">
+      {curr_id.split("_").slice(-1)[0]}
+    </div>
     <div class="flex justify-around items-stretch">
       {#each Object.values(colorData) as { id }}
         <div id={`${id}_picker`}
@@ -205,6 +207,12 @@
 
   .color_container
     height: 100%
+
+  .curr_picker_id
+    font-weight: text.$fw-m
+    font-size: text.$fs-xl
+    max-width: 5px
+    color: color.$blue-7
 </style>
 
 

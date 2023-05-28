@@ -1,25 +1,49 @@
 <script lang="ts">
+  import { afterUpdate, onDestroy, onMount } from "svelte"
   import { watchResize } from "svelte-watch-resize"
   import MagicSquare from "./Main.svelte"
   
-  let magicSquareInstance = 0
+  let magicSquareInstance: number = 0
+  let destroyChild = false
+  let sideLength: number = 0
+  let resizeTimer: any = null
+  const debounceDelay: number = 200
 
-  // To handle resize
-  // we simply alternate between two identical instances
-  // on each resize, one is destroyed and one is mounted
-  // the internals of MagicSquare handle getting the height/width onMount
-  // TODO: persist settings during resize
-  // - this likely means storing a settings object here
-  // - this component becomes the "env" for MagicSquare
-  // - while MagicSquare holds the engine itself
-  const handleResize = async () => {
-    magicSquareInstance = (magicSquareInstance + 1) % 2
+  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+
+  async function handleResize() {
+    await delay(100)
+    console.log("ay ay")
+    magicSquareInstance += 1
+    let element = document.getElementById("magic_square_container")
+    sideLength = Math.floor(Math.min(element.offsetWidth, element.offsetHeight) / 2) - 25
   }
+
+  afterUpdate(() => {
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  })
+
+  onMount(() => {
+    window.addEventListener('resize', handleResize)
+  })
+
+  onDestroy(() => {
+    magicSquareInstance += 1
+    destroyChild = false
+  })
 </script>
 
-<div class="magic_square_container"
+
+<div id="magic_square_container"
+     class="magic_square_container"
      use:watchResize={handleResize}>
-    <MagicSquare />
+    {#key magicSquareInstance}
+      {#if !destroyChild}
+        <MagicSquare sideLength={sideLength}/>
+      {/if}
+    {/key}
 </div>
 
 <style lang="sass">

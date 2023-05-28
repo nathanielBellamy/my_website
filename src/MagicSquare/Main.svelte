@@ -1,15 +1,9 @@
 <script lang="ts" type="module">
   import { onMount, onDestroy } from 'svelte'
   import ControlRack from './ControlRack.svelte'
-
-  let sideLength: number = 0
-
-  var animation_id: any
+  export let sideLength: number = 0.0
 
   onMount(async () => {
-    let element = document.getElementById("magic_square_canvas_container")
-    sideLength = Math.floor(Math.min(element.offsetWidth, element.offsetHeight) / 1) - 25
-
     // clear old ui_buffer from localStorage
     localStorage.clear()
     

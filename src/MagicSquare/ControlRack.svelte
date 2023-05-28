@@ -23,7 +23,7 @@
   ]
 
   let curr_mod_left: string = 'color'
-  let curr_mod_right: string = 'rotation'
+  let curr_mod_right: string = 'rotation'  
 </script>
 
 <div id="magic_square_control_rack"

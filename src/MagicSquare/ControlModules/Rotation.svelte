@@ -221,5 +221,4 @@
       border-top: 5px double color.$blue-7
       border-radius: 10px
       flex-grow: 1
-    
 </style>
