@@ -215,7 +215,7 @@
       flex-direction: column
       justify-content: flex-start
       align-items: stretch
-      color: color.$black-4
+      color: color.$black-7
       flex-grow: .9
       padding: 5px 0 5px 0
    
@@ -224,7 +224,7 @@
     /* justify-content: flex-start */
     align-items: stretch
     flex-grow: 1
-    border-bottom: 2px solid color.$black-4
+    border-bottom: 2px solid color.$black-7
     
     &_title
       flex-grow: .1

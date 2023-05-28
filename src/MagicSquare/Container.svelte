@@ -6,17 +6,14 @@
   let magicSquareInstance: number = 0
   let destroyChild = false
   let sideLength: number = 0
-  let resizeTimer: any = null
-  const debounceDelay: number = 200
 
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
   async function handleResize() {
-    await delay(100)
-    console.log("ay ay")
+    await delay(50)
     magicSquareInstance += 1
     let element = document.getElementById("magic_square_container")
-    sideLength = Math.floor(Math.min(element.offsetWidth, element.offsetHeight) / 2) - 25
+    sideLength = Math.floor(Math.min(element.offsetWidth, element.offsetHeight) / 1.3) - 25
   }
 
   afterUpdate(() => {

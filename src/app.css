@@ -112,3 +112,20 @@ input[type="range"]::-moz-range-thumb {
 input[type="range"]:focus::-moz-range-thumb {
   background: linear-gradient(180deg, #9DBFCB, #395A6D);
 }
+
+
+nav {
+  padding: 10px;
+  width: 100%;
+  display: flex;
+}
+
+nav a {
+  margin-right: 10px;
+  color: #395A6D;
+  text-decoration: none;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}

@@ -3,11 +3,21 @@
 $white: #EFF0E9
 $cream: #E0DACE
 
-$black-1: #545654
-$black-2: #5D5A55
-$black-3: #4F4F4D
-$black-4: #232323
+// $black-1: #545654
+// $black-2: #5D5A55
+// $black-3: #4F4F4D
+// $black-4: #232323
 
+$black-7: #232323
+$black-1: lighten($black-7, 60%)
+$black-2: lighten($black-7, 50%)
+$black-3: lighten($black-7, 40%)
+$black-4: lighten($black-7, 30%)
+$black-5: lighten($black-7, 20%)
+$black-6: lighten($black-7, 10%)
+$black-8: darken($black-7, 10%)
+$black-9: darken($black-7, 20%)
+$black-10: darken($black-7, 30%)
 
 $blue-7: #395A6D
 $blue-1: lighten($blue-7, 60%)
@@ -42,9 +52,9 @@ $yellow-3: #B58D46
 $yellow-4: #9E8A55
 
 // gradients
-$black-grad: linear-gradient(110deg, $black-4 0%, $black-2 100%)
-$black-blue-grad: linear-gradient(270deg, $blue-7 0%, $black-4 4%, $black-4 96%, $blue-7 100%)
-$black-blue-horiz-grad: linear-gradient(0deg, $blue-7 0%, $black-4 4%, $black-4 96%, $blue-7 100%)
+$black-grad: linear-gradient(110deg, $black-7 0%, $black-6 100%)
+$black-blue-grad: linear-gradient(270deg, $blue-7 0%, $black-7 4%, $black-7 96%, $blue-7 100%)
+$black-blue-horiz-grad: linear-gradient(0deg, $blue-7 0%, $black-7 4%, $black-7 96%, $blue-7 100%)
 
 
 $blue-grad: linear-gradient(110deg, $blue-4 0%, $blue-2 100%)
@@ -60,4 +70,4 @@ $green-cream-grad: linear-gradient(110deg, $cream 0%, $green-2 100%)
 $grey-grad: linear-gradient(110deg, $grey-4 0%, $grey-2 100%)
 
 $yellow-black-grad: linear-gradient(110deg, $yellow-2 0%, $black-1 100%)
-$black-yellow-grad: linear-gradient(0deg, $yellow-4 0%, $black-4 4%, $black-4 96%, $yellow-4 100%)
+$black-yellow-grad: linear-gradient(0deg, $yellow-4 0%, $black-7 4%, $black-7 96%, $yellow-4 100%)

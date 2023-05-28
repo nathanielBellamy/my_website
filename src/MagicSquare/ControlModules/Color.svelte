@@ -4,9 +4,9 @@
   import ControlModule from '../ControlModule.svelte'
   
   const colorPickerOptions = {
-    width: 175,
-    height: 150,
-    borderWidth: 5,
+    width: 130,
+    height: 120,
+    borderWidth: 2,
     borderColor: "#EFF0E9", // white in styles/color.sass
     layoutDirection: 'vertical'
   }
@@ -142,16 +142,39 @@
 </script>
 
 <div class="color_container flex flex-col justify-around">
-  <div class="curr_picker flex justify-around">
-    <div class="curr_picker_id">
-      {curr_id.split("_").slice(-1)[0]}
+  <div class="color_mode_and_curr flex flex-col md:flex-row justify-around items-center">
+    <div class="color_modes flex justify-around">
+      <div class="color_mode flex flex-col justify-between">
+        <button class="color_mode_option">
+          Eight
+        </button>
+        <button class="color_mode_option">
+          Grad
+        </button>
+      </div>
+      <div class="color_mode flex flex-col justify-beetween">
+        <button class="color_mode_option">
+          In
+        </button>
+        <button class="color_mode_option">
+          Out
+        </button>
+        <button class="color_mode_option">
+          Static
+        </button>
+      </div>
     </div>
-    <div class="flex justify-around items-stretch">
-      {#each Object.values(colorData) as { id }}
-        <div id={`${id}_picker`}
-             class="color_picker"
-             class:hidden_input={curr_id !== id}/>
-      {/each}
+    <div class="curr_picker flex justify-around">
+      <div class="curr_picker_id">
+        {curr_id.split("_").slice(-1)[0]}
+      </div>
+      <div class="flex justify-around items-stretch">
+        {#each Object.values(colorData) as { id }}
+          <div id={`${id}_picker`}
+               class="color_picker"
+               class:hidden_input={curr_id !== id}/>
+        {/each}
+      </div>
     </div>
   </div>
   <div class="color_rows grid grid-rows-2">
@@ -184,11 +207,28 @@
   @use "./../../styles/color"
   @use "./../../styles/text"
 
+  .color_mode_and_curr
+    flex-grow: 1
+    width: 100%
+  .color_mode
+    &s
+      flex-grow: .1
+      border: 5px double color.$blue-7
+      border-radius: 5px
+      margin: 5px
+    &_option
+      font-weight: text.$fw-l
+      font-size: text.$fs-m
+      color: color.$blue-7
+      
+    
+
   .color_picker
     display: flex
     justify-content: space-between
     width: 100%
     flex-grow: 1
+    margin: 0 5px 0 5px
   
   .color_rows
     flex-grow: .75
@@ -208,12 +248,18 @@
   .color_container
     height: 100%
 
-  .curr_picker_id
-    margin-right: -150px
-    font-weight: text.$fw-m
-    font-size: text.$fs-xl
-    max-width: 5px
-    color: color.$blue-7
+  .curr_picker
+    position: relative
+    &_id
+      height: 100%
+      width: 100%
+      position: absolute
+      margin-top: 26px
+      z-index: 100
+      font-weight: text.$fw-m
+      font-size: text.$fs-xl
+      color: color.$black-7
+      pointer-events: none
 </style>
 
 

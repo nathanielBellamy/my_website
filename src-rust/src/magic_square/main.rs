@@ -248,8 +248,8 @@ impl MagicSquare {
                 let color_idx_delay: usize = color_idx_offset_delay[1];
 
                 color_idx_offset_delay[1] = color_idx_delay + 1;
-                if color_idx_delay == 13 {
-                    color_idx_offset_delay[0] = color_idx_offset + 1_usize % 8;
+                if color_idx_delay == 6 {
+                    color_idx_offset_delay[0] = color_idx_offset - 1_usize % 8;
                     color_idx_offset_delay[1] = 0;
                 }
                 // TODO SOON: DEBUG cancelAnimationFrame

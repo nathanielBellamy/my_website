@@ -1,6 +1,4 @@
 <script lang="ts">
-  import Range from "../../lib/Range.svelte"
-
   //TODO: generalize RangeInput
   interface RangeInput {
     id: string,
