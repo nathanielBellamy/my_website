@@ -1,7 +1,7 @@
 <script lang="ts">
   import Router from "svelte-spa-router"
-  import {link} from "svelte-spa-router"
   import {wrap} from 'svelte-spa-router/wrap'
+  import Link from "./lib/Link.svelte";
 
   const routes: { [key: string]: any } = {
     '/': wrap({
@@ -20,26 +20,18 @@
 </script>
 
 <nav class="nav_bar flex items-stretch">
-  <a href="/" 
-     use:link
-     class="nav_link"> 
-    Home 
-  </a>
-  <a href="/about_me" 
-     use:link
-     class="nav_link"> 
-    About Me 
-  </a>
-  <a href="/give_me_a_sine" 
-     use:link
-     class="nav_link"> 
-    Give Me A Sine 
-  </a>
-  <a href="/magic_square" 
-     use:link
-     class="nav_link"> 
-    Magic Square 
-  </a>
+  <Link href="/" 
+        className="nav_link"
+        title="Home"/> 
+  <Link href="/about_me" 
+        className="nav_link" 
+        title="About Me" />
+  <Link href="/give_me_a_sine" 
+        className="nav_link" 
+        title="Give Me A Sine"/>
+  <Link href="/magic_square" 
+        className="nav_link"
+        title="Magic Square"/> 
 </nav>
 
 <main class="rounded-md flex flex-col justify-start">
@@ -47,18 +39,21 @@
 </main>
 
 <footer>
-  nbschieber@gmail.com
+  <div>
+    github.com/nathanielBellamy
+  </div>
+  <div>
+    nbschieber@gmail.com
+  </div>
+  <div>
+    PORTLAND, OR
+  </div>
 </footer>
 
 <style lang="sass">
   @use "./styles/color"
 
-  .nav_bar a:not(:last-child)
-    border-right: 5px double color.$blue-7
-  
-  .main
-    width: 100vw
-    height: calc(100vh - 50px)
+
 
   .nav_link
     flex-grow: 1

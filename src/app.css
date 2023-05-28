@@ -151,13 +151,27 @@ footer {
   width: 100%;
   color: #395A6D;
   height: 45px;
+  overflow-x: scroll;
   margin-top: 5px;
+  padding: 0 10px 0 10px;
   border-top: 5px double #395A6D;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+}
+
+footer div {
+  flex-grow: 1;
+  padding: 0 10px 0 10px;
+}
+
+footer div:not(:last-child) {
+  border-right: 5px double #395A6D;
 }
 
 header {
   width: 100%;
   color: #395A6D;
 }
-
 
