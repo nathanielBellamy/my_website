@@ -2,7 +2,10 @@
   import { onMount } from 'svelte'
   import iro from '@jaames/iro'
   import ControlModule from '../ControlModule.svelte'
+
+    
   
+  const storageKey = 'magic_square_storage'
   const colorPickerOptions = {
     width: 130,
     height: 120,
@@ -92,7 +95,6 @@
     colorData.color8.rgba = source.settings.color_8.map((x: number) => 255 * x)
   }
   
-  const storageKey = 'magic_square_storage'
 
   function getStorageData () {
     return JSON.parse(localStorage.getItem(storageKey))
@@ -142,25 +144,25 @@
 </script>
 
 <div class="color_container flex flex-col justify-around">
-  <div class="color_mode_and_curr flex flex-col md:flex-row justify-around items-center">
-    <div class="color_modes flex justify-around">
+  <div class="color_mode_and_curr flex flex-col justify-around items-center">
+    <div class="color_modes flex flex-col justify-around items-stretch">
+      <div class="color_mode flex justify-evenly">
+        <button class="color_mode_option">
+          Out
+        </button>
+        <button class="color_mode_option">
+          In
+        </button>
+        <button class="color_mode_option">
+          Fix
+        </button>
+      </div>
       <div class="color_mode flex flex-col justify-between">
         <button class="color_mode_option">
           Eight
         </button>
         <button class="color_mode_option">
           Grad
-        </button>
-      </div>
-      <div class="color_mode flex flex-col justify-beetween">
-        <button class="color_mode_option">
-          In
-        </button>
-        <button class="color_mode_option">
-          Out
-        </button>
-        <button class="color_mode_option">
-          Static
         </button>
       </div>
     </div>
@@ -209,14 +211,15 @@
 
   .color_mode_and_curr
     flex-grow: 1
-    width: 100%
+    width: 90%
+    margin-left: 5%
   .color_mode
     &s
       flex-grow: .1
-      border: 5px double color.$blue-7
-      border-radius: 5px
-      margin: 5px
+      border-bottom: 5px double color.$blue-7
+      padding-bottom: 10px
     &_option
+      flex: 1 1 0px
       font-weight: text.$fw-l
       font-size: text.$fs-m
       color: color.$blue-7

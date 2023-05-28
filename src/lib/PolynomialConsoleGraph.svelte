@@ -6,7 +6,6 @@
   {title}
 </h3>
 
-<style>
+<style lang="sass">
   @use "./../styles/color"
-
 </style>

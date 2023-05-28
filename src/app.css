@@ -115,9 +115,23 @@ input[type="range"]:focus::-moz-range-thumb {
 
 
 nav {
+  position: fixed;
+  left: 0;
+  top: 0;
   padding: 10px;
   width: 100%;
+  min-height: 50px;
+  max-height: 50px;
   display: flex;
+}
+
+main {
+  position: fixed;
+  left: 0;
+  top: 50px;
+  width: 100vw;
+  height: calc(100vh - 100px);
+  overflow: hidden;
 }
 
 nav a {
@@ -129,3 +143,21 @@ nav a {
 nav a:hover {
   text-decoration: underline;
 }
+
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color: #395A6D;
+  height: 45px;
+  margin-top: 5px;
+  border-top: 5px double #395A6D;
+}
+
+header {
+  width: 100%;
+  color: #395A6D;
+}
+
+

@@ -1,15 +1,11 @@
 <script lang="ts">
-  import Embed from "./Embed.svelte"
-    import GiveMeASine from "./GiveMeASine.svelte";
-  import PolynomialConsoleGraph from "./PolynomialConsoleGraph.svelte"
+  import Link from "./Link.svelte"
 
   enum EmbeddedProgram {
     giveMeASign,
     polynomialConsoleGraph,
     none
   }
-
-  let showEmbed: EmbeddedProgram = EmbeddedProgram.none
 
   interface PersonalProject {
     title: string,
@@ -142,29 +138,15 @@
           </button>
           <div class="project_description row-span-3 md:col-span-3 md:row-span-1">
             {description}
-            {#if program != EmbeddedProgram.none}
-              <button on:click={() => {
-                if (showEmbed == program) {
-                  showEmbed = EmbeddedProgram.none
-                } else {
-                  showEmbed = program
-                }
-              }}>
-                Open WebAssembly Build
-              </button>
+            {#if program == EmbeddedProgram.giveMeASign}
+              <Link href="/give_me_a_sine"
+                    title="Open the WebAssembly Build"/>
             {/if}
           </div>
         </div>
       {/each}
     </div>
   </div>
-  <Embed css_class="row-span-2">
-    {#if showEmbed == EmbeddedProgram.giveMeASign}
-      <GiveMeASine />
-    {:else if showEmbed == EmbeddedProgram.polynomialConsoleGraph}
-      <PolynomialConsoleGraph />
-    {/if}
-  </Embed>
   <div class="section grid grid-rows-10 md:grid-cols-10">
     <div class="section_title text-xl font-extrabold row-span-2 md:col-span-2 md:row-span-1">
       Technical Knowledge
@@ -191,11 +173,10 @@
 
   .about_me
     width: 100%
-    height: 100%
+    overflow-y: scroll
 
   .section
     align-items: stretch
-    min-height: 200px
     border-top: 10px double color.$yellow-4
     border-bottom: 10px double color.$yellow-4
     margin-top: 5px

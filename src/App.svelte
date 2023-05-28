@@ -19,21 +19,49 @@
   }
 </script>
 
-<nav>
-  <a href="/" use:link> Home </a>
-  <a href="/about_me" use:link> About Me </a>
-  <a href="/give_me_a_sine" use:link> Give Me A Sine </a>
-  <a href="/magic_square" use:link> Magic Square </a>
+<nav class="nav_bar flex items-stretch">
+  <a href="/" 
+     use:link
+     class="nav_link"> 
+    Home 
+  </a>
+  <a href="/about_me" 
+     use:link
+     class="nav_link"> 
+    About Me 
+  </a>
+  <a href="/give_me_a_sine" 
+     use:link
+     class="nav_link"> 
+    Give Me A Sine 
+  </a>
+  <a href="/magic_square" 
+     use:link
+     class="nav_link"> 
+    Magic Square 
+  </a>
 </nav>
 
-<main class="main rounded-md flex flex-col justify-start">
+<main class="rounded-md flex flex-col justify-start">
   <Router {routes}/>
 </main>
 
+<footer>
+  nbschieber@gmail.com
+</footer>
+
 <style lang="sass">
   @use "./styles/color"
+
+  .nav_bar a:not(:last-child)
+    border-right: 5px double color.$blue-7
   
   .main
     width: 100vw
     height: calc(100vh - 50px)
+
+  .nav_link
+    flex-grow: 1
+    min-width: 150px
+    max-width: 150px
 </style>
