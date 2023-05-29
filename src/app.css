@@ -27,13 +27,7 @@ a:hover {
   color: #535bf2;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
+
 
 h1 {
   font-size: 3.2em;
@@ -82,37 +76,30 @@ button:focus-visible {
 }
 
 /***** Chrome, Safari, Opera and Edge Chromium styles *****/
+input[type="range"] {
+  border-radius: 10px;
+}
+
 /* slider track */
 input[type="range"]::-webkit-slider-runnable-track {
-  background: linear-gradient(90deg, #9DBFCB, #395A6D);
+  background: linear-gradient(270deg, #395A6D, #223642, #223642, #395A6D);
 }
 
 /******** Firefox styles ********/
 /* slider track */
 input[type="range"]::-moz-range-track {
-  background: linear-gradient(90deg, #9DBFCB, #395A6D);
+  background: linear-gradient(270deg, #395A6D, #223642, #223642, #395A6D);
 }
-
 
 /* slider thumb */
 input[type="range"]::-webkit-slider-thumb {
-  background: linear-gradient(90deg, #9DBFCB, #395A6D);
+  background: linear-gradient(270deg, #395A6D, #223642, #395A6D);
 }
-
-input[type="range"]:focus::-webkit-slider-thumb { 
-  background: linear-gradient(180deg, #9DBFCB, #395A6D);
-}
-
 
 /* slider thumb */
 input[type="range"]::-moz-range-thumb {
-  background: linear-gradient(90deg, #9DBFCB, #395A6D);
+  background: linear-gradient(270deg, #395A6D, #223642, #395A6D);
 }
-
-input[type="range"]:focus::-moz-range-thumb {
-  background: linear-gradient(180deg, #9DBFCB, #395A6D);
-}
-
 
 nav {
   position: fixed;
@@ -123,15 +110,7 @@ nav {
   min-height: 50px;
   max-height: 50px;
   display: flex;
-}
-
-main {
-  position: fixed;
-  left: 0;
-  top: 50px;
-  width: 100vw;
-  height: calc(100vh - 100px);
-  overflow: hidden;
+  border-bottom: 5px double #395A6D;
 }
 
 nav a {
@@ -144,7 +123,31 @@ nav a:hover {
   text-decoration: underline;
 }
 
-footer {
+main {
+  position: fixed;
+  left: 0;
+  top: 50px;
+  width: 100vw;
+  height: calc(100vh - 100px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+footer { /*global*/
   position: fixed;
   left: 0;
   bottom: 0;
@@ -170,7 +173,7 @@ footer div:not(:last-child) {
   border-right: 5px double #395A6D;
 }
 
-header {
+header {  /*impl per component*/
   width: 100%;
   color: #395A6D;
 }

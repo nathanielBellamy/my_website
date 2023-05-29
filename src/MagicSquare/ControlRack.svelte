@@ -28,12 +28,14 @@
 </script>
 
 <div id="magic_square_control_rack"
-     class="magic_square_control_rack flex flex-row-reverse justify-between flex-wrap-reverse">
-  <ControlModule title="MODS">
-    <Select modules={modules}
-            bind:curr_mod_left={curr_mod_left}
-            bind:curr_mod_right={curr_mod_right}/>
-  </ControlModule>
+     class="magic_square_control_rack flex flex-row-reverse justify-between">
+  <div class="mod_select">
+    <ControlModule title="MODS">
+      <Select modules={modules}
+              bind:curr_mod_left={curr_mod_left}
+              bind:curr_mod_right={curr_mod_right}/>
+    </ControlModule>
+  </div>
   <div class="left_right_slots grid grid-cols-2 gap-2">
     <div class="left_slot">
       {#if curr_mod_left == 'color'}
@@ -101,20 +103,23 @@
 <style lang="sass">
   @use "./../styles/color"
   @use "./../styles/text"
-  
+
   .magic_square_control_rack
     flex-grow: 1
-    overflow-y: scroll
     padding: 5px 40px 5px 40px
     height: 100%
-    border: 10px double color.$blue-7
     border-radius: 5px
     background: color.$black-blue-grad
+    min-height: 500px
+
+  .mod_select
+    height: calc(100% - 10px)
+    overflow: hidden
 
   .left_right_slots
+    height: calc(100% - 10px)
     grid-template-areas: "left_slot right_slot"
     grid-template-columns: 45% 45%
-    height: 100%
     min-width: 500px
     flex-grow: 1
 
@@ -127,6 +132,4 @@
     min-width: 200px
     grid-area: right_slot
     overflow: hidden
-  
-
 </style>

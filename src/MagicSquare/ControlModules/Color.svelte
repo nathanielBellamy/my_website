@@ -7,11 +7,11 @@
   
   const storageKey = 'magic_square_storage'
   const colorPickerOptions = {
-    width: 130,
-    height: 120,
+    width: 110,
+    height: 90,
     borderWidth: 2,
     borderColor: "#EFF0E9", // white in styles/color.sass
-    layoutDirection: 'vertical'
+    layoutDirection: 'horizontal'
   }
 
   interface Color {
@@ -250,14 +250,15 @@
 
   .color_container
     height: 100%
+    overflow: hidden
+    padding: 10px 0 10px 0
 
   .curr_picker
     position: relative
     &_id
-      height: 100%
-      width: 100%
       position: absolute
-      margin-top: 26px
+      margin-top: 20px
+      margin-right: 40px
       z-index: 100
       font-weight: text.$fw-m
       font-size: text.$fs-xl

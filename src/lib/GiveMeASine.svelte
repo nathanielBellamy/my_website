@@ -83,33 +83,35 @@
   ]
 </script>
 
-<div class="give_me_a_sine grid grid-rows-10 md:grid-cols-4">
-  <div class="give_me_a_sine_form_container row-span-4 device_form">
-    <div id="give_me_a_sine_form"
-         class="give_me_a_sine_form grid grid-cols-2">
-      <div class="give_me_a_sine_form_cell font-bold title">
-        Give Me A Sine
-      </div>
-      <div class="give_me_a_sine_form_cell font-bold sub_title">
-        f(x) = a * sin(b*x + c)
-      </div>
-      {#each range_inputs as {id, label, min, max, step}}
-        <div class="give_me_a_sine_form_cell">
-          <label for={id}>
-            {label}
-          </label>
-          <input id={id}
-                 type="range"
-                 min={min}
-                 max={max}
-                 step={step}/>
+<body>
+  <div class="give_me_a_sine grid grid-rows-10 md:grid-cols-4">
+    <div class="give_me_a_sine_form_container row-span-4 device_form">
+      <div id="give_me_a_sine_form"
+           class="give_me_a_sine_form grid grid-cols-2">
+        <div class="give_me_a_sine_form_cell font-bold title">
+          Give Me A Sine
         </div>
-      {/each}
+        <div class="give_me_a_sine_form_cell font-bold sub_title">
+          f(x) = a * sin(b*x + c)
+        </div>
+        {#each range_inputs as {id, label, min, max, step}}
+          <div class="give_me_a_sine_form_cell">
+            <label for={id}>
+              {label}
+            </label>
+            <input id={id}
+                   type="range"
+                   min={min}
+                   max={max}
+                   step={step}/>
+          </div>
+        {/each}
+      </div>
     </div>
+    <div id="give_me_a_sine_output"
+         class="give_me_a_sine_output device_graph_font row-span-8 md:col-span-3"/>
   </div>
-  <div id="give_me_a_sine_output"
-       class="give_me_a_sine_output device_graph_font row-span-8 md:col-span-3"/>
-</div>
+</body>
 
 <style lang="sass">
   @use "./../styles/color"

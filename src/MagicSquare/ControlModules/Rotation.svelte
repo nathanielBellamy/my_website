@@ -162,7 +162,7 @@
   }
 </script>
 
-<div class="rotation_container">
+<div class="rotation_container flex flex-col justify-around items-stretch">
   {#each freedoms as freedom}
     <div class="freedom_group flex gap-2">
       <div class="freedom_group_title">
@@ -194,16 +194,18 @@
   @use "../../styles/color"
   @use "../../styles/text"
 
-  .hidden_input
-    display: none
-
-  .rotation_input
-    width: 100%
-    &_label
-      font-weight: text.$fw-l
-      font-size: text.$fs-m
-      padding-left: 10px
-      padding-right: 10px
+  .rotation
+    &_container
+      width: 100%
+      padding: 5px 15px 5px 5px
+      overflow: hidden
+    &_input
+      width: 100%
+      &_label
+        font-weight: text.$fw-l
+        font-size: text.$fs-m
+        padding-left: 10px
+        padding-right: 10px
 
   .freedom_group
     align-items: center
@@ -218,6 +220,8 @@
       color: color.$blue-7
 
     &_body
+      width: 90%
+      margin: 0 0 0 5%
       border-top: 5px double color.$blue-7
       border-radius: 10px
       flex-grow: 1

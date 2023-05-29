@@ -23,10 +23,11 @@
     margin: 2px 0 2px 0
     align-items: stretch 
     border-radius: 5px
-    height: 100%
+    height: 98%
     min-width: 226px
+    min-height: 480px
     &_slot
-      height: 100%
+      height: 98%
       
       &_container
         flex-grow: 1

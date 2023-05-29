@@ -7,8 +7,8 @@
     '/': wrap({
       asyncComponent: () => import('./Home.svelte')
     }),
-    '/about_me': wrap({
-      asyncComponent: () => import('./lib/AboutMe.svelte')
+    '/about': wrap({
+      asyncComponent: () => import('./lib/About.svelte')
     }),
     '/give_me_a_sine': wrap({
       asyncComponent: () => import('./lib/GiveMeASine.svelte')
@@ -23,15 +23,19 @@
   <Link href="/" 
         className="nav_link"
         title="Home"/> 
-  <Link href="/about_me" 
+  <Link href="/about" 
         className="nav_link" 
-        title="About Me" />
-  <Link href="/give_me_a_sine" 
-        className="nav_link" 
-        title="Give Me A Sine"/>
+        title="About" />
+  <div>
+    Rust Wasm: 
+  </div>
   <Link href="/magic_square" 
         className="nav_link"
         title="Magic Square"/> 
+  <Link href="/give_me_a_sine" 
+        className="nav_link" 
+        title="Give Me A Sine"/>
+
 </nav>
 
 <main class="rounded-md flex flex-col justify-start">
@@ -40,10 +44,14 @@
 
 <footer>
   <div>
-    github.com/nathanielBellamy
+    <a href="https://github.com/nathanielBellamy">
+      github.com/nathanielBellamy
+    </a>
   </div>
   <div>
-    nbschieber@gmail.com
+    <a href="mailto:nbschieber@gmail.com">
+      nbschieber@gmail.com
+    </a>
   </div>
   <div>
     PORTLAND, OR
@@ -52,8 +60,6 @@
 
 <style lang="sass">
   @use "./styles/color"
-
-
 
   .nav_link
     flex-grow: 1
