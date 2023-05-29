@@ -84,19 +84,18 @@
 </script>
 
 <body>
-  <div class="give_me_a_sine grid grid-rows-10 md:grid-cols-4">
-    <div class="give_me_a_sine_form_container row-span-4 device_form">
-      <div id="give_me_a_sine_form"
-           class="give_me_a_sine_form grid grid-cols-2">
-        <div class="give_me_a_sine_form_cell font-bold title">
-          Give Me A Sine
-        </div>
-        <div class="give_me_a_sine_form_cell font-bold sub_title">
-          f(x) = a * sin(b*x + c)
-        </div>
+  <div class="give_me_a_sine flex flex-col md:flex-row md:justify-stretch">
+    <div id="give_me_a_sine_form"
+         class="give_me_a_sine_form flex flex-col">
+      <div class="give_me_a_sine_form_header font-bold">
+        <p>Give Me A Sine</p>
+        <p>f(x) = a * sin(b*x + c)</p>
+      </div>
+      <div class="give_me_a_sine_form_body flex flex-col justify-between items-stretch">
         {#each range_inputs as {id, label, min, max, step}}
           <div class="give_me_a_sine_form_cell">
-            <label for={id}>
+            <label  class="give_me_a_sine_form_cell_label"
+                    for={id}>
               {label}
             </label>
             <input id={id}
@@ -109,7 +108,7 @@
       </div>
     </div>
     <div id="give_me_a_sine_output"
-         class="give_me_a_sine_output device_graph_font row-span-8 md:col-span-3"/>
+         class="give_me_a_sine_output device_graph_font"/>
   </div>
 </body>
 
@@ -120,50 +119,49 @@
       .device_graph_font
         font-size: 3px
     
-      .device_form
-        max-height: 100px
-
-  .title
-    color: color.$blue-2
-    font-weight: 900
-    display: flex
-    flex-direction: column
-    justify-content: space-around
-    align-items: stretch
-    
-  .sub_title
-    color: color.$blue-2
-    font-weight: 700
-  
   .give_me_a_sine
+    flex-grow: 1
+    overflow-y: scroll
+    margin: 5px
+
     &_output
       display: flex
       flex-direction: column
       align-items: left
       justify-content: flex-start
       overflow-x: scroll
-      border: 5px solid color.$blue-7
+      border-top: 10px double color.$blue-7
+      border-bottom: 10px double color.$blue-7
       border-radius: 5px
+      maargin: 10px
+      height: 100%
+      flex-grow: 1
 
     &_form
-      border: 5px solid color.$blue-7
       border-radius: 5px
       margin: 0 5px 0 5px
+      padding: 0 0 10px 0
+      height: 100%
+      background: color.$black-blue-grad
+      min-height: 500px
+      overflow-y: scroll
+      min-width: 200px
 
-      &_container
-        display: flex
-        flex-direction: column
-        justify-content: flex-start
-        align-items: stretch
+      &_header
+        color: color.$blue-7
+      &_body
+        padding: 0 30px 0 30px
+        flex-grow: 1
   
       &_cell
         display: flex
         flex-direction: column
         justify-content: flex-start
-        margin: 5px
-        padding: 5px
-        border: 5px solid color.$blue-7
         border-radius: 5px
-        max-height: 100px
+
+        &_label
+          width: 100%
+          text-align: left
+          padding-left: 15px
 </style>
 

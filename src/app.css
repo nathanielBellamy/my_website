@@ -27,8 +27,6 @@ a:hover {
   color: #535bf2;
 }
 
-
-
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
@@ -110,11 +108,11 @@ nav {
   min-height: 50px;
   max-height: 50px;
   display: flex;
+  align-items: center;
   border-bottom: 5px double #395A6D;
 }
 
 nav a {
-  margin-right: 10px;
   color: #395A6D;
   text-decoration: none;
 }
@@ -145,6 +143,7 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
+  overflow-y: scroll;
 }
 
 footer { /*global*/

@@ -2,12 +2,6 @@
   import MagicBanner from "./lib/MagicBanner.svelte"
 </script>
 
-<header class="home_header flex items-center">
-  <div class="title">
-    My Website  
-  </div>
-</header>
-
 <body>
   <div class="text_lines flex flex-col justify-between items-stretch">
     <p>
@@ -34,9 +28,4 @@
     text-align: left
     padding: 15px
     height: 100%
-    
-  .title
-    color: color.$blue-7
-    font-size: text.$fs-l
-    font-weight: text.$fw-m
 </style>

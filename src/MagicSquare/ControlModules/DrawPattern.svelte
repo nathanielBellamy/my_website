@@ -2,6 +2,7 @@
   import { onMount } from "svelte"
 
   const storageKey = 'magic_square_storage'
+  export let currPattern: string = ''
 
   const drawPatterns: string[] = [
     'All',
@@ -36,10 +37,9 @@
 
   let formId = 'draw_pattern_form'
   let hiddenInputId = 'magic_square_input_draw_pattern'
-  let curr_pattern: string = ''
 
   function getCurrPatternLocal() {
-    return curr_pattern
+    return currPattern
   }
 
   function getCurrPatternStorage () {
@@ -48,7 +48,7 @@
   }
 
   function setCurrPattern(pattern: string) {
-    curr_pattern = pattern
+    currPattern = pattern
   }
 
   function handlePatternKeydown(e: any, pattern: string) {
@@ -66,7 +66,7 @@
   } 
 
   onMount(async () => {
-    curr_pattern = getCurrPatternStorage()
+    currPattern = getCurrPatternStorage()
     // wasm listens to input events on the forms
     // within the manual call to dispatchEvent we must
     // explicitly set bubbles:true so that wasm can catch the event
@@ -87,7 +87,7 @@
   <div class="draw_pattern_options flex flex-col">
     {#each drawPatterns as pattern}
       <button class="draw_pattern_option"
-              class:selected="{curr_pattern === pattern}"
+              class:selected="{currPattern === pattern}"
               on:click={() => handlePatternClick(pattern)}
               on:keydown={(e) => handlePatternKeydown(e, pattern)}>
           {pattern.toUpperCase()}

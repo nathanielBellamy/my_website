@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { onMount, onDestroy } from 'svelte'
   import Color from './ControlModules/Color.svelte'
   import ControlModule from './ControlModule.svelte'
   import DrawPattern from './ControlModules/DrawPattern.svelte'
@@ -24,7 +24,78 @@
   ]
 
   let curr_mod_left: string = 'color'
-  let curr_mod_right: string = 'rotation'  
+  let curr_mod_right: string = 'rotation'
+
+  // get ui data set by wasm in localStorage
+  const storageKey = 'magic_square_storage'
+  let localData: any = {}
+
+  function getStorageData () {
+    return JSON.parse(localStorage.getItem(storageKey))
+  }
+  
+  function handleStorageEvent () {
+    localData = getStorageData()
+  }
+
+  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+
+  onMount(async () => {
+    // TODO: un-hack
+    // hack to let wasm set data in localStoarge first
+    // see if .run() can return a promise that resulves when data is set in local storage
+    localData = getStorageData()
+    window.addEventListener("storage", handleStorageEvent)
+  })
+
+  onDestroy(() => {
+    window.removeEventListener("storage", handleStorageEvent)
+  })
+
+  // parse localData and reactively hydrate into props
+  interface DrawPatternProps {
+    currPattern: string
+  }
+  let drawPatternProps: DrawPatternProps
+  
+  function toDrawPatternProps(localData: any): DrawPatternProps {
+    if (!localData.settings) return // TODO: await wasm setting inital data in localStorage
+    return {currPattern: localData.settings.draw_pattern}
+  }
+  //
+  interface ColorProps {
+    color1: number[],
+    color2: number[],
+    color3: number[],
+    color4: number[],
+    color5: number[],
+    color6: number[],
+    color7: number[],
+    color8: number[],
+  }
+  let colorProps: ColorProps
+
+  function toColorProps(localData: any): ColorProps {
+    if (!localData.settings) return // TODO: await wasm setting inital data in localStorage
+    return { 
+      color1: localData.settings.color_1,
+      color2: localData.settings.color_2,
+      color3: localData.settings.color_3,
+      color4: localData.settings.color_4,
+      color5: localData.settings.color_5,
+      color6: localData.settings.color_6,
+      color7: localData.settings.color_8,
+      color8: localData.settings.color_9,
+    }
+  }
+
+  // TODO: hydrate local data to props and pass down
+  $: colorProps = toColorProps(localData)
+  $: drawPatternProps = toDrawPatternProps(localData)
+  $: geometryProps = localData
+  $: mouseTrackingProps = localData
+  $: radiusProps = localData
+  $: rotationProps = localData
 </script>
 
 <div id="magic_square_control_rack"
@@ -41,12 +112,12 @@
       {#if curr_mod_left == 'color'}
         <ControlModule title="COLOR"
                        side="left">
-         <Color />
+         <Color bind:props={colorProps}/>
         </ControlModule>
       {:else if curr_mod_left == 'drawPattern'}
         <ControlModule title="PATTERN"
                        side="left">
-          <DrawPattern />
+          <DrawPattern bind:currPattern={drawPatternProps.currPattern}/>
         </ControlModule>
       {:else if curr_mod_left == 'mouseTracking'}
         <ControlModule title="MOUSE"

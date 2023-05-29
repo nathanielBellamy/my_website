@@ -1,10 +1,20 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import iro from '@jaames/iro'
-  import ControlModule from '../ControlModule.svelte'
-
-    
   
+  interface Props {// {[key: string]: rgba[]}
+    color1: number[],
+    color2: number[],
+    color3: number[],
+    color4: number[],
+    color5: number[],
+    color6: number[],
+    color7: number[],
+    color8: number[],
+  }
+
+  export let props: Props
+
   const storageKey = 'magic_square_storage'
   const colorPickerOptions = {
     width: 110,
@@ -223,8 +233,6 @@
       font-weight: text.$fw-l
       font-size: text.$fs-m
       color: color.$blue-7
-      
-    
 
   .color_picker
     display: flex

@@ -17,25 +17,35 @@
       asyncComponent: () => import('./MagicSquare/Container.svelte')
     })
   }
+
+  let currentSection: string = 'Home'
+  function handleClick (newSection: string) {
+    currentSection = newSection
+  }
 </script>
 
-<nav class="nav_bar flex items-stretch">
-  <Link href="/" 
-        className="nav_link"
-        title="Home"/> 
-  <Link href="/about" 
-        className="nav_link" 
-        title="About" />
-  <div>
-    Rust Wasm: 
+<nav class="nav_bar flex justify-between items-stretch">
+  <div class="links flex justify-between items-stretch">
+    <Link href="/" 
+          className="nav_link"
+          title="Home"
+          onClick={() => handleClick('Nate\'s Website')}/> 
+    <Link href="/about" 
+          className="nav_link" 
+          title="About" 
+          onClick={() => handleClick("About")}/>
+    <Link href="/magic_square" 
+          className="nav_link"
+          title="Magic Square"
+          onClick={() => handleClick("Magic Square")}/> 
+    <Link href="/give_me_a_sine" 
+          className="nav_link" 
+          title="Give Me A Sine"
+          onClick={() => handleClick("Give Me A Sine")}/>
   </div>
-  <Link href="/magic_square" 
-        className="nav_link"
-        title="Magic Square"/> 
-  <Link href="/give_me_a_sine" 
-        className="nav_link" 
-        title="Give Me A Sine"/>
-
+  <div class="curr_section">
+    {currentSection}
+  </div>
 </nav>
 
 <main class="rounded-md flex flex-col justify-start">
@@ -60,9 +70,16 @@
 
 <style lang="sass">
   @use "./styles/color"
+  @use "./styles/text"
 
   .nav_link
     flex-grow: 1
     min-width: 150px
     max-width: 150px
+  
+  .curr_section
+    color: color.$blue-4
+    font-size: text.$fs-l
+    font-weight: text.$fw-l
+    margin-top: -10px
 </style>

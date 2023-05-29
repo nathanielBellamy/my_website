@@ -3,11 +3,13 @@
   export let href: string = "/"
   export let className: string = ""
   export let title: string = "Home"
+  export let onClick: any = () => {}
   
 </script>
 
 <a href={href}
    use:link
+   on:click={onClick}
    class={`link ${className}`}> 
   {title}
 </a>
