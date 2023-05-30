@@ -46,7 +46,7 @@ pub struct MagicSquare;
 impl MagicSquare {
     // Entry point into Rust WASM from JS
     // https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
-    pub fn run() -> Result<(), JsValue> {
+    pub async fn run() -> Result<(), JsValue> {
         // testing multithreading
         //
         // let (to_worker, from_main) = std::sync::mpsc::channel();
@@ -126,11 +126,7 @@ impl MagicSquare {
             let form = form.clone();
             let ui_buffer = ui_buffer.clone();
             let storage = storage.clone();
-            // set initial values
-            storage.set_item(
-                MAGIC_SQUARE_STORAGE_KEY,
-                &serde_json::to_string(&ui_buffer.clone().borrow().clone()).expect("error serializaing to json")
-            );
+
             
 
             let closure_handle_input =
@@ -271,10 +267,16 @@ impl MagicSquare {
             MagicSquare::request_animation_frame(g.borrow().as_ref().unwrap());
         }
 
-        form.dispatch_event(
-            // hack to trigger initial write of ui_buffer to localStorage
-            &web_sys::Event::new("input").unwrap()
-        ).unwrap();
+        // set initial values
+        storage.set_item(
+            MAGIC_SQUARE_STORAGE_KEY,
+            &serde_json::to_string(&ui_buffer.clone().borrow().clone()).expect("error serializaing to json")
+        ).expect("trouble setting intial values in localStorage");
+
+        // form.dispatch_event(
+        //     // hack to trigger initial write of ui_buffer to localStorage
+        //     &web_sys::Event::new("input").unwrap()
+        // ).unwrap();
         magic_square.dispatch_event(&web_sys::Event::new("render").unwrap()).unwrap();
 
         Ok(())
@@ -443,6 +445,7 @@ impl MagicSquare {
         color: &Rgba,
         context: &web_sys::WebGl2RenderingContext,
     ) -> Result<(), JsValue> {
+        // TODO
         let vert_shader = ShaderCompiler::vert_default(context).unwrap();
         let frag_shader = ShaderCompiler::frag_default(context, color).unwrap();
 

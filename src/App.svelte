@@ -29,7 +29,7 @@
     <Link href="/" 
           className="nav_link"
           title="Home"
-          onClick={() => handleClick('Nate\'s Website')}/> 
+          onClick={() => handleClick('It\'s A Website')}/> 
     <Link href="/about" 
           className="nav_link" 
           title="About" 

@@ -13,7 +13,7 @@
       init_message("Magic Square Wasm!")
     )
     
-    MagicSquare.run()
+    await MagicSquare.run()
   })
 
   onDestroy(async () => {

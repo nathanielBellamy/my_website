@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { onMount, afterUpdate } from 'svelte'
   import iro from '@jaames/iro'
   
   interface Props {// {[key: string]: rgba[]}
@@ -15,7 +15,6 @@
 
   export let props: Props
 
-  const storageKey = 'magic_square_storage'
   const colorPickerOptions = {
     width: 110,
     height: 90,
@@ -42,77 +41,61 @@
     color8: Color,
   }
 
-  let colorData: ColorData = {
+  afterUpdate(() => console.log(props))
+
+  let colorData: ColorData
+  $: colorData = {
     color1: {
       id: 'magic_square_input_color_1',
       idx: 1,
-      rgba: [],
+      rgba: props.color1,
       picker: null
     },
     color2: {
       id: 'magic_square_input_color_2',
       idx: 2,
-      rgba: [],
+      rgba: props.color2,
       picker: null
     },   
     color3: {
       id: 'magic_square_input_color_3',
       idx: 3,
-      rgba: [],
+      rgba: props.color3,
       picker: null
     },
     color4: {
       id: 'magic_square_input_color_4',
       idx: 4,
-      rgba: [],
+      rgba: props.color4,
       picker: null
     },
     color5: {
       id: 'magic_square_input_color_5',
       idx: 5,
-      rgba: [],
+      rgba: props.color5,
       picker: null
     },
    color6: {
       id: 'magic_square_input_color_6',
       idx: 6,
-      rgba: [],
+      rgba: props.color6,
       picker: null
     },
    color7: {
       id: 'magic_square_input_color_7',
       idx: 7,
-      rgba: [],
+      rgba: props.color7,
       picker: null
     },
    color8: {
       id: 'magic_square_input_color_8',
       idx: 8,
-      rgba: [],
+      rgba: props.color8,
       picker: null
     },
   }
-
-  function setColorData(source: any) {
-    // source is JSON object serialized from rust
-    colorData.color1.rgba = source.settings.color_1.map((x: number) => 255 * x)
-    colorData.color2.rgba = source.settings.color_2.map((x: number) => 255 * x)
-    colorData.color3.rgba = source.settings.color_3.map((x: number) => 255 * x)
-    colorData.color4.rgba = source.settings.color_4.map((x: number) => 255 * x)
-    colorData.color5.rgba = source.settings.color_5.map((x: number) => 255 * x)
-    colorData.color6.rgba = source.settings.color_6.map((x: number) => 255 * x)
-    colorData.color7.rgba = source.settings.color_7.map((x: number) => 255 * x)
-    colorData.color8.rgba = source.settings.color_8.map((x: number) => 255 * x)
-  }
   
-
-  function getStorageData () {
-    return JSON.parse(localStorage.getItem(storageKey))
-  }
-
   onMount(async () => {
-    const storageData = getStorageData()
-    setColorData(storageData)
 
     Object.values(colorData).forEach((color:Color) => {
       var input = document.getElementById(color.id)
@@ -127,13 +110,6 @@
       colorData[`color${color.idx}`].picker = picker 
     })
   })
-
-  function handleStorageEvent () {
-    setColorData(getStorageData())
-    colorData = colorData
-   }
-
-  window.addEventListener("storage", handleStorageEvent)
 
   let curr_id: string = 'magic_square_input_color_1'
   

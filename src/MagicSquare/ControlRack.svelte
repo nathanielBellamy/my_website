@@ -7,6 +7,7 @@
   import Rotation from './ControlModules/Rotation.svelte'
   import MouseTracking from './ControlModules/MouseTracking.svelte'
   import Select from './ControlModules/Select.svelte'
+    import About from '../lib/About.svelte';
   // { [selectId]: hiddehInputId}
   const selects: { [key: string]: string; }= {
     'draw_pattern_select': 'magic_square_input_draw_pattern',
@@ -59,7 +60,7 @@
   let drawPatternProps: DrawPatternProps
   
   function toDrawPatternProps(localData: any): DrawPatternProps {
-    if (!localData.settings) return // TODO: await wasm setting inital data in localStorage
+    if (!localData.settings) return// TODO: await wasm setting inital data in localStorage
     return {currPattern: localData.settings.draw_pattern}
   }
   //
@@ -74,18 +75,32 @@
     color8: number[],
   }
   let colorProps: ColorProps
+  let defaultColorProps = {
+    color1: [1, 0, 0],
+    color2: [1, 0, 0],
+    color3: [1, 0, 0],
+    color4: [1, 0, 0],
+    color5: [1, 0, 0],
+    color6: [1, 0, 0],
+    color7: [0, 0, 1],
+    color8: [1, 0, 0],
+  }
 
   function toColorProps(localData: any): ColorProps {
-    if (!localData.settings) return // TODO: await wasm setting inital data in localStorage
-    return { 
-      color1: localData.settings.color_1,
-      color2: localData.settings.color_2,
-      color3: localData.settings.color_3,
-      color4: localData.settings.color_4,
-      color5: localData.settings.color_5,
-      color6: localData.settings.color_6,
-      color7: localData.settings.color_8,
-      color8: localData.settings.color_9,
+    if (!localData.settings) {
+      colorProps = defaultColorProps// TODO: await wasm setting inital data in localStorage
+      return colorProps
+    } else {
+      return { 
+        color1: localData.settings.color_1,
+        color2: localData.settings.color_2,
+        color3: localData.settings.color_3,
+        color4: localData.settings.color_4,
+        color5: localData.settings.color_5,
+        color6: localData.settings.color_6,
+        color7: localData.settings.color_7,
+        color8: localData.settings.color_8,
+      }
     }
   }
 
@@ -142,7 +157,7 @@
       {#if curr_mod_right == 'color'}
         <ControlModule title="COLOR"
                        side="right">
-         <Color />
+         <Color bind:props={colorProps}/>
         </ControlModule>
       {:else if curr_mod_right == 'drawPattern'}
         <ControlModule title="PATTERN"
