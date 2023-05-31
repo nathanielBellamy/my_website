@@ -19,7 +19,7 @@
   @use "./../styles/text"
 
   .control_module
-    border: 5px solid color.$blue-7
+    border: 5px double color.$blue-7
     margin: 2px 0 2px 0
     align-items: stretch 
     border-radius: 5px

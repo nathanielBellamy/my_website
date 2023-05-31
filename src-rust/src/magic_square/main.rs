@@ -46,7 +46,7 @@ pub struct MagicSquare;
 impl MagicSquare {
     // Entry point into Rust WASM from JS
     // https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
-    pub async fn run() -> Result<(), JsValue> {
+    pub async fn run() -> JsValue {
         // testing multithreading
         //
         // let (to_worker, from_main) = std::sync::mpsc::channel();
@@ -58,7 +58,7 @@ impl MagicSquare {
 
         let magic_square = MagicSquare::magic_square(); // awesome naming, great job!
         let magic_square = Rc::new(magic_square);
-        let canvas = MagicSquare::canvas().dyn_into::<web_sys::HtmlCanvasElement>()?;
+        let canvas = MagicSquare::canvas().dyn_into::<web_sys::HtmlCanvasElement>().unwrap();
         let canvas = Rc::new(canvas);
         
         let storage: web_sys::Storage = MagicSquare::window().local_storage().unwrap().unwrap().into();
@@ -146,7 +146,7 @@ impl MagicSquare {
                     storage.clone().set_item(
                         MAGIC_SQUARE_STORAGE_KEY,
                         &serde_json::to_string(&ui_buffer.clone().borrow().clone()).expect("error serializaing to json")
-                    );
+                    ).unwrap();
 
                     // trigger storage event,
                     // ui is listening for storage events
@@ -195,7 +195,7 @@ impl MagicSquare {
             canvas.add_event_listener_with_callback(
                 "mousemove", 
                 closure.as_ref().unchecked_ref()
-            )?;
+            ).unwrap();
             closure.forget();
         }
 
@@ -218,7 +218,7 @@ impl MagicSquare {
             magic_square.add_event_listener_with_callback(
                 "render",
                 closure.as_ref().unchecked_ref()
-            )?;
+            ).unwrap();
             closure.forget();
         }
 
@@ -279,7 +279,8 @@ impl MagicSquare {
         // ).unwrap();
         magic_square.dispatch_event(&web_sys::Event::new("render").unwrap()).unwrap();
 
-        Ok(())
+        let to_js = ui_buffer.clone().borrow().clone();
+        serde_wasm_bindgen::to_value(&to_js).unwrap()
     }
 }
 

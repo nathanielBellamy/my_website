@@ -1,26 +1,109 @@
 <script lang="ts" type="module">
   import { onMount, onDestroy } from 'svelte'
   import ControlRack from './ControlRack.svelte'
+  // this component will be large
+  // the decision was made to optimize for minimal plumbing
+  // this component instantiates the wasm module and retrieves the initial UI values from it
+  // these values do not go further than this file (in JS)
+  // the mantra is
+  //   -> Svelte/JS is for layout/display
+  //   -> Rust/Wasm is for handling data
+
+  // This pattern has an interesting, happy consequence
+  // It was designed to model a modular synthesizer system
+  // But the ui input data flow is
+  // -> wasm returns initial values
+  // -> JS binds these values to their HTML elements here, wrapping them in CSS delivered through Svelte slots
+  // -> wasm instantiates event listeners for these inputs and records changes to its internal ui_buffer
+  // -> as a result, the actual HTML becomes "the source of truth" for the input value (hooray for avoidding JS State!)
+  // -> this models a physical - knob per function - system
+  
   export let sideLength: number = 0.0
+
+  let initialUiBuffer: any
+  
+  // drawPattern vars
+  let currDrawPattern: string
+  const drawPatternFormId: string = 'draw_pattern_form'
+  const drawPatternHiddenInputId: string = 'magic_square_input_draw_pattern'
+  const drawPatterns: string[] = [
+    'All',
+    'One',
+    'Two',
+    'Three',
+    'Four',
+    'Five',
+    'Six',
+    'Seven',
+    'Eight',
+    'Out1',
+    'Out2',
+    'Out3',
+    'Out4',
+    'Out5',
+    'Out6',
+    'Out7',
+    'Out8',
+    'In1',
+    'In2',
+    'In3',
+    'In4',
+    'In5',
+    'In6',
+    'In7',
+    'In8',
+    'Conv',
+    'Div',
+    'Random'
+  ]
+  function setCurrDrawPattern(pattern: string) {
+    currDrawPattern = pattern
+  }
+  function handleDrawPatternClick(pattern: string) {
+    setCurrDrawPattern(pattern)
+    let form = document.getElementById(drawPatternFormId)
+    form.dispatchEvent(new Event('submit', {bubbles: true}))
+  }
+  function handleDrawPatternKeydown(e: any, pattern: string) {
+    if (e.keyCode === 13){
+      setCurrDrawPattern(pattern)
+      let form = document.getElementById(drawPatternFormId)
+      form.dispatchEvent(new Event('submit', {bubbles: true}))
+    }
+  }
 
   onMount(async () => {
     // clear old ui_buffer from localStorage
     localStorage.clear()
     
+    // load wasm
     await wasm_bindgen() // loaded in index.html from ./pkg/src_rust.js
     const { MagicSquare, init_message } = wasm_bindgen
     console.log(
       init_message("Magic Square Wasm!")
     )
     
-    await MagicSquare.run()
+    // set initial values
+    initialUiBuffer =  MagicSquare.run().then((initialUiBuffer: any) => {
+      console.dir(initialUiBuffer)
+      currDrawPattern = initialUiBuffer.settings.draw_pattern
+    })
+
+    // set up event listeners for the differnt modules
+
+    // set up drawPattern form listener
+    var drawPatternForm = document.getElementById(drawPatternFormId)
+    drawPatternForm.addEventListener('submit', () => {
+      var input = document.getElementById(drawPatternHiddenInputId)
+      input.value = currDrawPattern
+      input.dispatchEvent(new Event('input', {bubbles: true}))
+    })
   })
 
   onDestroy(async () => {
     let app = document.getElementById(("app_main"))
     app.dispatchEvent(new Event("destroymswasm", {bubbles: true}))
   })
-
 </script>
 
 <div id="magic_square"
@@ -33,7 +116,23 @@
             width={sideLength}/>
   </div>
   <div class="control">
-    <ControlRack />
+    <ControlRack>
+      <div slot="drawPattern"
+           id={drawPatternFormId}>
+        <div class="draw_pattern_options flex flex-col">
+          {#each drawPatterns as pattern}
+            <button class="draw_pattern_option"
+                    class:selected="{currDrawPattern === pattern}"
+                    on:click={() => handleDrawPatternClick(pattern)}
+                    on:keydown={(e) => handleDrawPatternKeydown(e, pattern)}>
+                {pattern.toUpperCase()}
+            </button>
+          {/each}
+        </div>
+        <input id={drawPatternHiddenInputId}
+               class="hidden_input"/>
+      </div>
+    </ControlRack>
   </div>
 </div>
 
@@ -62,4 +161,7 @@
   .control
     flex-grow: 1
     height: 100%
+
+  .selected
+    background-color: color.$blue-8
 </style>

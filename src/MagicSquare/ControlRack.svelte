@@ -7,12 +7,6 @@
   import Rotation from './ControlModules/Rotation.svelte'
   import MouseTracking from './ControlModules/MouseTracking.svelte'
   import Select from './ControlModules/Select.svelte'
-    import About from '../lib/About.svelte';
-  // { [selectId]: hiddehInputId}
-  const selects: { [key: string]: string; }= {
-    'draw_pattern_select': 'magic_square_input_draw_pattern',
-    'mouse_tracking_select': 'magic_square_input_mouse_tracking'
-  }
 
   const modules: string[] = [
     'color',
@@ -24,93 +18,8 @@
     'lfos'
   ]
 
-  let curr_mod_left: string = 'color'
+  let curr_mod_left: string = 'drawPattern'
   let curr_mod_right: string = 'rotation'
-
-  // get ui data set by wasm in localStorage
-  const storageKey = 'magic_square_storage'
-  let localData: any = {}
-
-  function getStorageData () {
-    return JSON.parse(localStorage.getItem(storageKey))
-  }
-  
-  function handleStorageEvent () {
-    localData = getStorageData()
-  }
-
-  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
-
-  onMount(async () => {
-    // TODO: un-hack
-    // hack to let wasm set data in localStoarge first
-    // see if .run() can return a promise that resulves when data is set in local storage
-    localData = getStorageData()
-    window.addEventListener("storage", handleStorageEvent)
-  })
-
-  onDestroy(() => {
-    window.removeEventListener("storage", handleStorageEvent)
-  })
-
-  // parse localData and reactively hydrate into props
-  interface DrawPatternProps {
-    currPattern: string
-  }
-  let drawPatternProps: DrawPatternProps
-  
-  function toDrawPatternProps(localData: any): DrawPatternProps {
-    if (!localData.settings) return// TODO: await wasm setting inital data in localStorage
-    return {currPattern: localData.settings.draw_pattern}
-  }
-  //
-  interface ColorProps {
-    color1: number[],
-    color2: number[],
-    color3: number[],
-    color4: number[],
-    color5: number[],
-    color6: number[],
-    color7: number[],
-    color8: number[],
-  }
-  let colorProps: ColorProps
-  let defaultColorProps = {
-    color1: [1, 0, 0],
-    color2: [1, 0, 0],
-    color3: [1, 0, 0],
-    color4: [1, 0, 0],
-    color5: [1, 0, 0],
-    color6: [1, 0, 0],
-    color7: [0, 0, 1],
-    color8: [1, 0, 0],
-  }
-
-  function toColorProps(localData: any): ColorProps {
-    if (!localData.settings) {
-      colorProps = defaultColorProps// TODO: await wasm setting inital data in localStorage
-      return colorProps
-    } else {
-      return { 
-        color1: localData.settings.color_1,
-        color2: localData.settings.color_2,
-        color3: localData.settings.color_3,
-        color4: localData.settings.color_4,
-        color5: localData.settings.color_5,
-        color6: localData.settings.color_6,
-        color7: localData.settings.color_7,
-        color8: localData.settings.color_8,
-      }
-    }
-  }
-
-  // TODO: hydrate local data to props and pass down
-  $: colorProps = toColorProps(localData)
-  $: drawPatternProps = toDrawPatternProps(localData)
-  $: geometryProps = localData
-  $: mouseTrackingProps = localData
-  $: radiusProps = localData
-  $: rotationProps = localData
 </script>
 
 <div id="magic_square_control_rack"
@@ -127,27 +36,37 @@
       {#if curr_mod_left == 'color'}
         <ControlModule title="COLOR"
                        side="left">
-         <Color bind:props={colorProps}/>
+         <Color>
+          <slot name="color"/>
+         </Color>
         </ControlModule>
       {:else if curr_mod_left == 'drawPattern'}
         <ControlModule title="PATTERN"
                        side="left">
-          <DrawPattern bind:currPattern={drawPatternProps.currPattern}/>
+          <DrawPattern>
+            <slot name="drawPattern" />
+          </DrawPattern>
         </ControlModule>
       {:else if curr_mod_left == 'mouseTracking'}
         <ControlModule title="MOUSE"
                        side="left">
-          <MouseTracking />
+          <MouseTracking>
+            <slot name="mouseTracking"/>
+          </MouseTracking>
         </ControlModule>
       {:else if curr_mod_left == 'radius'}
         <ControlModule title="MOUSE"
                        side="left">
-          <Radius />
+          <Radius>
+            <slot name="radius" />
+          </Radius>
         </ControlModule>
       {:else if curr_mod_left == 'rotation'}
         <ControlModule title="ROTATION"
                        side="left">
-          <Rotation />
+          <Rotation>
+            <slot name="rotation" />
+          </Rotation>
         </ControlModule>
       {:else}
         <ControlModule />
@@ -156,28 +75,38 @@
     <div class="right_slot">
       {#if curr_mod_right == 'color'}
         <ControlModule title="COLOR"
-                       side="right">
-         <Color bind:props={colorProps}/>
+                       side="left">
+         <Color>
+          <slot name="color"/>
+         </Color>
         </ControlModule>
       {:else if curr_mod_right == 'drawPattern'}
         <ControlModule title="PATTERN"
-                       side="right">
-          <DrawPattern />
+                       side="left">
+          <DrawPattern>
+            <slot name="drawPattern" />
+          </DrawPattern>
         </ControlModule>
       {:else if curr_mod_right == 'mouseTracking'}
         <ControlModule title="MOUSE"
-                       side="right">
-          <MouseTracking />
+                       side="left">
+          <MouseTracking>
+            <slot name="mouseTracking"/>
+          </MouseTracking>
         </ControlModule>
       {:else if curr_mod_right == 'radius'}
-        <ControlModule title="RADIUS"
-                       side="right">
-          <Radius />
+        <ControlModule title="MOUSE"
+                       side="left">
+          <Radius>
+            <slot name="radius" />
+          </Radius>
         </ControlModule>
       {:else if curr_mod_right == 'rotation'}
         <ControlModule title="ROTATION"
-                       side="right">
-          <Rotation />
+                       side="left">
+          <Rotation>
+            <slot name="rotation" />
+          </Rotation>
         </ControlModule>
       {:else}
         <ControlModule />
