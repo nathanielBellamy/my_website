@@ -17,6 +17,20 @@
   // -> wasm instantiates event listeners for these inputs and records changes to its internal ui_buffer
   // -> as a result, the actual HTML becomes "the source of truth" for the input value (hooray for avoidding JS State!)
   // -> this models a physical - knob per function - system
+
+
+  // TODO:
+  //  -> On load
+  //    -> Js passes the MagicSquareInstanceId to wasm
+  //    -> wasm checks localStorage for the key MagicSquareInstanceId
+  //      -> if exists it retrieves + deserializes ui_settings from localStorage
+  //      -> if none exist, it calls ::new()
+  //  -> onDestroy
+  //    -> js writes the current ui_settings to localStorage
+  //  -> onResize
+  //    -> Container.svelte manages MagicSquareInstanceId 
+  //    -> this should persist ui_settings
+  //    -> while destroying and loading new wasm module instances
   
   export let sideLength: number = 0.0
 
