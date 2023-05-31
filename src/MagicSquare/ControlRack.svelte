@@ -2,7 +2,6 @@
   import { onMount, onDestroy } from 'svelte'
   import Color from './ControlModules/Color.svelte'
   import ControlModule from './ControlModule.svelte'
-  import DrawPattern from './ControlModules/DrawPattern.svelte'
   import Radius from './ControlModules/Radius.svelte'
   import Rotation from './ControlModules/Rotation.svelte'
   import MouseTracking from './ControlModules/MouseTracking.svelte'
@@ -36,16 +35,12 @@
       {#if curr_mod_left == 'color'}
         <ControlModule title="COLOR"
                        side="left">
-         <Color>
           <slot name="color"/>
-         </Color>
         </ControlModule>
       {:else if curr_mod_left == 'drawPattern'}
         <ControlModule title="PATTERN"
                        side="left">
-          <DrawPattern>
-            <slot name="drawPattern"/>
-          </DrawPattern>
+          <slot name="drawPattern"/>
         </ControlModule>
       {:else if curr_mod_left == 'mouseTracking'}
         <ControlModule title="MOUSE"

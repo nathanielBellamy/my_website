@@ -27,7 +27,6 @@
     rgba: number[],
     picker: any
   }
-
   
   onMount(async () => {
 
@@ -91,7 +90,7 @@
         {curr_id.split("_").slice(-1)[0]}
       </div>
       <div class="flex justify-around items-stretch">
-        {#each Object.values(colorData) as { id }}
+        {#each Object.values({id: 1}) as { id }}
           <div id={`${id}_picker`}
                class="color_picker"
                class:hidden_input={curr_id !== id}/>
