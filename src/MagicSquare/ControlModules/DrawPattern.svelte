@@ -2,17 +2,9 @@
   //
 </script>
 
-<div class="draw_pattern_container justify-around">
-  <slot></slot>
-</div>
+<section class="flex flex-col justify-around items-stretch h-full w-full">
+    <slot />
+</section>
 
-<style lang="sass">
-  @use "./../../styles/color"
-  @use "./../../styles/text"
-
-  .draw_pattern
-    &_container
-      height: 100%
-      width: 100%
-      padding: 10px 0 10px 0
+<style>
 </style>

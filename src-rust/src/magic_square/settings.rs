@@ -3,23 +3,22 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub enum DrawPattern {
-    All,
-    One,
-    Two,
-    Three,
-    Four,
-    Five,
-    Six,
-    Seven,
-    Eight,
+    Fix1,
+    Fix2,
+    Fix3,
+    Fix4,
+    Fix5,
+    Fix6,
+    Fix7,
+    Fix8,
     Out1,
     Out2,
     Out3,
     Out4,
     Out5,
     Out6,
-    #[default]
     Out7,
+    #[default]
     Out8,
     In1,
     In2,
@@ -29,9 +28,10 @@ pub enum DrawPattern {
     In6,
     In7,
     In8,
-    Conv,
-    Div,
-    Random
+    // TODO:
+    //  Conv,
+    //  Div,
+    //  Random
 }
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
@@ -95,7 +95,7 @@ pub struct Settings {
 impl Settings {
     pub fn new() -> Settings {
         Settings {
-            draw_pattern: DrawPattern::Seven,
+            draw_pattern: DrawPattern::Out8,
             mouse_tracking: MouseTracking::Off,
 
             x_rot_coeff: 0.0,
@@ -131,15 +131,14 @@ impl Settings {
 
     pub fn draw_pattern_from_string(pattern: String) -> DrawPattern {
         match pattern.as_str() {
-            "All" => DrawPattern::All,
-            "One" => DrawPattern::One,
-            "Two" => DrawPattern::Two,
-            "Three" => DrawPattern::Three,
-            "Four" => DrawPattern::Four,
-            "Five" => DrawPattern::Five,
-            "Six" => DrawPattern::Six,
-            "Seven" => DrawPattern::Seven,
-            "Eight" => DrawPattern::Eight,
+            "Fix1" => DrawPattern::Fix1,
+            "Fix2" => DrawPattern::Fix2,
+            "Fix3" => DrawPattern::Fix3,
+            "Fix4" => DrawPattern::Fix4,
+            "Fix5" => DrawPattern::Fix5,
+            "Fix6" => DrawPattern::Fix6,
+            "Fix7" => DrawPattern::Fix7,
+            "Fix8" => DrawPattern::Fix8,
             "Out1" => DrawPattern::Out1,
             "Out2" => DrawPattern::Out2,
             "Out3" => DrawPattern::Out3,
@@ -156,24 +155,20 @@ impl Settings {
             "In6" => DrawPattern::In6,
             "In7" => DrawPattern::In7,
             "In8" => DrawPattern::In8,
-            "Conv" => DrawPattern::Conv,
-            "Div" => DrawPattern::Div,
-            "Random" => DrawPattern::Random,
-            _ => DrawPattern::Three
+            _ => DrawPattern::Fix8
         }
     }
 
     pub fn string_from_draw_pattern(pattern: DrawPattern) -> String {
         match pattern {
-            DrawPattern::All => "All".to_string(),
-            DrawPattern::One => "One".to_string(),
-            DrawPattern::Two => "Two".to_string(),
-            DrawPattern::Three => "Three".to_string(),
-            DrawPattern::Four => "Four".to_string(),
-            DrawPattern::Five =>  "Five".to_string(),
-            DrawPattern::Six => "Six".to_string(),
-            DrawPattern::Seven => "Seven".to_string(),
-            DrawPattern::Eight => "Eight".to_string(),
+            DrawPattern::Fix1 => "Fix1".to_string(), 
+            DrawPattern::Fix2 => "Fix2".to_string(), 
+            DrawPattern::Fix3 => "Fix3".to_string(), 
+            DrawPattern::Fix4 => "Fix4".to_string(), 
+            DrawPattern::Fix5 => "Fix5".to_string(), 
+            DrawPattern::Fix6 => "Fix6".to_string(), 
+            DrawPattern::Fix7 => "Fix7".to_string(), 
+            DrawPattern::Fix8 => "Fix8".to_string(), 
             DrawPattern::Out1 => "Out1".to_string(), 
             DrawPattern::Out2 => "Out2".to_string(),
             DrawPattern::Out3 => "Out3".to_string(),
@@ -190,10 +185,7 @@ impl Settings {
             DrawPattern::In6 => "In6".to_string(),
             DrawPattern::In7 => "In7".to_string(),
             DrawPattern::In8 => "In8".to_string(),
-            DrawPattern::Conv => "Conv".to_string(),
-            DrawPattern::Div => "Div".to_string(),
-            DrawPattern::Random => "Random".to_string(),
-            _ => "Three".to_string()
+            _ => "Fix8".to_string()
         }
     }
 
@@ -210,15 +202,14 @@ impl Settings {
 
     pub fn max_idx_from_draw_pattern(pattern: DrawPattern) -> usize {
         match pattern {
-                DrawPattern::All => 16,
-                DrawPattern::One => 1,
-                DrawPattern::Two => 2,
-                DrawPattern::Three => 3,
-                DrawPattern::Four => 4,
-                DrawPattern::Five => 5,
-                DrawPattern::Six => 6,
-                DrawPattern::Seven => 7,
-                DrawPattern::Eight => 8,
+                DrawPattern::Fix1 => 1,
+                DrawPattern::Fix2 => 2,
+                DrawPattern::Fix3 => 3,
+                DrawPattern::Fix4 => 4,
+                DrawPattern::Fix5 => 5,
+                DrawPattern::Fix6 => 6,
+                DrawPattern::Fix7 => 7,
+                DrawPattern::Fix8 => 8,
                 DrawPattern::Out1 => 1,
                 DrawPattern::Out2 => 2,
                 DrawPattern::Out3 => 3,
@@ -235,9 +226,6 @@ impl Settings {
                 DrawPattern::In6 => 6,
                 DrawPattern::In7 => 7,
                 DrawPattern::In8 => 8,
-                DrawPattern::Conv => 4,
-                DrawPattern::Div => 4,
-                DrawPattern::Random => 3
         }
     }
 

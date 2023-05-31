@@ -1,23 +1,14 @@
 <script lang="ts" type="module">
   import { onMount, onDestroy } from 'svelte'
+    import DrawPattern from './ControlModules/DrawPattern.svelte';
   import ControlRack from './ControlRack.svelte'
   // this component will be large
   // the decision was made to optimize for minimal plumbing
   // this component instantiates the wasm module and retrieves the initial UI values from it
   // these values do not go further than this file (in JS)
   // the mantra is
-  //   -> Svelte/JS is for layout/display
+  //   -> Svelte/JS is for layout + display logic
   //   -> Rust/Wasm is for handling data
-
-  // This pattern has an interesting, happy consequence
-  // It was designed to model a modular synthesizer system
-  // But the ui input data flow is
-  // -> wasm returns initial values
-  // -> JS binds these values to their HTML elements here, wrapping them in CSS delivered through Svelte slots
-  // -> wasm instantiates event listeners for these inputs and records changes to its internal ui_buffer
-  // -> as a result, the actual HTML becomes "the source of truth" for the input value (hooray for avoidding JS State!)
-  // -> this models a physical - knob per function - system
-
 
   // TODO:
   //  -> On load
@@ -38,52 +29,115 @@
   
   // drawPattern vars
   let currDrawPattern: string
+  enum DrawPatternDirection {
+    Fix = "Fix",
+    In = "In",
+    Out = "Out"
+  }
+  interface Drawpattern {
+    dir: DrawPatternDirection,
+    count: number // 0 < x < 9
+  }
+  let currDrawPatternDirection: DrawPatternDirection = DrawPatternDirection.Fix
+  let currDrawPatternCount: number
   const drawPatternFormId: string = 'draw_pattern_form'
   const drawPatternHiddenInputId: string = 'magic_square_input_draw_pattern'
-  const drawPatterns: string[] = [
-    'All',
-    'One',
-    'Two',
-    'Three',
-    'Four',
-    'Five',
-    'Six',
-    'Seven',
-    'Eight',
-    'Out1',
-    'Out2',
-    'Out3',
-    'Out4',
-    'Out5',
-    'Out6',
-    'Out7',
-    'Out8',
-    'In1',
-    'In2',
-    'In3',
-    'In4',
-    'In5',
-    'In6',
-    'In7',
-    'In8',
-    'Conv',
-    'Div',
-    'Random'
-  ]
-  function setCurrDrawPattern(pattern: string) {
-    currDrawPattern = pattern
+  // const drawPatterns: string[] = [
+  //   'Fix1',
+  //   'Fix2',
+  //   'Fix3',
+  //   'Fix4',
+  //   'Fix5',
+  //   'Fix6',
+  //   'Fix7',
+  //   'Fix8',
+  //   'Out1',
+  //   'Out2',
+  //   'Out3',
+  //   'Out4',
+  //   'Out5',
+  //   'Out6',
+  //   'Out7',
+  //   'Out8',
+  //   'In1',
+  //   'In2',
+  //   'In3',
+  //   'In4',
+  //   'In5',
+  //   'In6',
+  //   'In7',
+  //   'In8',
+  // ]
+  function setInitialDrawPatternVars(pattern: string) {
+    setCurrDrawPatternCount(parseInt(pattern.slice(-1)[0]))
+    let first_letter = pattern[0]
+    switch (first_letter) {
+      case 'F':
+        setCurrDrawPatternDirection(DrawPatternDirection.Fix)
+        break
+      case 'I': 
+        setCurrDrawPatternDirection(DrawPatternDirection.In)
+        break
+      case 'O':
+        setCurrDrawPatternDirection(DrawPatternDirection.Out)
+        break
+    }
   }
-  function handleDrawPatternClick(pattern: string) {
-    setCurrDrawPattern(pattern)
+  function deriveCurrDrawPattern(): string {
+    var result: string
+    switch (currDrawPatternDirection) {
+      case DrawPatternDirection.Fix:
+        result = DrawPatternDirection.Fix
+        break
+      case DrawPatternDirection.In:
+        result = DrawPatternDirection.In
+        break
+      case DrawPatternDirection.Out:
+        result = DrawPatternDirection.Out
+        break
+    }
+
+    return `${result}${currDrawPatternCount}`
+  }
+  function setCurrDrawPattern() {
+    currDrawPattern = deriveCurrDrawPattern()
+  }
+  function setCurrDrawPatternDirection(direction: DrawPatternDirection) {
+    currDrawPatternDirection = direction
+  }
+  function handleDrawPatternDirectionClick(direction: DrawPatternDirection) {
+    setCurrDrawPatternDirection(direction)
+    setCurrDrawPattern()
     let form = document.getElementById(drawPatternFormId)
     form.dispatchEvent(new Event('submit', {bubbles: true}))
   }
-  function handleDrawPatternKeydown(e: any, pattern: string) {
+  function handleDrawPatternDirectionKeydown(e: any, direction: DrawPatternDirection) {
     if (e.keyCode === 13){
-      setCurrDrawPattern(pattern)
+      currDrawPatternDirection = direction
+      setCurrDrawPattern()
       let form = document.getElementById(drawPatternFormId)
       form.dispatchEvent(new Event('submit', {bubbles: true}))
     }
+  }
+  function setCurrDrawPatternCount(count: number) {
+    currDrawPatternCount = count
+  }
+  function handleDrawPatternCountClick(count: number) {
+    setCurrDrawPatternCount(count)
+    let form = document.getElementById(drawPatternFormId)
+    form.dispatchEvent(new Event('submit', {bubbles: true}))
+  }
+  function handleDrawPatternCountKeydown(e: any, count: number) {
+    if (e.keyCode === 13){
+      setCurrDrawPatternCount(count)
+      let form = document.getElementById(drawPatternFormId)
+      form.dispatchEvent(new Event('submit', {bubbles: true}))
+    }
+  }
+  function handleDrawPatternFormSubmit() {
+    var input = document.getElementById(drawPatternHiddenInputId)
+    input.value = deriveCurrDrawPattern()
+    input.dispatchEvent(new Event('input', {bubbles: true}))
   }
 
   onMount(async () => {
@@ -99,19 +153,15 @@
     
     // set initial values
     initialUiBuffer =  MagicSquare.run().then((initialUiBuffer: any) => {
-      console.dir(initialUiBuffer)
-      currDrawPattern = initialUiBuffer.settings.draw_pattern
+      // console.dir(initialUiBuffer)
+      setInitialDrawPatternVars(initialUiBuffer.settings.draw_pattern)
     })
 
     // set up event listeners for the differnt modules
 
     // set up drawPattern form listener
     var drawPatternForm = document.getElementById(drawPatternFormId)
-    drawPatternForm.addEventListener('submit', () => {
-      var input = document.getElementById(drawPatternHiddenInputId)
-      input.value = currDrawPattern
-      input.dispatchEvent(new Event('input', {bubbles: true}))
-    })
+    drawPatternForm.addEventListener('submit', handleDrawPatternFormSubmit)
   })
 
   onDestroy(async () => {
@@ -132,18 +182,43 @@
   <div class="control">
     <ControlRack>
       <div slot="drawPattern"
-           id={drawPatternFormId}>
-        <div class="draw_pattern_options flex flex-col">
-          {#each drawPatterns as pattern}
-            <button class="draw_pattern_option"
-                    class:selected="{currDrawPattern === pattern}"
-                    on:click={() => handleDrawPatternClick(pattern)}
-                    on:keydown={(e) => handleDrawPatternKeydown(e, pattern)}>
-                {pattern.toUpperCase()}
-            </button>
-          {/each}
+           id="draw_pattern_form"
+           class="flex flex-col justify-around items-stretch h-full w-full">
+        <div id="draw_pattern_buttons"
+             class="h-full flex flex-col justify-around">
+          <div id="draw_pattern_directions_outer"
+               class="grow flex flex-col justify-around items-streth">
+            <div id="draw_pattern_directions_inner"
+                 class="grow max-h-20 flex justify-around items-stretch">
+              {#each Object.values(DrawPatternDirection) as dir}
+                <button class="grow max-h-26 pr-3 pl-3"
+                        on:click={() => handleDrawPatternDirectionClick(dir)}
+                        on:keydown={(e) => handleDrawPatternDirectionKeydown(e, dir)}
+                        class:selected={currDrawPatternDirection === dir}>
+                  {dir}
+                </button>
+              {/each}
+            </div>
+          </div>
+          <div id="draw_pattern_counts"
+               class="grow flex flex-col justify-around items-stretch">
+            {#each [0,4] as countShifter}
+              <div id="draw_pattern_counts_row"
+                   class="grow flex justify-evenly items-stretch gap-0">
+                {#each [1,2,3,4].map(x => x + countShifter) as count}
+                  <button class="grow max-h-20"
+                          on:click={() => handleDrawPatternCountClick(count)}
+                          on:keydown={(e) => handleDrawPatternCountKeydown(e, count)}
+                          class:selected={currDrawPatternCount === count}>
+                    {count}
+                  </button>
+                {/each}
+              </div>
+            {/each}
+          </div>
         </div>
         <input id={drawPatternHiddenInputId}
+               bind:value={currDrawPattern}
                class="hidden_input"/>
       </div>
     </ControlRack>
@@ -178,4 +253,7 @@
 
   .selected
     background-color: color.$blue-8
+
+  .hidden_input
+    display: none
 </style>
