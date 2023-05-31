@@ -9,6 +9,7 @@
     In = "In",
     Out = "Out"
   }
+
   export let currDrawPatternDirection: DrawPatternDirection
   export let currDrawPatternCount: number
 

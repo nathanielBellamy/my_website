@@ -17,7 +17,7 @@
     'lfos'
   ]
 
-  let curr_mod_left: string = 'drawPattern'
+  let curr_mod_left: string = 'color'
   let curr_mod_right: string = 'rotation'
 </script>
 

@@ -1,6 +1,7 @@
 <script lang="ts" type="module">
   import { onMount, onDestroy } from 'svelte'
-    import DrawPattern from './ControlModules/DrawPattern.svelte';
+  import DrawPattern from './ControlModules/DrawPattern.svelte'
+  import Color from './ControlModules/Color.svelte'
   import ControlRack from './ControlRack.svelte'
   // this component will be large
   // the decision was made to optimize for minimal plumbing
@@ -33,6 +34,18 @@
   //    -> this should persist ui_settings
   //    -> while destroying and loading new wasm module instances
   
+  enum HiddenInputId {
+    drawPattern = "magic_square_input_draw_pattern",
+    color1 = "magic_square_input_color_1",
+    color2 = "magic_square_input_color_2",
+    color3 = "magic_square_input_color_3",
+    color4 = "magic_square_input_color_4",
+    color5 = "magic_square_input_color_5",
+    color6 = "magic_square_input_color_6",
+    color7 = "magic_square_input_color_7",
+    color8 = "magic_square_input_color_8",
+  }
+
   export let sideLength: number = 0.0
 
   let initialUiBuffer: any
@@ -44,35 +57,32 @@
     In = "In",
     Out = "Out"
   }
-  let currDrawPatternDirection: DrawPatternDirection = DrawPatternDirection.Fix
-  let currDrawPatternCount: number
-  let initialDrawPattern: string
-  const drawPatternHiddenInputId: string = 'magic_square_input_draw_pattern'
+  let initialDrawPatternDirection: DrawPatternDirection = DrawPatternDirection.Fix
+  let initialDrawPatternCount: number
   function setInitialDrawPatternVars(pattern: string) {
-    console.log("wooooo")
-    console.log(pattern)
-    setCurrDrawPatternCount(parseInt(pattern.slice(-1)[0]))
+    setInitialDrawPatternCount(parseInt(pattern.slice(-1)[0]))
     let first_letter = pattern[0]
     switch (first_letter) {
       case 'F':
-        setCurrDrawPatternDirection(DrawPatternDirection.Fix)
+        setInitialDrawPatternDirection(DrawPatternDirection.Fix)
         break
       case 'I': 
-        setCurrDrawPatternDirection(DrawPatternDirection.In)
+        setInitialDrawPatternDirection(DrawPatternDirection.In)
         break
       case 'O':
-        setCurrDrawPatternDirection(DrawPatternDirection.Out)
+        setInitialDrawPatternDirection(DrawPatternDirection.Out)
         break
     }
   }
-  function setCurrDrawPatternDirection(direction: DrawPatternDirection) {
-    currDrawPatternDirection = direction
+  function setInitialDrawPatternDirection(direction: DrawPatternDirection) {
+    initialDrawPatternDirection = direction
   }
-  function setCurrDrawPatternCount(count: number) {
-    currDrawPatternCount = count
+  function setInitialDrawPatternCount(count: number) {
+    initialDrawPatternCount = count
   }
 
   // COLOR
+  let currColorId: number = 1
   let color1: number[]
   let color2: number[]
   let color3: number[]
@@ -82,7 +92,7 @@
   let color7: number[]
   let color8: number[]
 
-  function setInitialColors(initialUiBuffer: any) {
+  function setInitialColorVars(initialUiBuffer: any) {
     color1 = initialUiBuffer.settings.color_1
     color2 = initialUiBuffer.settings.color_2
     color3 = initialUiBuffer.settings.color_3
@@ -119,7 +129,7 @@
     initialUiBuffer =  MagicSquare.run().then((initialUiBuffer: any) => {
       // console.dir(initialUiBuffer)
       setInitialDrawPatternVars(initialUiBuffer.settings.draw_pattern)
-      setInitialColors(initialUiBuffer)
+      setInitialColorVars(initialUiBuffer)
     })
   })
 
@@ -142,11 +152,27 @@
     <ControlRack>
       <div slot="drawPattern"
            class="h-full">
-        <DrawPattern bind:currDrawPatternDirection={currDrawPatternDirection}
-                     bind:currDrawPatternCount={currDrawPatternCount}/>
-        <input id={drawPatternHiddenInputId}
+        <DrawPattern bind:currDrawPatternDirection={initialDrawPatternDirection}
+                     bind:currDrawPatternCount={initialDrawPatternCount}/>
+        <input id={HiddenInputId.drawPattern}
                bind:value={currDrawPattern}
                class="hidden_input"/>
+      </div>
+      <div slot="color"
+           class="h-full">
+        <Color 
+               bind:color1={color1}
+               bind:color2={color2}
+               bind:color3={color3}
+               bind:color4={color4}
+               bind:color5={color5}
+               bind:color6={color6}
+               bind:color7={color7}
+               bind:color8={color8}
+               />
+        <input id={HiddenInputId.color1}
+               bind:value={color1}
+               class="hidden_input">
       </div>
     </ControlRack>
   </div>

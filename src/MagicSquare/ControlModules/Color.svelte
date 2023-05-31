@@ -1,16 +1,28 @@
 <script lang="ts">
-  import { onMount, afterUpdate } from 'svelte'
+  import { afterUpdate, onMount } from 'svelte'
   import iro from '@jaames/iro'
   
-  interface Props {// {[key: string]: rgba[]}
-    color1: number[],
-    color2: number[],
-    color3: number[],
-    color4: number[],
-    color5: number[],
-    color6: number[],
-    color7: number[],
-    color8: number[],
+  export let color1: number[]
+  export let color2: number[]
+  export let color3: number[]
+  export let color4: number[]
+  export let color5: number[]
+  export let color6: number[]
+  export let color7: number[]
+  export let color8: number[]
+
+
+  let curr_id: string = 'magic_square_input_color_1'
+
+  enum HiddenInputIds {
+    color1 = "magic_square_input_color_1",
+    color2 = "magic_square_input_color_2",
+    color3 = "magic_square_input_color_3",
+    color4 = "magic_square_input_color_4",
+    color5 = "magic_square_input_color_5",
+    color6 = "magic_square_input_color_6",
+    color7 = "magic_square_input_color_7",
+    color8 = "magic_square_input_color_8",
   }
 
   const colorPickerOptions = {
@@ -21,45 +33,39 @@
     layoutDirection: 'horizontal'
   }
 
-  interface Color {
-    id: string,
-    idx: number,
-    rgba: number[],
-    picker: any
-  }
-  
-  onMount(async () => {
-
-    // Object.values(colorData).forEach((color:Color) => {
-    //   var input = document.getElementById(color.id)
-    //   var picker = iro.ColorPicker(`#${color.id}_picker`, colorPickerOptions)
-    //   picker.color.rgb = { r: color.rgba[0], g: color.rgba[1], b: color.rgba[2] }
-
-    //   picker.on('color:change', (color: any) => {
-    //     input.value = `${color.rgba.r},${color.rgba.g},${color.rgba.b},1`
-    //     input.dispatchEvent(new Event('input', {bubbles: true}))
-    //   })
-
-    //   colorData[`color${color.idx}`].picker = picker 
-    // })
-  })
-
-  let curr_id: string = 'magic_square_input_color_1'
-  
-  function onClick(id: string) {
-    curr_id = id
+  function onIdClick(id: number) {
+    curr_id = toIdString(id)
   }
 
-  function idAsNumber(curr_id: string) {
-    return parseInt(curr_id.split("_").slice(-1)[0].toUpperCase())
+  function toIdString(id: number) {
+    return  `magic_square_input_color_${id}`
   }
 
   function rgbaToString(rgba: number[]) {
+    rgba = !!rgba ? rgba : [1, 0, 1]
     // while we have some infrastructure set up to accept opacity values
     // our WebGl implimentation does not make use of them at the moment
     // so we keep everything rgb in practice
     return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, 1)`
   }
+
+  onMount(() => {
+    [color1, color2, color3, color4, color5, color6, color7, color8].forEach((color: number[], idx: number) => {
+      console.log("OOOOOOOO")
+      console.log(color)
+      const id: number = idx + 1
+      const idStr: string = toIdString(id)
+      var input = document.getElementById(idStr)
+      var picker = iro.ColorPicker(`#${idStr}_picker`, colorPickerOptions)
+      // picker.color.rgba = { r: color[0], g: color[1], b: color[2], a: 1 }
+      picker.color.rgba = { r: 255, g: 0, b: 255, a: 1 }
+
+      picker.on('color:change', (color: any) => {
+        input.value = `${color.rgba.r},${color.rgba.g},${color.rgba.b},1`
+        input.dispatchEvent(new Event('input', {bubbles: true}))
+      })
+    })
+  })
 </script>
 
 <div class="color_container flex flex-col justify-around">
@@ -90,38 +96,35 @@
         {curr_id.split("_").slice(-1)[0]}
       </div>
       <div class="flex justify-around items-stretch">
-        {#each Object.values({id: 1}) as { id }}
-          <div id={`${id}_picker`}
+        {#each [1,2,3,4,5,6,7,8] as id }
+          <div id={`${toIdString(id)}_picker`}
                class="color_picker"
-               class:hidden_input={curr_id !== id}/>
+               class:hidden_input={curr_id !== toIdString(id)}/>
         {/each}
       </div>
     </div>
   </div>
   <div class="color_rows grid grid-rows-2">
     <div class="color_row">
-      {#each [colorData.color1, colorData.color2, colorData.color3, colorData.color4] as { id, rgba }}
+      {#each [color1, color2, color3, color4] as rgba, idx}
         <button class="color_button"
-                on:click={() => onClick(id)}
+                on:click={() => onIdClick(idx + 1)}
                 style:background-color={rgbaToString(rgba)}>
-          {idAsNumber(id)}
-          <input id={id}
-                 class="hidden_input">
+          {idx + 1}
         </button>
       {/each}
     </div>
     <div class="color_row">
-      {#each [colorData.color5, colorData.color6, colorData.color7, colorData.color8] as { id, rgba }}
+      {#each [color5, color6, color7, color8] as rgba, idx}
         <button class="color_button"
-                on:click={() => onClick(id)}
+                on:click={() => onIdClick(idx +1)}
                 style:background-color={rgbaToString(rgba)}>
-          {idAsNumber(id)}
-          <input id={id}
-                 class="hidden_input">
+          {idx+5}
         </button>
       {/each}
     </div>
   </div>
+  <slot />
 </div>
 
 <style lang="sass">
