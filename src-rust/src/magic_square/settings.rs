@@ -107,10 +107,10 @@ impl Settings {
             z_rot_spread: 0.0,
 
             x_axis_x_rot_coeff: 0.0,
-            x_axis_y_rot_coeff: 0.0,
+            x_axis_y_rot_coeff: 1.0,
             x_axis_z_rot_coeff: 0.0,
 
-            y_axis_x_rot_coeff: 0.0,
+            y_axis_x_rot_coeff: 1.0,
             y_axis_y_rot_coeff: 0.0,
             y_axis_z_rot_coeff: 0.0,
             

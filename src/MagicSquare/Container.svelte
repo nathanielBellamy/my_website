@@ -1,7 +1,7 @@
 <script lang="ts">
   import { afterUpdate, onDestroy, onMount } from "svelte"
   import { watchResize } from "svelte-watch-resize"
-  import MagicSquare from "./Main.svelte"
+  import Main from "./Main.svelte"
   
   let magicSquareInstance: number = 0
   let destroyChild = false
@@ -24,6 +24,7 @@
   })
 
   onDestroy(() => {
+    'onDestry Container'
     magicSquareInstance += 1
     destroyChild = false
   })
@@ -35,7 +36,7 @@
      use:watchResize={handleResize}>
     {#key magicSquareInstance}
       {#if !destroyChild}
-        <MagicSquare sideLength={sideLength}/>
+        <Main sideLength={sideLength}/>
       {/if}
     {/key}
 </div>

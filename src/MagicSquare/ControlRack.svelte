@@ -44,7 +44,7 @@
         <ControlModule title="PATTERN"
                        side="left">
           <DrawPattern>
-            <slot name="drawPattern" />
+            <slot name="drawPattern"/>
           </DrawPattern>
         </ControlModule>
       {:else if curr_mod_left == 'mouseTracking'}
