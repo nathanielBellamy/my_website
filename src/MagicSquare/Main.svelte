@@ -3,6 +3,7 @@
   import DrawPattern from './ControlModules/DrawPattern.svelte'
   import Color from './ControlModules/Color.svelte'
   import ControlRack from './ControlRack.svelte'
+  import iro from '@jaames/iro'
   // this component will be large
   // the decision was made to optimize for minimal plumbing
   // this component instantiates the wasm module and retrieves the initial UI values from it
@@ -48,8 +49,6 @@
 
   export let sideLength: number = 0.0
 
-  let initialUiBuffer: any
-  
   // DRAW PATTERN
   let currDrawPattern: string
   enum DrawPatternDirection {
@@ -81,8 +80,12 @@
     initialDrawPatternCount = count
   }
 
+  function set(x: any, y:any) {
+    x = y
+  }
+
   // COLOR
-  let currColorId: number = 1
+  let renderColor: boolean = false
   let color1: number[]
   let color2: number[]
   let color3: number[]
@@ -92,27 +95,25 @@
   let color7: number[]
   let color8: number[]
 
-  function setInitialColorVars(initialUiBuffer: any) {
-    color1 = initialUiBuffer.settings.color_1
-    color2 = initialUiBuffer.settings.color_2
-    color3 = initialUiBuffer.settings.color_3
-    color4 = initialUiBuffer.settings.color_4
-    color5 = initialUiBuffer.settings.color_5
-    color6 = initialUiBuffer.settings.color_6
-    color7 = initialUiBuffer.settings.color_7
-    color8 = initialUiBuffer.settings.color_8
-
-    console.dir({
-      color1,
-      color2,
-      color3,
-      color4,
-      color5,
-      color6,
-      color7,
-      color8
-    })
+  function convertRgbaValue(val: number, idx: number): number {
+    if (idx < 3) { // do for r, g, b, but not a
+      val = val * 255
+    }
+    return val
   }
+
+  function setInitialColorVars(initialUiBuffer: any) {
+    color1 = [...initialUiBuffer.settings.color_1].map((x,idx) => convertRgbaValue(x, idx))
+    color2 = [...initialUiBuffer.settings.color_2].map((x,idx) => convertRgbaValue(x, idx))
+    color3 = [...initialUiBuffer.settings.color_3].map((x,idx) => convertRgbaValue(x, idx))
+    color4 = [...initialUiBuffer.settings.color_4].map((x,idx) => convertRgbaValue(x, idx))
+    color5 = [...initialUiBuffer.settings.color_5].map((x,idx) => convertRgbaValue(x, idx))
+    color6 = [...initialUiBuffer.settings.color_6].map((x,idx) => convertRgbaValue(x, idx))
+    color7 = [...initialUiBuffer.settings.color_7].map((x,idx) => convertRgbaValue(x, idx))
+    color8 = [...initialUiBuffer.settings.color_8].map((x,idx) => convertRgbaValue(x, idx))
+  }
+
+  let renderDataReady = false
 
   onMount(async () => {
     // clear old ui_buffer from localStorage
@@ -126,10 +127,11 @@
     )
     
     // set initial values
-    initialUiBuffer =  MagicSquare.run().then((initialUiBuffer: any) => {
+    MagicSquare.run().then((initialUiBuffer: any) => {
       // console.dir(initialUiBuffer)
       setInitialDrawPatternVars(initialUiBuffer.settings.draw_pattern)
       setInitialColorVars(initialUiBuffer)
+      renderDataReady = true
     })
   })
 
@@ -137,6 +139,7 @@
     let app = document.getElementById(("app_main"))
     app.dispatchEvent(new Event("destroymswasm", {bubbles: true}))
   })
+
 </script>
 
 <div id="magic_square"
@@ -160,18 +163,41 @@
       </div>
       <div slot="color"
            class="h-full">
-        <Color 
-               bind:color1={color1}
-               bind:color2={color2}
-               bind:color3={color3}
-               bind:color4={color4}
-               bind:color5={color5}
-               bind:color6={color6}
-               bind:color7={color7}
-               bind:color8={color8}
-               />
+        {#if renderDataReady}
+          <Color bind:color1={color1}
+                 bind:color2={color2}
+                 bind:color3={color3}
+                 bind:color4={color4}
+                 bind:color5={color5}
+                 bind:color6={color6}
+                 bind:color7={color7}
+                 bind:color8={color8}/>
+        {:else}
+          <h3> Loading... </h3>
+        {/if}
         <input id={HiddenInputId.color1}
                bind:value={color1}
+               class="hidden_input">
+        <input id={HiddenInputId.color2}
+               bind:value={color2}
+               class="hidden_input">
+        <input id={HiddenInputId.color3}
+               bind:value={color3}
+               class="hidden_input">
+        <input id={HiddenInputId.color4}
+               bind:value={color4}
+               class="hidden_input">
+        <input id={HiddenInputId.color5}
+               bind:value={color5}
+               class="hidden_input">
+        <input id={HiddenInputId.color6}
+               bind:value={color6}
+               class="hidden_input">
+        <input id={HiddenInputId.color7}
+               bind:value={color7}
+               class="hidden_input">
+        <input id={HiddenInputId.color8}
+               bind:value={color8}
                class="hidden_input">
       </div>
     </ControlRack>
@@ -203,9 +229,6 @@
   .control
     flex-grow: 1
     height: 100%
-
-  .selected
-    background-color: color.$blue-8
 
   .hidden_input
     display: none

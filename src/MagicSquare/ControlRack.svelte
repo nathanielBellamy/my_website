@@ -71,16 +71,12 @@
       {#if curr_mod_right == 'color'}
         <ControlModule title="COLOR"
                        side="left">
-         <Color>
           <slot name="color"/>
-         </Color>
         </ControlModule>
       {:else if curr_mod_right == 'drawPattern'}
         <ControlModule title="PATTERN"
                        side="left">
-          <DrawPattern>
-            <slot name="drawPattern" />
-          </DrawPattern>
+          <slot name="drawPattern" />
         </ControlModule>
       {:else if curr_mod_right == 'mouseTracking'}
         <ControlModule title="MOUSE"

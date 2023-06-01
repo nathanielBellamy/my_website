@@ -1,6 +1,16 @@
 <script lang="ts">
   import { afterUpdate, onMount } from 'svelte'
   import iro from '@jaames/iro'
+  import App from '../../App.svelte'
+
+  function rgbaToString(rgba: number[]): string {
+    // rgba = !!rgba ? rgba : [0, 255, 0, 1]
+    // while we have some infrastructure set up to accept opacity values
+    // our WebGl implimentation does not make use of them at the moment
+    // so we keep everything rgb in practice
+    // console.dir({r: rgba[0], g: rgba[1]})
+    return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, 1)`
+  }
   
   export let color1: number[]
   export let color2: number[]
@@ -11,8 +21,25 @@
   export let color7: number[]
   export let color8: number[]
 
+  let color1Str: string
+  let color2Str: string
+  let color3Str: string
+  let color4Str: string
+  let color5Str: string
+  let color6Str: string
+  let color7Str: string
+  let color8Str: string
 
-  let curr_id: string = 'magic_square_input_color_1'
+  $: color1Str = rgbaToString(color1)
+  $: color2Str = rgbaToString(color2)
+  $: color3Str = rgbaToString(color3)
+  $: color4Str = rgbaToString(color4)
+  $: color5Str = rgbaToString(color5)
+  $: color6Str = rgbaToString(color6)
+  $: color7Str = rgbaToString(color7)
+  $: color8Str = rgbaToString(color8)
+  let currId: string = 'magic_square_input_color_1'
+  
 
   enum HiddenInputIds {
     color1 = "magic_square_input_color_1",
@@ -34,38 +61,65 @@
   }
 
   function onIdClick(id: number) {
-    curr_id = toIdString(id)
+    currId = toIdString(id)
   }
 
   function toIdString(id: number) {
-    return  `magic_square_input_color_${id}`
+    return `magic_square_input_color_${id}`
   }
 
-  function rgbaToString(rgba: number[]) {
-    rgba = !!rgba ? rgba : [1, 0, 1]
-    // while we have some infrastructure set up to accept opacity values
-    // our WebGl implimentation does not make use of them at the moment
-    // so we keep everything rgb in practice
-    return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, 1)`
+  function setNewColor(color: number[], id: number) {
+    switch (id) {
+      case 1:
+        color1 = [...color]
+        break
+      case 2:
+        color2 = [...color]
+        break
+      case 3:
+        color3 = [...color]
+        break
+      case 4:
+        color4 = [...color]
+        break
+      case 5:
+        color5 = [...color]
+        break
+      case 6:
+        color6 = [...color]
+        break
+      case 7:
+        color7 = [...color]
+        break
+      case 8:
+        color8 = [...color]
+        break
+    }
   }
 
-  onMount(() => {
+  onMount(async () => {
     [color1, color2, color3, color4, color5, color6, color7, color8].forEach((color: number[], idx: number) => {
-      console.log("OOOOOOOO")
-      console.log(color)
       const id: number = idx + 1
       const idStr: string = toIdString(id)
-      var input = document.getElementById(idStr)
       var picker = iro.ColorPicker(`#${idStr}_picker`, colorPickerOptions)
-      // picker.color.rgba = { r: color[0], g: color[1], b: color[2], a: 1 }
-      picker.color.rgba = { r: 255, g: 0, b: 255, a: 1 }
+      picker.color.rgba = { r: color[0], g: color[1], b: color[2], a: 1 }
+      var input = document.getElementById(idStr)
 
-      picker.on('color:change', (color: any) => {
-        input.value = `${color.rgba.r},${color.rgba.g},${color.rgba.b},1`
+      picker.on('color:change', (newColor: any) => {
+        const arr = [newColor.rgba.r, newColor.rgba.g, newColor.rgba.b, 1]
+        // TODO: simplify/unwind
+        // -> due to color value being bound to input.value
+        // -> order matters here
+        // -> dispatchEvent synchronyously to send the String to be parsed by Wasm
+        // -> sets color1 to be the corresponding number[]
+        input.value = `${arr[0]},${arr[1]},${arr[2]},1`
         input.dispatchEvent(new Event('input', {bubbles: true}))
+        setNewColor(arr, id)
       })
     })
   })
+
+  
 </script>
 
 <div class="color_container flex flex-col justify-around">
@@ -93,32 +147,31 @@
     </div>
     <div class="curr_picker flex justify-around">
       <div class="curr_picker_id">
-        {curr_id.split("_").slice(-1)[0]}
+        {currId.split("_").slice(-1)[0]}
       </div>
       <div class="flex justify-around items-stretch">
         {#each [1,2,3,4,5,6,7,8] as id }
           <div id={`${toIdString(id)}_picker`}
-               class="color_picker"
-               class:hidden_input={curr_id !== toIdString(id)}/>
+               class:hidden_input={currId !== toIdString(id)}/>
         {/each}
       </div>
     </div>
   </div>
   <div class="color_rows grid grid-rows-2">
     <div class="color_row">
-      {#each [color1, color2, color3, color4] as rgba, idx}
+      {#each [color1Str, color2Str, color3Str, color4Str] as rgbaStr, idx}
         <button class="color_button"
                 on:click={() => onIdClick(idx + 1)}
-                style:background-color={rgbaToString(rgba)}>
+                style:background-color={rgbaStr}>
           {idx + 1}
         </button>
       {/each}
     </div>
     <div class="color_row">
-      {#each [color5, color6, color7, color8] as rgba, idx}
+      {#each [color5Str, color6Str, color7Str, color8Str] as rgbaStr, idx}
         <button class="color_button"
-                on:click={() => onIdClick(idx +1)}
-                style:background-color={rgbaToString(rgba)}>
+                on:click={() => onIdClick(idx + 5)}
+                style:background-color={rgbaStr}>
           {idx+5}
         </button>
       {/each}
