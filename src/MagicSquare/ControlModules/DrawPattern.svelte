@@ -111,8 +111,8 @@
         {/each}
       </div>
     </div>
+    <slot name="hiddenInput" />
   </form>
-  <slot />
 </section>
 
 <style lang="sass">

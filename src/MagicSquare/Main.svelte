@@ -5,10 +5,10 @@
   import Color from './ControlModules/Color.svelte'
   import ControlRack from './ControlRack.svelte'
   import MouseTracking from './ControlModules/MouseTracking.svelte'
+  import Radius from './ControlModules/Radius.svelte'
   // this component will be large
   // the decision was made to optimize for minimal plumbing
   // this component instantiates the wasm module and retrieves the initial UI values from it
-  // these values do not go further than this file (in JS)
   // the mantra is
   //   -> Svelte/JS is for layout + display logic
   //   -> Rust/Wasm is for handling data
@@ -36,7 +36,7 @@
   //    -> this should persist ui_settings
   //    -> while destroying and loading new wasm module instances
   
-  enum HiddenInputId {
+  enum WasmInputId {
     drawPattern = "magic_square_input_draw_pattern",
     color1 = "magic_square_input_color_1",
     color2 = "magic_square_input_color_2",
@@ -132,6 +132,15 @@
     currMouseTrackingOption = initialUiBuffer.settings.mouse_tracking
   }
 
+  // Radius
+  let currRadiusMin: number
+  let currRadiusStep: number
+
+  function setInitialRadiusVars(initialUiBuffer:any) {
+    currRadiusMin = Math.floor(initialUiBuffer.settings.radius_min * 100) / 100
+    currRadiusStep = Math.floor(initialUiBuffer.settings.radius_step * 100) / 100
+  }
+
   let renderDataReady = false
   onMount(async () => {
     // clear old ui_buffer from localStorage
@@ -149,6 +158,7 @@
     setInitialDrawPatternVars(initialUiBuffer)
     setInitialColorVars(initialUiBuffer)
     setInitialMouseTrackingOption(initialUiBuffer)
+    setInitialRadiusVars(initialUiBuffer)
     renderDataReady = true
   })
 
@@ -171,7 +181,9 @@
     <ControlRack>
       <div slot="color"
            class="h-full">
-        {#if renderDataReady}
+        {#if !renderDataReady}
+          <Loading />
+        {:else}
           <Color bind:color1={color1}
                  bind:color2={color2}
                  bind:color3={color3}
@@ -179,57 +191,99 @@
                  bind:color5={color5}
                  bind:color6={color6}
                  bind:color7={color7}
-                 bind:color8={color8}/>
-        {:else}
-          <Loading />
+                 bind:color8={color8}>
+            <div slot="hiddenInputs">
+              <input id={WasmInputId.color1}
+                     bind:value={color1}
+                     class="hidden_input">
+              <input id={WasmInputId.color2}
+                     bind:value={color2}
+                     class="hidden_input">
+              <input id={WasmInputId.color3}
+                     bind:value={color3}
+                     class="hidden_input">
+              <input id={WasmInputId.color4}
+                     bind:value={color4}
+                     class="hidden_input">
+              <input id={WasmInputId.color5}
+                     bind:value={color5}
+                     class="hidden_input">
+              <input id={WasmInputId.color6}
+                     bind:value={color6}
+                     class="hidden_input">
+              <input id={WasmInputId.color7}
+                     bind:value={color7}
+                     class="hidden_input">
+              <input id={WasmInputId.color8}
+                     bind:value={color8}
+                     class="hidden_input">
+            </div>
+          </Color>
         {/if}
-        <input id={HiddenInputId.color1}
-               bind:value={color1}
-               class="hidden_input">
-        <input id={HiddenInputId.color2}
-               bind:value={color2}
-               class="hidden_input">
-        <input id={HiddenInputId.color3}
-               bind:value={color3}
-               class="hidden_input">
-        <input id={HiddenInputId.color4}
-               bind:value={color4}
-               class="hidden_input">
-        <input id={HiddenInputId.color5}
-               bind:value={color5}
-               class="hidden_input">
-        <input id={HiddenInputId.color6}
-               bind:value={color6}
-               class="hidden_input">
-        <input id={HiddenInputId.color7}
-               bind:value={color7}
-               class="hidden_input">
-        <input id={HiddenInputId.color8}
-               bind:value={color8}
-               class="hidden_input">
       </div>
       <div slot="drawPattern"
            class="h-full">
-        {#if renderDataReady}
-          <DrawPattern bind:currDrawPatternDirection={initialDrawPatternDirection}
-                       bind:currDrawPatternCount={initialDrawPatternCount}/>
-        {:else}
+        {#if !renderDataReady}
           <Loading />
+        {:else}
+          <DrawPattern bind:currDrawPatternDirection={initialDrawPatternDirection}
+                       bind:currDrawPatternCount={initialDrawPatternCount}>
+            <div slot="hiddenInput">
+              <input id={WasmInputId.drawPattern}
+                     bind:value={currDrawPattern}
+                     class="hidden_input"/>
+            </div>
+          </DrawPattern>
         {/if}
-        <input id={HiddenInputId.drawPattern}
-               bind:value={currDrawPattern}
-               class="hidden_input"/>
       </div>
       <div slot="mouseTracking"
            class="h-full">
-        {#if renderDataReady}
-          <MouseTracking currOption={currMouseTrackingOption}/>
-        {:else}
+        {#if !renderDataReady}
           <Loading />
+        {:else}
+          <MouseTracking currOption={currMouseTrackingOption}>
+            <div slot="hiddenInput">
+              <input id={WasmInputId.mouseTracking}
+                     bind:value={currMouseTrackingOption}
+                     class="hidden_input"/>
+            </div>
+          </MouseTracking>
         {/if}
-        <input id={HiddenInputId.mouseTracking}
-               bind:value={currMouseTrackingOption}
-               class="hidden_input"/>
+      </div>
+      <div slot="radius"
+           class="h-full">
+        {#if !renderDataReady}
+          <Loading />
+        {:else}
+          <Radius>
+            <div slot="min">
+              <label class="radius_input_label flex justify-between" 
+                     for={WasmInputId.radiusMin}>
+                <div> Min </div>
+                <div> {currRadiusMin} </div>
+              </label>
+              <input id={WasmInputId.radiusMin}
+                     type="range"
+                     min={0.1}
+                     max={1.1}
+                     bind:value={currRadiusMin}
+                     step={.01}/>
+            </div>
+            <div slot="step">
+              <label class="radius_input_label flex justify-between" 
+                     for={WasmInputId.radiusStep}>
+                <div> Step </div>
+                <div> {currRadiusStep} </div>
+              </label>
+              <input id={WasmInputId.radiusStep}
+                     type="range"
+                     min={0.01}
+                     max={0.5}
+                     bind:value={currRadiusStep}
+                     step={.01}/>
+              </div>
+          </Radius>
+        {/if}
       </div>
     </ControlRack>
   </div>
@@ -237,6 +291,7 @@
 
 <style lang="sass">
   @use "./../styles/color"
+  @use "./../styles/text"
   
   .magic_square
     height: 100%
@@ -260,6 +315,13 @@
   .control
     flex-grow: 1
     height: 100%
+
+  .radius_input_label
+      width: 100%
+      font-weight: text.$fw-xl
+      font-size: text.$fs-m
+      padding-left: 10%
+      padding-right: 10%
 
   .hidden_input
     display: none

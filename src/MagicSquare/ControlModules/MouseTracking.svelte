@@ -57,6 +57,7 @@
         {opt.toUpperCase()}
     </button>
   {/each}
+  <slot name="hiddenInput" />
 </form>
 
 <style lang="sass">

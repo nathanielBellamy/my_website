@@ -183,7 +183,7 @@
       {/each}
     </div>
   </div>
-  <slot />
+  <slot name="hiddenInputs"/>
 </div>
 
 <style lang="sass">

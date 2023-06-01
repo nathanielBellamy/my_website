@@ -16,7 +16,7 @@
     'lfos'
   ]
 
-  let curr_mod_left: string = 'color'
+  let curr_mod_left: string = 'radius'
   let curr_mod_right: string = 'rotation'
 </script>
 
@@ -47,11 +47,9 @@
           <slot name="mouseTracking"/>
         </ControlModule>
       {:else if curr_mod_left == 'radius'}
-        <ControlModule title="MOUSE"
+        <ControlModule title="RADIUS"
                        side="left">
-          <Radius>
-            <slot name="radius" />
-          </Radius>
+          <slot name="radius" />
         </ControlModule>
       {:else if curr_mod_left == 'rotation'}
         <ControlModule title="ROTATION"
@@ -81,11 +79,9 @@
           <slot name="mouseTracking"/>
         </ControlModule>
       {:else if curr_mod_right == 'radius'}
-        <ControlModule title="MOUSE"
+        <ControlModule title="RADIUS"
                        side="right">
-          <Radius>
-            <slot name="radius" />
-          </Radius>
+          <slot name="radius" />
         </ControlModule>
       {:else if curr_mod_right == 'rotation'}
         <ControlModule title="ROTATION"
