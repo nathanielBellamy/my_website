@@ -10,8 +10,10 @@
 <a href={href}
    use:link
    on:click={onClick}
-   class={`link ${className}`}> 
-  {title}
+   class={`link ${className}`}>
+  <button class="link_button">
+    {title}
+  </button>
 </a>
 
 <style lang="sass">
@@ -19,7 +21,10 @@
   @use "./../styles/text"
 
   .link
-    padding: 3px 7px 3px 7px
-    margin: 0 10px 0 10px
+    /* padding: 3px 7px 3px 7px */
+    /* margin: 0 10px 0 10px */
     font-weight: text.$fw-l
+    &_button
+      margin: 0
+      border-width: 0px
 </style>
