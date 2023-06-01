@@ -162,13 +162,13 @@
   }
 </script>
 
-<div class="rotation_container flex flex-col justify-around items-stretch">
+<div class="rotation_container h-full w-full flex flex-col justify-between items-stretch">
   {#each freedoms as freedom}
-    <div class="freedom_group flex gap-2">
+    <div class="grow freedom_group flex gap-2 justify-stretch items-stretch">
       <div class="freedom_group_title">
         {freedomToString(freedom)}
       </div>
-      <div class="freedom_group_body">
+      <div class="h-full freedom_group_body flex flex-col justify-around items-stretch">
         {#each freedomToSliders(freedom) as  {id, label, min, max, value}}
           <div class="rotation_input flex flex-col"
                on:dblclick={(e) => handleDoubleClick(e,id)}>
@@ -196,9 +196,9 @@
 
   .rotation
     &_container
-      width: 100%
       padding: 5px 15px 5px 5px
-      overflow: hidden
+      overflow-x: hidden
+      overflow-y: scroll
     &_input
       width: 100%
       &_label
