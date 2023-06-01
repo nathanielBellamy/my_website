@@ -98,10 +98,14 @@
   }
 
   onMount(async () => {
+    // get height/width for picker
+    var colorPickerDiv: any = document.getElementById('color_mode_and_curr')
+    const width: number = Math.floor(colorPickerDiv.offsetWidth / 1.7);
+
     [color1, color2, color3, color4, color5, color6, color7, color8].forEach((color: number[], idx: number) => {
       const id: number = idx + 1
       const idStr: string = toIdString(id)
-      var picker = iro.ColorPicker(`#${idStr}_picker`, colorPickerOptions)
+      var picker = iro.ColorPicker(`#${idStr}_picker`, Object.assign(colorPickerOptions, {height: width, width}))
       picker.color.rgba = { r: color[0], g: color[1], b: color[2], a: 1 }
       var input = document.getElementById(idStr)
 
@@ -122,8 +126,9 @@
   
 </script>
 
-<div class="color_container flex flex-col justify-around">
-  <div class="color_mode_and_curr flex flex-col justify-around items-center">
+<div class="color_container flex flex-col justify-between items-stretch">
+  <div id="color_mode_and_curr"
+       class="color_mode_and_curr flex flex-col justify-around items-center">
     <div class="color_modes flex flex-col justify-around items-stretch">
       <div class="color_mode flex justify-evenly">
         <button class="color_mode_option">
@@ -145,11 +150,12 @@
         </button>
       </div>
     </div>
-    <div class="curr_picker flex justify-around">
+    <div  id="magic_square_color_curr_picker"
+          class="curr_picker flex justify-around">
       <div class="curr_picker_id">
         {currId.split("_").slice(-1)[0]}
       </div>
-      <div class="flex justify-around items-stretch">
+      <div class="mt-5 flex justify-around items-stretch">
         {#each [1,2,3,4,5,6,7,8] as id }
           <div id={`${toIdString(id)}_picker`}
                class:hidden_input={currId !== toIdString(id)}/>
@@ -223,14 +229,15 @@
 
   .color_container
     height: 100%
-    overflow: hidden
+    overflow-y: scroll
+    overflow-x: hidden
     padding: 10px 0 10px 0
 
   .curr_picker
     position: relative
     &_id
       position: absolute
-      margin-top: 20px
+      margin-top: 30%
       margin-right: 40px
       z-index: 100
       font-weight: text.$fw-m
