@@ -4,7 +4,6 @@
   import ControlModule from './ControlModule.svelte'
   import Radius from './ControlModules/Radius.svelte'
   import Rotation from './ControlModules/Rotation.svelte'
-  import MouseTracking from './ControlModules/MouseTracking.svelte'
   import Select from './ControlModules/Select.svelte'
 
   const modules: string[] = [
@@ -45,9 +44,7 @@
       {:else if curr_mod_left == 'mouseTracking'}
         <ControlModule title="MOUSE"
                        side="left">
-          <MouseTracking>
-            <slot name="mouseTracking"/>
-          </MouseTracking>
+          <slot name="mouseTracking"/>
         </ControlModule>
       {:else if curr_mod_left == 'radius'}
         <ControlModule title="MOUSE"
@@ -81,9 +78,7 @@
       {:else if curr_mod_right == 'mouseTracking'}
         <ControlModule title="MOUSE"
                        side="left">
-          <MouseTracking>
-            <slot name="mouseTracking"/>
-          </MouseTracking>
+          <slot name="mouseTracking"/>
         </ControlModule>
       {:else if curr_mod_right == 'radius'}
         <ControlModule title="MOUSE"

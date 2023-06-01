@@ -4,6 +4,7 @@
   import DrawPattern from './ControlModules/DrawPattern.svelte'
   import Color from './ControlModules/Color.svelte'
   import ControlRack from './ControlRack.svelte'
+  import MouseTracking from './ControlModules/MouseTracking.svelte'
   // this component will be large
   // the decision was made to optimize for minimal plumbing
   // this component instantiates the wasm module and retrieves the initial UI values from it
@@ -45,6 +46,7 @@
     color6 = "magic_square_input_color_6",
     color7 = "magic_square_input_color_7",
     color8 = "magic_square_input_color_8",
+    mouseTracking = "magic_square_input_mouse_tracking"
   }
 
   export let sideLength: number = 0.0
@@ -58,7 +60,8 @@
   }
   let initialDrawPatternDirection: DrawPatternDirection = DrawPatternDirection.Fix
   let initialDrawPatternCount: number
-  function setInitialDrawPatternVars(pattern: string) {
+  function setInitialDrawPatternVars(initialUiBuffer: any) {
+    const pattern: string = initialUiBuffer.settings.draw_pattern
     setInitialDrawPatternCount(parseInt(pattern.slice(-1)[0]))
     let first_letter = pattern[0]
     switch (first_letter) {
@@ -113,8 +116,21 @@
     color8 = [...initialUiBuffer.settings.color_8].map((x,idx) => convertRgbaValue(x, idx))
   }
 
-  let renderDataReady = false
+  // MOUSE TRACKING
+  enum MouseTrackingOption {
+    on = 'On',
+    off = 'Off',
+    invX = 'Inv X',
+    invY = 'Inv Y',
+    invXY = 'Inv XY'
+  }
+  let currMouseTrackingOption: MouseTrackingOption
 
+  function setInitialMouseTrackingOption(initialUiBuffer: any) {
+    currMouseTrackingOption = initialUiBuffer.settings.mouse_tracking
+  }
+
+  let renderDataReady = false
   onMount(async () => {
     // clear old ui_buffer from localStorage
     localStorage.clear()
@@ -126,20 +142,18 @@
       init_message("Magic Square Wasm!")
     )
     
-    // set initial values
-    MagicSquare.run().then((initialUiBuffer: any) => {
-      // console.dir(initialUiBuffer)
-      setInitialDrawPatternVars(initialUiBuffer.settings.draw_pattern)
-      setInitialColorVars(initialUiBuffer)
-      renderDataReady = true
-    })
+    // init wasm process and set initial values
+    const initialUiBuffer = await MagicSquare.run()
+    setInitialDrawPatternVars(initialUiBuffer)
+    setInitialColorVars(initialUiBuffer)
+    setInitialMouseTrackingOption(initialUiBuffer)
+    renderDataReady = true
   })
 
   onDestroy(async () => {
     let app = document.getElementById(("app_main"))
     app.dispatchEvent(new Event("destroymswasm", {bubbles: true}))
   })
-
 </script>
 
 <div id="magic_square"
@@ -153,14 +167,6 @@
   </div>
   <div class="control">
     <ControlRack>
-      <div slot="drawPattern"
-           class="h-full">
-        <DrawPattern bind:currDrawPatternDirection={initialDrawPatternDirection}
-                     bind:currDrawPatternCount={initialDrawPatternCount}/>
-        <input id={HiddenInputId.drawPattern}
-               bind:value={currDrawPattern}
-               class="hidden_input"/>
-      </div>
       <div slot="color"
            class="h-full">
         {#if renderDataReady}
@@ -199,6 +205,29 @@
         <input id={HiddenInputId.color8}
                bind:value={color8}
                class="hidden_input">
+      </div>
+      <div slot="drawPattern"
+           class="h-full">
+        {#if renderDataReady}
+          <DrawPattern bind:currDrawPatternDirection={initialDrawPatternDirection}
+                       bind:currDrawPatternCount={initialDrawPatternCount}/>
+        {:else}
+          <Loading />
+        {/if}
+        <input id={HiddenInputId.drawPattern}
+               bind:value={currDrawPattern}
+               class="hidden_input"/>
+      </div>
+      <div slot="mouseTracking"
+           class="h-full">
+        {#if renderDataReady}
+          <MouseTracking currOption={currMouseTrackingOption}/>
+        {:else}
+          <Loading />
+        {/if}
+        <input id={HiddenInputId.mouseTracking}
+               bind:value={currMouseTrackingOption}
+               class="hidden_input"/>
       </div>
     </ControlRack>
   </div>
