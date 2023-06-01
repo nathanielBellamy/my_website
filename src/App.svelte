@@ -72,11 +72,6 @@
   @use "./styles/color"
   @use "./styles/text"
 
-  .nav_link
-    flex-grow: 1
-    min-width: 150px
-    max-width: 150px
-  
   .curr_section
     color: color.$blue-4
     font-size: text.$fs-l

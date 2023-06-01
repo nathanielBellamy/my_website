@@ -18,4 +18,5 @@
   @use "./../styles/color"
   .link
     padding: 3px 7px 3px 7px
+    margin: 0 10px 0 10px
 </style>

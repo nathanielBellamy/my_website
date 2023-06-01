@@ -1,9 +1,9 @@
 <script lang="ts" type="module">
   import { onMount, onDestroy } from 'svelte'
+  import Loading from '../lib/Loading.svelte'
   import DrawPattern from './ControlModules/DrawPattern.svelte'
   import Color from './ControlModules/Color.svelte'
   import ControlRack from './ControlRack.svelte'
-  import iro from '@jaames/iro'
   // this component will be large
   // the decision was made to optimize for minimal plumbing
   // this component instantiates the wasm module and retrieves the initial UI values from it
@@ -173,7 +173,7 @@
                  bind:color7={color7}
                  bind:color8={color8}/>
         {:else}
-          <h3> Loading... </h3>
+          <Loading />
         {/if}
         <input id={HiddenInputId.color1}
                bind:value={color1}
