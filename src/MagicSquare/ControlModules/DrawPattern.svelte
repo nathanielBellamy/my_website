@@ -70,6 +70,7 @@
     var input = document.getElementById(drawPatternHiddenInputId)
     input.value = deriveCurrDrawPattern()
     input.dispatchEvent(new Event('input', {bubbles: true}))
+    return false // do not refresh page
   }
 </script>
 
