@@ -46,7 +46,9 @@
     color6 = "magic_square_input_color_6",
     color7 = "magic_square_input_color_7",
     color8 = "magic_square_input_color_8",
-    mouseTracking = "magic_square_input_mouse_tracking"
+    mouseTracking = "magic_square_input_mouse_tracking",
+    radiusMin="magic_square_input_radius_min",
+    radiusStep="magic_square_input_radius_step"
   }
 
   export let sideLength: number = 0.0

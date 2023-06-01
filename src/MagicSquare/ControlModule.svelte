@@ -46,5 +46,5 @@
   .left
     background-color: color.$green-4
   .right
-    background-color: color.$red-4
+    background-color: color.$purple-7
 </style>

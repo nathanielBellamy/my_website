@@ -17,7 +17,7 @@
   let personal_projects: PersonalProject[] = [
     {
       title: 'my_website (this)',
-      description: 'Rust, WebAssembly, WebGL, Svelte, Typescript, Sass, Tailwind, Vite',
+      description: 'Rust, WebAssembly, Typescript, Svelte, WebGL, Sass, Tailwind, Vite',
       href: 'https://github.com/nathanielBellamy/my_website',
       program: EmbeddedProgram.none
     },
@@ -176,11 +176,8 @@
     overflow-y: scroll
 
   .section
-    align-items: stretch
-    border-top: 10px double color.$yellow-4
-    border-bottom: 10px double color.$yellow-4
-    margin-top: 5px
-    margin-bottom: 5px
+    background: color.$black-blue-horiz-grad
+    padding: 10px 0 10px 0
 
     &_title
       display: flex

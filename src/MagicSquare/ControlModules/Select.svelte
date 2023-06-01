@@ -76,7 +76,7 @@
         background-color: color.$green-4
     &_right
       &_selected
-        background-color: color.$red-4
+        background-color: color.$purple-7
 
   .module_option
     color: color.$cream
@@ -85,7 +85,7 @@
     align-items: center
     cursor: pointer
     font-size: text.$fs-s
-    font-weight: text.$fw-l
+    font-weight: text.$fw-xl
     flex-grow: 1
     cursor: pointer
 
@@ -93,7 +93,7 @@
   .selected_left
     background-color: color.$green-4
   .selected_right
-    background-color: color.$red-4
+    background-color: color.$purple-7
 
   .module_selector
     justify-content: space-between

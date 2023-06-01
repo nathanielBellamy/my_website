@@ -61,41 +61,41 @@
           </Rotation>
         </ControlModule>
       {:else}
-        <ControlModule />
+        <ControlModule side="left"/>
       {/if}
     </div>
     <div class="right_slot">
       {#if curr_mod_right == 'color'}
         <ControlModule title="COLOR"
-                       side="left">
+                       side="right">
           <slot name="color"/>
         </ControlModule>
       {:else if curr_mod_right == 'drawPattern'}
         <ControlModule title="PATTERN"
-                       side="left">
+                       side="right">
           <slot name="drawPattern" />
         </ControlModule>
       {:else if curr_mod_right == 'mouseTracking'}
         <ControlModule title="MOUSE"
-                       side="left">
+                       side="right">
           <slot name="mouseTracking"/>
         </ControlModule>
       {:else if curr_mod_right == 'radius'}
         <ControlModule title="MOUSE"
-                       side="left">
+                       side="right">
           <Radius>
             <slot name="radius" />
           </Radius>
         </ControlModule>
       {:else if curr_mod_right == 'rotation'}
         <ControlModule title="ROTATION"
-                       side="left">
+                       side="right">
           <Rotation>
             <slot name="rotation" />
           </Rotation>
         </ControlModule>
       {:else}
-        <ControlModule />
+        <ControlModule side="right"/>
       {/if}
     </div>
   </div>

@@ -16,7 +16,10 @@
 
 <style lang="sass">
   @use "./../styles/color"
+  @use "./../styles/text"
+
   .link
     padding: 3px 7px 3px 7px
     margin: 0 10px 0 10px
+    font-weight: text.$fw-l
 </style>
