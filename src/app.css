@@ -157,9 +157,6 @@ footer { /*global*/
   margin-top: 5px;
   padding: 0 10px 0 10px;
   border-top: 5px double #395A6D;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
   gap: 10px;
 }
 

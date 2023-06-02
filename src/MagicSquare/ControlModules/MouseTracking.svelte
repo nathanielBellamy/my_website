@@ -16,6 +16,12 @@
   function setCurrOpt(opt: MouseTrackingOption) {
     currOption = opt
   }
+  function handleFormSubmit(){
+    var input = document.getElementById(hiddenInputId)
+    input.value = currOption
+    input.dispatchEvent(new Event('input', {bubbles: true}))
+    return false // do not refresh page on submit
+  }
 
   onMount(async () => {
     // wasm listens to input events on the forms
@@ -24,12 +30,7 @@
     // while listening to the form
     // this way a single wasm closure can handle all ui data updates
     var form = document.getElementById(formId)
-    form.addEventListener('submit', () => {
-      var input = document.getElementById(hiddenInputId)
-      input.value = currOption
-      input.dispatchEvent(new Event('input', {bubbles: true}))
-      return false // do not refresh page on submit
-    })
+    form.addEventListener('submit', handleFormSubmit)
   })
 
   function handleOptKeydown(e: any, opt: MouseTrackingOption) {

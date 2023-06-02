@@ -6,6 +6,8 @@
   import ControlRack from './ControlRack.svelte'
   import MouseTracking from './ControlModules/MouseTracking.svelte'
   import Radius from './ControlModules/Radius.svelte'
+  import Rotation from  './ControlModules/Rotation.svelte'
+  import Translation from './ControlModules/Translation.svelte'
   // this component will be large
   // the decision was made to optimize for minimal plumbing
   // this component instantiates the wasm module and retrieves the initial UI values from it
@@ -48,7 +50,16 @@
     color8 = "magic_square_input_color_8",
     mouseTracking = "magic_square_input_mouse_tracking",
     radiusMin="magic_square_input_radius_min",
-    radiusStep="magic_square_input_radius_step"
+    radiusStep="magic_square_input_radius_step",
+    pitchSpread="magic_square_input_y_rot_spread",
+    pitchMouseX="magic_square_input_x_axis_y_rot_coeff",
+    pitchMouseY="magic_square_input_y_axis_y_rot_coeff",
+    rollSpread="magic_square_input_x_rot_spread",
+    rollMouseX="magic_square_input_x_axis_x_rot_coeff",
+    rollMouseY="magic_square_input_y_axis_x_rot_coeff",
+    yawSpread="magic_square_input_z_rot_spread",
+    yawMouseX="magic_square_input_x_axis_z_rot_coeff",
+    yawMouseY="magic_square_input_y_axis_z_rot_coeff"
   }
 
   export let sideLength: number = 0.0
@@ -85,12 +96,7 @@
     initialDrawPatternCount = count
   }
 
-  function set(x: any, y:any) {
-    x = y
-  }
-
   // COLOR
-  let renderColor: boolean = false
   let color1: number[]
   let color2: number[]
   let color3: number[]
@@ -100,6 +106,7 @@
   let color7: number[]
   let color8: number[]
 
+  // CSS (inline in Color.svelte) uses Int:0-255, WebGL uses Float:0.0-1.0
   function convertRgbaValue(val: number, idx: number): number {
     if (idx < 3) { // do for r, g, b, but not a
       val = val * 255
@@ -241,13 +248,17 @@
         {#if !renderDataReady}
           <Loading />
         {:else}
-          <MouseTracking currOption={currMouseTrackingOption}>
-            <div slot="hiddenInput">
-              <input id={WasmInputId.mouseTracking}
-                     bind:value={currMouseTrackingOption}
-                     class="hidden_input"/>
+          <Translation>
+            <div slot="mouseTracking">
+              <MouseTracking currOption={currMouseTrackingOption}>
+                <div slot="hiddenInput">
+                  <input id={WasmInputId.mouseTracking}
+                         bind:value={currMouseTrackingOption}
+                         class="hidden_input"/>
+                </div>
+              </MouseTracking>
             </div>
-          </MouseTracking>
+          </Translation>
         {/if}
       </div>
       <div slot="radius"
@@ -284,6 +295,19 @@
               </div>
           </Radius>
         {/if}
+      </div>
+      <div slot="rotation">
+        <Rotation>
+          <div slot="pitch">
+
+          </div>
+          <div slot="roll">
+
+          </div>
+          <div slot="yaw">
+
+          </div>
+        </Rotation>
       </div>
     </ControlRack>
   </div>

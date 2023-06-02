@@ -11,7 +11,7 @@
       asyncComponent: () => import('./lib/About.svelte')
     }),
     '/give_me_a_sine': wrap({
-      asyncComponent: () => import('./lib/GiveMeASine.svelte')
+      asyncComponent: () => import('./GiveMeASine.svelte')
     }),
     '/magic_square': wrap({
       asyncComponent: () => import('./MagicSquare/Container.svelte')
@@ -27,19 +27,15 @@
 <nav class="nav_bar flex justify-between items-stretch">
   <div class="links flex justify-between items-stretch">
     <Link href="/" 
-          className="nav_link"
           title="Home"
           onClick={() => handleClick('It\'s A Website')}/> 
     <Link href="/about" 
-          className="nav_link" 
           title="About" 
           onClick={() => handleClick("About")}/>
     <Link href="/magic_square" 
-          className="nav_link"
           title="Magic Square"
           onClick={() => handleClick("Magic Square")}/> 
     <Link href="/give_me_a_sine" 
-          className="nav_link" 
           title="Give Me A Sine"
           onClick={() => handleClick("Give Me A Sine")}/>
   </div>
@@ -52,16 +48,16 @@
   <Router {routes}/>
 </main>
 
-<footer>
-  <div>
-    <a href="https://github.com/nathanielBellamy">
-      github.com/nathanielBellamy
-    </a>
+<footer class="flex flex-col space-between items-stretch pt-2 pb-2 md:flex-row md:pb-0">
+  <div class="grow">
+    <Link href="https://github.com/nathanielBellamy"
+          title="github.com/nathanielBellamy"
+          sameOrigin={false}/>
   </div>
-  <div>
-    <a href="mailto:nbschieber@gmail.com">
-      nbschieber@gmail.com
-    </a>
+  <div class="grow">
+    <Link href="mailto:nbschieber@gmail.com"
+          title="nbschieber@gmail.com"
+          sameOrigin={false}/>
   </div>
   <div>
     PORTLAND, OR
@@ -73,7 +69,7 @@
   @use "./styles/text"
 
   .curr_section
-    color: color.$blue-4
+    color: color.$blue-7
     font-size: text.$fs-l
     font-weight: text.$fw-l
     margin-top: -10px

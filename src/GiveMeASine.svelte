@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import { afterUpdate, onMount } from 'svelte'
+  import { onMount } from 'svelte'
 
   let a: number
   let b: number
@@ -42,72 +42,6 @@
     max: number,
     step: number
   }
-
-  const range_inputs: GmasRangeInput[] = [
-    {
-      id: "gmas_form_input_a",
-      label: "a",
-      min: -3,
-      max: 3,
-      step: 0.1
-    },
-    {
-      id: "gmas_form_input_b",
-      label: "b",
-      min: -12,
-      max: 12,
-      step: 0.1
-    },
-    {
-      id: "gmas_form_input_c",
-      label: "c",
-      min: -3,
-      max: 3,
-      step: 0.1
-    },
-    {
-      id: "gmas_form_input_ep",
-      label: "ep",
-      min: 0.01,
-      max: 1,
-      step: 0.01
-    },
-    {
-      id: "gmas_form_input_height",
-      label: "height",
-      min: 5,
-      max: 50,
-      step: 1
-    },
-    {
-      id: "gmas_form_input_width",
-      label: "width",
-      min: 10,
-      max: 255,
-      step: 1
-    },
-    {
-      id: "gmas_form_input_graph_char",
-      label: "graph color",
-      min: 0,
-      max: 8,
-      step: 1
-    },
-    {
-      id: "gmas_form_input_above_char",
-      label: "above color",
-      min: 0,
-      max: 8,
-      step: 1
-    },
-    {
-      id: "gmas_form_input_below_char",
-      label: "below color",
-      min: 0,
-      max: 8,
-      step: 1
-    }
-  ]
 
   function colorSquareFromId (id: number): string {
     switch (id) {
@@ -244,7 +178,7 @@
           <input id={'gmas_form_input_height'}
                  type="range"
                  min={1}
-                 max={50}
+                 max={255}
                  bind:value={height}
                  step={1}/>
         </div>
@@ -257,7 +191,7 @@
           <input id={'gmas_form_input_width'}
                  type="range"
                  min={1}
-                 max={50}
+                 max={255}
                  bind:value={width}
                  step={1}/>
         </div>
@@ -309,8 +243,8 @@
 </body>
 
 <style lang="sass">
-  @use "./../styles/color"
-  @use "./../styles/text"
+  @use "./styles/color"
+  @use "./styles/text"
 
   @media (max-width : 700px) 
       .device_graph_font
