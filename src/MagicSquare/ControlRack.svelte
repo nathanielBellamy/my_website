@@ -54,9 +54,7 @@
       {:else if curr_mod_left == 'rotation'}
         <ControlModule title="ROTATION"
                        side="left">
-          <Rotation>
-            <slot name="rotation" />
-          </Rotation>
+          <slot name="rotation" />
         </ControlModule>
       {:else}
         <ControlModule side="left"/>
@@ -86,9 +84,7 @@
       {:else if curr_mod_right == 'rotation'}
         <ControlModule title="ROTATION"
                        side="right">
-          <Rotation>
-            <slot name="rotation" />
-          </Rotation>
+          <slot name="rotation" />
         </ControlModule>
       {:else}
         <ControlModule side="right"/>

@@ -61,12 +61,9 @@ pub struct Settings {
     pub color_7: Rgba,
     pub color_8: Rgba,
 
+    // TODO:
     // mouse settings
     // MouseFollow - Always, Click + Drag, DoubleClick On/Off
-    //
-    pub x_rot_coeff: f32,
-    pub y_rot_coeff: f32,
-    pub z_rot_coeff: f32,
 
     pub x_rot_spread: f32,
     pub y_rot_spread: f32,
@@ -98,16 +95,12 @@ impl Settings {
             draw_pattern: DrawPattern::Out8,
             mouse_tracking: MouseTracking::Off,
 
-            x_rot_coeff: 0.0,
-            y_rot_coeff: 0.0, 
-            z_rot_coeff: 0.0,
-
             x_rot_spread: 0.0,
             y_rot_spread: 0.0, 
             z_rot_spread: 0.0,
 
             x_axis_x_rot_coeff: 0.0,
-            x_axis_y_rot_coeff: 1.0,
+            x_axis_y_rot_coeff: -1.0,
             x_axis_z_rot_coeff: 0.0,
 
             y_axis_x_rot_coeff: 1.0,

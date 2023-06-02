@@ -16,7 +16,8 @@
   function setCurrOpt(opt: MouseTrackingOption) {
     currOption = opt
   }
-  function handleFormSubmit(){
+  function handleFormSubmit(e: any){
+    e.preventDefault()
     var input = document.getElementById(hiddenInputId)
     input.value = currOption
     input.dispatchEvent(new Event('input', {bubbles: true}))

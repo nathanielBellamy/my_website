@@ -39,6 +39,7 @@
   //    -> while destroying and loading new wasm module instances
   
   enum WasmInputId {
+    // there should exist a class variable by the left-hand name for each of these
     drawPattern = "magic_square_input_draw_pattern",
     color1 = "magic_square_input_color_1",
     color2 = "magic_square_input_color_2",
@@ -65,7 +66,7 @@
   export let sideLength: number = 0.0
 
   // DRAW PATTERN
-  let currDrawPattern: string
+  let drawPattern: string
   enum DrawPatternDirection {
     Fix = "Fix",
     In = "In",
@@ -139,13 +140,46 @@
     currMouseTrackingOption = initialUiBuffer.settings.mouse_tracking
   }
 
-  // Radius
-  let currRadiusMin: number
-  let currRadiusStep: number
+  // RADIUS
+  let radiusMin: number
+  let radiusStep: number
 
-  function setInitialRadiusVars(initialUiBuffer:any) {
-    currRadiusMin = Math.floor(initialUiBuffer.settings.radius_min * 100) / 100
-    currRadiusStep = Math.floor(initialUiBuffer.settings.radius_step * 100) / 100
+  function setInitialRadiusVars(initialUiBuffer: any) {
+    radiusMin = Math.floor(initialUiBuffer.settings.radius_min * 100) / 100
+    radiusStep = Math.floor(initialUiBuffer.settings.radius_step * 100) / 100
+  }
+
+  function round2(val: number){
+    return Math.floor(val * 100) / 100
+  }
+
+  // ROTATION
+  let pitchSpread: number
+  let pitchMouseX: number
+  let pitchMouseY: number
+  let rollSpread: number  
+  let rollMouseX: number  
+  let rollMouseY: number  
+  let yawSpread: number  
+  let yawMouseX: number  
+  let yawMouseY: number
+
+  function setInitialRotationVars(initialUiBuffer: any) {
+    pitchSpread = round2(initialUiBuffer.settings.y_rot_spread)
+    pitchMouseX = round2(initialUiBuffer.settings.x_axis_y_rot_coeff)
+    pitchMouseY = round2(initialUiBuffer.settings.y_axis_y_rot_coeff)
+    rollSpread  = round2(initialUiBuffer.settings.x_rot_spread)
+    rollMouseX  = round2(initialUiBuffer.settings.x_axis_x_rot_coeff)
+    rollMouseY  = round2(initialUiBuffer.settings.y_axis_x_rot_coeff)
+    yawSpread  = round2(initialUiBuffer.settings.z_rot_spread)
+    yawMouseX  = round2(initialUiBuffer.settings.x_axis_z_rot_coeff)
+    yawMouseY = round2(initialUiBuffer.settings.y_axis_z_rot_coeff)
+  }
+
+  function handleRotationSliderDoubleClick(inputId: string) {
+    var input = document.getElementById(inputId)
+    input.value = 0.0
+    input.dispatchEvent(new Event('input', {bubbles: true}))
   }
 
   let renderDataReady = false
@@ -166,6 +200,7 @@
     setInitialColorVars(initialUiBuffer)
     setInitialMouseTrackingOption(initialUiBuffer)
     setInitialRadiusVars(initialUiBuffer)
+    setInitialRotationVars(initialUiBuffer)
     renderDataReady = true
   })
 
@@ -233,11 +268,11 @@
         {#if !renderDataReady}
           <Loading />
         {:else}
-          <DrawPattern bind:currDrawPatternDirection={initialDrawPatternDirection}
-                       bind:currDrawPatternCount={initialDrawPatternCount}>
+          <DrawPattern bind:drawPatternDirection={initialDrawPatternDirection}
+                       bind:drawPatternCount={initialDrawPatternCount}>
             <div slot="hiddenInput">
               <input id={WasmInputId.drawPattern}
-                     bind:value={currDrawPattern}
+                     bind:value={drawPattern}
                      class="hidden_input"/>
             </div>
           </DrawPattern>
@@ -268,46 +303,177 @@
         {:else}
           <Radius>
             <div slot="min">
-              <label class="radius_input_label flex justify-between" 
+              <label class="slider_label flex justify-between" 
                      for={WasmInputId.radiusMin}>
                 <div> Min </div>
-                <div> {currRadiusMin} </div>
+                <div> {radiusMin} </div>
               </label>
               <input id={WasmInputId.radiusMin}
                      type="range"
                      min={0.1}
                      max={1.1}
-                     bind:value={currRadiusMin}
+                     bind:value={radiusMin}
                      step={.01}/>
             </div>
             <div slot="step">
-              <label class="radius_input_label flex justify-between" 
+              <label class="slider_label flex justify-between" 
                      for={WasmInputId.radiusStep}>
                 <div> Step </div>
-                <div> {currRadiusStep} </div>
+                <div> {radiusStep} </div>
               </label>
               <input id={WasmInputId.radiusStep}
                      type="range"
                      min={0.01}
                      max={0.5}
-                     bind:value={currRadiusStep}
+                     bind:value={radiusStep}
                      step={.01}/>
               </div>
           </Radius>
         {/if}
       </div>
-      <div slot="rotation">
-        <Rotation>
-          <div slot="pitch">
-
-          </div>
-          <div slot="roll">
-
-          </div>
-          <div slot="yaw">
-
-          </div>
-        </Rotation>
+      <div slot="rotation"
+           class="h-full">
+        {#if !renderDataReady}
+          <Loading />
+        {:else}
+          <Rotation>
+            <div slot="pitch"
+                 class="grow flex flex-col justify-around items-stretch p-2">
+              <div class="flex flex-col"
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.pitchSpread)}>
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.pitchSpread}>
+                  <div> {"SPREAD"} </div>
+                  <div> {pitchSpread} </div>
+                </label>
+                <input id={WasmInputId.pitchSpread}
+                       type="range"
+                       min={-.33}
+                       max={.33}
+                       bind:value={pitchSpread}
+                       step={.01}/>
+              </div>
+              <div class="flex flex-col"
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.pitchMouseX)}>
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.pitchMouseX}>
+                  <div> {"MOUSE X"} </div>
+                  <div> {pitchMouseX} </div>
+                </label>
+                <input id={WasmInputId.pitchMouseX}
+                       type="range"
+                       min={-1}
+                       max={1}
+                       bind:value={pitchMouseX}
+                       step={.01}/>
+              </div>
+              <div class="flex flex-col"
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.pitchMouseY)}>
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.pitchMouseY}>
+                  <div> {"MOUSE Y"} </div>
+                  <div> {pitchMouseY} </div>
+                </label>
+                <input id={WasmInputId.pitchMouseY}
+                       type="range"
+                       min={-1}
+                       max={1}
+                       bind:value={pitchMouseY}
+                       step={.01}/>
+              </div>
+            </div>
+            <div slot="roll"
+                 class="grow flex flex-col justify-around items-stretch p-2">
+              <div class="flex flex-col"
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.rollSpread)}>
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.rollSpread}>
+                  <div> {"SPREAD"} </div>
+                  <div> {rollSpread} </div>
+                </label>
+                <input id={WasmInputId.rollSpread}
+                       type="range"
+                       min={-.33}
+                       max={.33}
+                       bind:value={rollSpread}
+                       step={.01}/>
+              </div>
+              <div class="flex flex-col"
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.rollMouseX)}>
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.rollMouseX}>
+                  <div> {"MOUSE X"} </div>
+                  <div> {rollMouseX} </div>
+                </label>
+                <input id={WasmInputId.rollMouseX}
+                       type="range"
+                       min={-1}
+                       max={1}
+                       bind:value={rollMouseX}
+                       step={.01}/>
+              </div>
+              <div class="flex flex-col"
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.rollMouseY)}>
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.rollMouseY}>
+                  <div> {"MOUSE Y"} </div>
+                  <div> {rollMouseY} </div>
+                </label>
+                <input id={WasmInputId.rollMouseY}
+                       type="range"
+                       min={-1}
+                       max={1}
+                       bind:value={rollMouseY}
+                       step={.01}/>
+              </div>
+            </div>
+            <div slot="yaw"
+                 class="grow flex flex-col justify-around items-stretch p-2">
+              <div class="flex flex-col"
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.yawSpread)}>
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.yawSpread}>
+                  <div> {"SPREAD"} </div>
+                  <div> {yawSpread} </div>
+                </label>
+                <input id={WasmInputId.yawSpread}
+                       type="range"
+                       min={-.33}
+                       max={.33}
+                       bind:value={yawSpread}
+                       step={.01}/>
+              </div>
+              <div class="flex flex-col"
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.yawMouseX)}>
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.yawMouseX}>
+                  <div> {"MOUSE X"} </div>
+                  <div> {yawMouseX} </div>
+                </label>
+                <input id={WasmInputId.yawMouseX}
+                       type="range"
+                       min={-1}
+                       max={1}
+                       bind:value={yawMouseX}
+                       step={.01}/>
+              </div>
+              <div class="flex flex-col"
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.yawMouseY)}>
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.yawMouseY}>
+                  <div> {"MOUSE Y"} </div>
+                  <div> {yawMouseY} </div>
+                </label>
+                <input id={WasmInputId.yawMouseY}
+                       type="range"
+                       min={-1}
+                       max={1}
+                       bind:value={yawMouseY}
+                       step={.01}/>
+              </div>
+            </div>
+          </Rotation>
+        {/if}
       </div>
     </ControlRack>
   </div>
@@ -340,7 +506,7 @@
     flex-grow: 1
     height: 100%
 
-  .radius_input_label
+  .slider_label
       width: 100%
       font-weight: text.$fw-xl
       font-size: text.$fs-m

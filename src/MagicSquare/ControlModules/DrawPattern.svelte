@@ -10,12 +10,12 @@
     Out = "Out"
   }
 
-  export let currDrawPatternDirection: DrawPatternDirection
-  export let currDrawPatternCount: number
+  export let drawPatternDirection: DrawPatternDirection
+  export let drawPatternCount: number
 
   function deriveCurrDrawPattern(): string {
     var result: string
-    switch (currDrawPatternDirection) {
+    switch (drawPatternDirection) {
       case DrawPatternDirection.Fix:
         result = DrawPatternDirection.Fix
         break
@@ -27,11 +27,11 @@
         break
     }
 
-    return `${result}${currDrawPatternCount}`
+    return `${result}${drawPatternCount}`
   }
 
   function setCurrDrawPatternDirection(direction: DrawPatternDirection) {
-    currDrawPatternDirection = direction
+    drawPatternDirection = direction
   }
 
   function handleDrawPatternDirectionClick(direction: DrawPatternDirection) {
@@ -49,7 +49,7 @@
   }
 
   function setCurrDrawPatternCount(count: number) {
-    currDrawPatternCount = count
+    drawPatternCount = count
   }
 
   function handleDrawPatternCountClick(count: number) {
@@ -66,7 +66,8 @@
     }
   }
 
-  function handleDrawPatternFormSubmit() {
+  function handleDrawPatternFormSubmit(e: any) {
+    e.preventDefault()
     var input = document.getElementById(drawPatternHiddenInputId)
     input.value = deriveCurrDrawPattern()
     input.dispatchEvent(new Event('input', {bubbles: true}))
@@ -88,7 +89,7 @@
             <button class="grow max-h-26 pr-3 pl-3"
                     on:click={() => handleDrawPatternDirectionClick(dir)}
                     on:keydown={(e) => handleDrawPatternDirectionKeydown(e, dir)}
-                    class:selected={currDrawPatternDirection === dir}>
+                    class:selected={drawPatternDirection === dir}>
               {dir}
             </button>
           {/each}
@@ -103,7 +104,7 @@
               <button class="grow max-h-20"
                       on:click={() => handleDrawPatternCountClick(count)}
                       on:keydown={(e) => handleDrawPatternCountKeydown(e, count)}
-                      class:selected={currDrawPatternCount === count}>
+                      class:selected={drawPatternCount === count}>
                 {count}
               </button>
             {/each}
