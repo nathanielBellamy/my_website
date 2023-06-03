@@ -1,43 +1,54 @@
 <script lang="ts">
   import Link from "./lib/Link.svelte"
-  import MagicBanner from "./lib/MagicBanner.svelte"
+  import { I18n, Lang, toLang } from "./I18n"
+
+  const i18n = new I18n
+  let lang: Lang = toLang(localStorage.getItem('lang'))
+  
+  function handleLangSwitch() {
+    const newLang = localStorage.getItem('lang')
+    if (typeof newLang === 'string') {
+      lang = toLang(newLang)
+    }
+  }
+  window.addEventListener('lang', handleLangSwitch)
 </script>
 
 <body class="p-5 flex flex-col justify-between items-stretch gap-2">
   <div class="flex items-center">
     <h1 class="home_title text-left pl-5">
-      It's A Website!
+      {i18n.t("home/title", lang)}
     </h1>
     <ul class="home_intro_list text-left p-5 flex flex-col justify-between items-stretch">
       <li>
-        I like to learn.
+        {i18n.t("home/intro/1", lang)}
       </li>
       <li>
-        I wanted to learn how to combine
+        {i18n.t("home/intro/2", lang)}
         <p>
           <Link href="https://www.rust-lang.org/"
                 title="Rust"
                 sameOrigin={false}/>
-          with 
+          +
           <Link href="https://svelte.dev/"
                 title="Svelte"
                 sameOrigin={false}/>
-          &
+          +
           <Link href="https://www.typescriptlang.org/"
                 title="Typescript"
                 sameOrigin={false}/>
-          using
+          {i18n.t("home/intro/3", lang)}
         </p>
         <Link href="https://webassembly.org/"
               title="WebAssembly"
               sameOrigin={false}/>
-        &
+        +
         <Link href="https://crates.io/crates/wasm-bindgen"
               title="wasm-bindgen."
               sameOrigin={false}/>
       </li>
       <li>
-        So I built this website.
+        {i18n.t("home/intro/4", lang)}
       </li>
     </ul>
   </div>

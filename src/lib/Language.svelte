@@ -1,15 +1,23 @@
 <script lang="ts">
-  enum Lang {
-    en = "english",
-    es = "spanish",
-    fr = "french"
-  }
-  
-  let lang: Lang = Lang.en
+  import { onMount } from 'svelte'
+  import { Lang } from '../I18n'
 
+  export let lang: Lang = Lang.en
   function setLang(newLangKey:string) {
     lang = Lang[newLangKey]
   }
+
+  $: updateStorage(lang)
+
+  function updateStorage(lang: Lang) {
+    localStorage.setItem('lang', lang)
+    dispatchEvent(new Event('lang', {bubbles: true}))
+  }
+
+  onMount(async () => {
+    // set in storage so other components can access it w/o prop mining
+    updateStorage(lang)
+  })
 </script>
 
 <section>
