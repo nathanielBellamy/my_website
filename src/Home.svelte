@@ -15,7 +15,7 @@
 </script>
 
 <body class="p-5 flex flex-col justify-between items-stretch gap-2">
-  <div class="flex items-center">
+  <div class="flex flex-col justify-between items-stretch md:flex-row md:justify-start md:items-center">
     <h1 class="home_title text-left pl-5">
       {i18n.t("home/title", lang)}
     </h1>

@@ -1,8 +1,19 @@
 <script lang="ts">
   import Router from "svelte-spa-router"
   import {wrap} from 'svelte-spa-router/wrap'
-  import Link from "./lib/Link.svelte";
-  import Language from "./lib/Language.svelte";
+  import Link from "./lib/Link.svelte"
+  import Language from "./lib/Language.svelte"
+  import { I18n, Lang, toLang } from "./I18n"
+  
+  let i18n = new I18n
+  let lang: Lang = toLang(localStorage.getItem('lang'))
+  function handleLangSwitch() {
+    const newLang = localStorage.getItem('lang')
+    if (typeof newLang === 'string') {
+      lang = toLang(newLang)
+    }
+  }
+  window.addEventListener('lang', handleLangSwitch)
 
   const routes: { [key: string]: any } = {
     '/': wrap({
@@ -19,29 +30,29 @@
     })
   }
 
-  let currentSection: string = 'Home'
+  let currentSection: string = 'home'
   function handleClick (newSection: string) {
     currentSection = newSection
   }
 </script>
 
-<nav class="nav_bar flex justify-between items-stretch">
+<nav class="nav_bar flex flex-row justify-between items-stretch">
   <div class="links flex justify-between items-stretch">
     <Link href="/" 
-          title="Home"
-          onClick={() => handleClick('It\'s A Website')}/> 
+          title={i18n.t("app/nav/home", lang)}
+          onClick={() => handleClick("home")}/> 
     <Link href="/about" 
-          title="About" 
-          onClick={() => handleClick("About")}/>
+          title={i18n.t("app/nav/about", lang)}
+          onClick={() => handleClick("about")}/>
     <Link href="/magic_square" 
-          title="Magic Square"
-          onClick={() => handleClick("Magic Square")}/> 
+          title={i18n.t("app/nav/magicSquare", lang)}
+          onClick={() => handleClick("magicSquare")}/> 
     <Link href="/give_me_a_sine" 
-          title="Give Me A Sine"
-          onClick={() => handleClick("Give Me A Sine")}/>
+          title={i18n.t("app/nav/giveMeASine", lang)}
+          onClick={() => handleClick("giveMeASine")}/>
   </div>
-  <div class="curr_section">
-    {currentSection}
+  <div class="curr_section hidden md:block">
+    {i18n.t(`app/nav/${currentSection}`, lang)}
   </div>
 </nav>
 
@@ -69,7 +80,10 @@
 <style lang="sass">
   @use "./styles/color"
   @use "./styles/text"
-
+  
+  .nav_bar
+    min-width: 500px
+    overflow-x: scroll
   .curr_section
     color: color.$blue-7
     font-size: text.$fs-l

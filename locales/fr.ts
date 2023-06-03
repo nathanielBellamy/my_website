@@ -1,5 +1,13 @@
 
 export const localeFr: any = {
+  app: {
+    nav: {
+      home: "Accueil",
+      about: "De Moi",
+      magicSquare: "Carré Magique",
+      giveMeASine: "Donne-Moi Un Sine"
+    }
+  },
   home: {
     title: "Ceci, c'est un Website!",
     intro: {
