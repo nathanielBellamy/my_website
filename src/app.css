@@ -57,7 +57,8 @@ button:hover {
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  box-shadow: 2px 2px 6px 0px #5B7D93;
+  /* outlin e: 1px auto -webkit-focus-ring-color; */
 }
 
 @media (prefers-color-scheme: light) {

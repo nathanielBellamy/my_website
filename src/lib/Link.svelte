@@ -5,7 +5,6 @@
   export let className: string = ""
   export let title: string = "Home"
   export let onClick: any = () => {}
-  
 </script>
 
 {#if sameOrigin}

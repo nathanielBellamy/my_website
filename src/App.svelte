@@ -2,6 +2,7 @@
   import Router from "svelte-spa-router"
   import {wrap} from 'svelte-spa-router/wrap'
   import Link from "./lib/Link.svelte";
+  import Language from "./lib/Language.svelte";
 
   const routes: { [key: string]: any } = {
     '/': wrap({
@@ -62,6 +63,7 @@
   <div>
     PORTLAND, OR
   </div>
+  <Language />
 </footer>
 
 <style lang="sass">
