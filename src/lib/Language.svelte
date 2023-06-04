@@ -6,8 +6,8 @@
   let langVal: Lang 
   lang.subscribe(val => langVal = val)
   function setLang(newLangKey:string) {
+    localStorage.setItem('lang', Lang[newLangKey])
     lang.update((_: Lang) => {
-      localStorage.setItem('lang', Lang[newLangKey])
       return Lang[newLangKey]
     })
   }
@@ -18,7 +18,6 @@
       setLang(oldLang)
     } else {
       setLang(Lang.en)
-      localStorage.setItem('lang', Lang.en)
     }
   })
 </script>

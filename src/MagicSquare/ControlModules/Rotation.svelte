@@ -54,6 +54,7 @@
       transform: rotate(-90deg)
       max-width: 15px
       color: color.$blue-7
+      margin-top: 30px
 
     &_body
       width: 90%

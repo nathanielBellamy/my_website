@@ -508,10 +508,10 @@
 
   .slider_label
       width: 100%
-      font-weight: text.$fw-xl
+      font-weight: text.$fw-l
       font-size: text.$fs-m
-      padding-left: 10%
-      padding-right: 10%
+      padding-left: 5%
+      padding-right: 5%
 
   .hidden_input
     display: none

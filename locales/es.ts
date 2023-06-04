@@ -5,7 +5,7 @@ export const localeEs: any = {
       home: "Inicio",
       about: "Sobre Mi",
       magicSquare: "Cuadro Mágico",
-      giveMeASine: "Dame Una Sine"
+      giveMeASine: "Dame Uno Seno"
     }
   },
   home: {

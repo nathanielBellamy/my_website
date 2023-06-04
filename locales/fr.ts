@@ -5,7 +5,7 @@ export const localeFr: any = {
       home: "Accueil",
       about: "De Moi",
       magicSquare: "Carré Magique",
-      giveMeASine: "Donne-Moi Un Sine"
+      giveMeASine: "Donne-Moi Un Sinus"
     }
   },
   home: {

@@ -266,6 +266,7 @@
       border-radius: 5px
       maargin: 10px
       height: 100%
+      min-height: 500px
       flex-grow: 1
 
     &_form
