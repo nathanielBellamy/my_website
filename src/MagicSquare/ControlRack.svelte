@@ -10,13 +10,13 @@
     'color',
     'drawPattern',
     'geometry',
-    'mouseTracking',
+    'translation',
     'radius',
     'rotation',
     'lfos'
   ]
 
-  let curr_mod_left: string = 'radius'
+  let curr_mod_left: string = 'translation'
   let curr_mod_right: string = 'rotation'
 </script>
 
@@ -41,10 +41,10 @@
                        side="left">
           <slot name="drawPattern"/>
         </ControlModule>
-      {:else if curr_mod_left == 'mouseTracking'}
-        <ControlModule title="MOUSE"
+      {:else if curr_mod_left == 'translation'}
+        <ControlModule title="TRANSLATION"
                        side="left">
-          <slot name="mouseTracking"/>
+          <slot name="translation"/>
         </ControlModule>
       {:else if curr_mod_left == 'radius'}
         <ControlModule title="RADIUS"
@@ -71,10 +71,10 @@
                        side="right">
           <slot name="drawPattern" />
         </ControlModule>
-      {:else if curr_mod_right == 'mouseTracking'}
-        <ControlModule title="MOUSE"
+      {:else if curr_mod_right == 'translation'}
+        <ControlModule title="TRANSLATION"
                        side="right">
-          <slot name="mouseTracking"/>
+          <slot name="translation"/>
         </ControlModule>
       {:else if curr_mod_right == 'radius'}
         <ControlModule title="RADIUS"

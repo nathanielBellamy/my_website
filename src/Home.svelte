@@ -52,6 +52,17 @@
       </li>
     </ul>
   </div>
+  <div class="grow flex flex-col justify-between items-stretch">
+    <div>
+      {i18n.t("home/body/title", lang)}
+    </div>
+    <div class="grow flex justify-around items-center">
+      <div>
+        (TODO: cool-looking, clickable SVGs representing the different sections of the site)
+      </div>
+    </div>
+
+  </div>
 </body>
 
 <style lang="sass">

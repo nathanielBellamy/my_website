@@ -12,14 +12,75 @@
   export let currOption: MouseTrackingOption
   const hiddenInputId = 'magic_square_input_mouse_tracking'
   const formId = 'mouse_tracking_form'
-  
-  function setCurrOpt(opt: MouseTrackingOption) {
-    currOption = opt
+
+  enum Toggle {
+    on = 'on',
+    off = 'off'
   }
+
+  enum Inv {
+    x = 'x',
+    y = 'y',
+    xy = 'xy',
+    none = 'none'
+  }
+
+  let toggle: Toggle
+  let inv: Inv
+  let option: MouseTrackingOption
+
+  $: option = deriveMouseTrackingOption(toggle, inv)
+
+  function parseVars(opt: MouseTrackingOption) {
+    switch(currOption) {
+      case MouseTrackingOption.on:
+        toggle = Toggle.on
+        inv = Inv.none
+        break
+      case MouseTrackingOption.off:
+        toggle = Toggle.off
+        inv = Inv.none
+        break
+      case MouseTrackingOption.invX:
+        toggle = Toggle.on
+        inv = Inv.x
+        break
+      case MouseTrackingOption.invY:
+        toggle = Toggle.on
+        inv = Inv.y
+        break
+      case MouseTrackingOption.invXY:
+        toggle = Toggle.on
+        inv = Inv.xy
+        break
+    }
+  }
+
+  function deriveMouseTrackingOption(t: Toggle, i: Inv) {
+    switch(t) {
+      case Toggle.off :
+        return MouseTrackingOption.off
+      case Toggle.on:
+        switch(i) {
+          case Inv.none:
+            return MouseTrackingOption.on
+          case Inv.x:
+            return MouseTrackingOption.invX
+          case Inv.y:
+            return MouseTrackingOption.invY
+          case Inv.xy:
+            return MouseTrackingOption.invXY
+        }
+      default:
+        currOption = MouseTrackingOption.off
+    }
+  }
+
   function handleFormSubmit(e: any){
     e.preventDefault()
     var input = document.getElementById(hiddenInputId)
-    input.value = currOption
+    console.log(option)
+    input.value = option
     input.dispatchEvent(new Event('input', {bubbles: true}))
     return false // do not refresh page on submit
   }
@@ -30,35 +91,87 @@
     // explicitly set bubbles:true so that wasm can catch the event
     // while listening to the form
     // this way a single wasm closure can handle all ui data updates
+    parseVars(currOption)
     var form = document.getElementById(formId)
     form.addEventListener('submit', handleFormSubmit)
   })
 
-  function handleOptKeydown(e: any, opt: MouseTrackingOption) {
+  function handleToggleKeydown(e: any, newToggle: Toggle) {
     if (e.keyCode === 13){
-      setCurrOpt(opt)
+      toggle = newToggle
       let form = document.getElementById(formId)
       form.dispatchEvent(new Event('submit', {bubbles: true}))
     }
   }
 
-  function handleOptClick(opt: MouseTrackingOption) {
-    setCurrOpt(opt)
+  function handleToggleClick(newToggle: Toggle) {
+    toggle = newToggle
     let form = document.getElementById(formId)
     form.dispatchEvent(new Event('submit', {bubbles: true}))
   } 
+
+  function handleInvKeydown(e: any, newInv: Inv) {
+    if (e.keyCode === 13){
+      inv = newInv
+      let form = document.getElementById(formId)
+      form.dispatchEvent(new Event('submit', {bubbles: true}))
+    }
+  }
+
+  function handleInvClick(newInv: Inv) {
+    inv = newInv
+    let form = document.getElementById(formId)
+    form.dispatchEvent(new Event('submit', {bubbles: true}))
+  } 
+
+  const invGroup1: Inv[] = [Inv.x, Inv.y]
+  const invGroup2: Inv[] = [Inv.xy, Inv.none]
 </script>
 
 <form id={formId}
-     class="mouse_tracking_container flex flex-col justify-around">
-  {#each Object.values(MouseTrackingOption) as opt}
-    <button class="mouse_tracking_option"
-            class:selected="{currOption === opt}"
-            on:click={() => handleOptClick(opt)}
-            on:keydown={(e) => handleOptKeydown(e, opt)}>
-        {opt.toUpperCase()}
-    </button>
-  {/each}
+      class="h-full flex flex-col justify-around items-stretch">
+  <h2 class="mouse_tracking_title">
+    MOUSE
+  </h2>
+  <div id="mouse_tracking_toggle"
+       class="grow flex justify-around items-stretch">
+    {#each Object.keys(Toggle) as t}
+      <button class="grow"
+              class:selected="{toggle === t}"
+              on:click={() => handleToggleClick(Toggle[t])}
+              on:keydown={(e) => handleToggleKeydown(e, Toggle[t])}>
+          {t.toUpperCase()}
+      </button>
+    {/each}
+  </div>
+  <div id="mouse_tracking_inv"
+       class="grow w-full flex justify-between items-stretch">
+    <div class="mouse_tracking_inv_title">
+      INVERT
+    </div>
+    <div class="grow flex flex-col justify-between items stretch">
+      <div class="grow flex justify-evenly items-center">
+        {#each invGroup1 as i}
+          <button class="grow"
+                  class:selected="{inv === i}"
+                  on:click={() => handleInvClick(Inv[i])}
+                  on:keydown={(e) => handleInvKeydown(e, Inv[i])}>
+              {i.toUpperCase()}
+          </button>
+        {/each}
+      </div>
+      <div class="grow flex justify-stretch items-center">
+        {#each invGroup2 as i}
+          <button class="grow"
+                  class:selected="{inv === i}"
+                  on:click={() => handleInvClick(Inv[i])}
+                  on:keydown={(e) => handleInvKeydown(e, Inv[i])}>
+              {i.toUpperCase()}
+          </button>
+        {/each}
+      </div>
+    </div>
+  </div>
   <slot name="hiddenInput" />
 </form>
 
@@ -66,11 +179,18 @@
   @use "./../../styles/color"
   @use "./../../styles/text"
 
-  .mouse_tracking
-    &_container
-      height: 100%
-    &_option
-      flex-grow: 1
+  .mouse_tracking_title
+    color: color.$blue-4
+    font-weight: text.$fw-l
+
+  .mouse_tracking_inv_title
+    color: color.$blue-4
+    font-weight: text.$fw-l
+    transform: rotate(-90deg)
+    text-align: right
+    height: 100%
+    margin-top: 35px
+
   .selected
     background-color: color.$blue-8
 </style>

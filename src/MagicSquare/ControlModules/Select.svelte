@@ -11,7 +11,7 @@
     }
   }
 
-  function setMod(mod) {
+  function setMod(mod: string) {
     if (mod === curr_mod_left || mod === curr_mod_right) return
     if (sideToSet == 'left') {
       curr_mod_left = mod
@@ -99,8 +99,6 @@
     justify-content: space-between
     border-radius: 5px
     height: 100%
-    &_module_selector_side_to_set
-      background-color: blue
 
   .hidden_input
     display: none

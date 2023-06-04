@@ -278,7 +278,7 @@
           </DrawPattern>
         {/if}
       </div>
-      <div slot="mouseTracking"
+      <div slot="translation"
            class="h-full">
         {#if !renderDataReady}
           <Loading />
