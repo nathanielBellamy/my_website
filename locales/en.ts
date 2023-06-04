@@ -9,7 +9,7 @@ export const localeEn: any = {
     }
   },
   home: {
-    title: "It's a website",
+    title: "Nate's New Website",
     intro: {
       1: "I like to learn.",
       2: "I wanted to learn how to combine",

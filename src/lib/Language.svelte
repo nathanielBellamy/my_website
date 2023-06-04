@@ -1,12 +1,26 @@
 <script lang="ts">
+  import { onMount } from 'svelte'
   import { Lang } from "../I18n"
   import { lang } from '../stores/lang'
   
   let langVal: Lang 
   lang.subscribe(val => langVal = val)
   function setLang(newLangKey:string) {
-    lang.update((_: Lang) => Lang[newLangKey])
+    lang.update((_: Lang) => {
+      localStorage.setItem('lang', Lang[newLangKey])
+      return Lang[newLangKey]
+    })
   }
+  
+  onMount(() => {
+    const oldLang: string = localStorage.getItem('lang')
+    if (typeof oldLang === 'string') {
+      setLang(oldLang)
+    } else {
+      setLang(Lang.en)
+      localStorage.setItem('lang', Lang.en)
+    }
+  })
 </script>
 
 <section>

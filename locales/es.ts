@@ -9,7 +9,7 @@ export const localeEs: any = {
     }
   },
   home: {
-    title: "Es uno sitio",
+    title: "El sitio nuevo de Nate",
     intro: {
       1: "Me gusta apprender.",
       2: "Queria apprender como mezclar",

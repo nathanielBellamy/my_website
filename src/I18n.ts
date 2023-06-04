@@ -17,10 +17,11 @@ export class I18n {
 
   t(path: string, lang: Lang): string {
     const steps: string[] = path.split('/')
+    const locales: any = !!this.locales[lang] ? this.locales[lang] : this.locales[Lang.en]
     var result: string | null = null
     steps.forEach((level: string, idx: number) => {
       if (!idx) { // first step
-        result = this.locales[lang][level]
+        result = locales[level]
       } else {
         result = (result || {})[level]
       }
