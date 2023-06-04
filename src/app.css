@@ -60,6 +60,13 @@ button:focus-visible {
   box-shadow: 2px 2px 6px 0px #5B7D93;
   /* outlin e: 1px auto -webkit-focus-ring-color; */
 }
+button:disabled {
+  color: #666;
+  border-color: #666;
+}
+button:disabled:hover {
+  color: #666;
+}
 
 @media (prefers-color-scheme: light) {
   :root {

@@ -19,5 +19,16 @@ export const localeEn: any = {
     body: {
       title: "What's here?"
     }
+  },
+  magicSquare: {
+    mouseTracking: {
+      invert: "INVERT",
+      mouse: "Mouse",
+      none: "None"
+    }
+  },
+  misc: {
+    on: "On",
+    off: "Off"
   }
 }

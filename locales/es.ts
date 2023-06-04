@@ -19,5 +19,16 @@ export const localeEs: any = {
     body: {
       title: "Que hay aqui?"
     }
+  },
+  magicSquare: {
+    mouseTracking: {
+      invert: "INVERTIR",
+      mouse: "Ratón",
+      none: "Ninguno"
+    }
+  },
+  misc: {
+    on: "Encendido",
+    off: "Apagado"
   }
 }

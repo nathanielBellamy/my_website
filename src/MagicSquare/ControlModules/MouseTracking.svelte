@@ -1,6 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  
+  import { I18n, Lang } from '../../I18n'
+  import { lang } from '../../stores/lang'
+
+  let langVal: Lang 
+  lang.subscribe(val => langVal = val)
+  let i18n = new I18n
+
   enum MouseTrackingOption {
     on = 'On',
     off = 'Off',
@@ -122,16 +128,16 @@
     inv = newInv
     let form = document.getElementById(formId)
     form.dispatchEvent(new Event('submit', {bubbles: true}))
-  } 
+  }
 
-  const invGroup1: Inv[] = [Inv.x, Inv.y]
-  const invGroup2: Inv[] = [Inv.xy, Inv.none]
+  const invGroup1: Inv[] = [Inv.x, Inv.y, Inv.xy]
+  const invGroup2: Inv[] = [Inv.none]
 </script>
 
 <form id={formId}
       class="h-full flex flex-col justify-around items-stretch">
   <h2 class="mouse_tracking_title">
-    MOUSE
+    {i18n.t("magicSquare/mouseTracking/mouse", langVal)}
   </h2>
   <div id="mouse_tracking_toggle"
        class="grow flex justify-around items-stretch">
@@ -140,20 +146,21 @@
               class:selected="{toggle === t}"
               on:click={() => handleToggleClick(Toggle[t])}
               on:keydown={(e) => handleToggleKeydown(e, Toggle[t])}>
-          {t.toUpperCase()}
+          {i18n.t(`misc/${t}`, langVal)}
       </button>
     {/each}
   </div>
   <div id="mouse_tracking_inv"
-       class="grow w-full flex justify-between items-stretch">
+       class="mouse_tracking_inv grow w-full flex justify-between items-stretch">
     <div class="mouse_tracking_inv_title">
-      INVERT
+      {i18n.t("magicSquare/mouseTracking/invert", langVal)}
     </div>
     <div class="grow flex flex-col justify-between items stretch">
       <div class="grow flex justify-evenly items-center">
         {#each invGroup1 as i}
           <button class="grow"
                   class:selected="{inv === i}"
+                  disabled={toggle === Toggle.off}
                   on:click={() => handleInvClick(Inv[i])}
                   on:keydown={(e) => handleInvKeydown(e, Inv[i])}>
               {i.toUpperCase()}
@@ -164,9 +171,10 @@
         {#each invGroup2 as i}
           <button class="grow"
                   class:selected="{inv === i}"
+                  disabled={toggle === Toggle.off}
                   on:click={() => handleInvClick(Inv[i])}
                   on:keydown={(e) => handleInvKeydown(e, Inv[i])}>
-              {i.toUpperCase()}
+              {i18n.t("magicSquare/mouseTracking/none", langVal)}
           </button>
         {/each}
       </div>
@@ -179,18 +187,25 @@
   @use "./../../styles/color"
   @use "./../../styles/text"
 
-  .mouse_tracking_title
-    color: color.$blue-4
-    font-weight: text.$fw-l
+  .mouse_tracking
+    &_title
+      color: color.$blue-4
+      font-weight: text.$fw-l
+      font-size: text.$fs-l
 
-  .mouse_tracking_inv_title
-    color: color.$blue-4
-    font-weight: text.$fw-l
-    transform: rotate(-90deg)
-    text-align: right
-    height: 100%
-    margin-top: 35px
+    &_inv
+      border-top: 5px double color.$blue-7
+      border-bottom: 5px double color.$blue-7
+      &_title
+        color: color.$blue-4
+        font-weight: text.$fw-l
+        transform: rotate(-90deg)
+        height: 100%
+        min-width: 25px
+        max-width: 25px
+        margin-top: 70px
 
   .selected
     background-color: color.$blue-8
+
 </style>
