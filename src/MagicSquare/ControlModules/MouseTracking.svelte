@@ -38,7 +38,7 @@
   $: option = deriveMouseTrackingOption(toggle, inv)
 
   function parseVars(opt: MouseTrackingOption) {
-    switch(currOption) {
+    switch(opt) {
       case MouseTrackingOption.on:
         toggle = Toggle.on
         inv = Inv.none
@@ -78,7 +78,7 @@
             return MouseTrackingOption.invXY
         }
       default:
-        currOption = MouseTrackingOption.off
+        return MouseTrackingOption.off
     }
   }
 
@@ -174,7 +174,7 @@
                   disabled={toggle === Toggle.off}
                   on:click={() => handleInvClick(Inv[i])}
                   on:keydown={(e) => handleInvKeydown(e, Inv[i])}>
-              {i18n.t("magicSquare/mouseTracking/none", langVal)}
+              {i18n.t(`magicSquare/mouseTracking/${i}`, langVal)}
           </button>
         {/each}
       </div>
@@ -207,5 +207,4 @@
 
   .selected
     background-color: color.$blue-8
-
 </style>
