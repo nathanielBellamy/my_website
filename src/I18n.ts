@@ -8,21 +8,6 @@ export enum Lang {
   fr = "fr"
 }
 
-export function toLang(str: string): Lang {
-  switch (str) {
-    case 'es':
-    case 'spanish':
-      return Lang.es
-    case 'fr':
-    case 'french':
-      return Lang.fr
-    case 'en':
-    case 'english':
-    default:
-      return Lang.en
-  }
-}
-
 export class I18n {
   private locales: any = {
     en: localeEn,

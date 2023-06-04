@@ -3,17 +3,13 @@
   import {wrap} from 'svelte-spa-router/wrap'
   import Link from "./lib/Link.svelte"
   import Language from "./lib/Language.svelte"
-  import { I18n, Lang, toLang } from "./I18n"
+  import { I18n, Lang } from "./I18n"
+  import { lang } from "./stores/lang"
   
   let i18n = new I18n
-  let lang: Lang = toLang(localStorage.getItem('lang'))
-  function handleLangSwitch() {
-    const newLang = localStorage.getItem('lang')
-    if (typeof newLang === 'string') {
-      lang = toLang(newLang)
-    }
-  }
-  window.addEventListener('lang', handleLangSwitch)
+  let langVal: Lang
+
+  lang.subscribe( val => langVal = val)
 
   const routes: { [key: string]: any } = {
     '/': wrap({
@@ -39,20 +35,20 @@
 <nav class="nav_bar flex flex-row justify-between items-stretch">
   <div class="links flex justify-between items-stretch">
     <Link href="/" 
-          title={i18n.t("app/nav/home", lang)}
+          title={i18n.t("app/nav/home", langVal)}
           onClick={() => handleClick("home")}/> 
     <Link href="/about" 
-          title={i18n.t("app/nav/about", lang)}
+          title={i18n.t("app/nav/about", langVal)}
           onClick={() => handleClick("about")}/>
     <Link href="/magic_square" 
-          title={i18n.t("app/nav/magicSquare", lang)}
+          title={i18n.t("app/nav/magicSquare", langVal)}
           onClick={() => handleClick("magicSquare")}/> 
     <Link href="/give_me_a_sine" 
-          title={i18n.t("app/nav/giveMeASine", lang)}
+          title={i18n.t("app/nav/giveMeASine", langVal)}
           onClick={() => handleClick("giveMeASine")}/>
   </div>
   <div class="curr_section hidden md:block">
-    {i18n.t(`app/nav/${currentSection}`, lang)}
+    {i18n.t(`app/nav/${currentSection}`, langVal)}
   </div>
 </nav>
 

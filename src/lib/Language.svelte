@@ -1,30 +1,19 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
-  import { Lang } from '../I18n'
-
-  export let lang: Lang = Lang.en
+  import { Lang } from "../I18n"
+  import { lang } from '../stores/lang'
+  
+  let langVal: Lang 
+  lang.subscribe(val => langVal = val)
   function setLang(newLangKey:string) {
-    lang = Lang[newLangKey]
+    lang.update((_: Lang) => Lang[newLangKey])
   }
-
-  $: updateStorage(lang)
-
-  function updateStorage(lang: Lang) {
-    localStorage.setItem('lang', lang)
-    dispatchEvent(new Event('lang', {bubbles: true}))
-  }
-
-  onMount(async () => {
-    // set in storage so other components can access it w/o prop mining
-    updateStorage(lang)
-  })
 </script>
 
 <section>
   <div class="lang_select grow">
     {#each Object.keys(Lang) as langKey }
       <button class="lang_select_opt mt-0"
-              class:selected="{Lang[langKey] === lang}"
+              class:selected="{Lang[langKey] === langVal}"
               on:click={() => setLang(langKey)}>
         {langKey}
       </button>
@@ -41,5 +30,6 @@
     border: none
   
   .selected
-    color: color.$blue-4
+    color: color.$cream
+    background-color: color.$blue-7
 </style>

@@ -1,30 +1,24 @@
 <script lang="ts">
   import Link from "./lib/Link.svelte"
-  import { I18n, Lang, toLang } from "./I18n"
+  import { I18n, Lang } from "./I18n"
+  import { lang } from './stores/lang'
 
   const i18n = new I18n
-  let lang: Lang = toLang(localStorage.getItem('lang'))
-  
-  function handleLangSwitch() {
-    const newLang = localStorage.getItem('lang')
-    if (typeof newLang === 'string') {
-      lang = toLang(newLang)
-    }
-  }
-  window.addEventListener('lang', handleLangSwitch)
+  let langVal: Lang
+  lang.subscribe(val => langVal = val)
 </script>
 
 <body class="p-5 flex flex-col justify-between items-stretch gap-2">
   <div class="flex flex-col justify-between items-stretch md:flex-row md:justify-start md:items-center">
     <h1 class="home_title text-left pl-5">
-      {i18n.t("home/title", lang)}
+      {i18n.t("home/title", langVal)}
     </h1>
     <ul class="home_intro_list text-left p-5 flex flex-col justify-between items-stretch">
       <li>
-        {i18n.t("home/intro/1", lang)}
+        {i18n.t("home/intro/1", langVal)}
       </li>
       <li>
-        {i18n.t("home/intro/2", lang)}
+        {i18n.t("home/intro/2", langVal)}
         <p>
           <Link href="https://www.rust-lang.org/"
                 title="Rust"
@@ -37,7 +31,7 @@
           <Link href="https://www.typescriptlang.org/"
                 title="Typescript"
                 sameOrigin={false}/>
-          {i18n.t("home/intro/3", lang)}
+          {i18n.t("home/intro/3", langVal)}
         </p>
         <Link href="https://webassembly.org/"
               title="WebAssembly"
@@ -48,20 +42,19 @@
               sameOrigin={false}/>
       </li>
       <li>
-        {i18n.t("home/intro/4", lang)}
+        {i18n.t("home/intro/4", langVal)}
       </li>
     </ul>
   </div>
   <div class="grow flex flex-col justify-between items-stretch">
     <div>
-      {i18n.t("home/body/title", lang)}
+      {i18n.t("home/body/title", langVal)}
     </div>
     <div class="grow flex justify-around items-center">
       <div>
         (TODO: cool-looking, clickable SVGs representing the different sections of the site)
       </div>
     </div>
-
   </div>
 </body>
 
@@ -77,10 +70,4 @@
     &_intro_list
       color: color.$green-4
       font-weight: text.$fw-m
-
-  .text_lines
-    color: color.$blue-7
-    text-align: left
-    padding: 15px
-    height: 100%
 </style>

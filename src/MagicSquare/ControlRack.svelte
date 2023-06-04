@@ -1,9 +1,5 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte'
-  import Color from './ControlModules/Color.svelte'
   import ControlModule from './ControlModule.svelte'
-  import Radius from './ControlModules/Radius.svelte'
-  import Rotation from './ControlModules/Rotation.svelte'
   import Select from './ControlModules/Select.svelte'
 
   const modules: string[] = [
