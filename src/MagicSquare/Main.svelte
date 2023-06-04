@@ -362,8 +362,8 @@
                 </label>
                 <input id={WasmInputId.pitchMouseX}
                        type="range"
-                       min={-1}
-                       max={1}
+                       min={-2}
+                       max={2}
                        bind:value={pitchMouseX}
                        step={.01}/>
               </div>
@@ -376,8 +376,8 @@
                 </label>
                 <input id={WasmInputId.pitchMouseY}
                        type="range"
-                       min={-1}
-                       max={1}
+                       min={-2}
+                       max={2}
                        bind:value={pitchMouseY}
                        step={.01}/>
               </div>
@@ -407,8 +407,8 @@
                 </label>
                 <input id={WasmInputId.rollMouseX}
                        type="range"
-                       min={-1}
-                       max={1}
+                       min={-2}
+                       max={2}
                        bind:value={rollMouseX}
                        step={.01}/>
               </div>
@@ -421,8 +421,8 @@
                 </label>
                 <input id={WasmInputId.rollMouseY}
                        type="range"
-                       min={-1}
-                       max={1}
+                       min={-2}
+                       max={2}
                        bind:value={rollMouseY}
                        step={.01}/>
               </div>
@@ -452,8 +452,8 @@
                 </label>
                 <input id={WasmInputId.yawMouseX}
                        type="range"
-                       min={-1}
-                       max={1}
+                       min={-2}
+                       max={2}
                        bind:value={yawMouseX}
                        step={.01}/>
               </div>
@@ -466,8 +466,8 @@
                 </label>
                 <input id={WasmInputId.yawMouseY}
                        type="range"
-                       min={-1}
-                       max={1}
+                       min={-2}
+                       max={2}
                        bind:value={yawMouseY}
                        step={.01}/>
               </div>
