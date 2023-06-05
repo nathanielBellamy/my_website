@@ -37,6 +37,7 @@ export const localeEn: any = {
     main: {
       base: "base",
       minimum: "minimum",
+      rate: "rate",
       spread: "spread",
       step: "step"
     },

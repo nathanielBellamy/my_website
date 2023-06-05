@@ -37,6 +37,7 @@ export const localeEs: any = {
     main: {
       base: "base",
       minimum: "mínimo",
+      rate: "velocidad",
       spread: "desparramar",
       step: "paso"
     },

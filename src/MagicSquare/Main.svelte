@@ -57,6 +57,7 @@
     color6 = "magic_square_input_color_6",
     color7 = "magic_square_input_color_7",
     color8 = "magic_square_input_color_8",
+    lfo1Rate = "magic_square_input_lfo_1_rate",
     mouseTracking = "magic_square_input_mouse_tracking",
     radiusMin = "magic_square_input_radius_min",
     radiusStep = "magic_square_input_radius_step",
@@ -138,6 +139,14 @@
     color6 = [...initialUiBuffer.settings.color_6].map((x,idx) => convertRgbaValue(x, idx))
     color7 = [...initialUiBuffer.settings.color_7].map((x,idx) => convertRgbaValue(x, idx))
     color8 = [...initialUiBuffer.settings.color_8].map((x,idx) => convertRgbaValue(x, idx))
+  }
+
+  // LFO
+
+  let lfo1Rate: number
+  
+  function setInitialLfoVars(initialUiBuffer: any) {
+    lfo1Rate = initialUiBuffer.settings.lfo_1_rate
   }
 
   // TRANSLATION
@@ -229,6 +238,7 @@
     const initialUiBuffer = await MagicSquare.run()
     setInitialDrawPatternVars(initialUiBuffer)
     setInitialColorVars(initialUiBuffer)
+    setInitialLfoVars(initialUiBuffer)
     setInitialMouseTrackingOption(initialUiBuffer)
     setInitialRadiusVars(initialUiBuffer)
     setInitialRotationVars(initialUiBuffer)
@@ -316,6 +326,22 @@
           <Loading />
         {:else}
           <Lfo>
+            <div  class="p-5 grow flex flex-col justify-around items-stretch"
+                 slot="lfoSliders">
+              <div class="w-full flex flex-col justify-between items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.lfo1Rate}>
+                  <div> {i18n.t("rate", langVal)} </div>
+                  <div> 0 </div>
+                </label>
+                <input id={WasmInputId.lfo1Rate}
+                       type="range"
+                       min={-2}
+                       max={2}
+                       bind:value={lfo1Rate}
+                       step={.01}/>
+              </div>
+            </div>
           </Lfo>
         {/if}
       </div>

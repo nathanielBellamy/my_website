@@ -1,4 +1,11 @@
 <script lang="ts">
+  import { I18n, Lang } from '../../I18n'
+  import { lang } from '../../stores/lang'
+
+  let langVal: Lang 
+  lang.subscribe(val => langVal = val)
+  let i18n = new I18n("magicSquare/mouseTracking")
+
   enum Lfo {
     one = "1",
     two = "2",
@@ -18,9 +25,9 @@
       </button>
     {/each}
   </div>
-  <div>
+  <slot name="lfoSliders">
     LFO: {lfo}
-  </div>
+  </slot>
 </div>
 
 <style lang="sass">

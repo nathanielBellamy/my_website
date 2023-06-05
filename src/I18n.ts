@@ -9,7 +9,6 @@ export enum Lang {
 }
 
 export class I18n {
-  
   public prefix: string[]
 
   private locales: any = {
@@ -23,6 +22,7 @@ export class I18n {
   }
 
   t(path: string, lang: Lang): string {
+    // TODO: no need to run through the first few steps if we know the prefix on the class level
     const steps: string[] = this.prefix.concat(path.split('/'))
     const locales: any = !!this.locales[lang] ? this.locales[lang] : this.locales[Lang.en]
     var result: string = locales[steps.shift()]
