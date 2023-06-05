@@ -200,10 +200,10 @@
         color: color.$blue-4
         font-weight: text.$fw-l
         transform: rotate(-90deg)
-        height: 100%
+        margin-top: 50px
+        margin-left: 20px
         min-width: 25px
         max-width: 25px
-        margin-top: 70px
 
   .selected
     background-color: color.$blue-8

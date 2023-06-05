@@ -60,7 +60,10 @@
     rollMouseY="magic_square_input_y_axis_x_rot_coeff",
     yawSpread="magic_square_input_z_rot_spread",
     yawMouseX="magic_square_input_x_axis_z_rot_coeff",
-    yawMouseY="magic_square_input_y_axis_z_rot_coeff"
+    yawMouseY="magic_square_input_y_axis_z_rot_coeff",
+    translationX="magic_square_input_translation_x",
+    translationY="magic_square_input_translation_y",
+    translationZ="magic_square_input_translation_z"
   }
 
   export let sideLength: number = 0.0
@@ -124,6 +127,17 @@
     color6 = [...initialUiBuffer.settings.color_6].map((x,idx) => convertRgbaValue(x, idx))
     color7 = [...initialUiBuffer.settings.color_7].map((x,idx) => convertRgbaValue(x, idx))
     color8 = [...initialUiBuffer.settings.color_8].map((x,idx) => convertRgbaValue(x, idx))
+  }
+
+  // TRANSLATION
+  let translationX: number
+  let translationY: number
+  let translationZ: number
+
+  function setInitialTranslationVars(initialUiBuffer: any) {
+    translationX = initialUiBuffer.settings.translation_x
+    translationY = initialUiBuffer.settings.translation_y
+    translationZ = initialUiBuffer.settings.translation_z
   }
 
   // MOUSE TRACKING
@@ -201,6 +215,7 @@
     setInitialMouseTrackingOption(initialUiBuffer)
     setInitialRadiusVars(initialUiBuffer)
     setInitialRotationVars(initialUiBuffer)
+    setInitialTranslationVars(initialUiBuffer)
     renderDataReady = true
   })
 
@@ -284,6 +299,48 @@
           <Loading />
         {:else}
           <Translation>
+            <div slot="xyzSliders">
+              <div class="w-full flex flex-col justify-between items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.translationX}>
+                  <div> X </div>
+                  <div> {translationX} </div>
+                </label>
+                <input id={WasmInputId.translationX}
+                       type="range"
+                       min={-2}
+                       max={2}
+                       bind:value={translationX}
+                       step={.01}/>
+              </div>
+              <div class="w-full flex flex-col justify-between items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.translationY}>
+                  <div> Y </div>
+                  <div> {translationY} </div>
+                </label>
+                <input id={WasmInputId.translationY}
+                       type="range"
+                       min={-2}
+                       max={2}
+                       bind:value={translationY}
+                       step={.01}/>
+              </div>
+              <!-- TODO: impliment perspective shifting in WebGl -->
+              <!-- <div class="w-full flex flex-col justify-between items-stretch"> -->
+              <!--   <label class="slider_label flex justify-between"  -->
+              <!--          for={WasmInputId.translationZ}> -->
+              <!--     <div> Z </div> -->
+              <!--     <div> {translationZ} </div> -->
+              <!--   </label> -->
+              <!--   <input id={WasmInputId.translationZ} -->
+              <!--          type="range" -->
+              <!--          min={-2} -->
+              <!--          max={2} -->
+              <!--          bind:value={translationZ} -->
+              <!--          step={.01}/> -->
+              <!-- </div> -->
+            </div>
             <div slot="mouseTracking">
               <MouseTracking currOption={currMouseTrackingOption}>
                 <div slot="hiddenInput">

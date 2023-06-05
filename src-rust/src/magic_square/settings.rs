@@ -78,11 +78,10 @@ pub struct Settings {
     pub y_axis_y_rot_coeff: f32,
     pub y_axis_z_rot_coeff: f32,
 
+    pub translation_x: f32,
+    pub translation_y: f32,
+    pub translation_z: f32,
 
-    // color_gradient: f32,
-
-    // radius_init: f32,
-    // radius_step: f32,
 
     // // cache
     // cache_max_idx: usize, // 0..50
@@ -114,11 +113,14 @@ impl Settings {
             color_2: [0.0, 1.0, 1.0, 1.0],
             color_3: [1.0, 0.0, 0.5, 1.0],
             color_4: [1.0, 0.1, 1.0, 1.0],
-            color_5: [0.0, 0.2, 0.14, 1.0],
+            color_5: [0.0, 0.9, 0.64, 1.0],
             color_6: [0.0, 1.0, 1.0, 1.0],
-            color_7: [0.10, 0.14, 0.225, 1.0],
+            color_7: [0.80, 0.44, 0.925, 1.0],
             color_8: [0.0, 0.1, 1.0, 1.0],
 
+            translation_x: 0.0,
+            translation_y: 0.0,
+            translation_z: 0.0,
         }
     }
 

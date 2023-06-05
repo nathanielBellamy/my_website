@@ -300,12 +300,36 @@ impl MagicSquare {
                 ),
             );
 
+            let translation_x: f32 = ui_buffer.settings.translation_x;
+            let translation_y: f32 = - ui_buffer.settings.translation_y;
+            let translation_z: f32 = - ui_buffer.settings.translation_z;
+
             let translation = match ui_buffer.settings.mouse_tracking {
-                MouseTracking::On => Translation { x: mouse_pos_buffer[0], y: - mouse_pos_buffer[1], z: 0.0 },
-                MouseTracking::Off => Translation { x: 0.0, y: 0.0, z: 0.0 },
-                MouseTracking::InvX =>  Translation { x: - mouse_pos_buffer[0], y: - mouse_pos_buffer[1], z: 0.0 },
-                MouseTracking::InvY =>  Translation { x: mouse_pos_buffer[0], y: mouse_pos_buffer[1], z: 0.0 },
-                MouseTracking::InvXY =>  Translation { x: - mouse_pos_buffer[0], y: mouse_pos_buffer[1], z: 0.0 },
+                MouseTracking::On => Translation { 
+                    x: translation_x + mouse_pos_buffer[0], 
+                    y: translation_y - mouse_pos_buffer[1], 
+                    z: translation_z
+                },
+                MouseTracking::Off => Translation { 
+                    x: translation_x, 
+                    y: translation_y, 
+                    z: translation_z 
+                },
+                MouseTracking::InvX =>  Translation { 
+                    x: - mouse_pos_buffer[0], 
+                    y: - mouse_pos_buffer[1], 
+                    z: 0.0 
+                },
+                MouseTracking::InvY =>  Translation { 
+                    x: mouse_pos_buffer[0], 
+                    y: mouse_pos_buffer[1], 
+                    z: 0.0 
+                },
+                MouseTracking::InvXY =>  Translation { 
+                    x: - mouse_pos_buffer[0], 
+                    y: mouse_pos_buffer[1], 
+                    z: 0.0 
+                },
             };
 
                 // let hexagon = Geometry::hexagon(
