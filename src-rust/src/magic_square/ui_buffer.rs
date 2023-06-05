@@ -1,20 +1,16 @@
-use web_sys::HtmlInputElement;
-use wasm_bindgen::JsCast;
 use serde::{Deserialize, Serialize};
 use crate::magic_square::settings::Settings;
 use crate::magic_square::ui_manifest::{
-    INPUT_IDS,
     INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8,
     INPUT_DRAW_PATTERN, INPUT_MOUSE_TRACKING,
     INPUT_RADIUS_MIN, INPUT_RADIUS_STEP,
+    INPUT_X_ROT_BASE, INPUT_Y_ROT_BASE, INPUT_Z_ROT_BASE,
     INPUT_X_ROT_SPREAD, INPUT_Y_ROT_SPREAD, INPUT_Z_ROT_SPREAD,
     INPUT_X_AXIS_X_ROT_COEFF, INPUT_X_AXIS_Y_ROT_COEFF, INPUT_X_AXIS_Z_ROT_COEFF,
     INPUT_Y_AXIS_X_ROT_COEFF, INPUT_Y_AXIS_Y_ROT_COEFF, INPUT_Y_AXIS_Z_ROT_COEFF,
     INPUT_TRANSLATION_X, INPUT_TRANSLATION_Y, INPUT_TRANSLATION_Z
 };
 
-use crate::magic_square::main::MagicSquare;
-use crate::magic_square::main::log;
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub struct UiBuffer {
@@ -72,46 +68,89 @@ impl UiBuffer {
                 self.settings.mouse_tracking = Settings::mouse_tracking_from_string(val)
             },
             INPUT_RADIUS_MIN => {
-                self.settings.radius_min = val.parse::<f32>().unwrap() 
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.radius_min = val
+                }
             },
             INPUT_RADIUS_STEP => {
-                self.settings.radius_step = val.parse::<f32>().unwrap()
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.radius_step = val
+                }
+            },
+            INPUT_X_ROT_BASE => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.x_rot_base = val
+                }
+            },
+            INPUT_Y_ROT_BASE => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.y_rot_base = val
+                }
+            },
+            INPUT_Z_ROT_BASE => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.z_rot_base = val
+                }
             },
             INPUT_X_ROT_SPREAD => {
-                self.settings.x_rot_spread = val.parse::<f32>().unwrap()
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.x_rot_spread = val
+                }
             },
             INPUT_Y_ROT_SPREAD => {
-                self.settings.y_rot_spread = val.parse::<f32>().unwrap()
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.y_rot_spread = val
+                }
             },
             INPUT_Z_ROT_SPREAD => {
-                self.settings.z_rot_spread = val.parse::<f32>().unwrap()
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.z_rot_spread = val
+                }
             },
             INPUT_X_AXIS_X_ROT_COEFF => {
-                self.settings.x_axis_x_rot_coeff = val.parse::<f32>().unwrap()
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.x_axis_x_rot_coeff = val
+                }
             }, 
             INPUT_X_AXIS_Y_ROT_COEFF => {
-                self.settings.x_axis_y_rot_coeff = val.parse::<f32>().unwrap()
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.x_axis_y_rot_coeff = val
+                }
             }, 
             INPUT_X_AXIS_Z_ROT_COEFF => {
-                self.settings.x_axis_z_rot_coeff = val.parse::<f32>().unwrap()
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.x_axis_z_rot_coeff = val
+                }
             },
             INPUT_Y_AXIS_X_ROT_COEFF => {
-                self.settings.y_axis_x_rot_coeff = val.parse::<f32>().unwrap()
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.y_axis_x_rot_coeff = val
+                }
             }, 
             INPUT_Y_AXIS_Y_ROT_COEFF => {
-                self.settings.y_axis_y_rot_coeff = val.parse::<f32>().unwrap()
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.y_axis_y_rot_coeff = val
+                }
             }, 
             INPUT_Y_AXIS_Z_ROT_COEFF => {
-                self.settings.y_axis_z_rot_coeff = val.parse::<f32>().unwrap()
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.y_axis_z_rot_coeff = val
+                }
             },
             INPUT_TRANSLATION_X => {
-                self.settings.translation_x = val.parse::<f32>().unwrap()
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.translation_x = val
+                }
             },
             INPUT_TRANSLATION_Y => {
-                self.settings.translation_y = val.parse::<f32>().unwrap()
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.translation_y = val
+                }
             },
             INPUT_TRANSLATION_Z => {
-                self.settings.translation_z = val.parse::<f32>().unwrap()
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.translation_z = val
+                }
             },
             _ => {}
 

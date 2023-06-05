@@ -65,6 +65,10 @@ pub struct Settings {
     // mouse settings
     // MouseFollow - Always, Click + Drag, DoubleClick On/Off
 
+    pub x_rot_base: f32,
+    pub y_rot_base: f32,
+    pub z_rot_base: f32,
+
     pub x_rot_spread: f32,
     pub y_rot_spread: f32,
     pub z_rot_spread: f32,
@@ -93,6 +97,10 @@ impl Settings {
         Settings {
             draw_pattern: DrawPattern::Out8,
             mouse_tracking: MouseTracking::Off,
+            
+            x_rot_base: 0.0,
+            y_rot_base: 0.0,
+            z_rot_base: 0.0,
 
             x_rot_spread: 0.0,
             y_rot_spread: 0.0, 

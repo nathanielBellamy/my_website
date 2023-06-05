@@ -35,6 +35,7 @@ export const localeEs: any = {
       translation: "traslado"
     },
     main: {
+      base: "base",
       minimum: "mínimo",
       spread: "desparramar",
       step: "paso"

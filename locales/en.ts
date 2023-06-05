@@ -42,6 +42,7 @@ export const localeEn: any = {
       translation: "translation"
     },
     main: {
+      base: "base",
       minimum: "minimum",
       spread: "spread",
       step: "step"

@@ -35,6 +35,7 @@ export const localeFr: any = {
       translation: "translation"
     },
     main: {
+      base: "base",
       minimum: "minimum",
       spread: "diffuser",
       step: "pas"

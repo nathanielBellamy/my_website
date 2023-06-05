@@ -57,14 +57,17 @@
     color7 = "magic_square_input_color_7",
     color8 = "magic_square_input_color_8",
     mouseTracking = "magic_square_input_mouse_tracking",
-    radiusMin="magic_square_input_radius_min",
-    radiusStep="magic_square_input_radius_step",
+    radiusMin = "magic_square_input_radius_min",
+    radiusStep = "magic_square_input_radius_step",
+    pitchBase="magic_square_input_y_rot_base",
     pitchSpread="magic_square_input_y_rot_spread",
     pitchMouseX="magic_square_input_x_axis_y_rot_coeff",
     pitchMouseY="magic_square_input_y_axis_y_rot_coeff",
+    rollBase="magic_square_input_x_rot_base",
     rollSpread="magic_square_input_x_rot_spread",
     rollMouseX="magic_square_input_x_axis_x_rot_coeff",
     rollMouseY="magic_square_input_y_axis_x_rot_coeff",
+    yawBase="magic_square_input_z_rot_base",
     yawSpread="magic_square_input_z_rot_spread",
     yawMouseX="magic_square_input_x_axis_z_rot_coeff",
     yawMouseY="magic_square_input_y_axis_z_rot_coeff",
@@ -175,25 +178,31 @@
   }
 
   // ROTATION
+  let pitchBase: number
   let pitchSpread: number
   let pitchMouseX: number
   let pitchMouseY: number
+  let rollBase: number
   let rollSpread: number  
   let rollMouseX: number  
-  let rollMouseY: number  
+  let rollMouseY: number
+  let yawBase: number
   let yawSpread: number  
   let yawMouseX: number  
   let yawMouseY: number
 
   function setInitialRotationVars(initialUiBuffer: any) {
+    pitchBase = round2(initialUiBuffer.settings.y_rot_base)
     pitchSpread = round2(initialUiBuffer.settings.y_rot_spread)
     pitchMouseX = round2(initialUiBuffer.settings.x_axis_y_rot_coeff)
     pitchMouseY = round2(initialUiBuffer.settings.y_axis_y_rot_coeff)
-    rollSpread  = round2(initialUiBuffer.settings.x_rot_spread)
-    rollMouseX  = round2(initialUiBuffer.settings.x_axis_x_rot_coeff)
-    rollMouseY  = round2(initialUiBuffer.settings.y_axis_x_rot_coeff)
-    yawSpread  = round2(initialUiBuffer.settings.z_rot_spread)
-    yawMouseX  = round2(initialUiBuffer.settings.x_axis_z_rot_coeff)
+    rollBase = round2(initialUiBuffer.settings.x_rot_base)
+    rollSpread = round2(initialUiBuffer.settings.x_rot_spread)
+    rollMouseX = round2(initialUiBuffer.settings.x_axis_x_rot_coeff)
+    rollMouseY = round2(initialUiBuffer.settings.y_axis_x_rot_coeff)
+    yawBase = round2(initialUiBuffer.settings.z_rot_base)
+    yawSpread = round2(initialUiBuffer.settings.z_rot_spread)
+    yawMouseX = round2(initialUiBuffer.settings.x_axis_z_rot_coeff)
     yawMouseY = round2(initialUiBuffer.settings.y_axis_z_rot_coeff)
   }
 
@@ -408,6 +417,20 @@
             <div slot="pitch"
                  class="grow flex flex-col justify-around items-stretch p-2">
               <div class="flex flex-col"
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.pitchBase)}>
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.pitchBase}>
+                  <div> {i18n.t("base", langVal)} </div>
+                  <div> {pitchBase} </div>
+                </label>
+                <input id={WasmInputId.pitchBase}
+                       type="range"
+                       min={-6.33}
+                       max={6.33}
+                       bind:value={pitchBase}
+                       step={.01}/>
+              </div>
+              <div class="flex flex-col"
                    on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.pitchSpread)}>
                 <label class="slider_label flex justify-between" 
                        for={WasmInputId.pitchSpread}>
@@ -453,6 +476,20 @@
             <div slot="roll"
                  class="grow flex flex-col justify-around items-stretch p-2">
               <div class="flex flex-col"
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.rollBase)}>
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.rollBase}>
+                  <div> {i18n.t("base", langVal)} </div>
+                  <div> {rollBase} </div>
+                </label>
+                <input id={WasmInputId.rollBase}
+                       type="range"
+                       min={-6.33}
+                       max={6.33}
+                       bind:value={rollBase}
+                       step={.01}/>
+              </div>
+              <div class="flex flex-col"
                    on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.rollSpread)}>
                 <label class="slider_label flex justify-between" 
                        for={WasmInputId.rollSpread}>
@@ -497,6 +534,20 @@
             </div>
             <div slot="yaw"
                  class="grow flex flex-col justify-around items-stretch p-2">
+              <div class="flex flex-col"
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.yawBase)}>
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.yawBase}>
+                  <div> {i18n.t("base", langVal)} </div>
+                  <div> {yawBase} </div>
+                </label>
+                <input id={WasmInputId.yawBase}
+                       type="range"
+                       min={-6.33}
+                       max={6.33}
+                       bind:value={yawBase}
+                       step={.01}/>
+              </div>
               <div class="flex flex-col"
                    on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.yawSpread)}>
                 <label class="slider_label flex justify-between" 
