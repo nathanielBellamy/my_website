@@ -5,5 +5,5 @@ export enum Module {
   translation = 'translation',
   radius = 'radius',
   rotation = 'rotation',
-  lfos = 'lfos'
+  lfo = 'lfo'
 }

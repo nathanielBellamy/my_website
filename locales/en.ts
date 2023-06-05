@@ -22,20 +22,13 @@ export const localeEn: any = {
   },
   magicSquare: {
     controlModule: {
-      color: "color",
-      drawPattern: "pattern",
       empty: "empty",
-      geometry: 'geometry',
-      lfos: "lfos",
-      radius: "radius",
-      rotation: "rotation",
-      translation: "translation"
     },
     controlRack: {
       color: "color",
       drawPattern: "pattern",
       geometry: 'geometry',
-      lfos: "lfos",
+      lfo: "lfo",
       modules: "modules",
       radius: "radius",
       rotation: "rotation",
@@ -65,7 +58,7 @@ export const localeEn: any = {
       color: "color",
       drawPattern: "pattern",
       geometry: 'geometry',
-      lfos: "lfos",
+      lfo: "lfo",
       radius: "radius",
       rotation: "rotation",
       translation: "translation"

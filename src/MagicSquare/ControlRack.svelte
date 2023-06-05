@@ -18,7 +18,7 @@
     right = 'right'
   }
 
-  let curr_mod_left: Module = Module.lfos
+  let curr_mod_left: Module = Module.lfo
   let curr_mod_right: Module = Module.rotation
 </script>
 
@@ -42,10 +42,10 @@
                        side={Side.left}>
           <slot name="drawPattern"/>
         </ControlModule>
-      {:else if curr_mod_left === Module.lfos}
-        <ControlModule title={i18n.t(Module.lfos, langVal)}
+      {:else if curr_mod_left === Module.lfo}
+        <ControlModule title={i18n.t(Module.lfo, langVal)}
                        side={Side.left}>
-          <slot name="lfos"/>
+          <slot name="lfo"/>
         </ControlModule>
       {:else if curr_mod_left === Module.radius}
         <ControlModule title={i18n.t(Module.radius, langVal)}
@@ -77,10 +77,10 @@
                        side={Side.right}>
           <slot name="drawPattern" />
         </ControlModule>
-      {:else if curr_mod_right === Module.lfos}
-        <ControlModule title={i18n.t(Module.lfos, langVal)}
+      {:else if curr_mod_right === Module.lfo}
+        <ControlModule title={i18n.t(Module.lfo, langVal)}
                        side={Side.right}>
-          <slot name="lfos"/>
+          <slot name="lfo"/>
         </ControlModule>
       {:else if curr_mod_right === Module.radius}
         <ControlModule title={i18n.t(Module.radius, langVal)}

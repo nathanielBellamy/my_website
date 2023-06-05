@@ -4,6 +4,7 @@
   import DrawPattern from './ControlModules/DrawPattern.svelte'
   import Color from './ControlModules/Color.svelte'
   import ControlRack from './ControlRack.svelte'
+  import Lfo from './ControlModules/Lfo.svelte'
   import MouseTracking from './ControlModules/MouseTracking.svelte'
   import Radius from './ControlModules/Radius.svelte'
   import Rotation from  './ControlModules/Rotation.svelte'
@@ -307,6 +308,15 @@
                      class="hidden_input"/>
             </div>
           </DrawPattern>
+        {/if}
+      </div>
+      <div slot="lfo"
+           class="h-full">
+        {#if !renderDataReady}
+          <Loading />
+        {:else}
+          <Lfo>
+          </Lfo>
         {/if}
       </div>
       <div slot="translation"

@@ -28,7 +28,7 @@ export const localeFr: any = {
       color: "color",
       drawPattern: "dispersion",
       geometry: 'géométrie',
-      lfos: "lfos",
+      lfo: "lfo",
       modules: "modules",
       radius: "rayon",
       rotation: "rotation",
@@ -58,7 +58,7 @@ export const localeFr: any = {
       color: "couleur",
       drawPattern: "dispersion",
       geometry: 'géométrie',
-      lfos: "lfos",
+      lfo: "lfo",
       radius: "rayon",
       rotation: "rotation",
       translation: "translation"
