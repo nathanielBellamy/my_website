@@ -35,11 +35,34 @@ export const localeEn: any = {
       translation: "translation"
     },
     main: {
+      amplitude: "amplitude",
       base: "base",
+      frequency: "frequency",
       minimum: "minimum",
-      rate: "rate",
+      phase: "phase",
       spread: "spread",
       step: "step"
+    },
+    lfo: {
+      destination: "destination",
+      step: "step",
+      minimum: "minimum",
+      pitchBase: "pitch base",
+      pitchSpread: "pitch spread",
+      pitchX: "pitch X",
+      pitchY: "pitch Y",
+      rollBase: "roll base",
+      rollSpread: "roll spread",
+      rollX: "roll X",
+      rollY: "roll Y",
+      yawBase: "yaw base",
+      yawSpread: "yaw spread",
+      yawX: "yaw X",
+      yawY: "yaw Y",
+      radius: "radius",
+      rotation: "rotation",
+      shape: "shape",
+      translation: "translation"
     },
     mouseTracking: {
       invert: "invert",

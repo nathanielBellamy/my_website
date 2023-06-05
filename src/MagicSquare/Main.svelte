@@ -57,25 +57,29 @@
     color6 = "magic_square_input_color_6",
     color7 = "magic_square_input_color_7",
     color8 = "magic_square_input_color_8",
-    lfo1Rate = "magic_square_input_lfo_1_rate",
+    lfo1Amp = "magic_square_input_lfo_1_amp",
+    lfo1Dest = "magic_square_input_lfo_1_dest",
+    lfo1Freq = "magic_square_input_lfo_1_freq",
+    lfo1Phase = "magic_square_input_lfo_1_phase",
+    lfo1Shape = "magic_square_input_lfo_1_shape",
     mouseTracking = "magic_square_input_mouse_tracking",
     radiusMin = "magic_square_input_radius_min",
     radiusStep = "magic_square_input_radius_step",
-    pitchBase="magic_square_input_y_rot_base",
-    pitchSpread="magic_square_input_y_rot_spread",
-    pitchMouseX="magic_square_input_x_axis_y_rot_coeff",
-    pitchMouseY="magic_square_input_y_axis_y_rot_coeff",
-    rollBase="magic_square_input_x_rot_base",
-    rollSpread="magic_square_input_x_rot_spread",
-    rollMouseX="magic_square_input_x_axis_x_rot_coeff",
-    rollMouseY="magic_square_input_y_axis_x_rot_coeff",
-    yawBase="magic_square_input_z_rot_base",
-    yawSpread="magic_square_input_z_rot_spread",
-    yawMouseX="magic_square_input_x_axis_z_rot_coeff",
-    yawMouseY="magic_square_input_y_axis_z_rot_coeff",
-    translationX="magic_square_input_translation_x",
-    translationY="magic_square_input_translation_y",
-    translationZ="magic_square_input_translation_z"
+    pitchBase = "magic_square_input_y_rot_base",
+    pitchSpread = "magic_square_input_y_rot_spread",
+    pitchMouseX = "magic_square_input_x_axis_y_rot_coeff",
+    pitchMouseY = "magic_square_input_y_axis_y_rot_coeff",
+    rollBase = "magic_square_input_x_rot_base",
+    rollSpread = "magic_square_input_x_rot_spread",
+    rollMouseX = "magic_square_input_x_axis_x_rot_coeff",
+    rollMouseY = "magic_square_input_y_axis_x_rot_coeff",
+    yawBase = "magic_square_input_z_rot_base",
+    yawSpread = "magic_square_input_z_rot_spread",
+    yawMouseX = "magic_square_input_x_axis_z_rot_coeff",
+    yawMouseY = "magic_square_input_y_axis_z_rot_coeff",
+    translationX = "magic_square_input_translation_x",
+    translationY = "magic_square_input_translation_y",
+    translationZ = "magic_square_input_translation_z"
   }
 
   export let sideLength: number = 0.0
@@ -142,11 +146,18 @@
   }
 
   // LFO
-
-  let lfo1Rate: number
+  let lfo1Amp: number
+  let lfo1Dest: number
+  let lfo1Freq: number
+  let lfo1Phase: number
+  let lfo1Shape: number
   
   function setInitialLfoVars(initialUiBuffer: any) {
-    lfo1Rate = initialUiBuffer.settings.lfo_1_rate
+    lfo1Amp = initialUiBuffer.settings.lfo_1_amp
+    lfo1Dest = initialUiBuffer.settings.lfo_1_dest
+    lfo1Freq = initialUiBuffer.settings.lfo_1_freq
+    lfo1Phase = initialUiBuffer.settings.lfo_1_phase
+    lfo1Shape = initialUiBuffer.settings.lfo_1_shape
   }
 
   // TRANSLATION
@@ -326,19 +337,52 @@
           <Loading />
         {:else}
           <Lfo>
-            <div  class="p-5 grow flex flex-col justify-around items-stretch"
-                 slot="lfoSliders">
-              <div class="w-full flex flex-col justify-between items-stretch">
+            <div class="w-full h-full p-5 grow flex flex-col justify-around items-stretch"
+                 slot="lfo1">
+              <!-- hidden input for destination select  -->
+              <input id={WasmInputId.lfo1Dest}
+                     bind:value={lfo1Dest}
+                     class="hidden_input"/>
+              <input id={WasmInputId.lfo1Shape}
+                     bind:value={lfo1Shape}
+                     class="hidden_input"/>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
                 <label class="slider_label flex justify-between" 
-                       for={WasmInputId.lfo1Rate}>
-                  <div> {i18n.t("rate", langVal)} </div>
-                  <div> 0 </div>
+                       for={WasmInputId.lfo1Freq}>
+                  <div> {i18n.t("frequency", langVal)} </div>
+                  <div> {lfo1Freq} </div>
                 </label>
-                <input id={WasmInputId.lfo1Rate}
+                <input id={WasmInputId.lfo1Freq}
                        type="range"
-                       min={-2}
-                       max={2}
-                       bind:value={lfo1Rate}
+                       min={1.0}
+                       max={20.0}
+                       bind:value={lfo1Freq}
+                       step={.01}/>
+              </div>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.lfo1Amp}>
+                  <div> {i18n.t("amplitude", langVal)} </div>
+                  <div> {lfo1Amp} </div>
+                </label>
+                <input id={WasmInputId.lfo1Amp}
+                       type="range"
+                       min={0}
+                       max={1}
+                       bind:value={lfo1Amp}
+                       step={.01}/>
+              </div>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.lfo1Phase}>
+                  <div> {i18n.t("phase", langVal)} </div>
+                  <div> {lfo1Phase} </div>
+                </label>
+                <input id={WasmInputId.lfo1Phase}
+                       type="range"
+                       min={-3.14159}
+                       max={3.13159}
+                       bind:value={lfo1Phase}
                        step={.01}/>
               </div>
             </div>

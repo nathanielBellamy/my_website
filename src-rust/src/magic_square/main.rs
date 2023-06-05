@@ -83,7 +83,7 @@ impl MagicSquare {
                 [Shape::None; CACHE_CAPACITY]
             );
 
-        let mut geometry_cache = Rc::new(RefCell::new(geometry_cache));
+        let geometry_cache = Rc::new(RefCell::new(geometry_cache));
         // )); 
         
         let form = MagicSquare::form();
@@ -172,28 +172,27 @@ impl MagicSquare {
             closure.forget();
         }
 
-        {
-            let magic_square = magic_square.clone();
-            // let mouse_pos_buffer = &mouse_pos_buffer;
-            let geometry_cache = geometry_cache.clone();
-            let mouse_pos_buffer = mouse_pos_buffer.clone();
-            let ui_buffer = ui_buffer.clone();
+        // {
+        //     let magic_square = magic_square.clone();
+        //     let geometry_cache = geometry_cache.clone();
+        //     let mouse_pos_buffer = mouse_pos_buffer.clone();
+        //     let ui_buffer = ui_buffer.clone();
 
-            // set up render listener
-            let closure = Closure::<dyn FnMut(_)>::new(move |_event: web_sys::Event| {
-                MagicSquare::render_all_lines(
-                    &mouse_pos_buffer,
-                    &ui_buffer.clone().borrow(), 
-                    &geometry_cache,
-                );
-            });
+        //     // set up render listener
+        //     let closure = Closure::<dyn FnMut(_)>::new(move |_event: web_sys::Event| {
+        //         MagicSquare::render_all_lines(
+        //             &mouse_pos_buffer,
+        //             &ui_buffer.clone().borrow(), 
+        //             &geometry_cache,
+        //         );
+        //     });
 
-            magic_square.add_event_listener_with_callback(
-                "render",
-                closure.as_ref().unchecked_ref()
-            ).unwrap();
-            closure.forget();
-        }
+        //     magic_square.add_event_listener_with_callback(
+        //         "render",
+        //         closure.as_ref().unchecked_ref()
+        //     ).unwrap();
+        //     closure.forget();
+        // }
 
         {
             // set up animation loop
@@ -221,12 +220,15 @@ impl MagicSquare {
                     color_idx_offset_delay[0] = color_idx_offset - 1_usize % 8;
                     color_idx_offset_delay[1] = 0;
                 }
-                // TODO SOON: DEBUG cancelAnimationFrame
-                // seemingly passing valid requestId back to js
-                // but passing the id to cancleAnimationFrame in onDestroy callback
-                // does not seem to be cancelling the animation frame
-                // thus we can wind up with multiple (performance killing) instances
-                // by navigating back and forth
+
+                // compute
+                MagicSquare::render_all_lines(
+                    &mouse_pos_buffer,
+                    &ui_buffer.clone().borrow(), 
+                    &geometry_cache,
+                );
+                
+                // display
                 for idx in 0..max_idx {
                     MagicSquare::render(
                         geometry_cache.borrow().gl_vertices(idx), 
@@ -234,6 +236,7 @@ impl MagicSquare {
                         &context
                     ).expect("Render error");
                 }
+
                 MagicSquare::request_animation_frame(f.borrow().as_ref().unwrap());
             }));
 
@@ -244,7 +247,7 @@ impl MagicSquare {
         //     // hack to trigger initial write of ui_buffer to localStorage
         //     &web_sys::Event::new("input").unwrap()
         // ).unwrap();
-        magic_square.dispatch_event(&web_sys::Event::new("render").unwrap()).unwrap();
+        // magic_square.dispatch_event(&web_sys::Event::new("render").unwrap()).unwrap();
 
         let to_js = ui_buffer.clone().borrow().clone();
         serde_wasm_bindgen::to_value(&to_js).unwrap()

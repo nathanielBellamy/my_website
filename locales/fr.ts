@@ -34,10 +34,18 @@ export const localeFr: any = {
       rotation: "rotation",
       translation: "translation"
     },
+    lfo: {
+      radius: "rayon",
+      rotation: "rotation",
+      translation: "translation"
+    },
     main: {
+      amplitude: "amplitude",
       base: "base",
+      frequency: "fréquence",
       minimum: "minimum",
-      rate: "vitesse",
+      phase: "phase",
+      shape: "forme",
       spread: "diffuser",
       step: "pas"
     },

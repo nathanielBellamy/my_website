@@ -20,6 +20,11 @@ export const localeEs: any = {
       title: "Que hay aqui?"
     }
   },
+  lfo: {
+    radius: "radio",
+    rotation: "rotación",
+    translation: "traslado"
+  },
   magicSquare: {
     controlModule: {
       empty: "vacío",
@@ -35,9 +40,12 @@ export const localeEs: any = {
       translation: "traslado"
     },
     main: {
+      amplitude: "amplitud",
       base: "base",
+      frequency: "frecuencia",
       minimum: "mínimo",
-      rate: "velocidad",
+      phase: "fase",
+      shape: "forma",
       spread: "desparramar",
       step: "paso"
     },

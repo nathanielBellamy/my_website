@@ -1,6 +1,5 @@
 use crate::magic_square::vertices::VertexArr;
 use crate::magic_square::geometry::Shape;
-use crate::magic_square::main::log;
 
 pub const CACHE_CAPACITY: usize = 50;
 

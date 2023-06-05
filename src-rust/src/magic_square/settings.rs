@@ -187,8 +187,7 @@ impl Settings {
             DrawPattern::In5 => "In5".to_string(),
             DrawPattern::In6 => "In6".to_string(),
             DrawPattern::In7 => "In7".to_string(),
-            DrawPattern::In8 => "In8".to_string(),
-            _ => "Fix8".to_string()
+            DrawPattern::In8 => "In8".to_string()
         }
     }
 
