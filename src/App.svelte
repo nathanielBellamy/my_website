@@ -6,7 +6,7 @@
   import { I18n, Lang } from "./I18n"
   import { lang } from "./stores/lang"
   
-  let i18n = new I18n
+  let i18n = new I18n("app")
   let langVal: Lang
 
   lang.subscribe( val => langVal = val)
@@ -35,20 +35,20 @@
 <nav class="nav_bar flex flex-row justify-between items-stretch">
   <div class="links flex justify-between items-stretch">
     <Link href="/" 
-          title={i18n.t("app/nav/home", langVal)}
+          title={i18n.t("nav/home", langVal)}
           onClick={() => handleClick("home")}/> 
     <Link href="/about" 
-          title={i18n.t("app/nav/about", langVal)}
+          title={i18n.t("nav/about", langVal)}
           onClick={() => handleClick("about")}/>
     <Link href="/magic_square" 
-          title={i18n.t("app/nav/magicSquare", langVal)}
+          title={i18n.t("nav/magicSquare", langVal)}
           onClick={() => handleClick("magicSquare")}/> 
     <Link href="/give_me_a_sine" 
-          title={i18n.t("app/nav/giveMeASine", langVal)}
+          title={i18n.t("nav/giveMeASine", langVal)}
           onClick={() => handleClick("giveMeASine")}/>
   </div>
   <div class="curr_section hidden md:block">
-    {i18n.t(`app/nav/${currentSection}`, langVal)}
+    {i18n.t(`nav/${currentSection}`, langVal)}
   </div>
 </nav>
 

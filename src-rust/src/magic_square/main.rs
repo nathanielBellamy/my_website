@@ -278,31 +278,33 @@ impl MagicSquare {
     ) {
         let max_idx = Settings::max_idx_from_draw_pattern(ui_buffer.settings.draw_pattern);
         let mouse_pos_buffer = *mouse_pos_buffer.clone().borrow();
+        let translation_x: f32 = ui_buffer.settings.translation_x;
+        let translation_y: f32 = ui_buffer.settings.translation_y;
+        let translation_z: f32 = ui_buffer.settings.translation_z;
+
         for idx in 0..max_idx { // geometry_cache.max_idx + 1 { //TODO: settings.cache_per
             let rot_seq = RotationSequence::new(
                 Rotation::new(
                     Axis::X, 
-                    mouse_pos_buffer[0] * ui_buffer.settings.x_axis_x_rot_coeff
-                        + mouse_pos_buffer[1] * ui_buffer.settings.y_axis_x_rot_coeff
+                    (mouse_pos_buffer[0] + translation_x) * ui_buffer.settings.x_axis_x_rot_coeff
+                        + (mouse_pos_buffer[1] + translation_y) * ui_buffer.settings.y_axis_x_rot_coeff
                         + idx as f32 * ui_buffer.settings.x_rot_spread
                 ),
                 Rotation::new(
                     Axis::Y,
-                    mouse_pos_buffer[0] * ui_buffer.settings.x_axis_y_rot_coeff
-                        + mouse_pos_buffer[1] * ui_buffer.settings.y_axis_y_rot_coeff
+                    (mouse_pos_buffer[0] + translation_x) * ui_buffer.settings.x_axis_y_rot_coeff
+                        + (mouse_pos_buffer[1] + translation_y) * ui_buffer.settings.y_axis_y_rot_coeff
                         + idx as f32 * ui_buffer.settings.y_rot_spread
                 ),
                 Rotation::new(
                     Axis::Z,
-                    mouse_pos_buffer[0] * ui_buffer.settings.x_axis_z_rot_coeff
-                        + mouse_pos_buffer[1] * ui_buffer.settings.y_axis_z_rot_coeff
+                    (mouse_pos_buffer[0] + translation_x) * ui_buffer.settings.x_axis_z_rot_coeff
+                        + (mouse_pos_buffer[1] + translation_y) * ui_buffer.settings.y_axis_z_rot_coeff
                         + idx as f32 * ui_buffer.settings.z_rot_spread
                 ),
             );
 
-            let translation_x: f32 = ui_buffer.settings.translation_x;
-            let translation_y: f32 = - ui_buffer.settings.translation_y;
-            let translation_z: f32 = - ui_buffer.settings.translation_z;
+
 
             let translation = match ui_buffer.settings.mouse_tracking {
                 MouseTracking::On => Translation { 
@@ -316,19 +318,19 @@ impl MagicSquare {
                     z: translation_z 
                 },
                 MouseTracking::InvX =>  Translation { 
-                    x: - mouse_pos_buffer[0], 
-                    y: - mouse_pos_buffer[1], 
-                    z: 0.0 
+                    x: translation_x - mouse_pos_buffer[0], 
+                    y: translation_y - mouse_pos_buffer[1], 
+                    z: translation_z
                 },
                 MouseTracking::InvY =>  Translation { 
-                    x: mouse_pos_buffer[0], 
-                    y: mouse_pos_buffer[1], 
-                    z: 0.0 
+                    x: translation_x + mouse_pos_buffer[0], 
+                    y: translation_y + mouse_pos_buffer[1], 
+                    z: translation_z
                 },
                 MouseTracking::InvXY =>  Translation { 
-                    x: - mouse_pos_buffer[0], 
-                    y: mouse_pos_buffer[1], 
-                    z: 0.0 
+                    x: translation_x - mouse_pos_buffer[0], 
+                    y: translation_y + mouse_pos_buffer[1], 
+                    z: translation_z
                 },
             };
 

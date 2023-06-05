@@ -21,14 +21,54 @@ export const localeFr: any = {
     }
   },
   magicSquare: {
+    controlModule: {
+      color: "color",
+      drawPattern: "pattern",
+      empty: "vide",
+      geometry: 'geometry',
+      lfos: "lfos",
+      radius: "radius",
+      rotation: "rotation",
+      translation: "translation"
+    },
+    controlRack: {
+      color: "color",
+      drawPattern: "pattern",
+      geometry: 'geometry',
+      lfos: "lfos",
+      modules: "modules",
+      radius: "radius",
+      rotation: "rotation",
+      translation: "translation"
+    },
+    main: {
+      spread: "diffuser",
+    },
     mouseTracking: {
-      invert: "INVERSER",
-      mouse: "Souris",
-      none: "Aucun"
+      invert: "inverse",
+      mouse: "souris",
+      none: "aucun",
+      on: "marche",
+      off: "arrêt"
+    },
+    rotation: {
+      pitch: "tangage",
+      roll: "roulis",
+      yaw: "lacet"
+    },
+    select: {
+      left: "gauche",
+      right: "droite",
+      color: "couleur",
+      drawPattern: "dispersion",
+      geometry: 'géométrie',
+      lfos: "lfos",
+      radius: "rayon",
+      rotation: "rotation",
+      translation: "translation"
     }
   },
   misc: {
-    on: "Marche",
-    off: "Arrêt"
+
   }
 }

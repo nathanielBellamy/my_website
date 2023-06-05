@@ -8,6 +8,13 @@
   import Radius from './ControlModules/Radius.svelte'
   import Rotation from  './ControlModules/Rotation.svelte'
   import Translation from './ControlModules/Translation.svelte'
+  // INIT LANG BOILER PLATE
+  import { I18n, Lang } from '../I18n'
+  import { lang } from '../stores/lang'
+
+  const i18n = new I18n('magicSquare/main')
+  let langVal: Lang
+  lang.subscribe(val => langVal = val)
   // this component will be large
   // the decision was made to optimize for minimal plumbing
   // this component instantiates the wasm module and retrieves the initial UI values from it
@@ -132,12 +139,12 @@
   // TRANSLATION
   let translationX: number
   let translationY: number
-  let translationZ: number
+  // let translationZ: number
 
   function setInitialTranslationVars(initialUiBuffer: any) {
     translationX = initialUiBuffer.settings.translation_x
     translationY = initialUiBuffer.settings.translation_y
-    translationZ = initialUiBuffer.settings.translation_z
+    // translationZ = initialUiBuffer.settings.translation_z
   }
 
   // MOUSE TRACKING
@@ -299,7 +306,8 @@
           <Loading />
         {:else}
           <Translation>
-            <div slot="xyzSliders">
+            <div  class="p-5 grow flex flex-col justify-around items-stretch"
+                  slot="xyzSliders">
               <div class="w-full flex flex-col justify-between items-stretch">
                 <label class="slider_label flex justify-between" 
                        for={WasmInputId.translationX}>
@@ -326,7 +334,7 @@
                        bind:value={translationY}
                        step={.01}/>
               </div>
-              <!-- TODO: impliment perspective shifting in WebGl -->
+              <!-- TODO: impliment depth perspective shifting in WebGl -->
               <!-- <div class="w-full flex flex-col justify-between items-stretch"> -->
               <!--   <label class="slider_label flex justify-between"  -->
               <!--          for={WasmInputId.translationZ}> -->
@@ -359,32 +367,35 @@
           <Loading />
         {:else}
           <Radius>
-            <div slot="min">
-              <label class="slider_label flex justify-between" 
-                     for={WasmInputId.radiusMin}>
-                <div> Min </div>
-                <div> {radiusMin} </div>
-              </label>
-              <input id={WasmInputId.radiusMin}
-                     type="range"
-                     min={0.1}
-                     max={1.1}
-                     bind:value={radiusMin}
-                     step={.01}/>
-            </div>
-            <div slot="step">
-              <label class="slider_label flex justify-between" 
-                     for={WasmInputId.radiusStep}>
-                <div> Step </div>
-                <div> {radiusStep} </div>
-              </label>
-              <input id={WasmInputId.radiusStep}
-                     type="range"
-                     min={0.01}
-                     max={0.5}
-                     bind:value={radiusStep}
-                     step={.01}/>
+            <div  class="p-5 grow flex flex-col justify-around items-stretch"
+                  slot="minStepSliders">
+              <div class="w-full flex flex-col justify-between items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.radiusMin}>
+                  <div> Min </div>
+                  <div> {radiusMin} </div>
+                </label>
+                <input id={WasmInputId.radiusMin}
+                       type="range"
+                       min={0.1}
+                       max={1.1}
+                       bind:value={radiusMin}
+                       step={.01}/>
               </div>
+              <div class="w-full flex flex-col justify-between items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.radiusStep}>
+                  <div> Step </div>
+                  <div> {radiusStep} </div>
+                </label>
+                <input id={WasmInputId.radiusStep}
+                       type="range"
+                       min={0.01}
+                       max={0.5}
+                       bind:value={radiusStep}
+                       step={.01}/>
+              </div>
+            </div>
           </Radius>
         {/if}
       </div>
@@ -400,7 +411,7 @@
                    on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.pitchSpread)}>
                 <label class="slider_label flex justify-between" 
                        for={WasmInputId.pitchSpread}>
-                  <div> {"SPREAD"} </div>
+                  <div> {i18n.t("spread", langVal)} </div>
                   <div> {pitchSpread} </div>
                 </label>
                 <input id={WasmInputId.pitchSpread}
@@ -414,7 +425,7 @@
                    on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.pitchMouseX)}>
                 <label class="slider_label flex justify-between" 
                        for={WasmInputId.pitchMouseX}>
-                  <div> {"MOUSE X"} </div>
+                  <div> {"X"} </div>
                   <div> {pitchMouseX} </div>
                 </label>
                 <input id={WasmInputId.pitchMouseX}
@@ -428,7 +439,7 @@
                    on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.pitchMouseY)}>
                 <label class="slider_label flex justify-between" 
                        for={WasmInputId.pitchMouseY}>
-                  <div> {"MOUSE Y"} </div>
+                  <div> {"Y"} </div>
                   <div> {pitchMouseY} </div>
                 </label>
                 <input id={WasmInputId.pitchMouseY}
@@ -445,7 +456,7 @@
                    on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.rollSpread)}>
                 <label class="slider_label flex justify-between" 
                        for={WasmInputId.rollSpread}>
-                  <div> {"SPREAD"} </div>
+                  <div> {i18n.t("spread", langVal)} </div>
                   <div> {rollSpread} </div>
                 </label>
                 <input id={WasmInputId.rollSpread}
@@ -459,7 +470,7 @@
                    on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.rollMouseX)}>
                 <label class="slider_label flex justify-between" 
                        for={WasmInputId.rollMouseX}>
-                  <div> {"MOUSE X"} </div>
+                  <div> {"X"} </div>
                   <div> {rollMouseX} </div>
                 </label>
                 <input id={WasmInputId.rollMouseX}
@@ -473,7 +484,7 @@
                    on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.rollMouseY)}>
                 <label class="slider_label flex justify-between" 
                        for={WasmInputId.rollMouseY}>
-                  <div> {"MOUSE Y"} </div>
+                  <div> {"Y"} </div>
                   <div> {rollMouseY} </div>
                 </label>
                 <input id={WasmInputId.rollMouseY}
@@ -490,7 +501,7 @@
                    on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.yawSpread)}>
                 <label class="slider_label flex justify-between" 
                        for={WasmInputId.yawSpread}>
-                  <div> {"SPREAD"} </div>
+                  <div> {i18n.t("spread", langVal)} </div>
                   <div> {yawSpread} </div>
                 </label>
                 <input id={WasmInputId.yawSpread}
@@ -504,7 +515,7 @@
                    on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.yawMouseX)}>
                 <label class="slider_label flex justify-between" 
                        for={WasmInputId.yawMouseX}>
-                  <div> {"MOUSE X"} </div>
+                  <div> {"X"} </div>
                   <div> {yawMouseX} </div>
                 </label>
                 <input id={WasmInputId.yawMouseX}
@@ -518,7 +529,7 @@
                    on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.yawMouseY)}>
                 <label class="slider_label flex justify-between" 
                        for={WasmInputId.yawMouseY}>
-                  <div> {"MOUSE Y"} </div>
+                  <div> {"Y"} </div>
                   <div> {yawMouseY} </div>
                 </label>
                 <input id={WasmInputId.yawMouseY}
@@ -567,7 +578,6 @@
       width: 100%
       font-weight: text.$fw-l
       font-size: text.$fs-m
-      padding-left: 5%
       padding-right: 5%
 
   .hidden_input

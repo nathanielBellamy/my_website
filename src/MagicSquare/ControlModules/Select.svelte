@@ -1,19 +1,31 @@
 <script lang="ts">
-  export let modules: string[] = []
-  export let curr_mod_left: string = 'color'
-  export let curr_mod_right: string = 'rotation'
+  import { Module } from './Module'
+  import { I18n, Lang } from '../../I18n'
+  import { lang } from '../../stores/lang'
 
-  let sideToSet:string = 'left'
+  let langVal: Lang 
+  lang.subscribe(val => langVal = val)
+  let i18n = new I18n("magicSquare/select")
 
-  function handleModKeydown(e: any, mod: string) {
+  export let curr_mod_left: Module = Module.color
+  export let curr_mod_right: Module = Module.rotation
+
+  enum Side {
+    left = 'left',
+    right = 'right'
+  }
+
+  let sideToSet:Side = Side.left
+
+  function handleModKeydown(e: any, mod: Module) {
     if (e.keyCode === 13){
       setMod(mod)
     }
   }
 
-  function setMod(mod: string) {
+  function setMod(mod: Module) {
     if (mod === curr_mod_left || mod === curr_mod_right) return
-    if (sideToSet == 'left') {
+    if (sideToSet === Side.left) {
       curr_mod_left = mod
     } else {
       curr_mod_right = mod
@@ -30,25 +42,25 @@
 <div class="module_selector flex flex-col">
   <div class="module_selector_side_set flex">
     <button class="side_set side_set_left"
-            class:side_set_left_selected="{sideToSet === 'left'}"
+            class:side_set_left_selected="{sideToSet === Side.left}"
             on:dblclick={() => swap()}
-            on:click={() => sideToSet = 'left'}>
-      LEFT
+            on:click={() => sideToSet = Side.left}>
+      {i18n.t("left", langVal)}
     </button>
     <button class="side_set side_set_right"
-            class:side_set_right_selected="{sideToSet === 'right'}"
+            class:side_set_right_selected="{sideToSet === Side.right}"
             on:dblclick={() => swap()}
-            on:click={() => sideToSet = 'right'}>
-      RIGHT
+            on:click={() => sideToSet = Side.right}>
+      {i18n.t("right", langVal)}
     </button>
   </div>
-  {#each modules as mod}
+  {#each Object.values(Module) as mod}
     <button class="module_option"
             class:selected_left="{curr_mod_left === mod}"
             class:selected_right="{curr_mod_right === mod}"
             on:click={() => setMod(mod)}
             on:keydown={(e) => handleModKeydown(e, mod)}>
-        {mod.toUpperCase()}
+        {i18n.t(mod, langVal)}
       <input id={`mod_radio_${mod}`}
              value={mod}
              type="radio"

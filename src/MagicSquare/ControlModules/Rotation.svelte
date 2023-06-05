@@ -1,4 +1,12 @@
 <script lang="ts">
+  import { I18n, Lang } from '../../I18n'
+  import { lang } from '../../stores/lang'
+
+  let langVal: Lang 
+  lang.subscribe(val => langVal = val)
+  let i18n = new I18n("magicSquare/rotation")
+
+
   enum Freedom {
     pitch = "pitch",
     roll = "roll",
@@ -8,24 +16,24 @@
 
 <div class="h-full rotation_container w-full flex flex-col justify-between items-stretch">
   <div class="grow freedom_group flex gap-2 justify-between items-stretch">
-    <div class="freedom_group_title">
-      {Freedom.pitch.toUpperCase()}
+    <div class="freedom_group_title flex justify-around items-center">
+      {i18n.t(Freedom.pitch, langVal)}
     </div>
     <div class="h-full freedom_group_body flex flex-col justify-around items-stretch">
       <slot name="pitch"/>
     </div>
   </div>
   <div class="grow freedom_group flex gap-2 justify-stretch items-stretch">
-    <div class="freedom_group_title">
-      {Freedom.roll.toUpperCase()}
+    <div class="freedom_group_title flex justify-around items-center">
+      {i18n.t(Freedom.roll, langVal)}
     </div>
     <div class="h-full freedom_group_body flex flex-col justify-around items-stretch">
       <slot name="roll"/>
     </div>
   </div>
   <div class="grow freedom_group flex gap-2 justify-stretch items-stretch">
-    <div class="freedom_group_title">
-      {Freedom.yaw.toUpperCase()}
+    <div class="freedom_group_title flex justify-around items-center">
+      {i18n.t(Freedom.yaw, langVal)}
     </div>
     <div class="h-full freedom_group_body flex flex-col justify-around items-stretch">
       <slot name="yaw" />
@@ -54,7 +62,6 @@
       transform: rotate(-90deg)
       max-width: 15px
       color: color.$blue-7
-      margin-top: 30px
 
     &_body
       width: 90%

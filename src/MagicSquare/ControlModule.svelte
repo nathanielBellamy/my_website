@@ -1,5 +1,13 @@
 <script lang="ts">
-  export let title: string = "EMPTY"
+  // INIT LANG BOILER PLATE
+  import { I18n, Lang } from '../I18n'
+  import { lang } from '../stores/lang'
+
+  const i18n = new I18n('magicSquare/controlModule')
+  let langVal: Lang
+  lang.subscribe(val => langVal = val)
+
+  export let title: string = ""
   export let side: string = ''
 </script>
 
@@ -7,7 +15,11 @@
   <div class="control_module_title"
        class:left="{side == 'left'}"
        class:right="{side == 'right'}">
-    {title}
+    {#if title.length}
+      {title}
+    {:else}
+      {i18n.t("empty", langVal)}
+    {/if}
   </div>
   <div class="control_module_slot_container">
     <slot class="control_module_slot flex flex-col"/> 

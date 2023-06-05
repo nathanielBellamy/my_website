@@ -1,15 +1,4 @@
 <script lang="ts">
-  //TODO: generalize RangeInput
-  // interface RangeInput {
-  //   id: string,
-  //   label: string,
-  //   min: number,
-  //   max: number,
-  //   step: number,
-  //   initialValue: number,
-  //   value: number
-  // }
-
   function handleRadiusChange(e: any, id: string, idx: number) {
     var input = document.getElementById(id)
     input.value = e.detail.value
@@ -18,7 +7,6 @@
 </script>
 
 <div class="h-full flex flex-col justify-around items-stretch">
-  <slot name="min"/>
-  <slot name="step"/>
+  <slot name="minStepSliders"/>
 </div>
 

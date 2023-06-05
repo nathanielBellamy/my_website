@@ -5,7 +5,7 @@
 
   let langVal: Lang 
   lang.subscribe(val => langVal = val)
-  let i18n = new I18n
+  let i18n = new I18n("magicSquare/mouseTracking")
 
   enum MouseTrackingOption {
     on = 'On',
@@ -137,7 +137,7 @@
 <form id={formId}
       class="h-full flex flex-col justify-around items-stretch">
   <h2 class="mouse_tracking_title">
-    {i18n.t("magicSquare/mouseTracking/mouse", langVal)}
+    {i18n.t("mouse", langVal)}
   </h2>
   <div id="mouse_tracking_toggle"
        class="grow flex justify-around items-stretch">
@@ -146,14 +146,14 @@
               class:selected="{toggle === t}"
               on:click={() => handleToggleClick(Toggle[t])}
               on:keydown={(e) => handleToggleKeydown(e, Toggle[t])}>
-          {i18n.t(`misc/${t}`, langVal)}
+          {i18n.t(`${t}`, langVal)}
       </button>
     {/each}
   </div>
   <div id="mouse_tracking_inv"
        class="mouse_tracking_inv grow w-full flex justify-between items-stretch">
-    <div class="mouse_tracking_inv_title">
-      {i18n.t("magicSquare/mouseTracking/invert", langVal)}
+    <div class="mouse_tracking_inv_title ml-2 flex justify-around items-center">
+      {i18n.t("invert", langVal)}
     </div>
     <div class="grow flex flex-col justify-between items stretch">
       <div class="grow flex justify-evenly items-center">
@@ -174,7 +174,7 @@
                   disabled={toggle === Toggle.off}
                   on:click={() => handleInvClick(Inv[i])}
                   on:keydown={(e) => handleInvKeydown(e, Inv[i])}>
-              {i18n.t(`magicSquare/mouseTracking/${i}`, langVal)}
+              {i18n.t(i, langVal)}
           </button>
         {/each}
       </div>
@@ -200,8 +200,6 @@
         color: color.$blue-4
         font-weight: text.$fw-l
         transform: rotate(-90deg)
-        margin-top: 50px
-        margin-left: 20px
         min-width: 25px
         max-width: 25px
 

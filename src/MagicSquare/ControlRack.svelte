@@ -1,86 +1,101 @@
 <script lang="ts">
+  import { Module } from './ControlModules/Module'
   import ControlModule from './ControlModule.svelte'
   import Select from './ControlModules/Select.svelte'
 
-  const modules: string[] = [
-    'color',
-    'drawPattern',
-    'geometry',
-    'translation',
-    'radius',
-    'rotation',
-    'lfos'
-  ]
+  // INIT LANG BOILER PLATE
+  import { I18n, Lang } from '../I18n'
+  import { lang } from '../stores/lang'
 
-  let curr_mod_left: string = 'translation'
-  let curr_mod_right: string = 'rotation'
+  const i18n = new I18n('magicSquare/controlRack')
+  let langVal: Lang
+  lang.subscribe(val => langVal = val)
+
+  $: translationTitle = i18n.t(Module.translation, langVal)
+
+  enum Side {
+    left = 'left',
+    right = 'right'
+  }
+
+  let curr_mod_left: Module = Module.lfos
+  let curr_mod_right: Module = Module.rotation
 </script>
 
 <div id="magic_square_control_rack"
      class="magic_square_control_rack flex flex-row-reverse justify-between">
   <div class="mod_select">
-    <ControlModule title="MODS">
-      <Select modules={modules}
-              bind:curr_mod_left={curr_mod_left}
+    <ControlModule title={i18n.t("modules", langVal)}>
+      <Select bind:curr_mod_left={curr_mod_left}
               bind:curr_mod_right={curr_mod_right}/>
     </ControlModule>
   </div>
   <div class="left_right_slots grid grid-cols-2 gap-2">
     <div class="left_slot">
-      {#if curr_mod_left == 'color'}
-        <ControlModule title="COLOR"
-                       side="left">
+      {#if curr_mod_left === Module.color}
+        <ControlModule title={i18n.t(Module.color, langVal)}
+                       side={Side.left}>
           <slot name="color"/>
         </ControlModule>
-      {:else if curr_mod_left == 'drawPattern'}
-        <ControlModule title="PATTERN"
-                       side="left">
+      {:else if curr_mod_left === Module.drawPattern}
+        <ControlModule title={i18n.t(Module.drawPattern, langVal)}
+                       side={Side.left}>
           <slot name="drawPattern"/>
         </ControlModule>
-      {:else if curr_mod_left == 'translation'}
-        <ControlModule title="TRANSLATION"
-                       side="left">
-          <slot name="translation"/>
+      {:else if curr_mod_left === Module.lfos}
+        <ControlModule title={i18n.t(Module.lfos, langVal)}
+                       side={Side.left}>
+          <slot name="lfos"/>
         </ControlModule>
-      {:else if curr_mod_left == 'radius'}
-        <ControlModule title="RADIUS"
-                       side="left">
+      {:else if curr_mod_left === Module.radius}
+        <ControlModule title={i18n.t(Module.radius, langVal)}
+                       side={Side.left}>
           <slot name="radius" />
         </ControlModule>
-      {:else if curr_mod_left == 'rotation'}
-        <ControlModule title="ROTATION"
-                       side="left">
+      {:else if curr_mod_left === Module.rotation}
+        <ControlModule title={i18n.t(Module.rotation, langVal)}
+                       side={Side.left}>
           <slot name="rotation" />
+        </ControlModule>
+      {:else if curr_mod_left === Module.translation}
+        <ControlModule title="fooo"
+                       side={Side.left}>
+          <slot name="translation"/>
         </ControlModule>
       {:else}
         <ControlModule side="left"/>
       {/if}
     </div>
     <div class="right_slot">
-      {#if curr_mod_right == 'color'}
-        <ControlModule title="COLOR"
-                       side="right">
+      {#if curr_mod_right === Module.color}
+        <ControlModule  title={i18n.t(Module.color, langVal)}
+                       side={Side.left}>
           <slot name="color"/>
         </ControlModule>
-      {:else if curr_mod_right == 'drawPattern'}
-        <ControlModule title="PATTERN"
-                       side="right">
+      {:else if curr_mod_right === Module.drawPattern}
+        <ControlModule title={i18n.t(Module.drawPattern, langVal)}
+                       side={Side.right}>
           <slot name="drawPattern" />
         </ControlModule>
-      {:else if curr_mod_right == 'translation'}
-        <ControlModule title="TRANSLATION"
-                       side="right">
-          <slot name="translation"/>
+      {:else if curr_mod_right === Module.lfos}
+        <ControlModule title={i18n.t(Module.lfos, langVal)}
+                       side={Side.right}>
+          <slot name="lfos"/>
         </ControlModule>
-      {:else if curr_mod_right == 'radius'}
-        <ControlModule title="RADIUS"
-                       side="right">
+      {:else if curr_mod_right === Module.radius}
+        <ControlModule title={i18n.t(Module.radius, langVal)}
+                       side={Side.right}>
           <slot name="radius" />
         </ControlModule>
-      {:else if curr_mod_right == 'rotation'}
-        <ControlModule title="ROTATION"
-                       side="right">
+      {:else if curr_mod_right === Module.rotation}
+        <ControlModule title={i18n.t(Module.rotation, langVal)}
+                       side={Side.right}>
           <slot name="rotation" />
+        </ControlModule>
+      {:else if curr_mod_right == Module.translation}
+        <ControlModule title={i18n.t(Module.translation, langVal)}
+                       side={Side.right}>
+          <slot name="translation"/>
         </ControlModule>
       {:else}
         <ControlModule side="right"/>
