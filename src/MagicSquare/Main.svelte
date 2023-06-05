@@ -372,7 +372,7 @@
               <div class="w-full flex flex-col justify-between items-stretch">
                 <label class="slider_label flex justify-between" 
                        for={WasmInputId.radiusMin}>
-                  <div> Min </div>
+                  <div> {i18n.t("minimum", langVal)} </div>
                   <div> {radiusMin} </div>
                 </label>
                 <input id={WasmInputId.radiusMin}
@@ -385,7 +385,7 @@
               <div class="w-full flex flex-col justify-between items-stretch">
                 <label class="slider_label flex justify-between" 
                        for={WasmInputId.radiusStep}>
-                  <div> Step </div>
+                  <div> {i18n.t("step", langVal)} </div>
                   <div> {radiusStep} </div>
                 </label>
                 <input id={WasmInputId.radiusStep}

@@ -58,7 +58,7 @@
           <slot name="rotation" />
         </ControlModule>
       {:else if curr_mod_left === Module.translation}
-        <ControlModule title="fooo"
+        <ControlModule bind:title={translationTitle}
                        side={Side.left}>
           <slot name="translation"/>
         </ControlModule>

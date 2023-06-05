@@ -4,8 +4,8 @@ export const localeEn: any = {
     nav: {
       home: "Home",
       about: "About",
-      magicSquare: "Magic Square",
-      giveMeASine: "Give Me A Sine"
+      magicSquare: "Magic square",
+      giveMeASine: "Give me a sine"
     }
   },
   home: {
@@ -42,7 +42,9 @@ export const localeEn: any = {
       translation: "translation"
     },
     main: {
+      minimum: "minimum",
       spread: "spread",
+      step: "step"
     },
     mouseTracking: {
       invert: "invert",

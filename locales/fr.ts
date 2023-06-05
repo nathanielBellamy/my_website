@@ -4,8 +4,8 @@ export const localeFr: any = {
     nav: {
       home: "Accueil",
       about: "De Moi",
-      magicSquare: "Carré Magique",
-      giveMeASine: "Donne-Moi Un Sinus"
+      magicSquare: "Carré magique",
+      giveMeASine: "Donne-moi un sinus"
     }
   },
   home: {
@@ -22,27 +22,22 @@ export const localeFr: any = {
   },
   magicSquare: {
     controlModule: {
-      color: "color",
-      drawPattern: "pattern",
       empty: "vide",
-      geometry: 'geometry',
-      lfos: "lfos",
-      radius: "radius",
-      rotation: "rotation",
-      translation: "translation"
     },
     controlRack: {
       color: "color",
-      drawPattern: "pattern",
-      geometry: 'geometry',
+      drawPattern: "dispersion",
+      geometry: 'géométrie',
       lfos: "lfos",
       modules: "modules",
-      radius: "radius",
+      radius: "rayon",
       rotation: "rotation",
       translation: "translation"
     },
     main: {
+      minimum: "minimum",
       spread: "diffuser",
+      step: "pas"
     },
     mouseTracking: {
       invert: "inverse",

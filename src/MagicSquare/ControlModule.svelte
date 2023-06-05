@@ -7,7 +7,7 @@
   let langVal: Lang
   lang.subscribe(val => langVal = val)
 
-  export let title: string = ""
+  export let title: string = ''
   export let side: string = ''
 </script>
 

@@ -3,9 +3,9 @@ export const localeEs: any = {
   app: {
     nav: {
       home: "Inicio",
-      about: "Sobre Mi",
-      magicSquare: "Cuadro Mágico",
-      giveMeASine: "Dame Uno Seno"
+      about: "Sobre mi",
+      magicSquare: "Cuadro mágico",
+      giveMeASine: "Dame uno seno"
     }
   },
   home: {
@@ -22,27 +22,22 @@ export const localeEs: any = {
   },
   magicSquare: {
     controlModule: {
-      color: "color",
-      drawPattern: "pattern",
       empty: "vacío",
-      geometry: 'geometry',
-      lfos: "lfos",
-      radius: "radius",
-      rotation: "rotación",
-      translation: "translation"
     },
     controlRack: {
       color: "color",
-      drawPattern: "pattern",
-      geometry: 'geometry',
+      drawPattern: "dispersión",
+      geometry: 'geometría',
       lfos: "lfos",
       modules: "módulos",
-      radius: "radius",
+      radius: "radio",
       rotation: "rotación",
-      translation: "translation"
+      translation: "traslado"
     },
     main: {
+      minimum: "mínimo",
       spread: "desparramar",
+      step: "paso"
     },
     mouseTracking: {
       invert: "invertir",
