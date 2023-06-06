@@ -69,7 +69,7 @@
     <div class="right_slot">
       {#if curr_mod_right === Module.color}
         <ControlModule  title={i18n.t(Module.color, langVal)}
-                       side={Side.left}>
+                        side={Side.right}>
           <slot name="color"/>
         </ControlModule>
       {:else if curr_mod_right === Module.drawPattern}

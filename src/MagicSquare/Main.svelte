@@ -27,7 +27,7 @@
   // -> ui-related values are stored in JS and bound to pass to ui-logic components
   // -> but input values are bound here
   // -> ui-logic component can retrieve and edit input value
-  // -> ui logic components are forms
+  // -> some ui logic components are forms
   //    -> on submit they set the value in the hidden input and trigger an input event
   //    -> the input event bubbles up triggering an input event on the ui_buffer_form
   //    -> wasm is listening to input events on the ui_buffer_form
@@ -347,7 +347,7 @@
         {#if !renderDataReady}
           <Loading />
         {:else}
-          <Lfo>
+          <Lfo lfo1Active={lfo1Active}>
             <div class="w-full h-full p-5 grow flex flex-col justify-around items-stretch"
                  slot="lfo1">
               <!-- hidden input for destination select  -->
@@ -360,7 +360,7 @@
               <div class="grow w-full flex flex-col justify-center items-stretch">
 
                 <!-- TODO: lfo active/selected colors for buttons  -->
-                <button class:selected={lfo1Active}
+                <button class:active={lfo1Active}
                         on:click={() => handleLfo1ActiveToggle()}>
                   <input id={WasmInputId.lfo1Active}
                          value={lfo1Active}
@@ -737,6 +737,6 @@
   .hidden_input
     display: none
 
-  .selected
-    background-color: color.$blue-7
+  .active
+    background-color: color.$red-5
 </style>

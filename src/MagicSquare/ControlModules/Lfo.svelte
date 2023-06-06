@@ -6,6 +6,11 @@
   lang.subscribe(val => langVal = val)
   let i18n = new I18n("magicSquare/lfo")
 
+  export let lfo1Active: boolean = false
+  export let lfo2Active: boolean = false
+  export let lfo3Active: boolean = false
+  export let lfo4Active: boolean = false
+
   enum Lfo {
     one = "1",
     two = "2",
@@ -24,13 +29,30 @@
 
 <div class="h-full pt-5 pb-5 flex flex-col justify-between items-stretch">
   <div id="magic_square_lfo_select">
-    {#each Object.keys(Lfo) as lfoKey}
-      <button on:click = {() => lfo = Lfo[lfoKey]}
-              class:selected = {lfo === Lfo[lfoKey]}
-              class="pt-2 pb-2 pr-3 pl-3">
-        {Lfo[lfoKey]}
-      </button>
-    {/each}
+    <button on:click = {() => lfo = Lfo.one}
+            class:active = {lfo1Active}
+            class:selected = {lfo === Lfo.one}
+            class="pt-2 pb-2 pr-3 pl-3">
+      {Lfo.one}
+    </button>
+    <button on:click = {() => lfo = Lfo.two}
+            class:active = {lfo2Active}
+            class:selected = {lfo === Lfo.two}
+            class="pt-2 pb-2 pr-3 pl-3">
+      {Lfo.two}
+    </button>
+    <button on:click = {() => lfo = Lfo.three}
+            class:active = {lfo3Active}
+            class:selected = {lfo === Lfo.three}
+            class="pt-2 pb-2 pr-3 pl-3">
+      {Lfo.three}
+    </button>
+    <button on:click = {() => lfo = Lfo.four}
+            class:active = {lfo4Active}
+            class:selected = {lfo === Lfo.four}
+            class="pt-2 pb-2 pr-3 pl-3">
+      {Lfo.four}
+    </button>
   </div>
   <div class="grow pt-5 pb-5 flex flex-col justify-between items-stretch">
     <div class="grow flex flex-col justify-around items-center"
@@ -112,4 +134,7 @@
 
   .selected
     background-color: color.$blue-8
+
+  .active
+    border-color: color.$red-5
 </style>
