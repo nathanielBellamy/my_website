@@ -14,24 +14,25 @@
   }
 
   enum Shape {
-    sawtooth = "Sawtooth",
-    sine = "Sine",
-    square = "Square"
+    sawtooth = "sawtooth",
+    sine = "sine",
+    square = "square"
   }
 
   let lfo: Lfo = Lfo.one
 </script>
 
-<div class="h-full pb-2 flex flex-col justify-between items-stretch">
+<div class="h-full pt-5 pb-5 flex flex-col justify-between items-stretch">
   <div id="magic_square_lfo_select">
     {#each Object.keys(Lfo) as lfoKey}
       <button on:click = {() => lfo = Lfo[lfoKey]}
-              class:selected = {lfo === Lfo[lfoKey]}>
+              class:selected = {lfo === Lfo[lfoKey]}
+              class="pt-2 pb-2 pr-3 pl-3">
         {Lfo[lfoKey]}
       </button>
     {/each}
   </div>
-  <div class="grow flex flex-col justify-between items-stretch">
+  <div class="grow pt-5 pb-5 flex flex-col justify-between items-stretch">
     <div class="grow flex flex-col justify-around items-center"
          class:hidden = {lfo !== Lfo.one}>
       <div class="w-full pl-5 pr-5 flex flex-col justify-around items-stretch">

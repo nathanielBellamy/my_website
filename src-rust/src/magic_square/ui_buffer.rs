@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use crate::magic_square::main::log;
 use crate::magic_square::settings::Settings;
 use crate::magic_square::ui_manifest::{
     INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8,
@@ -8,7 +9,8 @@ use crate::magic_square::ui_manifest::{
     INPUT_X_ROT_SPREAD, INPUT_Y_ROT_SPREAD, INPUT_Z_ROT_SPREAD,
     INPUT_X_AXIS_X_ROT_COEFF, INPUT_X_AXIS_Y_ROT_COEFF, INPUT_X_AXIS_Z_ROT_COEFF,
     INPUT_Y_AXIS_X_ROT_COEFF, INPUT_Y_AXIS_Y_ROT_COEFF, INPUT_Y_AXIS_Z_ROT_COEFF,
-    INPUT_TRANSLATION_X, INPUT_TRANSLATION_Y, INPUT_TRANSLATION_Z
+    INPUT_TRANSLATION_X, INPUT_TRANSLATION_Y, INPUT_TRANSLATION_Z,
+    INPUT_LFO_1_AMP, INPUT_LFO_1_DEST, INPUT_LFO_1_FREQ, INPUT_LFO_1_PHASE, INPUT_LFO_1_SHAPE
 };
 
 
@@ -22,6 +24,10 @@ impl UiBuffer {
         UiBuffer {
             settings: Settings::new(),
         }
+    }
+
+    pub fn copy(&self) -> UiBuffer {
+        UiBuffer { settings: Settings {..self.settings} }
     }
 
     pub fn update(&mut self, input_id: String, val: String) {
@@ -44,9 +50,9 @@ impl UiBuffer {
                         rgba[2].parse::<f32>(),
                         rgba[3].parse::<f32>(),
                     ) {
-                        let r: f32 =  r / 255.0; // CSS uses u8, WebGl uses f32:0.0-1.0
+                        let r: f32 = r / 255.0; // CSS uses u8, WebGl uses f32:0.0-1.0
                         let g: f32 = g / 255.0;
-                        let b: f32 = b /255.0;
+                        let b: f32 = b / 255.0;
                         match input_id.as_str() {
                             // INPUT_A => self.function.a = val.parse::<f64>().unwrap(),
                             INPUT_COLOR_1 => self.settings.color_1 = [r,g,b,a],
@@ -60,96 +66,125 @@ impl UiBuffer {
                             _ => {}
                         }
                     }
-                },
+            },
             INPUT_DRAW_PATTERN => {
-                self.settings.draw_pattern = Settings::draw_pattern_from_string(val)
+                if let Ok(draw_pattern) = Settings::try_into_draw_pattern(val) {
+                    self.settings.draw_pattern = draw_pattern            
+                }
             },
             INPUT_MOUSE_TRACKING => {
-                self.settings.mouse_tracking = Settings::mouse_tracking_from_string(val)
+                if let Ok(mouse_traking) = Settings::try_into_mouse_tracking(val) {
+                    self.settings.mouse_tracking = mouse_traking            
+                }
             },
             INPUT_RADIUS_MIN => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.radius_min = val
+                    self.settings.radius_min = val;
                 }
             },
             INPUT_RADIUS_STEP => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.radius_step = val
+                    self.settings.radius_step = val;
                 }
             },
             INPUT_X_ROT_BASE => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.x_rot_base = val
+                    self.settings.x_rot_base = val;
                 }
             },
             INPUT_Y_ROT_BASE => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.y_rot_base = val
+                    self.settings.y_rot_base = val;
                 }
             },
             INPUT_Z_ROT_BASE => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.z_rot_base = val
+                    self.settings.z_rot_base = val;
                 }
             },
             INPUT_X_ROT_SPREAD => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.x_rot_spread = val
+                    self.settings.x_rot_spread = val;
                 }
             },
             INPUT_Y_ROT_SPREAD => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.y_rot_spread = val
+                    self.settings.y_rot_spread = val;
                 }
             },
             INPUT_Z_ROT_SPREAD => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.z_rot_spread = val
+                    self.settings.z_rot_spread = val;
                 }
             },
             INPUT_X_AXIS_X_ROT_COEFF => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.x_axis_x_rot_coeff = val
+                    self.settings.x_axis_x_rot_coeff = val;
                 }
             }, 
             INPUT_X_AXIS_Y_ROT_COEFF => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.x_axis_y_rot_coeff = val
+                    self.settings.x_axis_y_rot_coeff = val;
                 }
             }, 
             INPUT_X_AXIS_Z_ROT_COEFF => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.x_axis_z_rot_coeff = val
+                    self.settings.x_axis_z_rot_coeff = val;
                 }
             },
             INPUT_Y_AXIS_X_ROT_COEFF => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.y_axis_x_rot_coeff = val
+                    self.settings.y_axis_x_rot_coeff = val;
                 }
             }, 
             INPUT_Y_AXIS_Y_ROT_COEFF => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.y_axis_y_rot_coeff = val
+                    self.settings.y_axis_y_rot_coeff = val;
                 }
             }, 
             INPUT_Y_AXIS_Z_ROT_COEFF => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.y_axis_z_rot_coeff = val
+                    self.settings.y_axis_z_rot_coeff = val;
                 }
             },
             INPUT_TRANSLATION_X => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.translation_x = val
+                    self.settings.translation_x = val;
                 }
             },
             INPUT_TRANSLATION_Y => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.translation_y = val
+                    self.settings.translation_y = val;
                 }
             },
             INPUT_TRANSLATION_Z => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.translation_z = val
+                    self.settings.translation_z = val;
+                }
+            },
+            INPUT_LFO_1_AMP => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.lfo_1_amp = val;
+                }
+            },
+            INPUT_LFO_1_DEST => {
+                if let Ok(dest) = Settings::try_into_lfo_destination(val) {
+                    self.settings.lfo_1_dest = dest;
+                }
+            },
+            INPUT_LFO_1_FREQ => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.lfo_1_freq = val;
+                }
+            },
+            INPUT_LFO_1_PHASE => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.lfo_1_phase = val;
+                }
+            },
+            INPUT_LFO_1_SHAPE => {
+                if let Ok(shape) = Settings::try_into_lfo_shape(val) {
+                    self.settings.lfo_1_shape = shape;
                 }
             },
             _ => {}
@@ -157,3 +192,4 @@ impl UiBuffer {
         }
     }
 }
+

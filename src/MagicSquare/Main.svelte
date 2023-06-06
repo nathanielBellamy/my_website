@@ -354,10 +354,10 @@
                 </label>
                 <input id={WasmInputId.lfo1Freq}
                        type="range"
-                       min={1.0}
-                       max={20.0}
+                       min={1}
+                       max={260}
                        bind:value={lfo1Freq}
-                       step={.01}/>
+                       step={1}/>
               </div>
               <div class="grow w-full flex flex-col justify-center items-stretch">
                 <label class="slider_label flex justify-between" 
@@ -368,7 +368,7 @@
                 <input id={WasmInputId.lfo1Amp}
                        type="range"
                        min={0}
-                       max={1}
+                       max={3}
                        bind:value={lfo1Amp}
                        step={.01}/>
               </div>

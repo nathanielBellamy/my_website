@@ -10,6 +10,7 @@ use crate::magic_square::transformations::{Rotation, RotationSequence, Translati
 use crate::magic_square::geometry::{Geometry, Shape};
 use crate::magic_square::geometry::cache::{Cache as GeometryCache, CACHE_CAPACITY};
 use crate::magic_square::ui_buffer::UiBuffer;
+use crate::magic_square::lfo::{Lfo, LfoDestination, LfoShape};
 
 use super::settings::{MouseTracking, Settings};
 // use crate::magic_square::traits::VertexStore;
@@ -193,11 +194,16 @@ impl MagicSquare {
         //     ).unwrap();
         //     closure.forget();
         // }
-
+    
         {
             // set up animation loop
             let geometry_cache = geometry_cache.clone();
             let ui_buffer = ui_buffer.clone();
+
+            let performance = MagicSquare::performance();
+            let mut x: f32 = -3.14159;
+            
+
             let max_idx = Settings::max_idx_from_draw_pattern(ui_buffer.borrow().settings.draw_pattern);
             let destroy_flag = destroy_flag.clone();
 
@@ -212,6 +218,30 @@ impl MagicSquare {
                     return;
                 }
 
+                
+                let lfo_1 = Lfo::new(
+                    ui_buffer.borrow().settings.lfo_1_amp,
+                    ui_buffer.borrow().settings.lfo_1_dest,
+                    ui_buffer.borrow().settings.lfo_1_freq,
+                    ui_buffer.borrow().settings.lfo_1_phase,
+                    ui_buffer.borrow().settings.lfo_1_shape,
+                );
+
+                // let start: f64 = performance.now();
+                // let val: f32 = lfo_1.eval(x);
+                // log(&format!("{x}, {val}"));
+                x = x + 0.001;
+                if x == 3.142 {
+                    x = -3.142;
+                }
+                
+                // harvest current ui_buffer for computation
+                let mut ui_buffer = (*ui_buffer.clone().borrow()).clone();
+                ui_buffer = ui_buffer.copy();
+                lfo_1.modify(x, &mut ui_buffer);
+
+                // log(&format!("{}", ui_buffer.settings.translation_x));
+
                 let color_idx_offset: usize = color_idx_offset_delay[0];
                 let color_idx_delay: usize = color_idx_offset_delay[1];
 
@@ -224,7 +254,7 @@ impl MagicSquare {
                 // compute
                 MagicSquare::render_all_lines(
                     &mouse_pos_buffer,
-                    &ui_buffer.clone().borrow(), 
+                    &ui_buffer, 
                     &geometry_cache,
                 );
                 
@@ -232,7 +262,7 @@ impl MagicSquare {
                 for idx in 0..max_idx {
                     MagicSquare::render(
                         geometry_cache.borrow().gl_vertices(idx), 
-                        &MagicSquare::get_rgba(&ui_buffer.clone().borrow(), idx, color_idx_offset), 
+                        &MagicSquare::get_rgba(&ui_buffer, idx, color_idx_offset), 
                         &context
                     ).expect("Render error");
                 }
@@ -393,6 +423,12 @@ impl MagicSquare {
 
     fn window() -> web_sys::Window {
         web_sys::window().expect("no global `window` exists")
+    }
+
+    fn performance() -> web_sys::Performance {
+        MagicSquare::window()
+            .performance()
+            .expect("performance should be available")
     }
 
     pub fn document() -> web_sys::Document {

@@ -20,25 +20,24 @@
   })
 
   onMount(() => {
+    console.log(magicSquareInstance)
     window.addEventListener('resize', handleResize)
   })
 
   onDestroy(() => {
-    'onDestry Container'
     magicSquareInstance += 1
     destroyChild = false
   })
 </script>
 
-
 <div id="magic_square_container"
      class="magic_square_container"
      use:watchResize={handleResize}>
-    {#key magicSquareInstance}
-      {#if !destroyChild}
+    <!-- {#key magicSquareInstance} -->
+    <!--   {#if !destroyChild} -->
         <Main sideLength={sideLength}/>
-      {/if}
-    {/key}
+    <!--   {/if} -->
+    <!-- {/key} -->
 </div>
 
 <style lang="sass">

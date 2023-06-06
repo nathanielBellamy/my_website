@@ -1,4 +1,5 @@
 use crate::magic_square::main::Rgba;
+use crate::magic_square::lfo::{LfoDestination, LfoShape};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
@@ -46,12 +47,7 @@ pub enum MouseTracking {
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub struct Settings {
-    pub draw_pattern: DrawPattern,
-    pub mouse_tracking: MouseTracking,
-
-    pub radius_min: f32,
-    pub radius_step: f32,
-
+    // COLOR
     pub color_1: Rgba,
     pub color_2: Rgba,
     pub color_3: Rgba,
@@ -61,10 +57,26 @@ pub struct Settings {
     pub color_7: Rgba,
     pub color_8: Rgba,
 
+    // LFO
+    pub lfo_1_amp: f32,
+    pub lfo_1_dest: LfoDestination,
+    pub lfo_1_freq: f32,
+    pub lfo_1_phase: f32,
+    pub lfo_1_shape: LfoShape,
+
     // TODO:
     // mouse settings
     // MouseFollow - Always, Click + Drag, DoubleClick On/Off
 
+    // PATTERN
+    pub draw_pattern: DrawPattern,
+
+    // RADIUS
+    pub radius_min: f32,
+    pub radius_step: f32,
+
+    
+    // ROTATION
     pub x_rot_base: f32,
     pub y_rot_base: f32,
     pub z_rot_base: f32,
@@ -73,7 +85,7 @@ pub struct Settings {
     pub y_rot_spread: f32,
     pub z_rot_spread: f32,
 
-    // rotation sensitivity
+        // rotation sensitivity to mouse movement
     pub x_axis_x_rot_coeff: f32,
     pub x_axis_y_rot_coeff: f32,
     pub x_axis_z_rot_coeff: f32,
@@ -82,10 +94,11 @@ pub struct Settings {
     pub y_axis_y_rot_coeff: f32,
     pub y_axis_z_rot_coeff: f32,
 
+    // TRANSLATION
     pub translation_x: f32,
     pub translation_y: f32,
     pub translation_z: f32,
-
+    pub mouse_tracking: MouseTracking,
 
     // // cache
     // cache_max_idx: usize, // 0..50
@@ -95,9 +108,31 @@ pub struct Settings {
 impl Settings {
     pub fn new() -> Settings {
         Settings {
+            // COLOR
+            color_1: [1.0, 0.0, 1.0, 1.0],
+            color_2: [0.0, 1.0, 1.0, 1.0],
+            color_3: [1.0, 0.0, 0.5, 1.0],
+            color_4: [1.0, 0.1, 1.0, 1.0],
+            color_5: [0.0, 0.9, 0.64, 1.0],
+            color_6: [0.0, 1.0, 1.0, 1.0],
+            color_7: [0.80, 0.44, 0.925, 1.0],
+            color_8: [0.0, 0.1, 1.0, 1.0],
+
+            // LFO
+            lfo_1_amp: 1.0,
+            lfo_1_dest: LfoDestination::None,
+            lfo_1_freq: 5.0,
+            lfo_1_phase: 0.0,
+            lfo_1_shape: LfoShape::Sine,
+
+            // PATTERN
             draw_pattern: DrawPattern::Out8,
-            mouse_tracking: MouseTracking::Off,
             
+            // RADIUS
+            radius_min: 0.1,
+            radius_step: 0.1,
+
+            // ROTATION
             x_rot_base: 0.0,
             y_rot_base: 0.0,
             z_rot_base: 0.0,
@@ -114,51 +149,59 @@ impl Settings {
             y_axis_y_rot_coeff: 0.0,
             y_axis_z_rot_coeff: 0.0,
             
-            radius_min: 0.1,
-            radius_step: 0.1,
-
-            color_1: [1.0, 0.0, 1.0, 1.0],
-            color_2: [0.0, 1.0, 1.0, 1.0],
-            color_3: [1.0, 0.0, 0.5, 1.0],
-            color_4: [1.0, 0.1, 1.0, 1.0],
-            color_5: [0.0, 0.9, 0.64, 1.0],
-            color_6: [0.0, 1.0, 1.0, 1.0],
-            color_7: [0.80, 0.44, 0.925, 1.0],
-            color_8: [0.0, 0.1, 1.0, 1.0],
-
+            // TRANSLATION
             translation_x: 0.0,
             translation_y: 0.0,
             translation_z: 0.0,
+            mouse_tracking: MouseTracking::Off,
         }
     }
 
-    pub fn draw_pattern_from_string(pattern: String) -> DrawPattern {
+    pub fn try_into_lfo_destination(dest: String) -> Result<LfoDestination, ()> {
+        match dest.as_str() {
+            "translationX" => Ok(LfoDestination::TranslationX),
+            "translationY" => Ok(LfoDestination::TranslationY),
+            "none" => Ok(LfoDestination::None),
+            _ => Err(()),
+        }
+    }
+
+    pub fn try_into_lfo_shape(shape: String) -> Result<LfoShape, ()> {
+        match shape.as_str() {
+            "sawtooth" => Ok(LfoShape::Sawtooth),
+            "sine" => Ok(LfoShape::Sine),
+            "square" => Ok(LfoShape::Square),
+            _ => Err(())
+        }
+    }
+
+    pub fn try_into_draw_pattern(pattern: String) -> Result<DrawPattern, ()> {
         match pattern.as_str() {
-            "Fix1" => DrawPattern::Fix1,
-            "Fix2" => DrawPattern::Fix2,
-            "Fix3" => DrawPattern::Fix3,
-            "Fix4" => DrawPattern::Fix4,
-            "Fix5" => DrawPattern::Fix5,
-            "Fix6" => DrawPattern::Fix6,
-            "Fix7" => DrawPattern::Fix7,
-            "Fix8" => DrawPattern::Fix8,
-            "Out1" => DrawPattern::Out1,
-            "Out2" => DrawPattern::Out2,
-            "Out3" => DrawPattern::Out3,
-            "Out4" => DrawPattern::Out4,
-            "Out5" => DrawPattern::Out5,
-            "Out6" => DrawPattern::Out6,
-            "Out7" => DrawPattern::Out7,
-            "Out8" => DrawPattern::Out8,
-            "In1" => DrawPattern::In1,
-            "In2" => DrawPattern::In2,
-            "In3" => DrawPattern::In3,
-            "In4" => DrawPattern::In4,
-            "In5" => DrawPattern::In5,
-            "In6" => DrawPattern::In6,
-            "In7" => DrawPattern::In7,
-            "In8" => DrawPattern::In8,
-            _ => DrawPattern::Fix8
+            "Fix1" => Ok(DrawPattern::Fix1),
+            "Fix2" => Ok(DrawPattern::Fix2),
+            "Fix3" => Ok(DrawPattern::Fix3),
+            "Fix4" => Ok(DrawPattern::Fix4),
+            "Fix5" => Ok(DrawPattern::Fix5),
+            "Fix6" => Ok(DrawPattern::Fix6),
+            "Fix7" => Ok(DrawPattern::Fix7),
+            "Fix8" => Ok(DrawPattern::Fix8),
+            "Out1" => Ok(DrawPattern::Out1),
+            "Out2" => Ok(DrawPattern::Out2),
+            "Out3" => Ok(DrawPattern::Out3),
+            "Out4" => Ok(DrawPattern::Out4),
+            "Out5" => Ok(DrawPattern::Out5),
+            "Out6" => Ok(DrawPattern::Out6),
+            "Out7" => Ok(DrawPattern::Out7),
+            "Out8" => Ok(DrawPattern::Out8),
+            "In1" => Ok(DrawPattern::In1),
+            "In2" => Ok(DrawPattern::In2),
+            "In3" => Ok(DrawPattern::In3),
+            "In4" => Ok(DrawPattern::In4),
+            "In5" => Ok(DrawPattern::In5),
+            "In6" => Ok(DrawPattern::In6),
+            "In7" => Ok(DrawPattern::In7),
+            "In8" => Ok(DrawPattern::In8),
+            _ => Err(())
         }
     }
 
@@ -191,14 +234,14 @@ impl Settings {
         }
     }
 
-    pub fn mouse_tracking_from_string(mt: String) -> MouseTracking {
+    pub fn try_into_mouse_tracking(mt: String) -> Result<MouseTracking, ()> {
         match mt.as_str() {
-            "On" => MouseTracking::On,
-            "Off" => MouseTracking::Off,
-            "Inv X" => MouseTracking::InvX,
-            "Inv Y" => MouseTracking::InvY,
-            "Inv XY" => MouseTracking::InvXY,
-            _ => MouseTracking::Off
+            "On" => Ok(MouseTracking::On),
+            "Off" => Ok(MouseTracking::Off),
+            "Inv X" => Ok(MouseTracking::InvX),
+            "Inv Y" => Ok(MouseTracking::InvY),
+            "Inv XY" => Ok(MouseTracking::InvXY),
+            _ => Err(())
         }
     }
 

@@ -1,4 +1,5 @@
 pub mod geometry;
+pub mod lfo;
 pub mod main;
 pub mod program_linker;
 pub mod settings;
