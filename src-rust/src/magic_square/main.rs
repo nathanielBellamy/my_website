@@ -200,7 +200,7 @@ impl MagicSquare {
             let geometry_cache = geometry_cache.clone();
             let ui_buffer = ui_buffer.clone();
 
-            let performance = MagicSquare::performance();
+            // let performance = MagicSquare::performance();
             let mut x: f32 = -3.14159;
             
 
@@ -221,6 +221,7 @@ impl MagicSquare {
                 // TODO: consider applying LFO per cache slot
                 // could allow for some cool snake-like movement
                 let lfo_1 = Lfo::new(
+                    ui_buffer.borrow().settings.lfo_1_active,
                     ui_buffer.borrow().settings.lfo_1_amp,
                     ui_buffer.borrow().settings.lfo_1_dest,
                     ui_buffer.borrow().settings.lfo_1_freq,

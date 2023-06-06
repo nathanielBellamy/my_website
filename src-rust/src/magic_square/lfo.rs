@@ -21,6 +21,7 @@ pub enum LfoShape {
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub struct Lfo {
+    pub active: bool,
     pub amp: f32,
     pub dest: LfoDestination,
     pub freq: f32,
@@ -29,9 +30,9 @@ pub struct Lfo {
 }
 
 impl Lfo {
-    pub fn new(amp: f32, dest: LfoDestination, freq: f32, phase: f32, shape: LfoShape) -> Lfo {
+    pub fn new(active: bool, amp: f32, dest: LfoDestination, freq: f32, phase: f32, shape: LfoShape) -> Lfo {
         Lfo {
-            amp, dest, freq, phase, shape
+            active, amp, dest, freq, phase, shape
         }
     }
 
@@ -39,7 +40,17 @@ impl Lfo {
        self.amp * ((self.freq * x) + self.phase).sin()
     }
 
-    pub fn modify(&self, x: f32, ui_buffer: &mut UiBuffer) {
-        ui_buffer.settings.translation_x =  ui_buffer.settings.translation_x + self.eval(x);
+    pub fn modify(&self, t: f32, ui_buffer: &mut UiBuffer) {
+        if self.active {
+            match self.dest {
+                LfoDestination::TranslationX => {
+                    ui_buffer.settings.translation_x =  ui_buffer.settings.translation_x + self.eval(t);
+                },
+                LfoDestination::TranslationY => {
+                    ui_buffer.settings.translation_y =  ui_buffer.settings.translation_y + self.eval(t);
+                },
+                LfoDestination::None => {}
+            }
+        }
     }
 }

@@ -57,6 +57,7 @@
     color6 = "magic_square_input_color_6",
     color7 = "magic_square_input_color_7",
     color8 = "magic_square_input_color_8",
+    lfo1Active= "magic_square_input_lfo_1_active",
     lfo1Amp = "magic_square_input_lfo_1_amp",
     lfo1Dest = "magic_square_input_lfo_1_dest",
     lfo1Freq = "magic_square_input_lfo_1_freq",
@@ -146,18 +147,28 @@
   }
 
   // LFO
+
+  let lfo1Active: boolean
   let lfo1Amp: number
-  let lfo1Dest: number
+  let lfo1Dest: string
   let lfo1Freq: number
   let lfo1Phase: number
-  let lfo1Shape: number
+  let lfo1Shape: string
   
   function setInitialLfoVars(initialUiBuffer: any) {
+    lfo1Active = initialUiBuffer.settings.lfo_1_active
     lfo1Amp = initialUiBuffer.settings.lfo_1_amp
     lfo1Dest = initialUiBuffer.settings.lfo_1_dest
     lfo1Freq = initialUiBuffer.settings.lfo_1_freq
     lfo1Phase = initialUiBuffer.settings.lfo_1_phase
     lfo1Shape = initialUiBuffer.settings.lfo_1_shape
+  }
+
+  function handleLfo1ActiveToggle () {
+    lfo1Active = !lfo1Active
+    var input = document.getElementById(WasmInputId.lfo1Active)
+    input.value = lfo1Active
+    input.dispatchEvent(new Event('input', {bubbles: true}))
   }
 
   // TRANSLATION
@@ -346,6 +357,17 @@
               <input id={WasmInputId.lfo1Shape}
                      bind:value={lfo1Shape}
                      class="hidden_input"/>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+
+                <!-- TODO: lfo active/selected colors for buttons  -->
+                <button class:selected={lfo1Active}
+                        on:click={() => handleLfo1ActiveToggle()}>
+                  <input id={WasmInputId.lfo1Active}
+                         value={lfo1Active}
+                         class="hidden_input">
+                    ACTIVE
+                </button>
+              </div>
               <div class="grow w-full flex flex-col justify-center items-stretch">
                 <label class="slider_label flex justify-between" 
                        for={WasmInputId.lfo1Freq}>
@@ -714,4 +736,7 @@
 
   .hidden_input
     display: none
+
+  .selected
+    background-color: color.$blue-7
 </style>

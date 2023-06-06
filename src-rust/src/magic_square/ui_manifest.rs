@@ -9,6 +9,7 @@ pub const INPUT_COLOR_7: &'static str = "magic_square_input_color_7";
 pub const INPUT_COLOR_8: &'static str = "magic_square_input_color_8";
 
 // LFO
+pub const INPUT_LFO_1_ACTIVE: &'static str = "magic_square_input_lfo_1_active";
 pub const INPUT_LFO_1_AMP: &'static str = "magic_square_input_lfo_1_amp";
 pub const INPUT_LFO_1_DEST: &'static str = "magic_square_input_lfo_1_dest";
 pub const INPUT_LFO_1_FREQ: &'static str = "magic_square_input_lfo_1_freq";
@@ -51,7 +52,7 @@ pub const INPUT_MOUSE_TRACKING: &'static str = "magic_square_input_mouse_trackin
 // to ensure that all inputs are accounted for
 // 
 // also handy for copying and pasting when writing matches
-pub const INPUT_IDS: [&'static str; 32] = [
+pub const INPUT_IDS: [&'static str; 33] = [
     // COLOR
     INPUT_COLOR_1,
     INPUT_COLOR_2,
@@ -63,6 +64,7 @@ pub const INPUT_IDS: [&'static str; 32] = [
     INPUT_COLOR_8,
 
     // LFO
+    INPUT_LFO_1_ACTIVE,
     INPUT_LFO_1_AMP,
     INPUT_LFO_1_DEST,
     INPUT_LFO_1_FREQ,

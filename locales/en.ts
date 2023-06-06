@@ -35,6 +35,7 @@ export const localeEn: any = {
       translation: "translation"
     },
     main: {
+      active: "active",
       amplitude: "amplitude",
       base: "base",
       frequency: "frequency",

@@ -58,6 +58,7 @@ pub struct Settings {
     pub color_8: Rgba,
 
     // LFO
+    pub lfo_1_active: bool,
     pub lfo_1_amp: f32,
     pub lfo_1_dest: LfoDestination,
     pub lfo_1_freq: f32,
@@ -119,8 +120,9 @@ impl Settings {
             color_8: [0.0, 0.1, 1.0, 1.0],
 
             // LFO
+            lfo_1_active: true,
             lfo_1_amp: 1.0,
-            lfo_1_dest: LfoDestination::None,
+            lfo_1_dest: LfoDestination::TranslationY,
             lfo_1_freq: 5.0,
             lfo_1_phase: 0.0,
             lfo_1_shape: LfoShape::Sine,

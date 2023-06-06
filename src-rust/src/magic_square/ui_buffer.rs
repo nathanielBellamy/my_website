@@ -10,7 +10,7 @@ use crate::magic_square::ui_manifest::{
     INPUT_X_AXIS_X_ROT_COEFF, INPUT_X_AXIS_Y_ROT_COEFF, INPUT_X_AXIS_Z_ROT_COEFF,
     INPUT_Y_AXIS_X_ROT_COEFF, INPUT_Y_AXIS_Y_ROT_COEFF, INPUT_Y_AXIS_Z_ROT_COEFF,
     INPUT_TRANSLATION_X, INPUT_TRANSLATION_Y, INPUT_TRANSLATION_Z,
-    INPUT_LFO_1_AMP, INPUT_LFO_1_DEST, INPUT_LFO_1_FREQ, INPUT_LFO_1_PHASE, INPUT_LFO_1_SHAPE
+    INPUT_LFO_1_ACTIVE, INPUT_LFO_1_AMP, INPUT_LFO_1_DEST, INPUT_LFO_1_FREQ, INPUT_LFO_1_PHASE, INPUT_LFO_1_SHAPE
 };
 
 
@@ -160,6 +160,11 @@ impl UiBuffer {
             INPUT_TRANSLATION_Z => {
                 if let Ok(val) = val.parse::<f32>() {
                     self.settings.translation_z = val;
+                }
+            },
+            INPUT_LFO_1_ACTIVE => {
+                if let Ok(val) = val.parse::<bool>() {
+                    self.settings.lfo_1_active = val;
                 }
             },
             INPUT_LFO_1_AMP => {
