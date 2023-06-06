@@ -13,6 +13,8 @@
     sideLength = Math.floor(Math.min(element.offsetWidth, element.offsetHeight) / 1.3) - 25
   }
 
+  // TODO: debug handleResize allowing two wasm instances
+
   afterUpdate(() => {
     return () => {
       window.removeEventListener('resize', handleResize)

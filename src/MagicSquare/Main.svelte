@@ -693,6 +693,7 @@
       border-radius: 10px
       &_container
         height: 100%
+        cursor: none
         background: color.$black-blue-horiz-grad
         border: 10px double color.$blue-7
         border-radius: 5px

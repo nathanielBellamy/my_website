@@ -32,7 +32,7 @@
           <Link href="https://www.typescriptlang.org/"
                 title="Typescript"
                 sameOrigin={false}/>
-          {i18n.t("home/intro/3", langVal)}
+          {i18n.t("intro/3", langVal)}
         </p>
         <Link href="https://webassembly.org/"
               title="WebAssembly"

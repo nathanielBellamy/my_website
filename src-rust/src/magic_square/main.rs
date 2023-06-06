@@ -218,7 +218,8 @@ impl MagicSquare {
                     return;
                 }
 
-                
+                // TODO: consider applying LFO per cache slot
+                // could allow for some cool snake-like movement
                 let lfo_1 = Lfo::new(
                     ui_buffer.borrow().settings.lfo_1_amp,
                     ui_buffer.borrow().settings.lfo_1_dest,
