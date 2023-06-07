@@ -5,6 +5,8 @@
   import Color from './ControlModules/Color.svelte'
   import ControlRack from './ControlRack.svelte'
   import Lfo from './ControlModules/Lfo.svelte'
+  import { LfoDestination } from './ControlModules/LfoDestination'
+  import { LfoShape } from './ControlModules/LfoShape'
   import MouseTracking from './ControlModules/MouseTracking.svelte'
   import Radius from './ControlModules/Radius.svelte'
   import Rotation from  './ControlModules/Rotation.svelte'
@@ -147,13 +149,33 @@
   }
 
   // LFO
-
   let lfo1Active: boolean
   let lfo1Amp: number
-  let lfo1Dest: string
+  let lfo1Dest: LfoDestination
   let lfo1Freq: number
   let lfo1Phase: number
-  let lfo1Shape: string
+  let lfo1Shape: LfoShape
+
+  let lfo2Active: boolean
+  let lfo2Amp: number
+  let lfo2Dest: LfoDestination
+  let lfo2Freq: number
+  let lfo2Phase: number
+  let lfo2Shape: LfoShape
+
+  let lfo3Active: boolean
+  let lfo3Amp: number
+  let lfo3Dest: LfoDestination
+  let lfo3Freq: number
+  let lfo3Phase: number
+  let lfo3Shape: LfoShape
+
+  let lfo4Active: boolean
+  let lfo4Amp: number
+  let lfo4Dest: LfoDestination
+  let lfo4Freq: number
+  let lfo4Phase: number
+  let lfo4Shape: LfoShape
   
   function setInitialLfoVars(initialUiBuffer: any) {
     lfo1Active = initialUiBuffer.settings.lfo_1_active
@@ -162,6 +184,27 @@
     lfo1Freq = initialUiBuffer.settings.lfo_1_freq
     lfo1Phase = initialUiBuffer.settings.lfo_1_phase
     lfo1Shape = initialUiBuffer.settings.lfo_1_shape
+
+    lfo2Active = initialUiBuffer.settings.lfo_2_active
+    lfo2Amp = initialUiBuffer.settings.lfo_2_amp
+    lfo2Dest = initialUiBuffer.settings.lfo_2_dest
+    lfo2Freq = initialUiBuffer.settings.lfo_2_freq
+    lfo2Phase = initialUiBuffer.settings.lfo_2_phase
+    lfo2Shape = initialUiBuffer.settings.lfo_2_shape
+
+    lfo3Active = initialUiBuffer.settings.lfo_3_active
+    lfo3Amp = initialUiBuffer.settings.lfo_3_amp
+    lfo3Dest = initialUiBuffer.settings.lfo_3_dest
+    lfo3Freq = initialUiBuffer.settings.lfo_3_freq
+    lfo3Phase = initialUiBuffer.settings.lfo_3_phase
+    lfo3Shape = initialUiBuffer.settings.lfo_3_shape
+
+    lfo4Active = initialUiBuffer.settings.lfo_4_active
+    lfo4Amp = initialUiBuffer.settings.lfo_4_amp
+    lfo4Dest = initialUiBuffer.settings.lfo_4_dest
+    lfo4Freq = initialUiBuffer.settings.lfo_4_freq
+    lfo4Phase = initialUiBuffer.settings.lfo_4_phase
+    lfo4Shape = initialUiBuffer.settings.lfo_4_shape
   }
 
   function handleLfo1ActiveToggle () {
@@ -347,7 +390,18 @@
         {#if !renderDataReady}
           <Loading />
         {:else}
-          <Lfo lfo1Active={lfo1Active}>
+          <Lfo  lfo1Active={lfo1Active}
+                lfo1Dest={lfo1Dest}
+                lfo1Shape={lfo1Shape}
+                lfo2Active={lfo2Active}
+                lfo2Dest={lfo2Dest}
+                lfo2Shape={lfo2Shape}
+                lfo3Active={lfo3Active}
+                lfo3Dest={lfo3Dest}
+                lfo3Shape={lfo3Shape}
+                lfo4Active={lfo4Active}
+                lfo4Dest={lfo4Dest}
+                lfo4Shape={lfo4Shape}>
             <div class="w-full h-full p-5 grow flex flex-col justify-around items-stretch"
                  slot="lfo1">
               <!-- hidden input for destination select  -->
@@ -355,12 +409,12 @@
                      bind:value={lfo1Dest}
                      class="hidden_input"/>
               <input id={WasmInputId.lfo1Shape}
-                     bind:value={lfo1Shape}
+                     value={lfo1Shape}
                      class="hidden_input"/>
               <div class="grow w-full flex flex-col justify-center items-stretch">
-
                 <!-- TODO: lfo active/selected colors for buttons  -->
-                <button class:active={lfo1Active}
+                <button class="mb-5"
+                        class:active={lfo1Active}
                         on:click={() => handleLfo1ActiveToggle()}>
                   <input id={WasmInputId.lfo1Active}
                          value={lfo1Active}
@@ -377,7 +431,7 @@
                 <input id={WasmInputId.lfo1Freq}
                        type="range"
                        min={1}
-                       max={260}
+                       max={255}
                        bind:value={lfo1Freq}
                        step={1}/>
               </div>
@@ -385,7 +439,7 @@
                 <label class="slider_label flex justify-between" 
                        for={WasmInputId.lfo1Amp}>
                   <div> {i18n.t("amplitude", langVal)} </div>
-                  <div> {lfo1Amp} </div>
+                  <div> {round2(lfo1Amp)} </div>
                 </label>
                 <input id={WasmInputId.lfo1Amp}
                        type="range"

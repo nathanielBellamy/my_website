@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use crate::magic_square::main::log;
+// use crate::magic_square::main::log;
 use crate::magic_square::settings::Settings;
 use crate::magic_square::ui_manifest::{
     INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8,

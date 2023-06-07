@@ -121,9 +121,9 @@ impl Settings {
 
             // LFO
             lfo_1_active: true,
-            lfo_1_amp: 1.0,
+            lfo_1_amp: 0.3,
             lfo_1_dest: LfoDestination::TranslationY,
-            lfo_1_freq: 5.0,
+            lfo_1_freq: 35.0,
             lfo_1_phase: 0.0,
             lfo_1_shape: LfoShape::Sine,
 
@@ -161,9 +161,9 @@ impl Settings {
 
     pub fn try_into_lfo_destination(dest: String) -> Result<LfoDestination, ()> {
         match dest.as_str() {
-            "translationX" => Ok(LfoDestination::TranslationX),
-            "translationY" => Ok(LfoDestination::TranslationY),
-            "none" => Ok(LfoDestination::None),
+            "TranslationX" => Ok(LfoDestination::TranslationX),
+            "TranslationY" => Ok(LfoDestination::TranslationY),
+            "None" => Ok(LfoDestination::None),
             _ => Err(()),
         }
     }

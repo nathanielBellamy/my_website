@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
 use crate::magic_square::ui_buffer::UiBuffer;
-use crate::magic_square::settings::Settings;
-use crate::magic_square::main::log;
+// use crate::magic_square::main::log;
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub enum LfoDestination {

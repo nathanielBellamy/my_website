@@ -1,15 +1,29 @@
 <script lang="ts">
+    import { prevent_default } from 'svelte/internal';
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
+  import { LfoDestination } from './LfoDestination'
+  import { LfoShape } from './LfoShape'
 
   let langVal: Lang 
   lang.subscribe(val => langVal = val)
   let i18n = new I18n("magicSquare/lfo")
 
   export let lfo1Active: boolean = false
+  export let lfo1Dest: LfoDestination = LfoDestination.none
+  export let lfo1Shape: LfoShape = LfoShape.sine
+
   export let lfo2Active: boolean = false
+  export let lfo2Dest: LfoDestination = LfoDestination.none
+  export let lfo2Shape: LfoShape = LfoShape.sine
+
   export let lfo3Active: boolean = false
+  export let lfo3Dest: LfoDestination = LfoDestination.none
+  export let lfo3Shape: LfoShape = LfoShape.sine
+
   export let lfo4Active: boolean = false
+  export let lfo4Dest: LfoDestination = LfoDestination.none
+  export let lfo4Shape: LfoShape = LfoShape.sine
 
   enum Lfo {
     one = "1",
@@ -18,13 +32,19 @@
     four = "4"
   }
 
-  enum Shape {
-    sawtooth = "sawtooth",
-    sine = "sine",
-    square = "square"
+  let lfo: Lfo = Lfo.one
+
+  function handleLfoDestChange(e: any, lfo: Lfo) {
+    var input = document.getElementById('magic_square_input_lfo_1_dest')
+    input.value = e.target.value
+    input.dispatchEvent(new Event('input', {bubbles: true}))
   }
 
-  let lfo: Lfo = Lfo.one
+  function handleLfoShapeChange(e: any, lfo: Lfo) {
+    var input = document.getElementById('magic_square_input_lfo_1_shape')
+    input.value = e.target.value
+    input.dispatchEvent(new Event('input', {bubbles: true}))
+  }
 </script>
 
 <div class="h-full pt-5 pb-5 flex flex-col justify-between items-stretch">
@@ -64,7 +84,12 @@
             {i18n.t("destination", langVal)}
           </div>
         </label>
-        <select id="lfo_1_dest_select">
+        <select id="lfo_1_dest_select"
+                value={lfo1Dest}
+                on:input={e => e.stopPropagation()}
+                on:change={(e) => {
+                  handleLfoDestChange(e, Lfo.one)
+                }}>
           <optgroup label={i18n.t("rotation", langVal)}>
             <option> {i18n.t("pitchBase", langVal)} </option>
             <option> {i18n.t("pitchSpread", langVal)} </option>
@@ -84,8 +109,12 @@
             <option> {i18n.t("step", langVal)} </option>
           </optgroup>
           <optgroup label={i18n.t("translation", langVal)}>
-            <option> X </option>
-            <option> Y </option>
+            <option value={LfoDestination.translationX}> 
+              X 
+            </option>
+            <option value={LfoDestination.translationY}> 
+              Y 
+            </option>
           </optgroup>
         </select>
       </div>
@@ -97,10 +126,12 @@
             {i18n.t("shape", langVal)}
           </div>
         </label>
-        <select id="lfo_1_dest_select">
-          {#each Object.keys(Shape) as shapeKey}
+        <select id="lfo_1_dest_select"
+                on:input={e => e.stopPropagation()}
+                on:change={e => handleLfoShapeChange(e, Lfo.one)}>
+          {#each Object.keys(LfoShape) as shapeKey}
             <option>
-              {Shape[shapeKey]}
+              {LfoShape[shapeKey]}
             </option>
           {/each}
         </select>

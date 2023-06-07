@@ -10,7 +10,7 @@ use crate::magic_square::transformations::{Rotation, RotationSequence, Translati
 use crate::magic_square::geometry::{Geometry, Shape};
 use crate::magic_square::geometry::cache::{Cache as GeometryCache, CACHE_CAPACITY};
 use crate::magic_square::ui_buffer::UiBuffer;
-use crate::magic_square::lfo::{Lfo, LfoDestination, LfoShape};
+use crate::magic_square::lfo::Lfo;
 
 use super::settings::{MouseTracking, Settings};
 // use crate::magic_square::traits::VertexStore;
@@ -247,7 +247,7 @@ impl MagicSquare {
                 let color_idx_offset: usize = color_idx_offset_delay[0];
                 let color_idx_delay: usize = color_idx_offset_delay[1];
 
-                color_idx_offset_delay[1] = color_idx_delay; // + 1 = out, - 1 = in
+                color_idx_offset_delay[1] = color_idx_delay + 1; // + 1 = out, - 1 = in
                 if color_idx_delay == 6 {
                     color_idx_offset_delay[0] = color_idx_offset - 1_usize % 8;
                     color_idx_offset_delay[1] = 0;
@@ -427,11 +427,11 @@ impl MagicSquare {
         web_sys::window().expect("no global `window` exists")
     }
 
-    fn performance() -> web_sys::Performance {
-        MagicSquare::window()
-            .performance()
-            .expect("performance should be available")
-    }
+    // fn performance() -> web_sys::Performance {
+    //     MagicSquare::window()
+    //         .performance()
+    //         .expect("performance should be available")
+    // }
 
     pub fn document() -> web_sys::Document {
         MagicSquare::window()
