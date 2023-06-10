@@ -5,8 +5,9 @@
   import Color from './ControlModules/Color.svelte'
   import ControlRack from './ControlRack.svelte'
   import Lfo from './ControlModules/Lfo.svelte'
-  import { LfoDestination } from './ControlModules/LfoDestination'
-  import { LfoShape } from './ControlModules/LfoShape'
+  import type { LfoDestination } from './ControlModules/LfoDestination'
+  import { intoLfoShape } from './ControlModules/LfoShape'
+  import type { LfoShape } from './ControlModules/LfoShape'
   import MouseTracking from './ControlModules/MouseTracking.svelte'
   import Radius from './ControlModules/Radius.svelte'
   import Rotation from  './ControlModules/Rotation.svelte'
@@ -178,12 +179,13 @@
   let lfo4Shape: LfoShape
   
   function setInitialLfoVars(initialUiBuffer: any) {
+    console.log(initialUiBuffer.settings.lfo_1_shape)
     lfo1Active = initialUiBuffer.settings.lfo_1_active
     lfo1Amp = initialUiBuffer.settings.lfo_1_amp
     lfo1Dest = initialUiBuffer.settings.lfo_1_dest
     lfo1Freq = initialUiBuffer.settings.lfo_1_freq
     lfo1Phase = initialUiBuffer.settings.lfo_1_phase
-    lfo1Shape = initialUiBuffer.settings.lfo_1_shape
+    lfo1Shape = intoLfoShape(initialUiBuffer.settings.lfo_1_shape)
 
     lfo2Active = initialUiBuffer.settings.lfo_2_active
     lfo2Amp = initialUiBuffer.settings.lfo_2_amp
@@ -409,7 +411,7 @@
                      bind:value={lfo1Dest}
                      class="hidden_input"/>
               <input id={WasmInputId.lfo1Shape}
-                     value={lfo1Shape}
+                     bind:value={lfo1Shape}
                      class="hidden_input"/>
               <div class="grow w-full flex flex-col justify-center items-stretch">
                 <!-- TODO: lfo active/selected colors for buttons  -->

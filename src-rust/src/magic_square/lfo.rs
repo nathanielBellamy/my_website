@@ -12,10 +12,11 @@ pub enum LfoDestination {
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub enum LfoShape {
-    Sawtooth,
+    Linear,
+    // Sawtooth,
     #[default]
     Sine,
-    Square,
+    // Square
 }
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
@@ -36,7 +37,45 @@ impl Lfo {
     }
 
     pub fn eval(&self, x: f32) -> f32 {
-       self.amp * ((self.freq * x) + self.phase).sin()
+        // log(&format!("{:?}", self.shape));
+        match self.shape {
+            LfoShape::Sine => self.amp * ((self.freq * x) + self.phase).sin(),
+            LfoShape::Linear => {
+                // | LfoShape::Square
+                // | LfoShape::Sawtooth => {
+                let mut result: f32 = 0.0;
+                // determine the sub-intervals
+                let subinterval_count: usize = (self.freq * 6.28).floor() as usize;
+                let subinterval_length: f32 = 6.28 / (subinterval_count as f32);
+                
+                // determine in which sub-interval x falls
+                // and whether that interval has positive or negative slope
+                // by construction, the left-most interval will have positive slope
+                let mut x_subinterval_parity: bool = true; // true = pos, false = neg
+                
+                for idx in 0..subinterval_count {
+                    let x_left = -3.14 + ((idx as f32) * subinterval_length);
+                    let x_right = -3.14 + ((idx + 1) as f32 * subinterval_length);
+                    if x >= x_left && x < x_right  {// [x_left, x_right), half-open interval
+                        // x is in sub-interval
+                        result = match self.shape {
+                                LfoShape::Linear => {
+                                    let par: f32 = if x_subinterval_parity { -1.0 } else { 1.0 };
+                                    (par * (2.0 * self.amp) / subinterval_length) * (x - x_left) - par * self.amp
+                                },
+                                _ => 1.0
+                            };
+                        break;
+                    } else {
+                        // move on to next interval
+                        // record parity flip
+                        x_subinterval_parity = !x_subinterval_parity;
+                    }
+                }
+                // log(&format!("{result}"));
+                return result;
+            }
+        }
     }
 
     pub fn modify(&self, t: f32, ui_buffer: &mut UiBuffer) {

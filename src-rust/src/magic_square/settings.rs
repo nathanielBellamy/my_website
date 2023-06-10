@@ -1,6 +1,7 @@
 use crate::magic_square::main::Rgba;
 use crate::magic_square::lfo::{LfoDestination, LfoShape};
 use serde::{Deserialize, Serialize};
+// use crate::magic_square::main::log;
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub enum DrawPattern {
@@ -170,9 +171,8 @@ impl Settings {
 
     pub fn try_into_lfo_shape(shape: String) -> Result<LfoShape, ()> {
         match shape.as_str() {
-            "sawtooth" => Ok(LfoShape::Sawtooth),
-            "sine" => Ok(LfoShape::Sine),
-            "square" => Ok(LfoShape::Square),
+            "Linear" => Ok(LfoShape::Linear),
+            "Sine" => Ok(LfoShape::Sine),
             _ => Err(())
         }
     }

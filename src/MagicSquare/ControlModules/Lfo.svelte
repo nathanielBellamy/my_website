@@ -42,6 +42,7 @@
 
   function handleLfoShapeChange(e: any, lfo: Lfo) {
     var input = document.getElementById('magic_square_input_lfo_1_shape')
+    console.log(e.target.value)
     input.value = e.target.value
     input.dispatchEvent(new Event('input', {bubbles: true}))
   }
@@ -127,13 +128,15 @@
           </div>
         </label>
         <select id="lfo_1_dest_select"
+                value={lfo1Shape}
                 on:input={e => e.stopPropagation()}
                 on:change={e => handleLfoShapeChange(e, Lfo.one)}>
-          {#each Object.keys(LfoShape) as shapeKey}
-            <option>
-              {LfoShape[shapeKey]}
-            </option>
-          {/each}
+          <option value={LfoShape.linear}> 
+            Linear 
+          </option>
+          <option value={LfoShape.sine}> 
+            Sine 
+          </option>
         </select>
       </div>
     </div>
