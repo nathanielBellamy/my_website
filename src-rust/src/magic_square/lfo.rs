@@ -4,8 +4,10 @@ use crate::magic_square::ui_buffer::UiBuffer;
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub enum LfoDestination {
-    TranslationX,
-    TranslationY,
+    TranslationXBase,
+    TranslationXSpread,
+    TranslationYBase,
+    TranslationYSpread,
     #[default]
     None
 }
@@ -81,11 +83,17 @@ impl Lfo {
     pub fn modify(&self, t: f32, ui_buffer: &mut UiBuffer) {
         if self.active {
             match self.dest {
-                LfoDestination::TranslationX => {
-                    ui_buffer.settings.translation_x =  ui_buffer.settings.translation_x + self.eval(t);
+                LfoDestination::TranslationXBase => {
+                    ui_buffer.settings.translation_x_base =  ui_buffer.settings.translation_x_base + self.eval(t);
                 },
-                LfoDestination::TranslationY => {
-                    ui_buffer.settings.translation_y =  ui_buffer.settings.translation_y + self.eval(t);
+                LfoDestination::TranslationXSpread => {
+                    ui_buffer.settings.translation_x_spread =  ui_buffer.settings.translation_x_spread + self.eval(t);
+                },
+                LfoDestination::TranslationYBase => {
+                    ui_buffer.settings.translation_y_base =  ui_buffer.settings.translation_y_base + self.eval(t);
+                },
+                LfoDestination::TranslationYSpread => {
+                    ui_buffer.settings.translation_y_spread =  ui_buffer.settings.translation_y_spread + self.eval(t);
                 },
                 LfoDestination::None => {}
             }

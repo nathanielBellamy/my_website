@@ -4,12 +4,13 @@ use crate::magic_square::settings::Settings;
 use crate::magic_square::ui_manifest::{
     INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8,
     INPUT_DRAW_PATTERN, INPUT_MOUSE_TRACKING,
-    INPUT_RADIUS_MIN, INPUT_RADIUS_STEP,
+    INPUT_RADIUS_BASE, INPUT_RADIUS_STEP,
     INPUT_X_ROT_BASE, INPUT_Y_ROT_BASE, INPUT_Z_ROT_BASE,
     INPUT_X_ROT_SPREAD, INPUT_Y_ROT_SPREAD, INPUT_Z_ROT_SPREAD,
     INPUT_X_AXIS_X_ROT_COEFF, INPUT_X_AXIS_Y_ROT_COEFF, INPUT_X_AXIS_Z_ROT_COEFF,
     INPUT_Y_AXIS_X_ROT_COEFF, INPUT_Y_AXIS_Y_ROT_COEFF, INPUT_Y_AXIS_Z_ROT_COEFF,
-    INPUT_TRANSLATION_X, INPUT_TRANSLATION_Y, INPUT_TRANSLATION_Z,
+    INPUT_TRANSLATION_X_BASE, INPUT_TRANSLATION_Y_BASE, INPUT_TRANSLATION_Z_BASE,
+    INPUT_TRANSLATION_X_SPREAD, INPUT_TRANSLATION_Y_SPREAD, INPUT_TRANSLATION_Z_SPREAD,
     INPUT_LFO_1_ACTIVE, INPUT_LFO_1_AMP, INPUT_LFO_1_DEST, INPUT_LFO_1_FREQ, INPUT_LFO_1_PHASE, INPUT_LFO_1_SHAPE
 };
 
@@ -77,9 +78,9 @@ impl UiBuffer {
                     self.settings.mouse_tracking = mouse_traking            
                 }
             },
-            INPUT_RADIUS_MIN => {
+            INPUT_RADIUS_BASE => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.radius_min = val;
+                    self.settings.radius_base = val;
                 }
             },
             INPUT_RADIUS_STEP => {
@@ -147,19 +148,34 @@ impl UiBuffer {
                     self.settings.y_axis_z_rot_coeff = val;
                 }
             },
-            INPUT_TRANSLATION_X => {
+            INPUT_TRANSLATION_X_BASE => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.translation_x = val;
+                    self.settings.translation_x_base = val;
                 }
             },
-            INPUT_TRANSLATION_Y => {
+            INPUT_TRANSLATION_X_SPREAD => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.translation_y = val;
+                    self.settings.translation_x_spread = val;
                 }
             },
-            INPUT_TRANSLATION_Z => {
+            INPUT_TRANSLATION_Y_BASE => {
                 if let Ok(val) = val.parse::<f32>() {
-                    self.settings.translation_z = val;
+                    self.settings.translation_y_base = val;
+                }
+            },
+            INPUT_TRANSLATION_Y_SPREAD => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.translation_y_spread = val;
+                }
+            },
+            INPUT_TRANSLATION_Z_BASE => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.translation_z_base = val;
+                }
+            },
+            INPUT_TRANSLATION_Z_SPREAD => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.translation_z_spread = val;
                 }
             },
             INPUT_LFO_1_ACTIVE => {

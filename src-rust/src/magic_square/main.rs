@@ -313,74 +313,99 @@ impl MagicSquare {
     ) {
         let max_idx = Settings::max_idx_from_draw_pattern(ui_buffer.settings.draw_pattern);
         let mouse_pos_buffer = *mouse_pos_buffer.clone().borrow();
-        let translation_x: f32 = ui_buffer.settings.translation_x;
-        let translation_y: f32 = ui_buffer.settings.translation_y;
-        let translation_z: f32 = ui_buffer.settings.translation_z;
 
         for idx in 0..max_idx { // geometry_cache.max_idx + 1 { //TODO: settings.cache_per
+            let idx_f32 = idx as f32;
             let rot_seq = RotationSequence::new(
                 Rotation::new(
                     Axis::X, 
                     ui_buffer.settings.x_rot_base
-                        + (mouse_pos_buffer[0] + translation_x) * ui_buffer.settings.x_axis_x_rot_coeff
-                        + (mouse_pos_buffer[1] + translation_y) * ui_buffer.settings.y_axis_x_rot_coeff
-                        + idx as f32 * ui_buffer.settings.x_rot_spread
+                        + (mouse_pos_buffer[0] 
+                            + ui_buffer.settings.translation_x_base) * ui_buffer.settings.x_axis_x_rot_coeff
+                        + (mouse_pos_buffer[1] 
+                            + ui_buffer.settings.translation_y_base) * ui_buffer.settings.y_axis_x_rot_coeff
+                        + idx_f32 * ui_buffer.settings.x_rot_spread
                 ),
                 Rotation::new(
                     Axis::Y,
                     ui_buffer.settings.y_rot_base
-                        + (mouse_pos_buffer[0] + translation_x) * ui_buffer.settings.x_axis_y_rot_coeff
-                        + (mouse_pos_buffer[1] + translation_y) * ui_buffer.settings.y_axis_y_rot_coeff
-                        + idx as f32 * ui_buffer.settings.y_rot_spread
+                        + (mouse_pos_buffer[0] 
+                            + ui_buffer.settings.translation_x_base) * ui_buffer.settings.x_axis_y_rot_coeff
+                        + (mouse_pos_buffer[1] 
+                            + ui_buffer.settings.translation_y_base) * ui_buffer.settings.y_axis_y_rot_coeff
+                        + idx_f32 * ui_buffer.settings.y_rot_spread
                 ),
                 Rotation::new(
                     Axis::Z,
                     ui_buffer.settings.z_rot_base
-                        + (mouse_pos_buffer[0] + translation_x) * ui_buffer.settings.x_axis_z_rot_coeff
-                        + (mouse_pos_buffer[1] + translation_y) * ui_buffer.settings.y_axis_z_rot_coeff
-                        + idx as f32 * ui_buffer.settings.z_rot_spread
+                        + (mouse_pos_buffer[0] 
+                            + ui_buffer.settings.translation_x_base) * ui_buffer.settings.x_axis_z_rot_coeff
+                        + (mouse_pos_buffer[1] 
+                            + ui_buffer.settings.translation_y_base) * ui_buffer.settings.y_axis_z_rot_coeff
+                        + idx_f32 * ui_buffer.settings.z_rot_spread
                 ),
             );
 
-
-
             let translation = match ui_buffer.settings.mouse_tracking {
                 MouseTracking::On => Translation { 
-                    x: translation_x + mouse_pos_buffer[0], 
-                    y: translation_y - mouse_pos_buffer[1], 
-                    z: translation_z
+                    x: ui_buffer.settings.translation_x_base
+                        + (idx_f32 * ui_buffer.settings.translation_x_spread)
+                        + mouse_pos_buffer[0], 
+                    y: ui_buffer.settings.translation_y_base 
+                        - (idx_f32 * ui_buffer.settings.translation_y_spread)
+                        - mouse_pos_buffer[1], 
+                    z: ui_buffer.settings.translation_z_base 
+                        + (idx_f32 * ui_buffer.settings.translation_z_spread)
                 },
                 MouseTracking::Off => Translation { 
-                    x: translation_x, 
-                    y: translation_y, 
-                    z: translation_z 
+                    x: ui_buffer.settings.translation_x_base
+                        + (idx_f32 * ui_buffer.settings.translation_x_spread), 
+                    y: ui_buffer.settings.translation_y_base
+                        - (idx_f32 * ui_buffer.settings.translation_y_spread), 
+                    z: ui_buffer.settings.translation_z_base
+                        + (idx_f32 * ui_buffer.settings.translation_z_spread)
                 },
                 MouseTracking::InvX =>  Translation { 
-                    x: translation_x - mouse_pos_buffer[0], 
-                    y: translation_y - mouse_pos_buffer[1], 
-                    z: translation_z
+                    x: ui_buffer.settings.translation_x_base 
+                        + (idx_f32 * ui_buffer.settings.translation_x_spread)
+                        - mouse_pos_buffer[0], 
+                    y: ui_buffer.settings.translation_y_base
+                        - (idx_f32 * ui_buffer.settings.translation_y_spread)
+                        - mouse_pos_buffer[1], 
+                    z: ui_buffer.settings.translation_z_base
+                        + (idx_f32 * ui_buffer.settings.translation_z_spread)
                 },
                 MouseTracking::InvY =>  Translation { 
-                    x: translation_x + mouse_pos_buffer[0], 
-                    y: translation_y + mouse_pos_buffer[1], 
-                    z: translation_z
+                    x: ui_buffer.settings.translation_x_base 
+                        + (idx_f32 * ui_buffer.settings.translation_x_spread)
+                        + mouse_pos_buffer[0], 
+                    y: ui_buffer.settings.translation_y_base 
+                        - (idx_f32 * ui_buffer.settings.translation_y_spread)
+                        + mouse_pos_buffer[1], 
+                    z: ui_buffer.settings.translation_z_base
+                        + (idx_f32 * ui_buffer.settings.translation_z_spread)
                 },
                 MouseTracking::InvXY =>  Translation { 
-                    x: translation_x - mouse_pos_buffer[0], 
-                    y: translation_y + mouse_pos_buffer[1], 
-                    z: translation_z
+                    x: ui_buffer.settings.translation_x_base
+                        + (idx_f32 * ui_buffer.settings.translation_x_spread)
+                        - mouse_pos_buffer[0], 
+                    y: ui_buffer.settings.translation_y_base
+                        - (idx_f32 * ui_buffer.settings.translation_y_spread)
+                        + mouse_pos_buffer[1], 
+                    z: ui_buffer.settings.translation_z_base
+                        + (idx_f32 * ui_buffer.settings.translation_z_spread)
                 },
             };
 
                 // let hexagon = Geometry::hexagon(
-                //     ui_buffer.settings.radius_step * idx as f32 + ui_buffer.settings.radius_min, 
+                //     ui_buffer.settings.radius_step * idx as f32 + ui_buffer.settings.radius_base, 
                 //     rot_seq,
                 //     translation
                 // );
 
             // let _ = Worker::spawn(move || {
                 let icosohedron = Geometry::icosohedron(
-                    ui_buffer.settings.radius_step * idx as f32 + ui_buffer.settings.radius_min, 
+                    ui_buffer.settings.radius_step * idx_f32 + ui_buffer.settings.radius_base, 
                     rot_seq,
                     translation
                 );

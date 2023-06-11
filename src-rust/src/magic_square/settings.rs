@@ -74,7 +74,7 @@ pub struct Settings {
     pub draw_pattern: DrawPattern,
 
     // RADIUS
-    pub radius_min: f32,
+    pub radius_base: f32,
     pub radius_step: f32,
 
     
@@ -97,9 +97,12 @@ pub struct Settings {
     pub y_axis_z_rot_coeff: f32,
 
     // TRANSLATION
-    pub translation_x: f32,
-    pub translation_y: f32,
-    pub translation_z: f32,
+    pub translation_x_base: f32,
+    pub translation_x_spread: f32,
+    pub translation_y_base: f32,
+    pub translation_y_spread: f32,
+    pub translation_z_base: f32,
+    pub translation_z_spread: f32,
     pub mouse_tracking: MouseTracking,
 
     // // cache
@@ -123,7 +126,7 @@ impl Settings {
             // LFO
             lfo_1_active: true,
             lfo_1_amp: 0.3,
-            lfo_1_dest: LfoDestination::TranslationY,
+            lfo_1_dest: LfoDestination::TranslationYBase,
             lfo_1_freq: 35.0,
             lfo_1_phase: 0.0,
             lfo_1_shape: LfoShape::Sine,
@@ -132,7 +135,7 @@ impl Settings {
             draw_pattern: DrawPattern::Out8,
             
             // RADIUS
-            radius_min: 0.1,
+            radius_base: 0.1,
             radius_step: 0.1,
 
             // ROTATION
@@ -153,17 +156,22 @@ impl Settings {
             y_axis_z_rot_coeff: 0.0,
             
             // TRANSLATION
-            translation_x: 0.0,
-            translation_y: 0.0,
-            translation_z: 0.0,
+            translation_x_base: 0.0,
+            translation_x_spread: 0.0,
+            translation_y_base: 0.0,
+            translation_y_spread: 0.0,
+            translation_z_base: 0.0,
+            translation_z_spread: 0.0,
             mouse_tracking: MouseTracking::Off,
         }
     }
 
     pub fn try_into_lfo_destination(dest: String) -> Result<LfoDestination, ()> {
         match dest.as_str() {
-            "TranslationX" => Ok(LfoDestination::TranslationX),
-            "TranslationY" => Ok(LfoDestination::TranslationY),
+            "TranslationXBase" => Ok(LfoDestination::TranslationXBase),
+            "TranslationXSpread" => Ok(LfoDestination::TranslationXSpread),
+            "TranslationYBase" => Ok(LfoDestination::TranslationYBase),
+            "TranslationYSpread" => Ok(LfoDestination::TranslationYSpread),
             "None" => Ok(LfoDestination::None),
             _ => Err(()),
         }

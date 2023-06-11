@@ -67,7 +67,7 @@
     lfo1Phase = "magic_square_input_lfo_1_phase",
     lfo1Shape = "magic_square_input_lfo_1_shape",
     mouseTracking = "magic_square_input_mouse_tracking",
-    radiusMin = "magic_square_input_radius_min",
+    radiusBase = "magic_square_input_radius_base",
     radiusStep = "magic_square_input_radius_step",
     pitchBase = "magic_square_input_y_rot_base",
     pitchSpread = "magic_square_input_y_rot_spread",
@@ -81,9 +81,12 @@
     yawSpread = "magic_square_input_z_rot_spread",
     yawMouseX = "magic_square_input_x_axis_z_rot_coeff",
     yawMouseY = "magic_square_input_y_axis_z_rot_coeff",
-    translationX = "magic_square_input_translation_x",
-    translationY = "magic_square_input_translation_y",
-    translationZ = "magic_square_input_translation_z"
+    translationXBase = "magic_square_input_translation_x_base",
+    translationXSpread = "magic_square_input_translation_x_spread",
+    translationYBase = "magic_square_input_translation_y_base",
+    translationYSpread = "magic_square_input_translation_y_spread",
+    translationZBase = "magic_square_input_translation_z_base",
+    translationZSpread = "magic_square_input_translation_z_spread"
   }
 
   export let sideLength: number = 0.0
@@ -217,13 +220,17 @@
   }
 
   // TRANSLATION
-  let translationX: number
-  let translationY: number
+  let translationXBase: number
+  let translationXSpread: number
+  let translationYBase: number
+  let translationYSpread: number
   // let translationZ: number
 
   function setInitialTranslationVars(initialUiBuffer: any) {
-    translationX = initialUiBuffer.settings.translation_x
-    translationY = initialUiBuffer.settings.translation_y
+    translationXBase = initialUiBuffer.settings.translation_x_base
+    translationXSpread = initialUiBuffer.settings.translation_x_spread
+    translationYBase = initialUiBuffer.settings.translation_y_base
+    translationYSpread = initialUiBuffer.settings.translation_y_spread
     // translationZ = initialUiBuffer.settings.translation_z
   }
 
@@ -242,11 +249,11 @@
   }
 
   // RADIUS
-  let radiusMin: number
+  let radiusBase: number
   let radiusStep: number
 
   function setInitialRadiusVars(initialUiBuffer: any) {
-    radiusMin = Math.floor(initialUiBuffer.settings.radius_min * 100) / 100
+    radiusBase = Math.floor(initialUiBuffer.settings.radius_base * 100) / 100
     radiusStep = Math.floor(initialUiBuffer.settings.radius_step * 100) / 100
   }
 
@@ -474,31 +481,60 @@
         {:else}
           <Translation>
             <div  class="p-5 grow flex flex-col justify-around items-stretch"
-                  slot="xyzSliders">
+                  slot="xSliders">
               <div class="w-full flex flex-col justify-between items-stretch">
                 <label class="slider_label flex justify-between" 
-                       for={WasmInputId.translationX}>
-                  <div> X </div>
-                  <div> {translationX} </div>
+                       for={WasmInputId.translationXBase}>
+                  <div> base </div>
+                  <div> {translationXBase} </div>
                 </label>
-                <input id={WasmInputId.translationX}
+                <input id={WasmInputId.translationXBase}
                        type="range"
                        min={-2}
                        max={2}
-                       bind:value={translationX}
+                       bind:value={translationXBase}
                        step={.01}/>
               </div>
               <div class="w-full flex flex-col justify-between items-stretch">
                 <label class="slider_label flex justify-between" 
-                       for={WasmInputId.translationY}>
-                  <div> Y </div>
-                  <div> {translationY} </div>
+                       for={WasmInputId.translationXSpread}>
+                  <div> spread </div>
+                  <div> {translationXSpread} </div>
                 </label>
-                <input id={WasmInputId.translationY}
+                <input id={WasmInputId.translationXSpread}
                        type="range"
                        min={-2}
                        max={2}
-                       bind:value={translationY}
+                       bind:value={translationXSpread}
+                       step={.01}/>
+              </div>
+            </div>
+            <div  class="p-5 grow flex flex-col justify-around items-stretch"
+                  slot="ySliders">
+              <div class="w-full flex flex-col justify-between items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.translationYBase}>
+                  <div> base </div>
+                  <div> {translationYBase} </div>
+                </label>
+                <input id={WasmInputId.translationYBase}
+                       type="range"
+                       min={-2}
+                       max={2}
+                       bind:value={translationYBase}
+                       step={.01}/>
+              </div>
+              <div class="w-full flex flex-col justify-between items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.translationYSpread}>
+                  <div> spread </div>
+                  <div> {translationYSpread} </div>
+                </label>
+                <input id={WasmInputId.translationYSpread}
+                       type="range"
+                       min={-2}
+                       max={2}
+                       bind:value={translationYSpread}
                        step={.01}/>
               </div>
               <!-- TODO: impliment depth perspective shifting in WebGl -->
@@ -535,18 +571,18 @@
         {:else}
           <Radius>
             <div  class="p-5 grow flex flex-col justify-around items-stretch"
-                  slot="minStepSliders">
+                  slot="baseStepSliders">
               <div class="w-full flex flex-col justify-between items-stretch">
                 <label class="slider_label flex justify-between" 
-                       for={WasmInputId.radiusMin}>
-                  <div> {i18n.t("minimum", langVal)} </div>
-                  <div> {radiusMin} </div>
+                       for={WasmInputId.radiusBase}>
+                  <div> {i18n.t("base", langVal)} </div>
+                  <div> {radiusBase} </div>
                 </label>
-                <input id={WasmInputId.radiusMin}
+                <input id={WasmInputId.radiusBase}
                        type="range"
                        min={0.1}
                        max={1.1}
-                       bind:value={radiusMin}
+                       bind:value={radiusBase}
                        step={.01}/>
               </div>
               <div class="w-full flex flex-col justify-between items-stretch">
@@ -557,7 +593,7 @@
                 </label>
                 <input id={WasmInputId.radiusStep}
                        type="range"
-                       min={0.01}
+                       min={-0.5}
                        max={0.5}
                        bind:value={radiusStep}
                        step={.01}/>

@@ -110,11 +110,17 @@
             <option> {i18n.t("step", langVal)} </option>
           </optgroup>
           <optgroup label={i18n.t("translation", langVal)}>
-            <option value={LfoDestination.translationX}> 
-              X 
+            <option value={LfoDestination.translationXBase}> 
+              {i18n.t("xBase", langVal)}
             </option>
-            <option value={LfoDestination.translationY}> 
-              Y 
+            <option value={LfoDestination.translationXSpread}> 
+              {i18n.t("xSpread", langVal)}
+            </option>
+            <option value={LfoDestination.translationYBase}> 
+              {i18n.t("yBase", langVal)}
+            </option>
+            <option value={LfoDestination.translationYSpread}> 
+              {i18n.t("ySpread", langVal)}
             </option>
           </optgroup>
         </select>

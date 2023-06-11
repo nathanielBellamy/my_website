@@ -20,7 +20,7 @@ pub const INPUT_LFO_1_SHAPE: &'static str = "magic_square_input_lfo_1_shape";
 pub const INPUT_DRAW_PATTERN: &'static str = "magic_square_input_draw_pattern";
 
 // RADIUS
-pub const INPUT_RADIUS_MIN: &'static str = "magic_square_input_radius_min";
+pub const INPUT_RADIUS_BASE: &'static str = "magic_square_input_radius_base";
 pub const INPUT_RADIUS_STEP: &'static str = "magic_square_input_radius_step";
 
 pub const INPUT_X_ROT_BASE: &'static str = "magic_square_input_x_rot_base";
@@ -40,9 +40,12 @@ pub const INPUT_Y_AXIS_Y_ROT_COEFF: &'static str = "magic_square_input_y_axis_y_
 pub const INPUT_Y_AXIS_Z_ROT_COEFF: &'static str = "magic_square_input_y_axis_z_rot_coeff";
 
 // TRANSLATION
-pub const INPUT_TRANSLATION_X: &'static str = "magic_square_input_translation_x";
-pub const INPUT_TRANSLATION_Y: &'static str = "magic_square_input_translation_y";
-pub const INPUT_TRANSLATION_Z: &'static str = "magic_square_input_translation_z";
+pub const INPUT_TRANSLATION_X_BASE: &'static str = "magic_square_input_translation_x_base";
+pub const INPUT_TRANSLATION_X_SPREAD: &'static str = "magic_square_input_translation_x_spread";
+pub const INPUT_TRANSLATION_Y_BASE: &'static str = "magic_square_input_translation_y_base";
+pub const INPUT_TRANSLATION_Y_SPREAD: &'static str = "magic_square_input_translation_y_spread";
+pub const INPUT_TRANSLATION_Z_BASE: &'static str = "magic_square_input_translation_z_base";
+pub const INPUT_TRANSLATION_Z_SPREAD: &'static str = "magic_square_input_translation_z_spread";
 pub const INPUT_MOUSE_TRACKING: &'static str = "magic_square_input_mouse_tracking";
 
 // whether or not this array is used
@@ -52,7 +55,7 @@ pub const INPUT_MOUSE_TRACKING: &'static str = "magic_square_input_mouse_trackin
 // to ensure that all inputs are accounted for
 // 
 // also handy for copying and pasting when writing matches
-pub const INPUT_IDS: [&'static str; 33] = [
+pub const INPUT_IDS: [&'static str; 36] = [
     // COLOR
     INPUT_COLOR_1,
     INPUT_COLOR_2,
@@ -75,7 +78,7 @@ pub const INPUT_IDS: [&'static str; 33] = [
     INPUT_DRAW_PATTERN,
 
     // RADIUS
-    INPUT_RADIUS_MIN,
+    INPUT_RADIUS_BASE,
     INPUT_RADIUS_STEP,
 
     // ROTATION
@@ -93,8 +96,11 @@ pub const INPUT_IDS: [&'static str; 33] = [
     INPUT_Y_AXIS_Z_ROT_COEFF,
 
     // TRANSLATION
-    INPUT_TRANSLATION_X,
-    INPUT_TRANSLATION_Y,
-    INPUT_TRANSLATION_Z,
+    INPUT_TRANSLATION_X_BASE,
+    INPUT_TRANSLATION_X_SPREAD,
+    INPUT_TRANSLATION_Y_BASE,
+    INPUT_TRANSLATION_Y_SPREAD,
+    INPUT_TRANSLATION_Z_BASE,
+    INPUT_TRANSLATION_Z_SPREAD,
     INPUT_MOUSE_TRACKING,
 ];

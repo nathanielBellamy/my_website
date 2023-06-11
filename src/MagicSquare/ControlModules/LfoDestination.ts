@@ -1,5 +1,7 @@
 export enum LfoDestination {
-  translationX = 'TranslationX',
-  translationY = 'TranslationY',
+  translationXBase = 'TranslationXBase',
+  translationXSpread = 'TranslationXSpread',
+  translationYBase = 'TranslationYBase',
+  translationYSpread = 'TranslationYSpread',
   none = 'None'
 }

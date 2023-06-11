@@ -7,6 +7,6 @@
 </script>
 
 <div class="h-full flex flex-col justify-around items-stretch">
-  <slot name="minStepSliders"/>
+  <slot name="baseStepSliders"/>
 </div>
 

@@ -39,7 +39,6 @@ export const localeEn: any = {
       amplitude: "amplitude",
       base: "base",
       frequency: "frequency",
-      minimum: "minimum",
       phase: "phase",
       spread: "spread",
       step: "step"
@@ -63,7 +62,11 @@ export const localeEn: any = {
       radius: "radius",
       rotation: "rotation",
       shape: "shape",
-      translation: "translation"
+      translation: "translation",
+      xBase: "X base",
+      xSpread: "X spread",
+      yBase: "Y base",
+      ySpread: "Y spread"
     },
     mouseTracking: {
       invert: "invert",
