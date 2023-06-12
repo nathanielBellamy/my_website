@@ -4,7 +4,9 @@
   import DrawPattern from './ControlModules/DrawPattern.svelte'
   import Color from './ControlModules/Color.svelte'
   import ControlRack from './ControlRack.svelte'
-  import Lfo from './ControlModules/Lfo.svelte'
+  import LfoContainer from './ControlModules/Lfo.svelte'
+  import { Lfo } from './ControlModules/Lfo'
+  import { intoLfoDestination } from './ControlModules/LfoDestination'
   import type { LfoDestination } from './ControlModules/LfoDestination'
   import { intoLfoShape } from './ControlModules/LfoShape'
   import type { LfoShape } from './ControlModules/LfoShape'
@@ -12,6 +14,7 @@
   import Radius from './ControlModules/Radius.svelte'
   import Rotation from  './ControlModules/Rotation.svelte'
   import Translation from './ControlModules/Translation.svelte'
+  import { WasmInputId } from './WasmInputId'
   // INIT LANG BOILER PLATE
   import { I18n, Lang } from '../I18n'
   import { lang } from '../stores/lang'
@@ -49,45 +52,7 @@
   //    -> this should persist ui_settings
   //    -> while destroying and loading new wasm module instances
   
-  enum WasmInputId {
-    // there should exist a class variable by the left-hand name for each of these
-    drawPattern = "magic_square_input_draw_pattern",
-    color1 = "magic_square_input_color_1",
-    color2 = "magic_square_input_color_2",
-    color3 = "magic_square_input_color_3",
-    color4 = "magic_square_input_color_4",
-    color5 = "magic_square_input_color_5",
-    color6 = "magic_square_input_color_6",
-    color7 = "magic_square_input_color_7",
-    color8 = "magic_square_input_color_8",
-    lfo1Active= "magic_square_input_lfo_1_active",
-    lfo1Amp = "magic_square_input_lfo_1_amp",
-    lfo1Dest = "magic_square_input_lfo_1_dest",
-    lfo1Freq = "magic_square_input_lfo_1_freq",
-    lfo1Phase = "magic_square_input_lfo_1_phase",
-    lfo1Shape = "magic_square_input_lfo_1_shape",
-    mouseTracking = "magic_square_input_mouse_tracking",
-    radiusBase = "magic_square_input_radius_base",
-    radiusStep = "magic_square_input_radius_step",
-    pitchBase = "magic_square_input_y_rot_base",
-    pitchSpread = "magic_square_input_y_rot_spread",
-    pitchMouseX = "magic_square_input_x_axis_y_rot_coeff",
-    pitchMouseY = "magic_square_input_y_axis_y_rot_coeff",
-    rollBase = "magic_square_input_x_rot_base",
-    rollSpread = "magic_square_input_x_rot_spread",
-    rollMouseX = "magic_square_input_x_axis_x_rot_coeff",
-    rollMouseY = "magic_square_input_y_axis_x_rot_coeff",
-    yawBase = "magic_square_input_z_rot_base",
-    yawSpread = "magic_square_input_z_rot_spread",
-    yawMouseX = "magic_square_input_x_axis_z_rot_coeff",
-    yawMouseY = "magic_square_input_y_axis_z_rot_coeff",
-    translationXBase = "magic_square_input_translation_x_base",
-    translationXSpread = "magic_square_input_translation_x_spread",
-    translationYBase = "magic_square_input_translation_y_base",
-    translationYSpread = "magic_square_input_translation_y_spread",
-    translationZBase = "magic_square_input_translation_z_base",
-    translationZSpread = "magic_square_input_translation_z_spread"
-  }
+
 
   export let sideLength: number = 0.0
 
@@ -182,41 +147,75 @@
   let lfo4Shape: LfoShape
   
   function setInitialLfoVars(initialUiBuffer: any) {
-    console.log(initialUiBuffer.settings.lfo_1_shape)
     lfo1Active = initialUiBuffer.settings.lfo_1_active
     lfo1Amp = initialUiBuffer.settings.lfo_1_amp
-    lfo1Dest = initialUiBuffer.settings.lfo_1_dest
+    lfo1Dest = intoLfoDestination(initialUiBuffer.settings.lfo_1_dest)
     lfo1Freq = initialUiBuffer.settings.lfo_1_freq
     lfo1Phase = initialUiBuffer.settings.lfo_1_phase
     lfo1Shape = intoLfoShape(initialUiBuffer.settings.lfo_1_shape)
 
     lfo2Active = initialUiBuffer.settings.lfo_2_active
     lfo2Amp = initialUiBuffer.settings.lfo_2_amp
-    lfo2Dest = initialUiBuffer.settings.lfo_2_dest
+    lfo2Dest = intoLfoDestination(initialUiBuffer.settings.lfo_2_dest)
     lfo2Freq = initialUiBuffer.settings.lfo_2_freq
     lfo2Phase = initialUiBuffer.settings.lfo_2_phase
-    lfo2Shape = initialUiBuffer.settings.lfo_2_shape
+    lfo2Shape = intoLfoShape(initialUiBuffer.settings.lfo_2_shape)
 
     lfo3Active = initialUiBuffer.settings.lfo_3_active
     lfo3Amp = initialUiBuffer.settings.lfo_3_amp
-    lfo3Dest = initialUiBuffer.settings.lfo_3_dest
+    lfo3Dest = intoLfoDestination(initialUiBuffer.settings.lfo_3_dest)
     lfo3Freq = initialUiBuffer.settings.lfo_3_freq
     lfo3Phase = initialUiBuffer.settings.lfo_3_phase
-    lfo3Shape = initialUiBuffer.settings.lfo_3_shape
+    lfo3Shape = intoLfoShape(initialUiBuffer.settings.lfo_3_shape)
 
     lfo4Active = initialUiBuffer.settings.lfo_4_active
     lfo4Amp = initialUiBuffer.settings.lfo_4_amp
-    lfo4Dest = initialUiBuffer.settings.lfo_4_dest
+    lfo4Dest = intoLfoDestination(initialUiBuffer.settings.lfo_4_dest)
     lfo4Freq = initialUiBuffer.settings.lfo_4_freq
     lfo4Phase = initialUiBuffer.settings.lfo_4_phase
-    lfo4Shape = initialUiBuffer.settings.lfo_4_shape
+    lfo4Shape = intoLfoShape(initialUiBuffer.settings.lfo_4_shape)
   }
 
-  function handleLfo1ActiveToggle () {
-    lfo1Active = !lfo1Active
-    var input = document.getElementById(WasmInputId.lfo1Active)
-    input.value = lfo1Active
-    input.dispatchEvent(new Event('input', {bubbles: true}))
+  function handleLfoActiveToggle(lfo: Lfo) {
+    var val: boolean
+    switch (lfo) {
+      case Lfo.one:
+        lfo1Active = !lfo1Active
+        val = lfo1Active
+        break
+      case Lfo.two:
+        lfo2Active = !lfo2Active
+        val = lfo2Active
+        break
+      case Lfo.three:
+        lfo3Active = !lfo3Active
+        val = lfo3Active
+        break
+      case Lfo.four:
+        lfo4Active = !lfo4Active
+        val = lfo4Active
+        break
+    }
+    const inputId: WasmInputId = intoLfoActiveInputId(lfo)
+    var input = document.getElementById(inputId)
+    if (!!input) {
+      input.value = val
+      input.dispatchEvent(new Event('input', {bubbles: true}))
+    }
+  }
+
+  function intoLfoActiveInputId(lfo: Lfo): WasmInputId {
+    switch (lfo) {
+      case Lfo.two:
+        return WasmInputId.lfo2Active
+      case Lfo.three:
+        return WasmInputId.lfo3Active
+      case Lfo.four:
+        return WasmInputId.lfo4Active
+      case Lfo.one:
+      default:
+        return WasmInputId.lfo1Active
+    }
   }
 
   // TRANSLATION
@@ -399,18 +398,20 @@
         {#if !renderDataReady}
           <Loading />
         {:else}
-          <Lfo  lfo1Active={lfo1Active}
-                lfo1Dest={lfo1Dest}
-                lfo1Shape={lfo1Shape}
-                lfo2Active={lfo2Active}
-                lfo2Dest={lfo2Dest}
-                lfo2Shape={lfo2Shape}
-                lfo3Active={lfo3Active}
-                lfo3Dest={lfo3Dest}
-                lfo3Shape={lfo3Shape}
-                lfo4Active={lfo4Active}
-                lfo4Dest={lfo4Dest}
-                lfo4Shape={lfo4Shape}>
+          <LfoContainer   lfo1Active={lfo1Active}
+                          lfo1Dest={lfo1Dest}
+                          lfo1Shape={lfo1Shape}
+                          lfo2Active={lfo2Active}
+                          lfo2Dest={lfo2Dest}
+                          lfo2Shape={lfo2Shape}
+                          lfo3Active={lfo3Active}
+                          lfo3Dest={lfo3Dest}
+                          lfo3Shape={lfo3Shape}
+                          lfo4Active={lfo4Active}
+                          lfo4Dest={lfo4Dest}
+                          lfo4Shape={lfo4Shape}>
+
+            <!-- LFO1 START-->
             <div class="w-full h-full p-5 grow flex flex-col justify-around items-stretch"
                  slot="lfo1">
               <!-- hidden input for destination select  -->
@@ -424,11 +425,11 @@
                 <!-- TODO: lfo active/selected colors for buttons  -->
                 <button class="mb-5"
                         class:active={lfo1Active}
-                        on:click={() => handleLfo1ActiveToggle()}>
+                        on:click={() => handleLfoActiveToggle(Lfo.one)}>
                   <input id={WasmInputId.lfo1Active}
                          value={lfo1Active}
                          class="hidden_input">
-                    ACTIVE
+                    {i18n.t("active", langVal)}
                 </button>
               </div>
               <div class="grow w-full flex flex-col justify-center items-stretch">
@@ -471,7 +472,198 @@
                        step={.01}/>
               </div>
             </div>
-          </Lfo>
+            <!-- LFO1 END-->
+
+            <!-- lfo2 START-->
+            <div class="w-full h-full p-5 grow flex flex-col justify-around items-stretch"
+                 slot="lfo2">
+              <!-- hidden input for destination select  -->
+              <input id={WasmInputId.lfo2Dest}
+                     bind:value={lfo2Dest}
+                     class="hidden_input"/>
+              <input id={WasmInputId.lfo2Shape}
+                     bind:value={lfo2Shape}
+                     class="hidden_input"/>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <!-- TODO: lfo active/selected colors for buttons  -->
+                <button class="mb-5"
+                        class:active={lfo2Active}
+                        on:click={() => handleLfoActiveToggle(Lfo.two)}>
+                  <input id={WasmInputId.lfo2Active}
+                         value={lfo2Active}
+                         class="hidden_input">
+                    {i18n.t("active", langVal)}
+                </button>
+              </div>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.lfo2Freq}>
+                  <div> {i18n.t("frequency", langVal)} </div>
+                  <div> {lfo2Freq} </div>
+                </label>
+                <input id={WasmInputId.lfo2Freq}
+                       type="range"
+                       min={1}
+                       max={255}
+                       bind:value={lfo2Freq}
+                       step={1}/>
+              </div>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.lfo2Amp}>
+                  <div> {i18n.t("amplitude", langVal)} </div>
+                  <div> {round2(lfo2Amp)} </div>
+                </label>
+                <input id={WasmInputId.lfo2Amp}
+                       type="range"
+                       min={0}
+                       max={3}
+                       bind:value={lfo2Amp}
+                       step={.01}/>
+              </div>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.lfo2Phase}>
+                  <div> {i18n.t("phase", langVal)} </div>
+                  <div> {lfo2Phase} </div>
+                </label>
+                <input id={WasmInputId.lfo2Phase}
+                       type="range"
+                       min={-3.14159}
+                       max={3.13159}
+                       bind:value={lfo2Phase}
+                       step={.01}/>
+              </div>
+            </div>
+            <!-- lfo2 END-->
+
+            <!-- lfo3 START-->
+            <div class="w-full h-full p-5 grow flex flex-col justify-around items-stretch"
+                 slot="lfo3">
+              <!-- hidden input for destination select  -->
+              <input id={WasmInputId.lfo3Dest}
+                     bind:value={lfo3Dest}
+                     class="hidden_input"/>
+              <input id={WasmInputId.lfo3Shape}
+                     bind:value={lfo3Shape}
+                     class="hidden_input"/>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <!-- TODO: lfo active/selected colors for buttons  -->
+                <button class="mb-5"
+                        class:active={lfo3Active}
+                        on:click={() => handleLfoActiveToggle(Lfo.three)}>
+                  <input id={WasmInputId.lfo3Active}
+                         value={lfo3Active}
+                         class="hidden_input">
+                    {i18n.t("active", langVal)}
+                </button>
+              </div>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.lfo3Freq}>
+                  <div> {i18n.t("frequency", langVal)} </div>
+                  <div> {lfo3Freq} </div>
+                </label>
+                <input id={WasmInputId.lfo3Freq}
+                       type="range"
+                       min={1}
+                       max={255}
+                       bind:value={lfo3Freq}
+                       step={1}/>
+              </div>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.lfo3Amp}>
+                  <div> {i18n.t("amplitude", langVal)} </div>
+                  <div> {round2(lfo3Amp)} </div>
+                </label>
+                <input id={WasmInputId.lfo3Amp}
+                       type="range"
+                       min={0}
+                       max={3}
+                       bind:value={lfo3Amp}
+                       step={.01}/>
+              </div>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.lfo3Phase}>
+                  <div> {i18n.t("phase", langVal)} </div>
+                  <div> {lfo3Phase} </div>
+                </label>
+                <input id={WasmInputId.lfo3Phase}
+                       type="range"
+                       min={-3.14159}
+                       max={3.13159}
+                       bind:value={lfo3Phase}
+                       step={.01}/>
+              </div>
+            </div>
+            <!-- lfo3 END-->
+
+            <!-- lfo4 START-->
+            <div class="w-full h-full p-5 grow flex flex-col justify-around items-stretch"
+                 slot="lfo4">
+              <!-- hidden input for destination select  -->
+              <input id={WasmInputId.lfo4Dest}
+                     bind:value={lfo4Dest}
+                     class="hidden_input"/>
+              <input id={WasmInputId.lfo4Shape}
+                     bind:value={lfo4Shape}
+                     class="hidden_input"/>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <!-- TODO: lfo active/selected colors for buttons  -->
+                <button class="mb-5"
+                        class:active={lfo4Active}
+                        on:click={() => handleLfoActiveToggle(Lfo.four)}>
+                  <input id={WasmInputId.lfo4Active}
+                         value={lfo4Active}
+                         class="hidden_input">
+                    {i18n.t("active", langVal)}
+                </button>
+              </div>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.lfo4Freq}>
+                  <div> {i18n.t("frequency", langVal)} </div>
+                  <div> {lfo4Freq} </div>
+                </label>
+                <input id={WasmInputId.lfo4Freq}
+                       type="range"
+                       min={1}
+                       max={255}
+                       bind:value={lfo4Freq}
+                       step={1}/>
+              </div>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.lfo4Amp}>
+                  <div> {i18n.t("amplitude", langVal)} </div>
+                  <div> {round2(lfo4Amp)} </div>
+                </label>
+                <input id={WasmInputId.lfo4Amp}
+                       type="range"
+                       min={0}
+                       max={3}
+                       bind:value={lfo4Amp}
+                       step={.01}/>
+              </div>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.lfo4Phase}>
+                  <div> {i18n.t("phase", langVal)} </div>
+                  <div> {lfo4Phase} </div>
+                </label>
+                <input id={WasmInputId.lfo4Phase}
+                       type="range"
+                       min={-3.14159}
+                       max={3.13159}
+                       bind:value={lfo4Phase}
+                       step={.01}/>
+              </div>
+            </div>
+            <!-- lfo4 END-->
+
+          </LfoContainer>
         {/if}
       </div>
       <div slot="translation"

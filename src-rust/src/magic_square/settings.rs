@@ -58,13 +58,38 @@ pub struct Settings {
     pub color_7: Rgba,
     pub color_8: Rgba,
 
-    // LFO
+    // lfo_1
     pub lfo_1_active: bool,
     pub lfo_1_amp: f32,
     pub lfo_1_dest: LfoDestination,
     pub lfo_1_freq: f32,
     pub lfo_1_phase: f32,
     pub lfo_1_shape: LfoShape,
+
+    // lfo_2
+    pub lfo_2_active: bool,
+    pub lfo_2_amp: f32,
+    pub lfo_2_dest: LfoDestination,
+    pub lfo_2_freq: f32,
+    pub lfo_2_phase: f32,
+    pub lfo_2_shape: LfoShape,
+
+    // lfo_3
+    pub lfo_3_active: bool,
+    pub lfo_3_amp: f32,
+    pub lfo_3_dest: LfoDestination,
+    pub lfo_3_freq: f32,
+    pub lfo_3_phase: f32,
+    pub lfo_3_shape: LfoShape,
+
+    // lfo_4
+    pub lfo_4_active: bool,
+    pub lfo_4_amp: f32,
+    pub lfo_4_dest: LfoDestination,
+    pub lfo_4_freq: f32,
+    pub lfo_4_phase: f32,
+    pub lfo_4_shape: LfoShape,
+
 
     // TODO:
     // mouse settings
@@ -123,13 +148,38 @@ impl Settings {
             color_7: [0.80, 0.44, 0.925, 1.0],
             color_8: [0.0, 0.1, 1.0, 1.0],
 
-            // LFO
+            // lfo_1
             lfo_1_active: true,
-            lfo_1_amp: 0.3,
-            lfo_1_dest: LfoDestination::TranslationYBase,
+            lfo_1_amp: 0.05,
+            lfo_1_dest: LfoDestination::TranslationXSpread,
             lfo_1_freq: 35.0,
             lfo_1_phase: 0.0,
             lfo_1_shape: LfoShape::Sine,
+
+            // lfo_2
+            lfo_2_active: true,
+            lfo_2_amp: 0.1,
+            lfo_2_dest: LfoDestination::RollBase,
+            lfo_2_freq: 15.0,
+            lfo_2_phase: 0.0,
+            lfo_2_shape: LfoShape::Sine,
+
+            // lfo_3
+            lfo_3_active: true,
+            lfo_3_amp: 0.1,
+            lfo_3_dest: LfoDestination::RadiusStep,
+            lfo_3_freq: 15.0,
+            lfo_3_phase: 0.0,
+            lfo_3_shape: LfoShape::Sine,
+
+            // lfo_4
+            lfo_4_active: true,
+            lfo_4_amp: 0.3,
+            lfo_4_dest: LfoDestination::YawSpread,
+            lfo_4_freq: 35.0,
+            lfo_4_phase: 0.0,
+            lfo_4_shape: LfoShape::Sine,
+
 
             // PATTERN
             draw_pattern: DrawPattern::Out8,

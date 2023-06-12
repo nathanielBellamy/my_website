@@ -229,6 +229,33 @@ impl MagicSquare {
                     ui_buffer.borrow().settings.lfo_1_shape,
                 );
 
+                let lfo_2 = Lfo::new(
+                    ui_buffer.borrow().settings.lfo_2_active,
+                    ui_buffer.borrow().settings.lfo_2_amp,
+                    ui_buffer.borrow().settings.lfo_2_dest,
+                    ui_buffer.borrow().settings.lfo_2_freq,
+                    ui_buffer.borrow().settings.lfo_2_phase,
+                    ui_buffer.borrow().settings.lfo_2_shape,
+                );
+
+                let lfo_3 = Lfo::new(
+                    ui_buffer.borrow().settings.lfo_3_active,
+                    ui_buffer.borrow().settings.lfo_3_amp,
+                    ui_buffer.borrow().settings.lfo_3_dest,
+                    ui_buffer.borrow().settings.lfo_3_freq,
+                    ui_buffer.borrow().settings.lfo_3_phase,
+                    ui_buffer.borrow().settings.lfo_3_shape,
+                );
+
+                let lfo_4 = Lfo::new(
+                    ui_buffer.borrow().settings.lfo_4_active,
+                    ui_buffer.borrow().settings.lfo_4_amp,
+                    ui_buffer.borrow().settings.lfo_4_dest,
+                    ui_buffer.borrow().settings.lfo_4_freq,
+                    ui_buffer.borrow().settings.lfo_4_phase,
+                    ui_buffer.borrow().settings.lfo_4_shape,
+                );
+
                 // let start: f64 = performance.now();
                 // let val: f32 = lfo_1.eval(x);
                 // log(&format!("{x}, {val}"));
@@ -241,6 +268,9 @@ impl MagicSquare {
                 let mut ui_buffer = (*ui_buffer.clone().borrow()).clone();
                 ui_buffer = ui_buffer.copy();
                 lfo_1.modify(x, &mut ui_buffer);
+                lfo_2.modify(x, &mut ui_buffer);
+                lfo_3.modify(x, &mut ui_buffer);
+                lfo_4.modify(x, &mut ui_buffer);
 
                 // log(&format!("{}", ui_buffer.settings.translation_x));
 

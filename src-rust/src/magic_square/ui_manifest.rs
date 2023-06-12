@@ -1,3 +1,5 @@
+// see src/MagicSquare/WasmInputId.ts
+
 // COLOR
 pub const INPUT_COLOR_1: &'static str = "magic_square_input_color_1";
 pub const INPUT_COLOR_2: &'static str = "magic_square_input_color_2";
@@ -79,7 +81,7 @@ pub const INPUT_MOUSE_TRACKING: &'static str = "magic_square_input_mouse_trackin
 // to ensure that all inputs are accounted for
 // 
 // also handy for copying and pasting when writing matches
-pub const INPUT_IDS: [&'static str; 36] = [
+pub const INPUT_IDS: [&'static str; 54] = [
     // COLOR
     INPUT_COLOR_1,
     INPUT_COLOR_2,
@@ -90,13 +92,37 @@ pub const INPUT_IDS: [&'static str; 36] = [
     INPUT_COLOR_7,
     INPUT_COLOR_8,
 
-    // LFO
+    // LFO_1
     INPUT_LFO_1_ACTIVE,
     INPUT_LFO_1_AMP,
     INPUT_LFO_1_DEST,
     INPUT_LFO_1_FREQ,
     INPUT_LFO_1_PHASE,
     INPUT_LFO_1_SHAPE,
+
+    // LFO_2
+    INPUT_LFO_2_ACTIVE,
+    INPUT_LFO_2_AMP,
+    INPUT_LFO_2_DEST,
+    INPUT_LFO_2_FREQ,
+    INPUT_LFO_2_PHASE,
+    INPUT_LFO_2_SHAPE,
+
+    // LFO_3
+    INPUT_LFO_3_ACTIVE,
+    INPUT_LFO_3_AMP,
+    INPUT_LFO_3_DEST,
+    INPUT_LFO_3_FREQ,
+    INPUT_LFO_3_PHASE,
+    INPUT_LFO_3_SHAPE,
+
+    // LFO_4
+    INPUT_LFO_4_ACTIVE,
+    INPUT_LFO_4_AMP,
+    INPUT_LFO_4_DEST,
+    INPUT_LFO_4_FREQ,
+    INPUT_LFO_4_PHASE,
+    INPUT_LFO_4_SHAPE,
 
     // PATTERN
     INPUT_DRAW_PATTERN,

@@ -1,9 +1,10 @@
 <script lang="ts">
-    import { prevent_default } from 'svelte/internal';
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
+  import { Lfo } from './Lfo'
   import { LfoDestination } from './LfoDestination'
   import { LfoShape } from './LfoShape'
+  import { WasmInputId } from '../WasmInputId';
 
   let langVal: Lang 
   lang.subscribe(val => langVal = val)
@@ -25,26 +26,86 @@
   export let lfo4Dest: LfoDestination = LfoDestination.none
   export let lfo4Shape: LfoShape = LfoShape.sine
 
-  enum Lfo {
-    one = "1",
-    two = "2",
-    three = "3",
-    four = "4"
-  }
-
   let lfo: Lfo = Lfo.one
 
+  // destination
+  $: currDest = intoCurrDestination(lfo)
+
+  function intoCurrDestination(lfo: Lfo) {
+    switch (lfo) {
+      case Lfo.two:
+        return lfo2Dest
+      case Lfo.three:
+        return lfo3Dest
+      case Lfo.four:
+        return lfo4Dest
+      case Lfo.one:
+      default:
+        return lfo1Dest
+    }
+  }
+
   function handleLfoDestChange(e: any, lfo: Lfo) {
-    var input = document.getElementById('magic_square_input_lfo_1_dest')
-    input.value = e.target.value
-    input.dispatchEvent(new Event('input', {bubbles: true}))
+    const input_id = intoDestInputId(lfo)
+    var input = document.getElementById(input_id)
+    if (!!input) {
+      input.value = e.target.value
+      input.dispatchEvent(new Event('input', {bubbles: true}))
+    }
+  }
+
+  function intoDestInputId(lfo: Lfo): string {
+    switch (lfo) {
+      case Lfo.two:
+        return WasmInputId.lfo2Dest
+      case Lfo.three:
+        return WasmInputId.lfo3Dest
+      case Lfo.four:
+        return WasmInputId.lfo4Dest
+      case Lfo.one:
+      default:
+        return WasmInputId.lfo1Dest
+    }
+  }
+
+  // shape
+  $: currShape = intoCurrShape(lfo)
+
+  function intoCurrShape(lfo: Lfo) {
+    switch (lfo) {
+      case Lfo.two:
+        return lfo2Shape
+      case Lfo.three:
+        return lfo3Shape       
+      case Lfo.four:
+        return lfo4Shape
+      case Lfo.one:
+      default:
+        return lfo1Shape
+    }
   }
 
   function handleLfoShapeChange(e: any, lfo: Lfo) {
-    var input = document.getElementById('magic_square_input_lfo_1_shape')
-    console.log(e.target.value)
-    input.value = e.target.value
-    input.dispatchEvent(new Event('input', {bubbles: true}))
+    const input_id = intoShapeInputId(lfo)
+    var input = document.getElementById(input_id)
+    if (!!input) {
+      input.value = e.target.value
+      input.dispatchEvent(new Event('input', {bubbles: true}))
+    }
+  }
+
+  function intoShapeInputId(lfo: Lfo): string {
+    switch (lfo) {
+      case Lfo.two:
+        return WasmInputId.lfo2Shape
+      case Lfo.three:
+        return WasmInputId.lfo3Shape
+      case Lfo.four:
+        return WasmInputId.lfo4Shape
+      case Lfo.one:
+      default:
+        return WasmInputId.lfo1Shape
+    }
   }
 </script>
 
@@ -53,43 +114,42 @@
     <button on:click = {() => lfo = Lfo.one}
             class:active = {lfo1Active}
             class:selected = {lfo === Lfo.one}
-            class="pt-2 pb-2 pr-3 pl-3">
+            class="pt-2 pb-2 pr-3 pl-3 text-lg border-8 rounded-xl">
       {Lfo.one}
     </button>
     <button on:click = {() => lfo = Lfo.two}
             class:active = {lfo2Active}
             class:selected = {lfo === Lfo.two}
-            class="pt-2 pb-2 pr-3 pl-3">
+            class="pt-2 pb-2 pr-3 pl-3 text-lg border-8 rounded-xl">
       {Lfo.two}
     </button>
     <button on:click = {() => lfo = Lfo.three}
             class:active = {lfo3Active}
             class:selected = {lfo === Lfo.three}
-            class="pt-2 pb-2 pr-3 pl-3">
+            class="pt-2 pb-2 pr-3 pl-3 text-lg border-8 rounded-xl">
       {Lfo.three}
     </button>
     <button on:click = {() => lfo = Lfo.four}
             class:active = {lfo4Active}
             class:selected = {lfo === Lfo.four}
-            class="pt-2 pb-2 pr-3 pl-3">
+            class="pt-2 pb-2 pr-3 pl-3 text-lg border-8 rounded-xl">
       {Lfo.four}
     </button>
   </div>
   <div class="grow pt-5 pb-5 flex flex-col justify-between items-stretch">
-    <div class="grow flex flex-col justify-around items-center"
-         class:hidden = {lfo !== Lfo.one}>
+    <div class="grow flex flex-col justify-around items-center">
       <div class="w-full pl-5 pr-5 flex flex-col justify-around items-stretch">
-        <label for="lfo_1_dest_select"
+        <label for="lfo_dest_select"
                class="destination_label w-full flex justify-between text-left">
           <div>
             {i18n.t("destination", langVal)}
           </div>
         </label>
-        <select id="lfo_1_dest_select"
-                value={lfo1Dest}
+        <select id="lfo_dest_select"
+                value={currDest}
                 on:input={e => e.stopPropagation()}
                 on:change={(e) => {
-                  handleLfoDestChange(e, Lfo.one)
+                  handleLfoDestChange(e, lfo)
                 }}>
           <optgroup label={i18n.t("rotation", langVal)}>
             <option value={LfoDestination.pitchBase}> 
@@ -153,18 +213,26 @@
           </optgroup>
         </select>
       </div>
-      <slot name="lfo1"/>
+      {#if lfo === Lfo.one}
+        <slot name="lfo1"/>
+      {:else if lfo === Lfo.two}
+        <slot name="lfo2"/>
+      {:else if lfo === Lfo.three}
+        <slot name="lfo3"/>
+      {:else if lfo === Lfo.four}
+        <slot name="lfo4"/>
+      {/if}
       <div class="w-full pl-5 pr-5 flex flex-col justify-around items-stretch">
-        <label for="lfo_1_dest_select"
+        <label for="lfo_shape_select"
                class="destination_label w-full flex justify-between text-left">
           <div>
             {i18n.t("shape", langVal)}
           </div>
         </label>
-        <select id="lfo_1_dest_select"
-                value={lfo1Shape}
+        <select id="lfo_dest_select"
+                value={currShape}
                 on:input={e => e.stopPropagation()}
-                on:change={e => handleLfoShapeChange(e, Lfo.one)}>
+                on:change={e => handleLfoShapeChange(e, lfo)}>
           <option value={LfoShape.linear}> 
             Linear 
           </option>
@@ -173,18 +241,6 @@
           </option>
         </select>
       </div>
-    </div>
-    <div class="grow flex justify-around items-center"
-         class:hidden = {lfo !== Lfo.two}>
-      <slot name="lfo2"/>
-    </div>
-    <div class="grow flex justify-around items-center"
-         class:hidden = {lfo !== Lfo.three}>
-      <slot name="lfo3"/>
-    </div>
-    <div class="grow flex justify-around items-center"
-         class:hidden = {lfo !== Lfo.four}>
-      <slot name="lfo4"/>
     </div>
   </div>
 </div>
@@ -196,9 +252,6 @@
   .destination_label
     width: 80%
     font-weight: text.$fw-l
-
-  .hidden
-    display: none
 
   .selected
     background-color: color.$blue-8

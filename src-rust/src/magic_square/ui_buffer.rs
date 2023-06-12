@@ -11,7 +11,10 @@ use crate::magic_square::ui_manifest::{
     INPUT_Y_AXIS_X_ROT_COEFF, INPUT_Y_AXIS_Y_ROT_COEFF, INPUT_Y_AXIS_Z_ROT_COEFF,
     INPUT_TRANSLATION_X_BASE, INPUT_TRANSLATION_Y_BASE, INPUT_TRANSLATION_Z_BASE,
     INPUT_TRANSLATION_X_SPREAD, INPUT_TRANSLATION_Y_SPREAD, INPUT_TRANSLATION_Z_SPREAD,
-    INPUT_LFO_1_ACTIVE, INPUT_LFO_1_AMP, INPUT_LFO_1_DEST, INPUT_LFO_1_FREQ, INPUT_LFO_1_PHASE, INPUT_LFO_1_SHAPE
+    INPUT_LFO_1_ACTIVE, INPUT_LFO_1_AMP, INPUT_LFO_1_DEST, INPUT_LFO_1_FREQ, INPUT_LFO_1_PHASE, INPUT_LFO_1_SHAPE,
+    INPUT_LFO_2_ACTIVE, INPUT_LFO_2_AMP, INPUT_LFO_2_DEST, INPUT_LFO_2_FREQ, INPUT_LFO_2_PHASE, INPUT_LFO_2_SHAPE,
+    INPUT_LFO_3_ACTIVE, INPUT_LFO_3_AMP, INPUT_LFO_3_DEST, INPUT_LFO_3_FREQ, INPUT_LFO_3_PHASE, INPUT_LFO_3_SHAPE,
+    INPUT_LFO_4_ACTIVE, INPUT_LFO_4_AMP, INPUT_LFO_4_DEST, INPUT_LFO_4_FREQ, INPUT_LFO_4_PHASE, INPUT_LFO_4_SHAPE,
 };
 
 
@@ -206,6 +209,96 @@ impl UiBuffer {
             INPUT_LFO_1_SHAPE => {
                 if let Ok(shape) = Settings::try_into_lfo_shape(val) {
                     self.settings.lfo_1_shape = shape;
+                }
+            },
+            INPUT_LFO_2_ACTIVE => {
+                if let Ok(val) = val.parse::<bool>() {
+                    self.settings.lfo_2_active = val;
+                }
+            },
+            INPUT_LFO_2_AMP => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.lfo_2_amp = val;
+                }
+            },
+            INPUT_LFO_2_DEST => {
+                if let Ok(dest) = Settings::try_into_lfo_destination(val) {
+                    self.settings.lfo_2_dest = dest;
+                }
+            },
+            INPUT_LFO_2_FREQ => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.lfo_2_freq = val;
+                }
+            },
+            INPUT_LFO_2_PHASE => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.lfo_2_phase = val;
+                }
+            },
+            INPUT_LFO_2_SHAPE => {
+                if let Ok(shape) = Settings::try_into_lfo_shape(val) {
+                    self.settings.lfo_2_shape = shape;
+                }
+            },
+            INPUT_LFO_3_ACTIVE => {
+                if let Ok(val) = val.parse::<bool>() {
+                    self.settings.lfo_3_active = val;
+                }
+            },
+            INPUT_LFO_3_AMP => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.lfo_3_amp = val;
+                }
+            },
+            INPUT_LFO_3_DEST => {
+                if let Ok(dest) = Settings::try_into_lfo_destination(val) {
+                    self.settings.lfo_3_dest = dest;
+                }
+            },
+            INPUT_LFO_3_FREQ => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.lfo_3_freq = val;
+                }
+            },
+            INPUT_LFO_3_PHASE => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.lfo_3_phase = val;
+                }
+            },
+            INPUT_LFO_3_SHAPE => {
+                if let Ok(shape) = Settings::try_into_lfo_shape(val) {
+                    self.settings.lfo_3_shape = shape;
+                }
+            },
+            INPUT_LFO_4_ACTIVE => {
+                if let Ok(val) = val.parse::<bool>() {
+                    self.settings.lfo_4_active = val;
+                }
+            },
+            INPUT_LFO_4_AMP => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.lfo_4_amp = val;
+                }
+            },
+            INPUT_LFO_4_DEST => {
+                if let Ok(dest) = Settings::try_into_lfo_destination(val) {
+                    self.settings.lfo_4_dest = dest;
+                }
+            },
+            INPUT_LFO_4_FREQ => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.lfo_4_freq = val;
+                }
+            },
+            INPUT_LFO_4_PHASE => {
+                if let Ok(val) = val.parse::<f32>() {
+                    self.settings.lfo_4_phase = val;
+                }
+            },
+            INPUT_LFO_4_SHAPE => {
+                if let Ok(shape) = Settings::try_into_lfo_shape(val) {
+                    self.settings.lfo_4_shape = shape;
                 }
             },
             _ => {}
