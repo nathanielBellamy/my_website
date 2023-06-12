@@ -8,13 +8,37 @@ pub const INPUT_COLOR_6: &'static str = "magic_square_input_color_6";
 pub const INPUT_COLOR_7: &'static str = "magic_square_input_color_7";
 pub const INPUT_COLOR_8: &'static str = "magic_square_input_color_8";
 
-// LFO
+// LFO 1
 pub const INPUT_LFO_1_ACTIVE: &'static str = "magic_square_input_lfo_1_active";
 pub const INPUT_LFO_1_AMP: &'static str = "magic_square_input_lfo_1_amp";
 pub const INPUT_LFO_1_DEST: &'static str = "magic_square_input_lfo_1_dest";
 pub const INPUT_LFO_1_FREQ: &'static str = "magic_square_input_lfo_1_freq";
 pub const INPUT_LFO_1_PHASE: &'static str = "magic_square_input_lfo_1_phase";
 pub const INPUT_LFO_1_SHAPE: &'static str = "magic_square_input_lfo_1_shape";
+
+// LFO 2
+pub const INPUT_LFO_2_ACTIVE: &'static str = "magic_square_input_lfo_2_active";
+pub const INPUT_LFO_2_AMP: &'static str = "magic_square_input_lfo_2_amp";
+pub const INPUT_LFO_2_DEST: &'static str = "magic_square_input_lfo_2_dest";
+pub const INPUT_LFO_2_FREQ: &'static str = "magic_square_input_lfo_2_freq";
+pub const INPUT_LFO_2_PHASE: &'static str = "magic_square_input_lfo_2_phase";
+pub const INPUT_LFO_2_SHAPE: &'static str = "magic_square_input_lfo_2_shape";
+
+// LFO 3
+pub const INPUT_LFO_3_ACTIVE: &'static str = "magic_square_input_lfo_3_active";
+pub const INPUT_LFO_3_AMP: &'static str = "magic_square_input_lfo_3_amp";
+pub const INPUT_LFO_3_DEST: &'static str = "magic_square_input_lfo_3_dest";
+pub const INPUT_LFO_3_FREQ: &'static str = "magic_square_input_lfo_3_freq";
+pub const INPUT_LFO_3_PHASE: &'static str = "magic_square_input_lfo_3_phase";
+pub const INPUT_LFO_3_SHAPE: &'static str = "magic_square_input_lfo_3_shape";
+
+// LFO 4
+pub const INPUT_LFO_4_ACTIVE: &'static str = "magic_square_input_lfo_4_active";
+pub const INPUT_LFO_4_AMP: &'static str = "magic_square_input_lfo_4_amp";
+pub const INPUT_LFO_4_DEST: &'static str = "magic_square_input_lfo_4_dest";
+pub const INPUT_LFO_4_FREQ: &'static str = "magic_square_input_lfo_4_freq";
+pub const INPUT_LFO_4_PHASE: &'static str = "magic_square_input_lfo_4_phase";
+pub const INPUT_LFO_4_SHAPE: &'static str = "magic_square_input_lfo_4_shape";
 
 // PATTERN
 pub const INPUT_DRAW_PATTERN: &'static str = "magic_square_input_draw_pattern";

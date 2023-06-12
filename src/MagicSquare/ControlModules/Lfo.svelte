@@ -92,22 +92,50 @@
                   handleLfoDestChange(e, Lfo.one)
                 }}>
           <optgroup label={i18n.t("rotation", langVal)}>
-            <option> {i18n.t("pitchBase", langVal)} </option>
-            <option> {i18n.t("pitchSpread", langVal)} </option>
-            <option> {i18n.t("pitchX", langVal)} </option>
-            <option> {i18n.t("pitchY", langVal)} </option>
-            <option> {i18n.t("rollBase", langVal)} </option>
-            <option> {i18n.t("rollSpread", langVal)} </option>
-            <option> {i18n.t("rollX", langVal)} </option>
-            <option> {i18n.t("rollY", langVal)} </option>
-            <option> {i18n.t("yawBase", langVal)} </option>
-            <option> {i18n.t("yawSpread", langVal)} </option>
-            <option> {i18n.t("yawX", langVal)} </option>
-            <option> {i18n.t("yawY", langVal)} </option>
+            <option value={LfoDestination.pitchBase}> 
+              {i18n.t("pitchBase", langVal)} 
+            </option>
+            <option value={LfoDestination.pitchSpread}> 
+              {i18n.t("pitchSpread", langVal)} 
+            </option>
+            <option value={LfoDestination.pitchX}> 
+              {i18n.t("pitchX", langVal)} 
+            </option>
+            <option value={LfoDestination.pitchY}> 
+              {i18n.t("pitchY", langVal)}
+            </option>
+            <option value={LfoDestination.rollBase}> 
+              {i18n.t("rollBase", langVal)}
+            </option>
+            <option value={LfoDestination.rollSpread}> 
+              {i18n.t("rollSpread", langVal)} 
+            </option>
+            <option value={LfoDestination.rollX}> 
+              {i18n.t("rollX", langVal)} 
+            </option>
+            <option value={LfoDestination.rollY}> 
+              {i18n.t("rollY", langVal)} 
+            </option>
+            <option value={LfoDestination.yawBase}> 
+              {i18n.t("yawBase", langVal)} 
+            </option>
+            <option value={LfoDestination.yawSpread}> 
+              {i18n.t("yawSpread", langVal)} 
+            </option>
+            <option value={LfoDestination.yawX}>
+              {i18n.t("yawX", langVal)}
+            </option>
+            <option value={LfoDestination.yawY}> 
+              {i18n.t("yawY", langVal)} 
+            </option>
           </optgroup>
           <optgroup label={i18n.t("radius", langVal)}>
-            <option> {i18n.t("minimum", langVal)} </option>
-            <option> {i18n.t("step", langVal)} </option>
+            <option value={LfoDestination.radiusBase}> 
+              {i18n.t("base", langVal)} 
+            </option>
+            <option value={LfoDestination.radiusStep}> 
+              {i18n.t("step", langVal)} 
+            </option>
           </optgroup>
           <optgroup label={i18n.t("translation", langVal)}>
             <option value={LfoDestination.translationXBase}> 

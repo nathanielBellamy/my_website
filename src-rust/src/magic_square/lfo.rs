@@ -4,6 +4,25 @@ use crate::magic_square::ui_buffer::UiBuffer;
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub enum LfoDestination {
+    // rotation
+    PitchBase,
+    PitchSpread,
+    PitchX,
+    PitchY,
+    RollBase,
+    RollSpread,
+    RollX,
+    RollY,
+    YawBase,
+    YawSpread,
+    YawX,
+    YawY,
+
+    // radius
+    RadiusBase,
+    RadiusStep,
+
+    // translation
     TranslationXBase,
     TranslationXSpread,
     TranslationYBase,
@@ -83,14 +102,73 @@ impl Lfo {
     pub fn modify(&self, t: f32, ui_buffer: &mut UiBuffer) {
         if self.active {
             match self.dest {
+                LfoDestination::PitchBase => {
+                    ui_buffer.settings.y_rot_base = ui_buffer.settings.y_rot_base 
+                                                        + self.eval(t)
+                },
+                LfoDestination::PitchSpread => {
+                    ui_buffer.settings.y_rot_spread = ui_buffer.settings.y_rot_spread
+                                                        + self.eval(t)
+                },
+                LfoDestination::PitchX => {
+                    ui_buffer.settings.x_axis_y_rot_coeff = ui_buffer.settings.x_axis_y_rot_coeff
+                                                        + self.eval(t)
+                },
+                LfoDestination::PitchY => {
+                    ui_buffer.settings.y_axis_y_rot_coeff = ui_buffer.settings.y_axis_y_rot_coeff
+                                                        + self.eval(t)
+                },
+                LfoDestination::RollBase => {
+                    ui_buffer.settings.x_rot_base = ui_buffer.settings.x_rot_base 
+                                                        + self.eval(t)
+                },
+                LfoDestination::RollSpread => {
+                    ui_buffer.settings.x_rot_spread = ui_buffer.settings.x_rot_spread
+                                                        + self.eval(t)
+                },
+                LfoDestination::RollX => {
+                    ui_buffer.settings.x_axis_x_rot_coeff = ui_buffer.settings.x_axis_x_rot_coeff
+                                                                + self.eval(t)
+                },
+                LfoDestination::RollY => {
+                    ui_buffer.settings.y_axis_x_rot_coeff = ui_buffer.settings.y_axis_x_rot_coeff
+                                                                + self.eval(t)
+                },
+                LfoDestination::YawBase => {
+                    ui_buffer.settings.z_rot_base = ui_buffer.settings.z_rot_base 
+                                                        + self.eval(t)
+                },
+                LfoDestination::YawSpread => {
+                    ui_buffer.settings.z_rot_spread = ui_buffer.settings.z_rot_spread
+                                                        + self.eval(t)
+                },
+                LfoDestination::YawX => {
+                    ui_buffer.settings.x_axis_z_rot_coeff = ui_buffer.settings.x_axis_z_rot_coeff
+                                                                + self.eval(t)
+                },
+                LfoDestination::YawY => {
+                    ui_buffer.settings.y_axis_z_rot_coeff = ui_buffer.settings.y_axis_z_rot_coeff
+                                                                + self.eval(t)
+                },
+                LfoDestination::RadiusBase => {
+                    ui_buffer.settings.radius_base = ui_buffer.settings.radius_base
+                                                        + self.eval(t)
+                },
+                LfoDestination::RadiusStep => {
+                    ui_buffer.settings.radius_step = ui_buffer.settings.radius_step
+                                                        + self.eval(t)
+                },
                 LfoDestination::TranslationXBase => {
-                    ui_buffer.settings.translation_x_base =  ui_buffer.settings.translation_x_base + self.eval(t);
+                    ui_buffer.settings.translation_x_base =  ui_buffer.settings.translation_x_base 
+                                                                + self.eval(t);
                 },
                 LfoDestination::TranslationXSpread => {
-                    ui_buffer.settings.translation_x_spread =  ui_buffer.settings.translation_x_spread + self.eval(t);
+                    ui_buffer.settings.translation_x_spread =  ui_buffer.settings.translation_x_spread 
+                                                                    + self.eval(t);
                 },
                 LfoDestination::TranslationYBase => {
-                    ui_buffer.settings.translation_y_base =  ui_buffer.settings.translation_y_base + self.eval(t);
+                    ui_buffer.settings.translation_y_base =  ui_buffer.settings.translation_y_base 
+                                                                + self.eval(t);
                 },
                 LfoDestination::TranslationYSpread => {
                     ui_buffer.settings.translation_y_spread =  ui_buffer.settings.translation_y_spread + self.eval(t);

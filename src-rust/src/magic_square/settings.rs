@@ -168,6 +168,25 @@ impl Settings {
 
     pub fn try_into_lfo_destination(dest: String) -> Result<LfoDestination, ()> {
         match dest.as_str() {
+            // rotation
+            "PitchBase" => Ok(LfoDestination::PitchBase),
+            "PitchSpread" => Ok(LfoDestination::PitchSpread),
+            "PitchX" => Ok(LfoDestination::PitchX),
+            "PitchY" => Ok(LfoDestination::PitchY),
+            "RollBase" => Ok(LfoDestination::RollBase),
+            "RollSpread" => Ok(LfoDestination::RollSpread),
+            "RollX" => Ok(LfoDestination::RollX),
+            "RollY" => Ok(LfoDestination::RollY),
+            "YawBase" => Ok(LfoDestination::YawBase),
+            "YawSpread" => Ok(LfoDestination::YawSpread),
+            "YawX" => Ok(LfoDestination::YawX),
+            "YawY" => Ok(LfoDestination::YawY),
+
+            // radius
+            "RadiusBase" => Ok(LfoDestination::RadiusBase),
+            "RadiusStep" => Ok(LfoDestination::RadiusStep),
+
+            // translation
             "TranslationXBase" => Ok(LfoDestination::TranslationXBase),
             "TranslationXSpread" => Ok(LfoDestination::TranslationXSpread),
             "TranslationYBase" => Ok(LfoDestination::TranslationYBase),

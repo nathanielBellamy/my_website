@@ -44,6 +44,7 @@ export const localeEn: any = {
       step: "step"
     },
     lfo: {
+      base: "base",
       destination: "destination",
       step: "step",
       minimum: "minimum",
