@@ -296,30 +296,39 @@
   }
 
   let renderDataReady = false
+  let hasBeenDestroyed = false
   onMount(async () => {
     // clear old ui_buffer from localStorage
     localStorage.clear()
     
     // load wasm
     await wasm_bindgen() // loaded in index.html from ./pkg/src_rust.js
-    const { MagicSquare, init_message } = wasm_bindgen
-    console.log(
-      init_message("Magic Square Wasm!")
-    )
-    
-    // init wasm process and set initial values
-    const initialUiBuffer = await MagicSquare.run()
-    setInitialDrawPatternVars(initialUiBuffer)
-    setInitialColorVars(initialUiBuffer)
-    setInitialLfoVars(initialUiBuffer)
-    setInitialMouseTrackingOption(initialUiBuffer)
-    setInitialRadiusVars(initialUiBuffer)
-    setInitialRotationVars(initialUiBuffer)
-    setInitialTranslationVars(initialUiBuffer)
-    renderDataReady = true
+    if (!hasBeenDestroyed) { 
+      // resize + key block in Container.svelte may destroy component before wasm_bindgen can load
+      // without this check, it is possible to load two wasm instances
+      // since wasm retrieves the elements using .get_element_by_id
+      // and since a new instance of the component will havee been mounted by the time wasm_bindgen loads
+      // the result is two identical wasm instances listening to the same ui elements and drawing to the same context
+      const { MagicSquare, init_message } = wasm_bindgen
+      console.log(
+        init_message("Magic Square Wasm!")
+      )
+      
+      // init wasm process and set initial values
+      const initialUiBuffer = await MagicSquare.run()
+      setInitialDrawPatternVars(initialUiBuffer)
+      setInitialColorVars(initialUiBuffer)
+      setInitialLfoVars(initialUiBuffer)
+      setInitialMouseTrackingOption(initialUiBuffer)
+      setInitialRadiusVars(initialUiBuffer)
+      setInitialRotationVars(initialUiBuffer)
+      setInitialTranslationVars(initialUiBuffer)
+      renderDataReady = true
+    }
   })
 
   onDestroy(async () => {
+    hasBeenDestroyed = true
     let app = document.getElementById(("app_main"))
     app.dispatchEvent(new Event("destroymswasm", {bubbles: true}))
   })
