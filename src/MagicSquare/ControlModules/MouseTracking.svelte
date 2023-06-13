@@ -76,9 +76,9 @@
   }
 
   function handleFormSubmit(e: any){
+    e.stopPropagation()
     e.preventDefault()
     var input = document.getElementById(hiddenInputId)
-    console.log(option)
     input.value = option
     input.dispatchEvent(new Event('input', {bubbles: true}))
     return false // do not refresh page on submit
@@ -96,6 +96,7 @@
   })
 
   function handleToggleKeydown(e: any, newToggle: Toggle) {
+    e.stopPropagation()
     if (e.keyCode === 13){
       toggle = newToggle
       let form = document.getElementById(formId)
@@ -103,13 +104,15 @@
     }
   }
 
-  function handleToggleClick(newToggle: Toggle) {
+  function handleToggleClick(e: any, newToggle: Toggle) {
+    e.stopPropagation()
     toggle = newToggle
     let form = document.getElementById(formId)
     form.dispatchEvent(new Event('submit', {bubbles: true}))
   } 
 
   function handleInvKeydown(e: any, newInv: Inv) {
+    e.stopPropagation()
     if (e.keyCode === 13){
       inv = newInv
       let form = document.getElementById(formId)
@@ -129,7 +132,7 @@
 
 <form id={formId}
       class="h-full flex flex-col justify-around items-stretch">
-  <h2 class="mouse_tracking_title">
+  <h2 class="mouse_tracking_title text-left pl-5">
     {i18n.t("mouse", langVal)}
   </h2>
   <div id="mouse_tracking_toggle"
@@ -137,7 +140,7 @@
     {#each Object.keys(Toggle) as t}
       <button class="grow"
               class:selected="{toggle === t}"
-              on:click={() => handleToggleClick(Toggle[t])}
+              on:click={(e) => handleToggleClick(e, Toggle[t])}
               on:keydown={(e) => handleToggleKeydown(e, Toggle[t])}>
           {i18n.t(`${t}`, langVal)}
       </button>
@@ -182,7 +185,7 @@
 
   .mouse_tracking
     &_title
-      color: color.$blue-4
+      color: color.$blue-7
       font-weight: text.$fw-l
       font-size: text.$fs-l
 

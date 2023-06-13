@@ -2,8 +2,7 @@ export enum Module {
   color = 'color',
   drawPattern = 'drawPattern',
   geometry = 'geometry',
-  translation = 'translation',
-  radius = 'radius',
+  lfo = 'lfo',
   rotation = 'rotation',
-  lfo = 'lfo'
+  translation = 'translation'
 }

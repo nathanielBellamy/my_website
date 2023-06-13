@@ -6,6 +6,7 @@
   import { intoDrawPattern } from './ControlModules/DrawPattern'
   import Color from './ControlModules/Color.svelte'
   import ControlRack from './ControlRack.svelte'
+  import Geometry from './ControlModules/Geometry.svelte'
   import LfoContainer from './ControlModules/Lfo.svelte'
   import { Lfo } from './ControlModules/Lfo'
   import { intoLfoDestination } from './ControlModules/LfoDestination'
@@ -14,7 +15,6 @@
   import type { LfoShape } from './ControlModules/LfoShape'
   import type { MouseTracking } from './ControlModules/MouseTracking'
   import MouseTrackingContainer from './ControlModules/MouseTracking.svelte'
-  import Radius from './ControlModules/Radius.svelte'
   import Rotation from  './ControlModules/Rotation.svelte'
   import type { StorageSettings } from './StorageSettings'
   import Translation from './ControlModules/Translation.svelte'
@@ -873,14 +873,14 @@
           </Translation>
         {/if}
       </div>
-      <div slot="radius"
+      <div slot="geometry"
            class="h-full">
         {#if !renderDataReady}
           <Loading />
         {:else}
-          <Radius>
+          <Geometry>
             <div  class="p-5 grow flex flex-col justify-around items-stretch"
-                  slot="baseStepSliders">
+                  slot="radiusSliders">
               <div class="w-full flex flex-col justify-between items-stretch">
                 <label class="slider_label flex justify-between" 
                        for={WasmInputId.radiusBase}>
@@ -908,7 +908,7 @@
                        step={.01}/>
               </div>
             </div>
-          </Radius>
+          </Geometry>
         {/if}
       </div>
       <div slot="rotation"

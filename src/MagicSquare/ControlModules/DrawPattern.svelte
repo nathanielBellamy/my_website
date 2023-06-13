@@ -131,7 +131,7 @@
         on:submit={handleDrawPatternFormSubmit}
         class="flex flex-col justify-around items-stretch h-full w-full">
     <div id="draw_pattern_buttons"
-         class="h-full flex flex-col justify-around">
+         class="grow flex flex-col justify-around items-stretch">
       <div id="draw_pattern_directions_outer"
            class="grow flex flex-col justify-around items-streth">
         <div id="draw_pattern_directions_inner"

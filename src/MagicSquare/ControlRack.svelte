@@ -47,10 +47,10 @@
                        side={Side.left}>
           <slot name="lfo"/>
         </ControlModule>
-      {:else if curr_mod_left === Module.radius}
-        <ControlModule title={i18n.t(Module.radius, langVal)}
+      {:else if curr_mod_left === Module.geometry}
+        <ControlModule title={i18n.t(Module.geometry, langVal)}
                        side={Side.left}>
-          <slot name="radius" />
+          <slot name="geometry" />
         </ControlModule>
       {:else if curr_mod_left === Module.rotation}
         <ControlModule title={i18n.t(Module.rotation, langVal)}
@@ -82,10 +82,10 @@
                        side={Side.right}>
           <slot name="lfo"/>
         </ControlModule>
-      {:else if curr_mod_right === Module.radius}
-        <ControlModule title={i18n.t(Module.radius, langVal)}
+      {:else if curr_mod_right === Module.geometry}
+        <ControlModule title={i18n.t(Module.geometry, langVal)}
                        side={Side.right}>
-          <slot name="radius" />
+          <slot name="geometry" />
         </ControlModule>
       {:else if curr_mod_right === Module.rotation}
         <ControlModule title={i18n.t(Module.rotation, langVal)}
