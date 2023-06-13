@@ -16,9 +16,6 @@ use super::settings::{MouseTracking, Settings};
 // use crate::magic_square::traits::VertexStore;
 // use super::geometry::icosohedron::Icosohedron;
 // use crate::magic_square::worker::Worker;
-//
-
-pub const MAGIC_SQUARE_STORAGE_KEY: &'static str = "magic_square_storage";
 
 #[wasm_bindgen]
 extern "C" {
@@ -62,8 +59,8 @@ impl MagicSquare {
                 // log(&format!("{:?}", res));
                 UiBuffer::from_prev_settings(res)
             },
-            Err(e) => {
-                log(&format!("{:?}", e));
+            Err(_e) => {
+                // log(&format!("{:?}", e));
                 UiBuffer::new()
             }
         };
@@ -304,8 +301,8 @@ impl MagicSquare {
                             &MagicSquare::get_rgba(&ui_buffer, idx, color_idx_offset), 
                             &context
                         ) {
-                            Ok(_) => log("SUCCESSFUL RENDER"),
-                            Err(e) => log(&format!("{:?}", e))  
+                            Ok(_) =>  {}, // log("SUCCESSFUL RENDER"),
+                            Err(_e) => {}// log(&format!("{:?}", e))  
                         };
                     }
 
@@ -315,12 +312,6 @@ impl MagicSquare {
 
             MagicSquare::request_animation_frame(g.borrow().as_ref().unwrap());
         }
-
-        // form.dispatch_event(
-        //     // hack to trigger initial write of ui_buffer to localStorage
-        //     &web_sys::Event::new("input").unwrap()
-        // ).unwrap();
-        // magic_square.dispatch_event(&web_sys::Event::new("render").unwrap()).unwrap();
         
         let to_js = ui_buffer.clone().borrow().clone();
         serde_wasm_bindgen::to_value(&to_js).unwrap()

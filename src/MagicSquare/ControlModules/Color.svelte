@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { afterUpdate, onMount } from 'svelte'
+  import { onMount } from 'svelte'
   import iro from '@jaames/iro'
-  import App from '../../App.svelte'
 
   function rgbaToString(rgba: number[]): string {
     // rgba = !!rgba ? rgba : [0, 255, 0, 1]
@@ -39,18 +38,6 @@
   $: color7Str = rgbaToString(color7)
   $: color8Str = rgbaToString(color8)
   let currId: string = 'magic_square_input_color_1'
-  
-
-  enum HiddenInputIds {
-    color1 = "magic_square_input_color_1",
-    color2 = "magic_square_input_color_2",
-    color3 = "magic_square_input_color_3",
-    color4 = "magic_square_input_color_4",
-    color5 = "magic_square_input_color_5",
-    color6 = "magic_square_input_color_6",
-    color7 = "magic_square_input_color_7",
-    color8 = "magic_square_input_color_8",
-  }
 
   const colorPickerOptions = {
     width: 110,
@@ -128,24 +115,24 @@
 
 <div class="color_container flex flex-col justify-between items-stretch">
   <div id="color_mode_and_curr"
-       class="color_mode_and_curr flex flex-col justify-around items-center">
-    <div class="color_modes flex flex-col justify-around items-stretch">
-      <div class="color_mode flex justify-evenly">
-        <button class="color_mode_option">
+       class="grow w-full flex flex-col justify-around items-center">
+    <div class="color_modes w-full flex flex-col justify-around items-stretch">
+      <div class="grow w-full flex justify-around">
+        <button class="grow color_mode_option">
           Out
         </button>
-        <button class="color_mode_option">
+        <button class="grow color_mode_option">
           In
         </button>
-        <button class="color_mode_option">
+        <button class="grow color_mode_option">
           Fix
         </button>
       </div>
-      <div class="color_mode flex flex-col justify-between">
-        <button class="color_mode_option">
+      <div class="grow flex flex-col justify-between items-stretch">
+        <button class="grow color_mode_option">
           Eight
         </button>
-        <button class="color_mode_option">
+        <button class="grow color_mode_option">
           Grad
         </button>
       </div>
@@ -190,27 +177,15 @@
   @use "./../../styles/color"
   @use "./../../styles/text"
 
-  .color_mode_and_curr
-    flex-grow: 1
-    width: 90%
-    margin-left: 5%
   .color_mode
     &s
-      flex-grow: .1
+      flex-grow: .75
       border-bottom: 5px double color.$blue-7
       padding-bottom: 10px
     &_option
-      flex: 1 1 0px
       font-weight: text.$fw-l
       font-size: text.$fs-m
       color: color.$blue-7
-
-  .color_picker
-    display: flex
-    justify-content: space-between
-    width: 100%
-    flex-grow: 1
-    margin: 0 5px 0 5px
   
   .color_rows
     flex-grow: .75

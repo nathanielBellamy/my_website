@@ -18,8 +18,8 @@
     right = 'right'
   }
 
-  let curr_mod_left: Module = Module.lfo
-  let curr_mod_right: Module = Module.rotation
+  let curr_mod_left: Module = Module.color
+  let curr_mod_right: Module = Module.lfo
 </script>
 
 <div id="magic_square_control_rack"

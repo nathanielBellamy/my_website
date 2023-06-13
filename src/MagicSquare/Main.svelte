@@ -1,5 +1,5 @@
 <script lang="ts" type="module">
-  import { onMount, onDestroy } from 'svelte'
+  import { afterUpdate, onMount, onDestroy } from 'svelte'
   import Loading from '../lib/Loading.svelte'
   import DrawPatternContainer from './ControlModules/DrawPattern.svelte'
   import type { DrawPattern } from './ControlModules/DrawPattern'
@@ -294,15 +294,27 @@
   }
 
   export let instance: number
-  export let prevSettings: StorageSettings | null
+  let prevSettings: StorageSettings | null
   let renderDataReady = false
   let hasBeenDestroyed = false
 
   onMount(async () => {
     // console.dir({instance, prevSettings})
 
+
     // load wasm
     await wasm_bindgen() // loaded in index.html from ./pkg/src_rust.js
+    
+    let ses = localStorage.getItem("magic_square_settings")
+    if (ses) {
+      const res = JSON.parse(ses)
+      console.dir({res})
+      prevSettingsStore.update((_: StorageSettings): StorageSettings => {
+        prevSettings = res
+        return res
+      })
+    }
+
     if (!hasBeenDestroyed) { 
       // resize + key block in Container.svelte may destroy component before wasm_bindgen can load
       // without this check, it is possible to load two wasm instances
@@ -316,6 +328,7 @@
       
       // init wasm process and set initial values
       const initialUiBuffer = await MagicSquare.run(prevSettings)
+      console.dir({prevSettings, uibuff: initialUiBuffer.settings})
       setInitialDrawPatternVars(initialUiBuffer)
       setInitialColorVars(initialUiBuffer)
       setInitialLfoVars(initialUiBuffer)
@@ -409,16 +422,23 @@
   const unsubscribe = prevSettingsStore.subscribe(val => prevSettings = val)
 
   onDestroy(() => {
+    hasBeenDestroyed = true
     prevSettingsStore.update((_: StorageSettings) => {
-      // console.log("PrevSettingsStore Update On Destroy")
-      const result = deriveStorageSettings();
-      console.dir({instance})
-      return result;
+      return deriveStorageSettings()
     })
     unsubscribe()
-    hasBeenDestroyed = true
     let app = document.getElementById(("app_main"))
     app.dispatchEvent(new Event("destroymswasm", {bubbles: true}))
+  })
+
+  afterUpdate(() => {
+    const res = deriveStorageSettings()
+    if (Object.values(res).every(x => typeof x !== 'undefined')){
+      window.localStorage.setItem(
+        "magic_square_settings",
+        JSON.stringify(res)
+      )
+    }
   })
 </script>
 

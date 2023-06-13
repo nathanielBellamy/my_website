@@ -8,7 +8,7 @@
   import { prevSettingsStore } from './PrevSettingsStore'
   let prevSettingsStoreVal: StorageSettings
   $: prevSettingsStoreVal
-  prevSettingsStore.subscribe(val => prevSettingsStoreVal = val)
+  const unsubscribe = prevSettingsStore.subscribe(val => prevSettingsStoreVal = val)
   
   let magicSquareInstance: number = 0
   $: magicSquareInstance
@@ -25,9 +25,24 @@
     window.removeEventListener('resize', handleResize)
   })
 
+  let dataReady: boolean = false
+
+
   onMount(() => {
+    let ses = localStorage.getItem("magic_square_settings")
+    if (ses) {
+      const res = JSON.parse(ses)
+      console.dir({res})
+      prevSettingsStore.update((_: StorageSettings): StorageSettings => {
+        return res
+      })
+      incrementMagicSquareInstance()
+    }
     window.addEventListener('resize', handleResize)
+    dataReady = true
   })
+
+  onDestroy(unsubscribe)
 
   function incrementMagicSquareInstance() {
     magicSquareInstance += 1
@@ -38,9 +53,10 @@
      class="magic_square_container"
      use:watchResize={handleResize}>
     {#key magicSquareInstance}
-      <Main bind:instance={magicSquareInstance}
-            bind:prevSettings={prevSettingsStoreVal}
-            sideLength={sideLength}/>
+      {#if dataReady}
+        <Main bind:instance={magicSquareInstance}
+              sideLength={sideLength}/>
+      {/if}
     {/key}
 </div>
 

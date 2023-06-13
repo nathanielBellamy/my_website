@@ -110,29 +110,30 @@
 </script>
 
 <div class="h-full pt-5 pb-5 flex flex-col justify-between items-stretch">
-  <div id="magic_square_lfo_select">
+  <div id="magic_square_lfo_select"
+       class="grid grid-cols-4">
     <button on:click = {() => lfo = Lfo.one}
             class:active = {lfo1Active}
             class:selected = {lfo === Lfo.one}
-            class="pt-2 pb-2 pr-3 pl-3 text-lg border-8 rounded-xl">
+            class="flex justify-around items-center text-lg border-4 rounded-xl">
       {Lfo.one}
     </button>
     <button on:click = {() => lfo = Lfo.two}
             class:active = {lfo2Active}
             class:selected = {lfo === Lfo.two}
-            class="pt-2 pb-2 pr-3 pl-3 text-lg border-8 rounded-xl">
+            class="flex justify-around items-center text-lg border-4 rounded-xl">
       {Lfo.two}
     </button>
     <button on:click = {() => lfo = Lfo.three}
             class:active = {lfo3Active}
             class:selected = {lfo === Lfo.three}
-            class="pt-2 pb-2 pr-3 pl-3 text-lg border-8 rounded-xl">
+            class="flex justify-around items-center text-lg border-4 rounded-xl">
       {Lfo.three}
     </button>
     <button on:click = {() => lfo = Lfo.four}
             class:active = {lfo4Active}
             class:selected = {lfo === Lfo.four}
-            class="pt-2 pb-2 pr-3 pl-3 text-lg border-8 rounded-xl">
+            class="flex justify-around items-center text-lg border-4 rounded-xl">
       {Lfo.four}
     </button>
   </div>
@@ -254,7 +255,7 @@
     font-weight: text.$fw-l
 
   .selected
-    background-color: color.$blue-8
+    background-color: color.$blue-7
 
   .active
     border-color: color.$red-5
