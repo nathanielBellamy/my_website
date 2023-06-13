@@ -50,6 +50,7 @@ button {
   margin: 10px;
   padding: 2px 10px 2px 10px;
   font-weight: 800;
+  overflow-x: scroll;
 }
 button:hover {
   border-color: #395A6D;

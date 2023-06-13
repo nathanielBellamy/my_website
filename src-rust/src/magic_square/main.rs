@@ -47,7 +47,7 @@ pub struct MagicSquare;
 impl MagicSquare {
     // Entry point into Rust WASM from JS
     // https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
-    pub async fn run() -> JsValue {
+    pub async fn run(prev_settings: JsValue) -> JsValue {
         // testing multithreading
         //
         // let (to_worker, from_main) = std::sync::mpsc::channel();
@@ -56,21 +56,28 @@ impl MagicSquare {
         // to_worker.send(1.0);
         // assert_eq!(from_worker.recv().unwrap(), 2.0);
         
+        let ui_buffer: UiBuffer = match serde_wasm_bindgen::from_value(prev_settings){
+            Ok(res) => {
+                log("SUCCESSFUL SETTINGS PARSE");
+                // log(&format!("{:?}", res));
+                UiBuffer::from_prev_settings(res)
+            },
+            Err(e) => {
+                log(&format!("{:?}", e));
+                UiBuffer::new()
+            }
+        };
+        let ui_buffer = Rc::new(RefCell::new(ui_buffer));
 
         let magic_square = MagicSquare::magic_square(); // awesome naming, great job!
         let magic_square = Rc::new(magic_square);
         let canvas = MagicSquare::canvas().dyn_into::<web_sys::HtmlCanvasElement>().unwrap();
         let canvas = Rc::new(canvas);
-        
+
         // triggers cleanup requestAnimationFrame closure
         let destroy_flag: bool = false;
         let destroy_flag: Rc<RefCell<bool>> = Rc::new(RefCell::new(destroy_flag));
 
-        // TODO: handle resize
-        // add height and width fields to MagicSquare
-        // run returns MagicSquare instance to js
-        // js uses svelte watch resize to update height and width
-        // pass immutable reference of h&w to closure
         let height:i32 = canvas.client_height();
         let width:i32 = canvas.client_width();
         // incriment idx_delay each render
@@ -89,8 +96,7 @@ impl MagicSquare {
         
         let form = MagicSquare::form();
         let form = Rc::new(form);
-        let ui_buffer = UiBuffer::new();
-        let ui_buffer = Rc::new(RefCell::new(ui_buffer));
+
         let mouse_pos_buffer: [f32; 2] = [0.0, 0.0];
         let mouse_pos_buffer: Rc<RefCell<[f32; 2]>> = Rc::new(RefCell::new(mouse_pos_buffer));
 
@@ -203,7 +209,6 @@ impl MagicSquare {
             // let performance = MagicSquare::performance();
             let mut x: f32 = -3.14159;
             
-
             let max_idx = Settings::max_idx_from_draw_pattern(ui_buffer.borrow().settings.draw_pattern);
             let destroy_flag = destroy_flag.clone();
 
@@ -216,90 +221,96 @@ impl MagicSquare {
                     // cleanup resource
                     let _ = f.borrow_mut().take();
                     return;
+                } else {
+                    // TODO: consider applying LFO per cache slot
+                    // could allow for some cool snake-like movement
+                    let lfo_1 = Lfo::new(
+                        ui_buffer.borrow().settings.lfo_1_active,
+                        ui_buffer.borrow().settings.lfo_1_amp,
+                        ui_buffer.borrow().settings.lfo_1_dest,
+                        ui_buffer.borrow().settings.lfo_1_freq,
+                        ui_buffer.borrow().settings.lfo_1_phase,
+                        ui_buffer.borrow().settings.lfo_1_shape,
+                    );
+
+                    let lfo_2 = Lfo::new(
+                        ui_buffer.borrow().settings.lfo_2_active,
+                        ui_buffer.borrow().settings.lfo_2_amp,
+                        ui_buffer.borrow().settings.lfo_2_dest,
+                        ui_buffer.borrow().settings.lfo_2_freq,
+                        ui_buffer.borrow().settings.lfo_2_phase,
+                        ui_buffer.borrow().settings.lfo_2_shape,
+                    );
+
+                    let lfo_3 = Lfo::new(
+                        ui_buffer.borrow().settings.lfo_3_active,
+                        ui_buffer.borrow().settings.lfo_3_amp,
+                        ui_buffer.borrow().settings.lfo_3_dest,
+                        ui_buffer.borrow().settings.lfo_3_freq,
+                        ui_buffer.borrow().settings.lfo_3_phase,
+                        ui_buffer.borrow().settings.lfo_3_shape,
+                    );
+
+                    let lfo_4 = Lfo::new(
+                        ui_buffer.borrow().settings.lfo_4_active,
+                        ui_buffer.borrow().settings.lfo_4_amp,
+                        ui_buffer.borrow().settings.lfo_4_dest,
+                        ui_buffer.borrow().settings.lfo_4_freq,
+                        ui_buffer.borrow().settings.lfo_4_phase,
+                        ui_buffer.borrow().settings.lfo_4_shape,
+                    );
+
+
+
+                    // let start: f64 = performance.now();
+                    // let val: f32 = lfo_1.eval(x);
+                    // log(&format!("{x}, {val}"));
+                    x = x + 0.001;
+                    if x == 3.142 {
+                        x = -3.142;
+                    }
+                    
+                    // harvest current ui_buffer for computation
+                    let mut ui_buffer = (*ui_buffer.clone().borrow()).clone();
+                    ui_buffer = ui_buffer.copy();
+                    lfo_1.modify(x, &mut ui_buffer);
+                    lfo_2.modify(x, &mut ui_buffer);
+                    lfo_3.modify(x, &mut ui_buffer);
+                    lfo_4.modify(x, &mut ui_buffer);
+
+                    // log(&format!("{}", ui_buffer.settings.translation_x));
+
+                    let color_idx_offset: usize = color_idx_offset_delay[0];
+                    let color_idx_delay: usize = color_idx_offset_delay[1];
+
+                    color_idx_offset_delay[1] = color_idx_delay + 1; // + 1 = out, - 1 = in
+                    if color_idx_delay == 6 {
+                        color_idx_offset_delay[0] = color_idx_offset - 1_usize % 8;
+                        color_idx_offset_delay[1] = 0;
+                    }
+
+                    // compute
+                    MagicSquare::render_all_lines(
+                        &mouse_pos_buffer,
+                        &ui_buffer, 
+                        &geometry_cache,
+                    );
+                    
+                    // display
+                    for idx in 0..max_idx {
+
+                        match MagicSquare::render(
+                            geometry_cache.borrow().gl_vertices(idx), 
+                            &MagicSquare::get_rgba(&ui_buffer, idx, color_idx_offset), 
+                            &context
+                        ) {
+                            Ok(_) => log("SUCCESSFUL RENDER"),
+                            Err(e) => log(&format!("{:?}", e))  
+                        };
+                    }
+
+                    MagicSquare::request_animation_frame(f.borrow().as_ref().unwrap());
                 }
-
-                // TODO: consider applying LFO per cache slot
-                // could allow for some cool snake-like movement
-                let lfo_1 = Lfo::new(
-                    ui_buffer.borrow().settings.lfo_1_active,
-                    ui_buffer.borrow().settings.lfo_1_amp,
-                    ui_buffer.borrow().settings.lfo_1_dest,
-                    ui_buffer.borrow().settings.lfo_1_freq,
-                    ui_buffer.borrow().settings.lfo_1_phase,
-                    ui_buffer.borrow().settings.lfo_1_shape,
-                );
-
-                let lfo_2 = Lfo::new(
-                    ui_buffer.borrow().settings.lfo_2_active,
-                    ui_buffer.borrow().settings.lfo_2_amp,
-                    ui_buffer.borrow().settings.lfo_2_dest,
-                    ui_buffer.borrow().settings.lfo_2_freq,
-                    ui_buffer.borrow().settings.lfo_2_phase,
-                    ui_buffer.borrow().settings.lfo_2_shape,
-                );
-
-                let lfo_3 = Lfo::new(
-                    ui_buffer.borrow().settings.lfo_3_active,
-                    ui_buffer.borrow().settings.lfo_3_amp,
-                    ui_buffer.borrow().settings.lfo_3_dest,
-                    ui_buffer.borrow().settings.lfo_3_freq,
-                    ui_buffer.borrow().settings.lfo_3_phase,
-                    ui_buffer.borrow().settings.lfo_3_shape,
-                );
-
-                let lfo_4 = Lfo::new(
-                    ui_buffer.borrow().settings.lfo_4_active,
-                    ui_buffer.borrow().settings.lfo_4_amp,
-                    ui_buffer.borrow().settings.lfo_4_dest,
-                    ui_buffer.borrow().settings.lfo_4_freq,
-                    ui_buffer.borrow().settings.lfo_4_phase,
-                    ui_buffer.borrow().settings.lfo_4_shape,
-                );
-
-                // let start: f64 = performance.now();
-                // let val: f32 = lfo_1.eval(x);
-                // log(&format!("{x}, {val}"));
-                x = x + 0.001;
-                if x == 3.142 {
-                    x = -3.142;
-                }
-                
-                // harvest current ui_buffer for computation
-                let mut ui_buffer = (*ui_buffer.clone().borrow()).clone();
-                ui_buffer = ui_buffer.copy();
-                lfo_1.modify(x, &mut ui_buffer);
-                lfo_2.modify(x, &mut ui_buffer);
-                lfo_3.modify(x, &mut ui_buffer);
-                lfo_4.modify(x, &mut ui_buffer);
-
-                // log(&format!("{}", ui_buffer.settings.translation_x));
-
-                let color_idx_offset: usize = color_idx_offset_delay[0];
-                let color_idx_delay: usize = color_idx_offset_delay[1];
-
-                color_idx_offset_delay[1] = color_idx_delay + 1; // + 1 = out, - 1 = in
-                if color_idx_delay == 6 {
-                    color_idx_offset_delay[0] = color_idx_offset - 1_usize % 8;
-                    color_idx_offset_delay[1] = 0;
-                }
-
-                // compute
-                MagicSquare::render_all_lines(
-                    &mouse_pos_buffer,
-                    &ui_buffer, 
-                    &geometry_cache,
-                );
-                
-                // display
-                for idx in 0..max_idx {
-                    MagicSquare::render(
-                        geometry_cache.borrow().gl_vertices(idx), 
-                        &MagicSquare::get_rgba(&ui_buffer, idx, color_idx_offset), 
-                        &context
-                    ).expect("Render error");
-                }
-
-                MagicSquare::request_animation_frame(f.borrow().as_ref().unwrap());
             }));
 
             MagicSquare::request_animation_frame(g.borrow().as_ref().unwrap());
@@ -310,7 +321,7 @@ impl MagicSquare {
         //     &web_sys::Event::new("input").unwrap()
         // ).unwrap();
         // magic_square.dispatch_event(&web_sys::Event::new("render").unwrap()).unwrap();
-
+        
         let to_js = ui_buffer.clone().borrow().clone();
         serde_wasm_bindgen::to_value(&to_js).unwrap()
     }
@@ -539,8 +550,8 @@ impl MagicSquare {
         context: &web_sys::WebGl2RenderingContext,
     ) -> Result<(), JsValue> {
         // TODO
-        let vert_shader = ShaderCompiler::vert_default(context).unwrap();
-        let frag_shader = ShaderCompiler::frag_default(context, color).unwrap();
+        let vert_shader = ShaderCompiler::vert_default(context)?;
+        let frag_shader = ShaderCompiler::frag_default(context, color)?;
 
         let program = ProgramLinker::exec(context, &vert_shader, &frag_shader)?;
         context.use_program(Some(&program));

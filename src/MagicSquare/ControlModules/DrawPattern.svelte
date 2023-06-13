@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { DrawPattern } from './DrawPattern'
   const drawPatternFormId: string = 'draw_pattern_form'
   const drawPatternHiddenInputId: string = 'magic_square_input_draw_pattern'
 
@@ -13,21 +14,71 @@
   export let drawPatternDirection: DrawPatternDirection
   export let drawPatternCount: number
 
-  function deriveCurrDrawPattern(): string {
-    var result: string
+  function deriveCurrDrawPattern(): DrawPattern {
     switch (drawPatternDirection) {
       case DrawPatternDirection.Fix:
-        result = DrawPatternDirection.Fix
+        switch (drawPatternCount) {
+          case 1:
+            return DrawPattern.fix1
+          case 2:
+            return DrawPattern.fix2
+          case 3:
+            return DrawPattern.fix3
+          case 4:
+            return DrawPattern.fix4
+          case 5:
+            return DrawPattern.fix5
+          case 6:
+            return DrawPattern.fix6
+          case 7:
+            return DrawPattern.fix7
+          case 8:
+            return DrawPattern.fix8
+        }
         break
       case DrawPatternDirection.In:
-        result = DrawPatternDirection.In
+        switch (drawPatternCount) {
+          case 1:
+            return DrawPattern.in1
+          case 2:
+            return DrawPattern.in2
+          case 3:
+            return DrawPattern.in3
+          case 4:
+            return DrawPattern.in4
+          case 5:
+            return DrawPattern.in5
+          case 6:
+            return DrawPattern.in6
+          case 7:
+            return DrawPattern.in7
+          case 8:
+            return DrawPattern.in8
+        }
         break
       case DrawPatternDirection.Out:
-        result = DrawPatternDirection.Out
+        switch (drawPatternCount) {
+          case 1:
+            return DrawPattern.out1
+          case 2:
+            return DrawPattern.out2
+          case 3:
+            return DrawPattern.out3
+          case 4:
+            return DrawPattern.out4
+          case 5:
+            return DrawPattern.out5
+          case 6:
+            return DrawPattern.out6
+          case 7:
+            return DrawPattern.out7
+          case 8:
+            return DrawPattern.out8
+        }
         break
     }
-
-    return `${result}${drawPatternCount}`
+    // default
+    return DrawPattern.fix8
   }
 
   function setCurrDrawPatternDirection(direction: DrawPatternDirection) {

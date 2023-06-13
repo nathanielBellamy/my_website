@@ -1,7 +1,9 @@
 <script lang="ts" type="module">
   import { onMount, onDestroy } from 'svelte'
   import Loading from '../lib/Loading.svelte'
-  import DrawPattern from './ControlModules/DrawPattern.svelte'
+  import DrawPatternContainer from './ControlModules/DrawPattern.svelte'
+  import type { DrawPattern } from './ControlModules/DrawPattern'
+  import { intoDrawPattern } from './ControlModules/DrawPattern'
   import Color from './ControlModules/Color.svelte'
   import ControlRack from './ControlRack.svelte'
   import LfoContainer from './ControlModules/Lfo.svelte'
@@ -10,11 +12,14 @@
   import type { LfoDestination } from './ControlModules/LfoDestination'
   import { intoLfoShape } from './ControlModules/LfoShape'
   import type { LfoShape } from './ControlModules/LfoShape'
-  import MouseTracking from './ControlModules/MouseTracking.svelte'
+  import type { MouseTracking } from './ControlModules/MouseTracking'
+  import MouseTrackingContainer from './ControlModules/MouseTracking.svelte'
   import Radius from './ControlModules/Radius.svelte'
   import Rotation from  './ControlModules/Rotation.svelte'
+  import type { StorageSettings } from './StorageSettings'
   import Translation from './ControlModules/Translation.svelte'
   import { WasmInputId } from './WasmInputId'
+  import { prevSettingsStore } from './PrevSettingsStore'
   // INIT LANG BOILER PLATE
   import { I18n, Lang } from '../I18n'
   import { lang } from '../stores/lang'
@@ -22,6 +27,7 @@
   const i18n = new I18n('magicSquare/main')
   let langVal: Lang
   lang.subscribe(val => langVal = val)
+
   // this component will be large
   // the decision was made to optimize for minimal plumbing
   // this component instantiates the wasm module and retrieves the initial UI values from it
@@ -57,7 +63,7 @@
   export let sideLength: number = 0.0
 
   // DRAW PATTERN
-  let drawPattern: string
+  let drawPattern: DrawPattern
   enum DrawPatternDirection {
     Fix = "Fix",
     In = "In",
@@ -66,9 +72,9 @@
   let initialDrawPatternDirection: DrawPatternDirection = DrawPatternDirection.Fix
   let initialDrawPatternCount: number
   function setInitialDrawPatternVars(initialUiBuffer: any) {
-    const pattern: string = initialUiBuffer.settings.draw_pattern
-    setInitialDrawPatternCount(parseInt(pattern.slice(-1)[0]))
-    let first_letter = pattern[0]
+    drawPattern = intoDrawPattern(initialUiBuffer.settings.draw_pattern)
+    setInitialDrawPatternCount(parseInt(drawPattern.slice(-1)[0]))
+    let first_letter = drawPattern[0]
     switch (first_letter) {
       case 'F':
         setInitialDrawPatternDirection(DrawPatternDirection.Fix)
@@ -233,18 +239,10 @@
     // translationZ = initialUiBuffer.settings.translation_z
   }
 
-  // MOUSE TRACKING
-  enum MouseTrackingOption {
-    on = 'On',
-    off = 'Off',
-    invX = 'Inv X',
-    invY = 'Inv Y',
-    invXY = 'Inv XY'
-  }
-  let currMouseTrackingOption: MouseTrackingOption
+  let mouseTracking: MouseTracking
 
-  function setInitialMouseTrackingOption(initialUiBuffer: any) {
-    currMouseTrackingOption = initialUiBuffer.settings.mouse_tracking
+  function setInitialMouseTracking(initialUiBuffer: any) {
+    mouseTracking = initialUiBuffer.settings.mouse_tracking
   }
 
   // RADIUS
@@ -263,30 +261,30 @@
   // ROTATION
   let pitchBase: number
   let pitchSpread: number
-  let pitchMouseX: number
-  let pitchMouseY: number
+  let pitchX: number
+  let pitchY: number
   let rollBase: number
   let rollSpread: number  
-  let rollMouseX: number  
-  let rollMouseY: number
+  let rollX: number  
+  let rollY: number
   let yawBase: number
   let yawSpread: number  
-  let yawMouseX: number  
-  let yawMouseY: number
+  let yawX: number  
+  let yawY: number
 
   function setInitialRotationVars(initialUiBuffer: any) {
     pitchBase = round2(initialUiBuffer.settings.y_rot_base)
     pitchSpread = round2(initialUiBuffer.settings.y_rot_spread)
-    pitchMouseX = round2(initialUiBuffer.settings.x_axis_y_rot_coeff)
-    pitchMouseY = round2(initialUiBuffer.settings.y_axis_y_rot_coeff)
+    pitchX = round2(initialUiBuffer.settings.x_axis_y_rot_coeff)
+    pitchY = round2(initialUiBuffer.settings.y_axis_y_rot_coeff)
     rollBase = round2(initialUiBuffer.settings.x_rot_base)
     rollSpread = round2(initialUiBuffer.settings.x_rot_spread)
-    rollMouseX = round2(initialUiBuffer.settings.x_axis_x_rot_coeff)
-    rollMouseY = round2(initialUiBuffer.settings.y_axis_x_rot_coeff)
+    rollX = round2(initialUiBuffer.settings.x_axis_x_rot_coeff)
+    rollY = round2(initialUiBuffer.settings.y_axis_x_rot_coeff)
     yawBase = round2(initialUiBuffer.settings.z_rot_base)
     yawSpread = round2(initialUiBuffer.settings.z_rot_spread)
-    yawMouseX = round2(initialUiBuffer.settings.x_axis_z_rot_coeff)
-    yawMouseY = round2(initialUiBuffer.settings.y_axis_z_rot_coeff)
+    yawX = round2(initialUiBuffer.settings.x_axis_z_rot_coeff)
+    yawY = round2(initialUiBuffer.settings.y_axis_z_rot_coeff)
   }
 
   function handleRotationSliderDoubleClick(inputId: string) {
@@ -295,12 +293,14 @@
     input.dispatchEvent(new Event('input', {bubbles: true}))
   }
 
+  export let instance: number
+  export let prevSettings: StorageSettings | null
   let renderDataReady = false
   let hasBeenDestroyed = false
+
   onMount(async () => {
-    // clear old ui_buffer from localStorage
-    localStorage.clear()
-    
+    // console.dir({instance, prevSettings})
+
     // load wasm
     await wasm_bindgen() // loaded in index.html from ./pkg/src_rust.js
     if (!hasBeenDestroyed) { 
@@ -315,11 +315,11 @@
       )
       
       // init wasm process and set initial values
-      const initialUiBuffer = await MagicSquare.run()
+      const initialUiBuffer = await MagicSquare.run(prevSettings)
       setInitialDrawPatternVars(initialUiBuffer)
       setInitialColorVars(initialUiBuffer)
       setInitialLfoVars(initialUiBuffer)
-      setInitialMouseTrackingOption(initialUiBuffer)
+      setInitialMouseTracking(initialUiBuffer)
       setInitialRadiusVars(initialUiBuffer)
       setInitialRotationVars(initialUiBuffer)
       setInitialTranslationVars(initialUiBuffer)
@@ -327,7 +327,95 @@
     }
   })
 
-  onDestroy(async () => {
+  function deriveStorageSettings(): StorageSettings {
+    return {
+      color_1: color1,
+      color_2: color2,
+      color_3: color3,
+      color_4: color4,
+      color_5: color5,
+      color_6: color6,
+      color_7: color7,
+      color_8: color8,
+
+      // lfo_1
+      lfo_1_active: lfo1Active,
+      lfo_1_amp: lfo1Amp,
+      lfo_1_dest: lfo1Dest,
+      lfo_1_freq: lfo1Freq,
+      lfo_1_phase: lfo1Phase,
+      lfo_1_shape: lfo1Shape,
+
+      // lfo_2
+      lfo_2_active: lfo2Active,
+      lfo_2_amp: lfo2Amp,
+      lfo_2_dest: lfo2Dest,
+      lfo_2_freq: lfo2Freq,
+      lfo_2_phase: lfo2Phase,
+      lfo_2_shape: lfo2Shape,
+
+      // lfo_3
+      lfo_3_active: lfo3Active,
+      lfo_3_amp: lfo3Amp,
+      lfo_3_dest: lfo3Dest,
+      lfo_3_freq: lfo3Freq,
+      lfo_3_phase: lfo3Phase,
+      lfo_3_shape: lfo3Shape,
+
+      // lfo_4
+      lfo_4_active: lfo4Active,
+      lfo_4_amp: lfo4Amp,
+      lfo_4_dest: lfo4Dest,
+      lfo_4_freq: lfo4Freq,
+      lfo_4_phase: lfo4Phase,
+      lfo_4_shape: lfo4Shape,
+
+      // PATTERN
+      draw_pattern: drawPattern,
+
+      // RADIUS
+      radius_base: radiusBase,
+      radius_step: radiusStep,
+
+      // ROTATION
+      x_rot_base: rollBase,
+      y_rot_base: pitchBase,
+      z_rot_base: yawBase,
+
+      x_rot_spread: rollSpread,
+      y_rot_spread: pitchSpread,
+      z_rot_spread: yawSpread,
+
+      // rotation sensitivity to mouse movement
+      x_axis_x_rot_coeff: rollX,
+      x_axis_y_rot_coeff: pitchX,
+      x_axis_z_rot_coeff: yawX,
+
+      y_axis_x_rot_coeff: rollY,
+      y_axis_y_rot_coeff: pitchY,
+      y_axis_z_rot_coeff: yawY,
+
+      // TRANSLATION
+      translation_x_base: translationXBase,
+      translation_x_spread: translationXSpread,
+      translation_y_base: translationYBase,
+      translation_y_spread: translationYSpread,
+      translation_z_base: 0.0,
+      translation_z_spread: 0.0,
+      mouse_tracking: mouseTracking,
+    }
+  }
+
+  const unsubscribe = prevSettingsStore.subscribe(val => prevSettings = val)
+
+  onDestroy(() => {
+    prevSettingsStore.update((_: StorageSettings) => {
+      // console.log("PrevSettingsStore Update On Destroy")
+      const result = deriveStorageSettings();
+      console.dir({instance})
+      return result;
+    })
+    unsubscribe()
     hasBeenDestroyed = true
     let app = document.getElementById(("app_main"))
     app.dispatchEvent(new Event("destroymswasm", {bubbles: true}))
@@ -392,14 +480,14 @@
         {#if !renderDataReady}
           <Loading />
         {:else}
-          <DrawPattern bind:drawPatternDirection={initialDrawPatternDirection}
-                       bind:drawPatternCount={initialDrawPatternCount}>
+          <DrawPatternContainer bind:drawPatternDirection={initialDrawPatternDirection}
+                                bind:drawPatternCount={initialDrawPatternCount}>
             <div slot="hiddenInput">
               <input id={WasmInputId.drawPattern}
                      bind:value={drawPattern}
                      class="hidden_input"/>
             </div>
-          </DrawPattern>
+          </DrawPatternContainer>
         {/if}
       </div>
       <div slot="lfo"
@@ -754,13 +842,13 @@
               <!-- </div> -->
             </div>
             <div slot="mouseTracking">
-              <MouseTracking currOption={currMouseTrackingOption}>
+              <MouseTrackingContainer currOption={mouseTracking}>
                 <div slot="hiddenInput">
                   <input id={WasmInputId.mouseTracking}
-                         bind:value={currMouseTrackingOption}
+                         bind:value={mouseTracking}
                          class="hidden_input"/>
                 </div>
-              </MouseTracking>
+              </MouseTrackingContainer>
             </div>
           </Translation>
         {/if}
@@ -840,31 +928,31 @@
                        step={.01}/>
               </div>
               <div class="flex flex-col"
-                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.pitchMouseX)}>
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.pitchX)}>
                 <label class="slider_label flex justify-between" 
-                       for={WasmInputId.pitchMouseX}>
+                       for={WasmInputId.pitchX}>
                   <div> {"X"} </div>
-                  <div> {pitchMouseX} </div>
+                  <div> {pitchX} </div>
                 </label>
-                <input id={WasmInputId.pitchMouseX}
+                <input id={WasmInputId.pitchX}
                        type="range"
                        min={-2}
                        max={2}
-                       bind:value={pitchMouseX}
+                       bind:value={pitchX}
                        step={.01}/>
               </div>
               <div class="flex flex-col"
-                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.pitchMouseY)}>
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.pitchY)}>
                 <label class="slider_label flex justify-between" 
-                       for={WasmInputId.pitchMouseY}>
+                       for={WasmInputId.pitchY}>
                   <div> {"Y"} </div>
-                  <div> {pitchMouseY} </div>
+                  <div> {pitchY} </div>
                 </label>
-                <input id={WasmInputId.pitchMouseY}
+                <input id={WasmInputId.pitchY}
                        type="range"
                        min={-2}
                        max={2}
-                       bind:value={pitchMouseY}
+                       bind:value={pitchY}
                        step={.01}/>
               </div>
             </div>
@@ -899,31 +987,31 @@
                        step={.01}/>
               </div>
               <div class="flex flex-col"
-                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.rollMouseX)}>
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.rollX)}>
                 <label class="slider_label flex justify-between" 
-                       for={WasmInputId.rollMouseX}>
+                       for={WasmInputId.rollX}>
                   <div> {"X"} </div>
-                  <div> {rollMouseX} </div>
+                  <div> {rollX} </div>
                 </label>
-                <input id={WasmInputId.rollMouseX}
+                <input id={WasmInputId.rollX}
                        type="range"
                        min={-2}
                        max={2}
-                       bind:value={rollMouseX}
+                       bind:value={rollX}
                        step={.01}/>
               </div>
               <div class="flex flex-col"
-                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.rollMouseY)}>
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.rollY)}>
                 <label class="slider_label flex justify-between" 
-                       for={WasmInputId.rollMouseY}>
+                       for={WasmInputId.rollY}>
                   <div> {"Y"} </div>
-                  <div> {rollMouseY} </div>
+                  <div> {rollY} </div>
                 </label>
-                <input id={WasmInputId.rollMouseY}
+                <input id={WasmInputId.rollY}
                        type="range"
                        min={-2}
                        max={2}
-                       bind:value={rollMouseY}
+                       bind:value={rollY}
                        step={.01}/>
               </div>
             </div>
@@ -958,31 +1046,31 @@
                        step={.01}/>
               </div>
               <div class="flex flex-col"
-                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.yawMouseX)}>
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.yawX)}>
                 <label class="slider_label flex justify-between" 
-                       for={WasmInputId.yawMouseX}>
+                       for={WasmInputId.yawX}>
                   <div> {"X"} </div>
-                  <div> {yawMouseX} </div>
+                  <div> {yawX} </div>
                 </label>
-                <input id={WasmInputId.yawMouseX}
+                <input id={WasmInputId.yawX}
                        type="range"
                        min={-2}
                        max={2}
-                       bind:value={yawMouseX}
+                       bind:value={yawX}
                        step={.01}/>
               </div>
               <div class="flex flex-col"
-                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.yawMouseY)}>
+                   on:dblclick={() => handleRotationSliderDoubleClick(WasmInputId.yawY)}>
                 <label class="slider_label flex justify-between" 
-                       for={WasmInputId.yawMouseY}>
+                       for={WasmInputId.yawY}>
                   <div> {"Y"} </div>
-                  <div> {yawMouseY} </div>
+                  <div> {yawY} </div>
                 </label>
-                <input id={WasmInputId.yawMouseY}
+                <input id={WasmInputId.yawY}
                        type="range"
                        min={-2}
                        max={2}
-                       bind:value={yawMouseY}
+                       bind:value={yawY}
                        step={.01}/>
               </div>
             </div>

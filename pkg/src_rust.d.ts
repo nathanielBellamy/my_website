@@ -32,9 +32,10 @@ declare namespace wasm_bindgen {
 	export class MagicSquare {
 	  free(): void;
 	/**
+	* @param {any} prev_settings
 	* @returns {Promise<any>}
 	*/
-	  static run(): Promise<any>;
+	  static run(prev_settings: any): Promise<any>;
 	}
 	
 }
@@ -44,11 +45,11 @@ declare type InitInput = RequestInfo | URL | Response | BufferSource | WebAssemb
 declare interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly worker_entry_point: (a: number) => void;
-  readonly init_message: (a: number, b: number, c: number) => void;
-  readonly magicsquare_run: () => number;
+  readonly magicsquare_run: (a: number) => number;
   readonly __wbg_magicsquare_free: (a: number) => void;
   readonly magicbanner_run: (a: number) => void;
   readonly __wbg_magicbanner_free: (a: number) => void;
+  readonly init_message: (a: number, b: number, c: number) => void;
   readonly gmaswasm_run: () => number;
   readonly __wbg_gmaswasm_free: (a: number) => void;
   readonly __wbindgen_malloc: (a: number) => number;

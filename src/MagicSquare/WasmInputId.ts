@@ -53,16 +53,16 @@ export enum WasmInputId {
   // rotation
   pitchBase = "magic_square_input_y_rot_base",
   pitchSpread = "magic_square_input_y_rot_spread",
-  pitchMouseX = "magic_square_input_x_axis_y_rot_coeff",
-  pitchMouseY = "magic_square_input_y_axis_y_rot_coeff",
+  pitchX = "magic_square_input_x_axis_y_rot_coeff",
+  pitchY = "magic_square_input_y_axis_y_rot_coeff",
   rollBase = "magic_square_input_x_rot_base",
   rollSpread = "magic_square_input_x_rot_spread",
-  rollMouseX = "magic_square_input_x_axis_x_rot_coeff",
-  rollMouseY = "magic_square_input_y_axis_x_rot_coeff",
+  rollX = "magic_square_input_x_axis_x_rot_coeff",
+  rollY = "magic_square_input_y_axis_x_rot_coeff",
   yawBase = "magic_square_input_z_rot_base",
   yawSpread = "magic_square_input_z_rot_spread",
-  yawMouseX = "magic_square_input_x_axis_z_rot_coeff",
-  yawMouseY = "magic_square_input_y_axis_z_rot_coeff",
+  yawX = "magic_square_input_x_axis_z_rot_coeff",
+  yawY = "magic_square_input_y_axis_z_rot_coeff",
 
   // translation
   mouseTracking = "magic_square_input_mouse_tracking",

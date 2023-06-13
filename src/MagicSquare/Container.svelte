@@ -1,13 +1,22 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte"
-  import { watchResize } from "svelte-watch-resize";
+  import { watchResize } from "svelte-watch-resize"
+  import type { StorageSettings } from './StorageSettings'
   import Main from "./Main.svelte"
+
+  // INIT Prev Settings
+  import { prevSettingsStore } from './PrevSettingsStore'
+  let prevSettingsStoreVal: StorageSettings
+  $: prevSettingsStoreVal
+  prevSettingsStore.subscribe(val => prevSettingsStoreVal = val)
   
   let magicSquareInstance: number = 0
+  $: magicSquareInstance
   let sideLength: number = 0
 
   async function handleResize() {
     incrementMagicSquareInstance()
+    prevSettingsStoreVal = prevSettingsStoreVal
     let element = document.getElementById("magic_square_container")
     sideLength = Math.floor(Math.min(element.offsetWidth, element.offsetHeight) / 1.3) - 25
   }
@@ -29,7 +38,9 @@
      class="magic_square_container"
      use:watchResize={handleResize}>
     {#key magicSquareInstance}
-      <Main sideLength={sideLength}/>
+      <Main bind:instance={magicSquareInstance}
+            bind:prevSettings={prevSettingsStoreVal}
+            sideLength={sideLength}/>
     {/key}
 </div>
 

@@ -30,6 +30,31 @@ impl UiBuffer {
         }
     }
 
+    pub fn from_prev_settings(prev_settings: Settings) -> UiBuffer {
+        UiBuffer { 
+            settings: Settings {
+                color_1: UiBuffer::convert_rgba(prev_settings.color_1),
+                color_2: UiBuffer::convert_rgba(prev_settings.color_2),
+                color_3: UiBuffer::convert_rgba(prev_settings.color_3),
+                color_4: UiBuffer::convert_rgba(prev_settings.color_4),
+                color_5: UiBuffer::convert_rgba(prev_settings.color_5),
+                color_6: UiBuffer::convert_rgba(prev_settings.color_6),
+                color_7: UiBuffer::convert_rgba(prev_settings.color_7),
+                color_8: UiBuffer::convert_rgba(prev_settings.color_8),
+                ..prev_settings 
+            }
+        }
+    }
+
+    pub fn convert_rgba(rgba: [f32; 4]) -> [f32; 4] {
+        let mut res: [f32; 4] = [0.0, 0.0, 0.0, 0.0];
+        res[0] = rgba[0] / 255.0;
+        res[1] = rgba[1] / 255.0;
+        res[2] = rgba[2] / 255.0;
+        res[3] = rgba[3];
+        res
+    }
+
     pub fn copy(&self) -> UiBuffer {
         UiBuffer { settings: Settings {..self.settings} }
     }

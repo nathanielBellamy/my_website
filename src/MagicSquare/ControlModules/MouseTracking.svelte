@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte'
+  import { MouseTracking } from './MouseTracking'
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
 
@@ -7,15 +8,7 @@
   lang.subscribe(val => langVal = val)
   let i18n = new I18n("magicSquare/mouseTracking")
 
-  enum MouseTrackingOption {
-    on = 'On',
-    off = 'Off',
-    invX = 'Inv X',
-    invY = 'Inv Y',
-    invXY = 'Inv XY'
-  }
-
-  export let currOption: MouseTrackingOption
+  export let currOption: MouseTracking
   const hiddenInputId = 'magic_square_input_mouse_tracking'
   const formId = 'mouse_tracking_form'
 
@@ -33,52 +26,52 @@
 
   let toggle: Toggle
   let inv: Inv
-  let option: MouseTrackingOption
+  let option: MouseTracking
 
-  $: option = deriveMouseTrackingOption(toggle, inv)
+  $: option = deriveMouseTracking(toggle, inv)
 
-  function parseVars(opt: MouseTrackingOption) {
+  function parseVars(opt: MouseTracking) {
     switch(opt) {
-      case MouseTrackingOption.on:
+      case MouseTracking.on:
         toggle = Toggle.on
         inv = Inv.none
         break
-      case MouseTrackingOption.off:
+      case MouseTracking.off:
         toggle = Toggle.off
         inv = Inv.none
         break
-      case MouseTrackingOption.invX:
+      case MouseTracking.invX:
         toggle = Toggle.on
         inv = Inv.x
         break
-      case MouseTrackingOption.invY:
+      case MouseTracking.invY:
         toggle = Toggle.on
         inv = Inv.y
         break
-      case MouseTrackingOption.invXY:
+      case MouseTracking.invXY:
         toggle = Toggle.on
         inv = Inv.xy
         break
     }
   }
 
-  function deriveMouseTrackingOption(t: Toggle, i: Inv) {
+  function deriveMouseTracking(t: Toggle, i: Inv) {
     switch(t) {
       case Toggle.off :
-        return MouseTrackingOption.off
+        return MouseTracking.off
       case Toggle.on:
         switch(i) {
           case Inv.none:
-            return MouseTrackingOption.on
+            return MouseTracking.on
           case Inv.x:
-            return MouseTrackingOption.invX
+            return MouseTracking.invX
           case Inv.y:
-            return MouseTrackingOption.invY
+            return MouseTracking.invY
           case Inv.xy:
-            return MouseTrackingOption.invXY
+            return MouseTracking.invXY
         }
       default:
-        return MouseTrackingOption.off
+        return MouseTracking.off
     }
   }
 
