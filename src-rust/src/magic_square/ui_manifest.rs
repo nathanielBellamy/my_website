@@ -1,6 +1,9 @@
 // see src/MagicSquare/WasmInputId.ts
 
 // COLOR
+pub const INPUT_COLOR_DIRECTION: &'static str = "magic_square_input_color_direction";
+pub const INPUT_COLOR_MODE: &'static str = "magic_square_input_color_mode";
+pub const INPUT_COLOR_SPEED: &'static str = "magic_square_input_color_speed";
 pub const INPUT_COLOR_1: &'static str = "magic_square_input_color_1";
 pub const INPUT_COLOR_2: &'static str = "magic_square_input_color_2";
 pub const INPUT_COLOR_3: &'static str = "magic_square_input_color_3";
@@ -82,8 +85,11 @@ pub const INPUT_MOUSE_TRACKING: &'static str = "magic_square_input_mouse_trackin
 // to ensure that all inputs are accounted for
 // 
 // also handy for copying and pasting when writing matches
-pub const INPUT_IDS: [&'static str; 55] = [
+pub const INPUT_IDS: [&'static str; 58] = [
     // COLOR
+    INPUT_COLOR_DIRECTION,
+    INPUT_COLOR_MODE,
+    INPUT_COLOR_SPEED,
     INPUT_COLOR_1,
     INPUT_COLOR_2,
     INPUT_COLOR_3,

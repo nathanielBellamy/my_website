@@ -32,7 +32,6 @@
     let ses = localStorage.getItem("magic_square_settings")
     if (ses) {
       const res = JSON.parse(ses)
-      console.dir({res})
       prevSettingsStore.update((_: StorageSettings): StorageSettings => {
         return res
       })

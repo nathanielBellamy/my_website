@@ -54,8 +54,26 @@ pub enum TransformOrder{
 }
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
+pub enum ColorDirection{
+    In,
+    #[default]
+    Fix,
+    Out,
+}
+
+#[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
+pub enum ColorMode{
+    #[default]
+    Eight,
+    Gradient,
+}
+
+#[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub struct Settings {
     // COLOR
+    pub color_direction: ColorDirection,
+    pub color_mode: ColorMode,
+    pub color_speed: u8,
     pub color_1: Rgba,
     pub color_2: Rgba,
     pub color_3: Rgba,
@@ -146,6 +164,9 @@ impl Settings {
     pub fn new() -> Settings {
         Settings {
             // COLOR
+            color_direction: ColorDirection::Fix,
+            color_mode: ColorMode::Eight,
+            color_speed: 200,
             color_1: [1.0, 0.0, 1.0, 1.0],
             color_2: [0.0, 1.0, 1.0, 1.0],
             color_3: [1.0, 0.0, 0.5, 1.0],
@@ -221,6 +242,23 @@ impl Settings {
             translation_z_base: 0.0,
             translation_z_spread: 0.0,
             mouse_tracking: MouseTracking::Off,
+        }
+    }
+
+    pub fn try_into_color_direction(cd: String) -> Result<ColorDirection, ()> {
+        match cd.as_str() {
+            "In" => Ok(ColorDirection::In),
+            "Fix" => Ok(ColorDirection::Fix),
+            "Out" => Ok(ColorDirection::Out),
+            _ => Err(())
+        }
+    }
+
+    pub fn try_into_color_mode(cm: String) -> Result<ColorMode, ()> {
+        match cm.as_str() {
+            "Eight" => Ok(ColorMode::Eight),
+            "Gradient" => Ok(ColorMode::Gradient),
+            _ => Err(())
         }
     }
 

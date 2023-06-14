@@ -24,6 +24,7 @@
   import { I18n, Lang } from '../I18n'
   import { lang } from '../stores/lang'
   import { intoTransformOrder, TransformOrder } from './ControlModules/TransformOrder';
+  import { ColorDirection, intoColorDirection, ColorMode, intoColorMode } from './ControlModules/Color';
 
   const i18n = new I18n('magicSquare/main')
   let langVal: Lang
@@ -96,6 +97,9 @@
   }
 
   // COLOR
+  let colorDirection: ColorDirection
+  let colorMode: ColorMode
+  let colorSpeed: number
   let color1: number[]
   let color2: number[]
   let color3: number[]
@@ -114,6 +118,9 @@
   }
 
   function setInitialColorVars(initialUiBuffer: any) {
+    colorDirection = intoColorDirection(initialUiBuffer.settings.color_direction)
+    colorMode = intoColorMode(initialUiBuffer.settings.color_mode)
+    colorSpeed = initialUiBuffer.settings.color_speed
     color1 = [...initialUiBuffer.settings.color_1].map((x,idx) => convertRgbaValue(x, idx))
     color2 = [...initialUiBuffer.settings.color_2].map((x,idx) => convertRgbaValue(x, idx))
     color3 = [...initialUiBuffer.settings.color_3].map((x,idx) => convertRgbaValue(x, idx))
@@ -303,8 +310,6 @@
 
   onMount(async () => {
     // console.dir({instance, prevSettings})
-
-
     // load wasm
     await wasm_bindgen() // loaded in index.html from ./pkg/src_rust.js
     
@@ -345,6 +350,10 @@
 
   function deriveStorageSettings(): StorageSettings {
     return {
+      // Color
+      color_direction: colorDirection,
+      color_mode: colorMode,
+      color_speed: colorSpeed,
       color_1: color1,
       color_2: color2,
       color_3: color3,
@@ -393,8 +402,6 @@
 
       // PATTERN
       draw_pattern: drawPattern,
-
-
 
       // ROTATION
       x_rot_base: rollBase,
@@ -464,7 +471,9 @@
         {#if !renderDataReady}
           <Loading />
         {:else}
-          <Color bind:color1={color1}
+          <Color bind:colorDirection={colorDirection}
+                 bind:colorMode={colorMode}
+                 bind:color1={color1}
                  bind:color2={color2}
                  bind:color3={color3}
                  bind:color4={color4}
@@ -472,7 +481,30 @@
                  bind:color6={color6}
                  bind:color7={color7}
                  bind:color8={color8}>
+            <div slot="speed">
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <label class="slider_label flex justify-between" 
+                       class:disabled={colorDirection === ColorDirection.fix} 
+                       for={WasmInputId.colorSpeed}>
+                  <div> {i18n.t("speed", langVal)} </div>
+                  <div> {colorSpeed} </div>
+                </label>
+                <input id={WasmInputId.colorSpeed}
+                       disabled={colorDirection === ColorDirection.fix}
+                       type="range"
+                       min={1}
+                       max={20}
+                       bind:value={colorSpeed}
+                       step={1}/>
+              </div>
+            </div>
             <div slot="hiddenInputs">
+              <input id={WasmInputId.colorDirection}
+                     bind:value={colorDirection}
+                     class="hidden_input">
+              <input id={WasmInputId.colorMode}
+                     bind:value={colorMode}
+                     class="hidden_input">
               <input id={WasmInputId.color1}
                      bind:value={color1}
                      class="hidden_input">
@@ -1132,6 +1164,9 @@
         border: 10px double color.$blue-7
         border-radius: 5px
         flex-grow: 1
+
+  .disabled
+    color: #666
 
   .display
     align-items: center

@@ -12,7 +12,7 @@ use crate::magic_square::geometry::cache::{Cache as GeometryCache, CACHE_CAPACIT
 use crate::magic_square::ui_buffer::UiBuffer;
 use crate::magic_square::lfo::Lfo;
 
-use super::settings::{MouseTracking, Settings};
+use super::settings::{ColorDirection, MouseTracking, Settings};
 use super::transformations::Transformation;
 // use crate::magic_square::traits::VertexStore;
 // use super::geometry::icosohedron::Icosohedron;
@@ -81,7 +81,7 @@ impl MagicSquare {
         // incriment idx_delay each render
         // when idx_delay reaches a desired delay value
         // incriment idx_offset
-        let mut color_idx_offset_delay: [usize; 2] = [0, 0];
+        let mut color_idx_offset_delay: [u8; 2] = [0, 0];
         //Arc::new(Mutex::new(
         let geometry_cache = GeometryCache::new(
                 26, 
@@ -278,14 +278,29 @@ impl MagicSquare {
 
                     // log(&format!("{}", ui_buffer.settings.translation_x));
 
-                    let color_idx_offset: usize = color_idx_offset_delay[0];
-                    let color_idx_delay: usize = color_idx_offset_delay[1];
+                    let delay_reset: u8 = std::cmp::max(22 - ui_buffer.settings.color_speed, 1);
 
-                    color_idx_offset_delay[1] = color_idx_delay + 1; // + 1 = out, - 1 = in
-                    if color_idx_delay == 6 {
-                        color_idx_offset_delay[0] = color_idx_offset - 1_usize % 8;
+                    if color_idx_offset_delay[1] > delay_reset {
+                        // this can happen when user changes ui_buffer.settings.color_speed 
+                        // new speed will eventually kick in anyway
+                        // but this makes it immediate
+                        color_idx_offset_delay[1] = 0
+                    }
+                    let color_idx_offset: u8 = color_idx_offset_delay[0];
+                    let color_idx_delay: u8 = color_idx_offset_delay[1];
+                    
+                    // 0 < color_speed < 21
+                    if color_idx_delay == delay_reset {
+                        color_idx_offset_delay[0] = match ui_buffer.settings.color_direction {
+                            ColorDirection::In => (color_idx_offset + 1) % 8,
+                            ColorDirection::Fix => color_idx_offset,
+                            ColorDirection::Out => (color_idx_offset - 1) % 8,
+                        };
                         color_idx_offset_delay[1] = 0;
                     }
+                    
+                    color_idx_offset_delay[1] = color_idx_offset_delay[1] + 1;
+                    
 
                     // compute
                     MagicSquare::render_all_lines(
@@ -453,7 +468,7 @@ impl MagicSquare {
 
     }
 
-    fn get_rgba(ui_buffer: &UiBuffer, idx: usize, offset: usize) -> Rgba {
+    fn get_rgba(ui_buffer: &UiBuffer, idx: usize, offset: u8) -> Rgba {
         // let mut result: Rgba = [0.0, 0.0, 0.0, 0.0];
         // result[0] = ui_buffer.settings.color_1[0] / 255.0;// 1.0 - mouse_pos_buffer[0];
         // result[1] = ui_buffer.settings.color_1[1] / 255.0;// 1.0 - mouse_pos_buffer[1];
@@ -462,7 +477,7 @@ impl MagicSquare {
         // result
         //
         // log(&format!("{idx}"));
-        let local_idx = (idx + offset) % 16;
+        let local_idx = (idx + offset as usize) % 16;
         match local_idx {
             0 => ui_buffer.settings.color_1,
             1 => ui_buffer.settings.color_2,

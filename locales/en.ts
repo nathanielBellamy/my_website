@@ -40,6 +40,7 @@ export const localeEn: any = {
       base: "base",
       frequency: "frequency",
       phase: "phase",
+      speed: 'speed',
       spread: "spread",
       step: "step"
     },

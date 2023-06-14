@@ -18,8 +18,8 @@
     <div class="title flex items-stretch pl-5 underline">
       shape
     </div>
-    <div class="grow flex flex-col justify-between items-stretch pl-5 pr-5">
-      <select class="grow">
+    <div class="grow flex flex-col justify-between items-stretch m-5">
+      <select class="shape_select p-5">
         <optgroup label="2d">
           <option>
             Triangle
@@ -95,6 +95,10 @@
     color: color.$blue-7
     font-size: text.$fs-ml
     font-weight: text.$fw-l
+
+  .shape_select
+    font-size: 1.3em
+    cursor: pointer
 
   .selected
     background-color: color.$blue-7

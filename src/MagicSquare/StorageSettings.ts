@@ -1,3 +1,4 @@
+import type { ColorDirection, ColorMode } from './ControlModules/Color'
 import type { DrawPattern } from "./ControlModules/DrawPattern"
 import type { LfoDestination } from "./ControlModules/LfoDestination"
 import type { LfoShape } from "./ControlModules/LfoShape"
@@ -6,6 +7,8 @@ import type { TransformOrder } from "./ControlModules/TransformOrder"
 
 export interface StorageSettings {
   // COLOR
+  color_direction: ColorDirection,
+  color_mode: ColorMode,
   color_1: number[],
   color_2: number[],
   color_3: number[],

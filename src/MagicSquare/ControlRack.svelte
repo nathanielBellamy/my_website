@@ -18,7 +18,7 @@
     right = 'right'
   }
 
-  let curr_mod_left: Module = Module.geometry
+  let curr_mod_left: Module = Module.color
   let curr_mod_right: Module = Module.lfo
 </script>
 

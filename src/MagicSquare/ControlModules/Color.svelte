@@ -1,6 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import iro from '@jaames/iro'
+  import { ColorDirection, ColorMode } from './Color'
+  import { WasmInputId } from '../WasmInputId'
+  import ControlModule from '../ControlModule.svelte';
 
   function rgbaToString(rgba: number[]): string {
     // rgba = !!rgba ? rgba : [0, 255, 0, 1]
@@ -9,6 +12,23 @@
     // so we keep everything rgb in practice
     // console.dir({r: rgba[0], g: rgba[1]})
     return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, 1)`
+  }
+
+  export let colorDirection: ColorDirection
+  export let colorMode: ColorMode
+
+  function handleColorDirectionClick(cd: ColorDirection) {
+    colorDirection = cd
+    const input = document.getElementById(WasmInputId.colorDirection)
+    input.value = cd
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+  }
+
+  function handleColorModeClick(cm: ColorMode) {
+    colorMode = cm
+    const input = document.getElementById(WasmInputId.colorMode)
+    input.value = cm
+    input.dispatchEvent(new Event('input', { bubbles: true }))
   }
   
   export let color1: number[]
@@ -109,8 +129,6 @@
       })
     })
   })
-
-  
 </script>
 
 <div class="color_container flex flex-col justify-between items-stretch">
@@ -118,23 +136,34 @@
        class="grow w-full flex flex-col justify-around items-center">
     <div class="color_modes w-full flex flex-col justify-around items-stretch">
       <div class="grow w-full flex justify-around">
-        <button class="grow color_mode_option">
+        <button class="grow color_mode_option"
+                class:selected={colorDirection === ColorDirection.out}
+                on:click={() => handleColorDirectionClick(ColorDirection.out)}>
           Out
         </button>
-        <button class="grow color_mode_option">
+        <button class="grow color_mode_option"
+                class:selected={colorDirection === ColorDirection.in}
+                on:click={() => handleColorDirectionClick(ColorDirection.in)}>
           In
         </button>
-        <button class="grow color_mode_option">
+        <button class="grow color_mode_option"
+                class:selected={colorDirection === ColorDirection.fix}
+                on:click={() => handleColorDirectionClick(ColorDirection.fix)}>
           Fix
         </button>
       </div>
       <div class="grow flex flex-col justify-between items-stretch">
-        <button class="grow color_mode_option">
+        <button class="grow color_mode_option"
+                on:click={() => handleColorModeClick(ColorMode.eight)}>
           Eight
         </button>
-        <button class="grow color_mode_option">
-          Grad
+        <button class="grow color_mode_option"
+                on:click={() => handleColorModeClick(ColorMode.gradient)}>
+          Gradient
         </button>
+      </div>
+      <div class="grow m-2">
+        <slot name="speed"/>
       </div>
     </div>
     <div  id="magic_square_color_curr_picker"
@@ -176,6 +205,9 @@
 <style lang="sass">
   @use "./../../styles/color"
   @use "./../../styles/text"
+
+  .selected
+    background-color: color.$blue-4
 
   .color_mode
     &s

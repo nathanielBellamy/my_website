@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 // use crate::magic_square::main::log;
 use crate::magic_square::settings::Settings;
 use crate::magic_square::ui_manifest::{
+    INPUT_COLOR_DIRECTION, INPUT_COLOR_MODE, INPUT_COLOR_SPEED,
     INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8,
     INPUT_DRAW_PATTERN, INPUT_MOUSE_TRACKING,
     INPUT_RADIUS_BASE, INPUT_RADIUS_STEP,
@@ -64,6 +65,21 @@ impl UiBuffer {
         // log(&input_id);
         // log(&val);
         match input_id.as_str() {
+            INPUT_COLOR_DIRECTION => {
+                if let Ok(val) = Settings::try_into_color_direction(val) {
+                    self.settings.color_direction = val
+                }
+            },
+            INPUT_COLOR_MODE => {
+                if let Ok(val) = Settings::try_into_color_mode(val) {
+                    self.settings.color_mode = val
+                }
+            },
+            INPUT_COLOR_SPEED => {
+                if let Ok(val) = val.parse::<u8>() {
+                    self.settings.color_speed = val
+                }
+            },
             INPUT_COLOR_1
                 | INPUT_COLOR_2
                 | INPUT_COLOR_3
