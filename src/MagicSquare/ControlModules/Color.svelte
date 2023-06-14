@@ -24,11 +24,35 @@
     input.dispatchEvent(new Event('input', { bubbles: true }))
   }
 
+  function colorGradientAtStep(step: number): number[] {
+    const t: number = step / 7
+    var result: number[] = [0, 0, 0, 0]
+    for (let idx = 0; idx < 4; idx++) {
+      result[idx] = (1 - t) * color1[idx] + t * color8[idx]
+    }
+    return result
+  }
+
+  function setColorGradient(colorA: number[], colorB: number[]) {
+    color1 = colorA
+    color8 = colorB
+    color2 = colorGradientAtStep(1)
+    color3 = colorGradientAtStep(2)
+    color4 = colorGradientAtStep(3)
+    color5 = colorGradientAtStep(4)
+    color6 = colorGradientAtStep(5)
+    color7 = colorGradientAtStep(6)
+  }
+
   function handleColorModeClick(cm: ColorMode) {
     colorMode = cm
     const input = document.getElementById(WasmInputId.colorMode)
     input.value = cm
     input.dispatchEvent(new Event('input', { bubbles: true }))
+
+    if (cm === ColorMode.gradient) {
+      setColorGradient(color1, color8)
+    }
   }
   
   export let color1: number[]
@@ -154,12 +178,8 @@
       </div>
       <div class="grow flex flex-col justify-between items-stretch">
         <button class="grow color_mode_option"
-                on:click={() => handleColorModeClick(ColorMode.eight)}>
-          Eight
-        </button>
-        <button class="grow color_mode_option"
                 on:click={() => handleColorModeClick(ColorMode.gradient)}>
-          Gradient
+          Gradient &emsp; 1️⃣ ➡️ 8️⃣
         </button>
       </div>
       <div class="grow m-2">

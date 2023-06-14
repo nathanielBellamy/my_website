@@ -61,7 +61,7 @@ pub enum ColorDirection{
     Out,
 }
 
-#[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
+#[derive(Serialize, Deserialize, Clone, Copy, Default, Debug, Eq, PartialEq)]
 pub enum ColorMode{
     #[default]
     Eight,

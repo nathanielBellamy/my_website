@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 // use crate::magic_square::main::log;
-use crate::magic_square::settings::Settings;
+use crate::magic_square::settings::{ColorMode, Settings};
 use crate::magic_square::ui_manifest::{
     INPUT_COLOR_DIRECTION, INPUT_COLOR_MODE, INPUT_COLOR_SPEED,
     INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8,
@@ -18,6 +18,8 @@ use crate::magic_square::ui_manifest::{
     INPUT_LFO_3_ACTIVE, INPUT_LFO_3_AMP, INPUT_LFO_3_DEST, INPUT_LFO_3_FREQ, INPUT_LFO_3_PHASE, INPUT_LFO_3_SHAPE,
     INPUT_LFO_4_ACTIVE, INPUT_LFO_4_AMP, INPUT_LFO_4_DEST, INPUT_LFO_4_FREQ, INPUT_LFO_4_PHASE, INPUT_LFO_4_SHAPE,
 };
+
+use super::main::Rgba;
 
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
@@ -61,6 +63,29 @@ impl UiBuffer {
         UiBuffer { settings: Settings {..self.settings} }
     }
 
+    pub fn color_gradient_at_step(&self, step: u8) -> Rgba {
+        let mut result = [0.0, 0.0, 0.0, 0.0];
+        let t: f32 = step as f32 / 7.0;
+        
+        for idx in 0..4 {
+            result[idx] = (1.0 - t) * self.settings.color_1[idx]
+                            + t * self.settings.color_8[idx];
+        }
+
+        result
+    }
+
+    pub fn set_color_gradient(&mut self, color_a: Rgba, color_b: Rgba) {
+        self.settings.color_1 = color_a;
+        self.settings.color_2 = self.color_gradient_at_step(1);
+        self.settings.color_3 = self.color_gradient_at_step(2);
+        self.settings.color_4 = self.color_gradient_at_step(3);
+        self.settings.color_5 = self.color_gradient_at_step(4);
+        self.settings.color_6 = self.color_gradient_at_step(5);
+        self.settings.color_7 = self.color_gradient_at_step(6);
+        self.settings.color_8 = color_b;
+    }
+
     pub fn update(&mut self, input_id: String, val: String) {
         // log(&input_id);
         // log(&val);
@@ -71,8 +96,13 @@ impl UiBuffer {
                 }
             },
             INPUT_COLOR_MODE => {
-                if let Ok(val) = Settings::try_into_color_mode(val) {
-                    self.settings.color_mode = val
+                if let Ok(new_mode) = Settings::try_into_color_mode(val) {
+                    if new_mode == ColorMode::Gradient {
+                        // set colors as gradient from color_1 to color_8
+                        self.set_color_gradient(self.settings.color_1, self.settings.color_8);
+                    }
+                
+                    self.settings.color_mode = new_mode
                 }
             },
             INPUT_COLOR_SPEED => {
