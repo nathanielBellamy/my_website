@@ -1,6 +1,14 @@
 use ndarray::prelude::*;
 use ndarray::Array;
 use crate::magic_square::main::Axis;
+use super::settings::TransformOrder;
+
+#[derive(Clone, Copy)]
+pub struct Transformation {
+    pub order: TransformOrder,
+    pub rot_seq: RotationSequence,
+    pub translation: Translation
+}
 
 #[derive(Clone, Copy)]
 pub struct RotationSequence {
@@ -65,4 +73,3 @@ pub struct Translation {
     pub y: f32,
     pub z: f32
 }
-

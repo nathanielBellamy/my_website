@@ -1,7 +1,7 @@
 use std::ops::{Index, IndexMut};
 use crate::magic_square::traits::VertexStore;
 use crate::magic_square::vertices::{Vertex, VERTEX_ARRAY_SIZE};
-use crate::magic_square::transformations::{RotationSequence, Translation};
+use crate::magic_square::transformations:: Transformation;
 
 const PI: f32 = std::f32::consts::PI;
 
@@ -24,8 +24,7 @@ impl Icosohedron {
     // return array to be cached 
     pub fn new(
         radius: f32, 
-        rotation: RotationSequence,
-        translation: Translation
+        transformation: Transformation
     ) -> Icosohedron {
         let mut icosohedron = Icosohedron::init();
 
@@ -45,24 +44,20 @@ impl Icosohedron {
             let next_angle_top = h_angle_top + h_angle;
             icosohedron.set_next(
                 Vertex::new(xy * h_angle_top.cos(), z, xy * h_angle_top.sin())
-                    .rot(rotation)
-                    .translate(translation)
+                    .transform(transformation)
             );
             icosohedron.set_next(
                 Vertex::new(xy * h_angle_bottom.cos(), -z, xy * h_angle_bottom.sin())
-                    .rot(rotation)
-                    .translate(translation)
+                    .transform(transformation)
             );
 
             icosohedron.set_next(
                 Vertex::new(xy * h_angle_bottom.cos(), -z, xy * h_angle_bottom.sin())
-                    .rot(rotation)
-                    .translate(translation)
+                    .transform(transformation)
             );
             icosohedron.set_next(
                 Vertex::new(xy * next_angle_top.cos(), z, xy * next_angle_top.sin())
-                    .rot(rotation)
-                    .translate(translation)
+                    .transform(transformation)
             );
             
             h_angle_top += h_angle;
@@ -73,13 +68,11 @@ impl Icosohedron {
         for _ in 1..6 {
             icosohedron.set_next(
                 Vertex::new(0.0, -radius, 0.0)
-                    .rot(rotation)
-                    .translate(translation)
+                    .transform(transformation)
             );
             icosohedron.set_next(
                 Vertex::new(xy * h_angle_bottom.cos(), -z, xy * h_angle_bottom.sin())
-                    .rot(rotation)
-                    .translate(translation)
+                    .transform(transformation)
             );
 
             
@@ -91,13 +84,11 @@ impl Icosohedron {
             let next_angle = h_angle_bottom + h_angle;
             icosohedron.set_next(
                 Vertex::new(xy * h_angle_bottom.cos(), -z, xy * h_angle_bottom.sin())
-                    .rot(rotation)
-                    .translate(translation)
+                    .transform(transformation)
             );
             icosohedron.set_next(
                 Vertex::new(xy * next_angle.cos(), -z, xy * next_angle.sin())
-                    .rot(rotation)
-                    .translate(translation)
+                    .transform(transformation)
             );
 
             
@@ -108,13 +99,11 @@ impl Icosohedron {
         for _ in 1..6 {
             icosohedron.set_next(
                 Vertex::new(0.0, radius, 0.0)
-                    .rot(rotation)
-                    .translate(translation)
+                    .transform(transformation)
             );
             icosohedron.set_next(
                 Vertex::new(xy * h_angle_top.cos(), z, xy * h_angle_top.sin())
-                    .rot(rotation)
-                    .translate(translation)
+                    .transform(transformation)
             );
             
             h_angle_top += h_angle;
@@ -125,15 +114,12 @@ impl Icosohedron {
             let next_angle = h_angle_top + h_angle;
             icosohedron.set_next(
                 Vertex::new(xy * h_angle_top.cos(), z, xy * h_angle_top.sin())
-                    .rot(rotation)
-                    .translate(translation)
+                    .transform(transformation)
             );
             icosohedron.set_next(
                 Vertex::new(xy * next_angle.cos(), z, xy * next_angle.sin())
-                    .rot(rotation)
-                    .translate(translation)
+                    .transform(transformation)
             );
-
             
             h_angle_top += h_angle;
         }

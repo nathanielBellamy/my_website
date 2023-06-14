@@ -1,6 +1,6 @@
 use crate::magic_square::geometry::hexagon::Hexagon;
 use crate::magic_square::geometry::icosohedron::Icosohedron;
-use crate::magic_square::transformations::{RotationSequence, Translation};
+use crate::magic_square::transformations::Transformation;
 
 // store
 pub mod cache;
@@ -28,19 +28,17 @@ impl Geometry {
     //  shape -> accepts &mut Vertices, writes directly to array that will be passed to GL
     //  shape_cached -> Returns ShapeCache, array of vertices need to define the shape
     pub fn hexagon(
-        radius: f32, 
-        rotation: RotationSequence,
-        translation: Translation
+        radius: f32,
+        transformation: Transformation
     ) -> Hexagon {
-        Hexagon::new(radius, rotation, translation)
+        Hexagon::new(radius, transformation)
     }
 
     pub fn icosohedron(
         radius: f32,
-        rotation: RotationSequence,
-        translation: Translation
+        transformation: Transformation
     ) -> Icosohedron {
-        Icosohedron::new(radius, rotation, translation)
+        Icosohedron::new(radius, transformation)
     }
 }
 

@@ -2,7 +2,7 @@
 use std::ops::{Index, IndexMut};
 use crate::magic_square::traits::VertexStore;
 use crate::magic_square::vertices::{Vertex, VERTEX_ARRAY_SIZE};
-use crate::magic_square::transformations::{RotationSequence, Translation};
+use crate::magic_square::transformations::Transformation;
 
 pub struct Hexagon {
     pub arr: [f32; VERTEX_ARRAY_SIZE], // # coordinates needed to define hexagon
@@ -16,9 +16,8 @@ impl Hexagon {
     // write to vertices
     // return array to be cached 
     pub fn new(
-        radius: f32, 
-        rotation: RotationSequence,
-        translation: Translation
+        radius: f32,
+        transformation: Transformation
     ) -> Hexagon {
         let xy = 0.0;
         let x_shift = radius * 0.5; // r cos(pi/3)
@@ -31,78 +30,67 @@ impl Hexagon {
         // end east corner
         hexagon.set_next(
             Vertex::new(x_shift, y_shift, xy)
-                .rot(rotation)
-                .translate(translation)
+                .transform(transformation)
         );
         hexagon.set_next(
             Vertex::new(radius, 0.0, xy)
-                .rot(rotation)
-                .translate(translation)
+                .transform(transformation)
         );
 
         // start east corner
         // end south east corner
         hexagon.set_next(
             Vertex::new(radius, 0.0, xy)
-                .rot(rotation)
-                .translate(translation)
+                .transform(transformation)
         );
         hexagon.set_next(
             Vertex::new(x_shift, -y_shift, xy)
-                .rot(rotation)
-                .translate(translation)
+                .transform(transformation)
         );
 
         // start east corner
         // end south east corner
         hexagon.set_next(
             Vertex::new(radius, 0.0, xy)
-                .rot(rotation)
-                .translate(translation)
+                .transform(transformation)
         );
         hexagon.set_next(
             Vertex::new(x_shift, -y_shift, xy)
-                .rot(rotation)
-                .translate(translation)
+                .transform(transformation)
         );
 
         // start south east corner
         // end south west corner
         hexagon.set_next(
             Vertex::new(x_shift, -y_shift, xy)
-                .rot(rotation)
-                .translate(translation)
+                .transform(transformation)
         );
         hexagon.set_next(
             Vertex::new(-x_shift, -y_shift, xy)
-                .rot(rotation)
-                .translate(translation)
+                .transform(transformation)
+                
         );
 
         // start south west corner
         // end west corner
         hexagon.set_next(
             Vertex::new(-x_shift, -y_shift, xy)
-                .rot(rotation)
-                .translate(translation)
+                .transform(transformation)
         );
         hexagon.set_next(
             Vertex::new(-radius, 0.0, xy)
-                .rot(rotation)
-                .translate(translation)
+                .transform(transformation)
         );
 
         // start west corner
         // end north west corner
         hexagon.set_next(
             Vertex::new(-radius, 0.0, xy)
-                .rot(rotation)
-                .translate(translation)
+                .transform(transformation)
         );
         hexagon.set_next(
             Vertex::new(-x_shift, y_shift, xy)
-                .rot(rotation)
-                .translate(translation)
+                .transform(transformation)
         );
 
 
@@ -110,13 +98,11 @@ impl Hexagon {
         // end north east corner
         hexagon.set_next( 
             Vertex::new(-x_shift, y_shift, xy)
-                .rot(rotation)
-                .translate(translation)
+                .transform(transformation)
         );
         hexagon.set_next(
             Vertex::new(x_shift, y_shift, xy)
-                .rot(rotation)
-                .translate(translation)
+                .transform(transformation)
         );
         
         hexagon

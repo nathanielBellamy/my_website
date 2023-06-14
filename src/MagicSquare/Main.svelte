@@ -23,6 +23,7 @@
   // INIT LANG BOILER PLATE
   import { I18n, Lang } from '../I18n'
   import { lang } from '../stores/lang'
+  import { intoTransformOrder, TransformOrder } from './ControlModules/TransformOrder';
 
   const i18n = new I18n('magicSquare/main')
   let langVal: Lang
@@ -123,6 +124,21 @@
     color8 = [...initialUiBuffer.settings.color_8].map((x,idx) => convertRgbaValue(x, idx))
   }
 
+  // GEOMETRY
+  let radiusBase: number
+  let radiusStep: number
+  let transformOrder: TransformOrder
+
+  function setInitialGeometryVars(initialUiBuffer: any) {
+    radiusBase = round2(initialUiBuffer.settings.radius_base)
+    radiusStep = round2(initialUiBuffer.settings.radius_step)
+    transformOrder = intoTransformOrder(initialUiBuffer.settings.transform_order)
+  }
+
+  function round2(val: number){
+    return Math.floor(val * 100) / 100
+  }
+
   // LFO
   let lfo1Active: boolean
   let lfo1Amp: number
@@ -154,31 +170,31 @@
   
   function setInitialLfoVars(initialUiBuffer: any) {
     lfo1Active = initialUiBuffer.settings.lfo_1_active
-    lfo1Amp = initialUiBuffer.settings.lfo_1_amp
+    lfo1Amp = round2(initialUiBuffer.settings.lfo_1_amp)
     lfo1Dest = intoLfoDestination(initialUiBuffer.settings.lfo_1_dest)
-    lfo1Freq = initialUiBuffer.settings.lfo_1_freq
-    lfo1Phase = initialUiBuffer.settings.lfo_1_phase
+    lfo1Freq = round2(initialUiBuffer.settings.lfo_1_freq)
+    lfo1Phase = round2(initialUiBuffer.settings.lfo_1_phase)
     lfo1Shape = intoLfoShape(initialUiBuffer.settings.lfo_1_shape)
 
     lfo2Active = initialUiBuffer.settings.lfo_2_active
-    lfo2Amp = initialUiBuffer.settings.lfo_2_amp
+    lfo2Amp = round2(initialUiBuffer.settings.lfo_2_amp)
     lfo2Dest = intoLfoDestination(initialUiBuffer.settings.lfo_2_dest)
-    lfo2Freq = initialUiBuffer.settings.lfo_2_freq
-    lfo2Phase = initialUiBuffer.settings.lfo_2_phase
+    lfo2Freq = round2(initialUiBuffer.settings.lfo_2_freq)
+    lfo2Phase = round2(initialUiBuffer.settings.lfo_2_phase)
     lfo2Shape = intoLfoShape(initialUiBuffer.settings.lfo_2_shape)
 
     lfo3Active = initialUiBuffer.settings.lfo_3_active
-    lfo3Amp = initialUiBuffer.settings.lfo_3_amp
+    lfo3Amp = round2(initialUiBuffer.settings.lfo_3_amp)
     lfo3Dest = intoLfoDestination(initialUiBuffer.settings.lfo_3_dest)
-    lfo3Freq = initialUiBuffer.settings.lfo_3_freq
-    lfo3Phase = initialUiBuffer.settings.lfo_3_phase
+    lfo3Freq = round2(initialUiBuffer.settings.lfo_3_freq)
+    lfo3Phase = round2(initialUiBuffer.settings.lfo_3_phase)
     lfo3Shape = intoLfoShape(initialUiBuffer.settings.lfo_3_shape)
 
     lfo4Active = initialUiBuffer.settings.lfo_4_active
-    lfo4Amp = initialUiBuffer.settings.lfo_4_amp
+    lfo4Amp = round2(initialUiBuffer.settings.lfo_4_amp)
     lfo4Dest = intoLfoDestination(initialUiBuffer.settings.lfo_4_dest)
-    lfo4Freq = initialUiBuffer.settings.lfo_4_freq
-    lfo4Phase = initialUiBuffer.settings.lfo_4_phase
+    lfo4Freq = round2(initialUiBuffer.settings.lfo_4_freq)
+    lfo4Phase = round2(initialUiBuffer.settings.lfo_4_phase)
     lfo4Shape = intoLfoShape(initialUiBuffer.settings.lfo_4_shape)
   }
 
@@ -232,10 +248,10 @@
   // let translationZ: number
 
   function setInitialTranslationVars(initialUiBuffer: any) {
-    translationXBase = initialUiBuffer.settings.translation_x_base
-    translationXSpread = initialUiBuffer.settings.translation_x_spread
-    translationYBase = initialUiBuffer.settings.translation_y_base
-    translationYSpread = initialUiBuffer.settings.translation_y_spread
+    translationXBase = round2(initialUiBuffer.settings.translation_x_base)
+    translationXSpread = round2(initialUiBuffer.settings.translation_x_spread)
+    translationYBase = round2(initialUiBuffer.settings.translation_y_base)
+    translationYSpread = round2(initialUiBuffer.settings.translation_y_spread)
     // translationZ = initialUiBuffer.settings.translation_z
   }
 
@@ -243,19 +259,6 @@
 
   function setInitialMouseTracking(initialUiBuffer: any) {
     mouseTracking = initialUiBuffer.settings.mouse_tracking
-  }
-
-  // RADIUS
-  let radiusBase: number
-  let radiusStep: number
-
-  function setInitialRadiusVars(initialUiBuffer: any) {
-    radiusBase = Math.floor(initialUiBuffer.settings.radius_base * 100) / 100
-    radiusStep = Math.floor(initialUiBuffer.settings.radius_step * 100) / 100
-  }
-
-  function round2(val: number){
-    return Math.floor(val * 100) / 100
   }
 
   // ROTATION
@@ -308,7 +311,7 @@
     let ses = localStorage.getItem("magic_square_settings")
     if (ses) {
       const res = JSON.parse(ses)
-      console.dir({res})
+      // console.dir({res})
       prevSettingsStore.update((_: StorageSettings): StorageSettings => {
         prevSettings = res
         return res
@@ -328,12 +331,12 @@
       
       // init wasm process and set initial values
       const initialUiBuffer = await MagicSquare.run(prevSettings)
-      console.dir({prevSettings, uibuff: initialUiBuffer.settings})
+      // console.dir({prevSettings, uibuff: initialUiBuffer.settings})
       setInitialDrawPatternVars(initialUiBuffer)
       setInitialColorVars(initialUiBuffer)
       setInitialLfoVars(initialUiBuffer)
+      setInitialGeometryVars(initialUiBuffer)
       setInitialMouseTracking(initialUiBuffer)
-      setInitialRadiusVars(initialUiBuffer)
       setInitialRotationVars(initialUiBuffer)
       setInitialTranslationVars(initialUiBuffer)
       renderDataReady = true
@@ -350,6 +353,11 @@
       color_6: color6,
       color_7: color7,
       color_8: color8,
+
+      // Geometry
+      radius_base: radiusBase,
+      radius_step: radiusStep,
+      transform_order: TransformOrder.translateThenRotate,
 
       // lfo_1
       lfo_1_active: lfo1Active,
@@ -386,9 +394,7 @@
       // PATTERN
       draw_pattern: drawPattern,
 
-      // RADIUS
-      radius_base: radiusBase,
-      radius_step: radiusStep,
+
 
       // ROTATION
       x_rot_base: rollBase,
@@ -878,7 +884,12 @@
         {#if !renderDataReady}
           <Loading />
         {:else}
-          <Geometry>
+          <Geometry bind:transformOrder={transformOrder}>
+            <div slot="transformOrder">
+              <input id={WasmInputId.transformOrder}
+                     bind:value={transformOrder}
+                     class="hidden_input"/>
+            </div>
             <div  class="p-5 grow flex flex-col justify-around items-stretch"
                   slot="radiusSliders">
               <div class="w-full flex flex-col justify-between items-stretch">

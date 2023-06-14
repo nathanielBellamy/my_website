@@ -47,6 +47,13 @@ pub enum MouseTracking {
 }
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
+pub enum TransformOrder{
+    #[default]
+    RotateThenTranslate,
+    TranslateThenRotate,
+}
+
+#[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub struct Settings {
     // COLOR
     pub color_1: Rgba,
@@ -57,6 +64,11 @@ pub struct Settings {
     pub color_6: Rgba,
     pub color_7: Rgba,
     pub color_8: Rgba,
+
+    // GEOMETRY
+    pub radius_base: f32,
+    pub radius_step: f32,
+    pub transform_order: TransformOrder,
 
     // lfo_1
     pub lfo_1_active: bool,
@@ -98,11 +110,6 @@ pub struct Settings {
     // PATTERN
     pub draw_pattern: DrawPattern,
 
-    // RADIUS
-    pub radius_base: f32,
-    pub radius_step: f32,
-
-    
     // ROTATION
     pub x_rot_base: f32,
     pub y_rot_base: f32,
@@ -148,6 +155,11 @@ impl Settings {
             color_7: [0.80, 0.44, 0.925, 1.0],
             color_8: [0.0, 0.1, 1.0, 1.0],
 
+            // GEOMETRY
+            radius_base: 0.1,
+            radius_step: 0.1,
+            transform_order: TransformOrder::RotateThenTranslate,
+
             // lfo_1
             lfo_1_active: true,
             lfo_1_amp: 0.05,
@@ -184,10 +196,6 @@ impl Settings {
             // PATTERN
             draw_pattern: DrawPattern::Out8,
             
-            // RADIUS
-            radius_base: 0.1,
-            radius_step: 0.1,
-
             // ROTATION
             x_rot_base: 0.0,
             y_rot_base: 0.0,
@@ -350,6 +358,14 @@ impl Settings {
                 DrawPattern::In6 => 6,
                 DrawPattern::In7 => 7,
                 DrawPattern::In8 => 8,
+        }
+    }
+
+    pub fn try_into_transform_order(order: String) -> Result<TransformOrder, ()> {
+        match order.as_str() {
+            "RotateThenTranslate" => Ok(TransformOrder::RotateThenTranslate),
+            "TranslateThenRotate" => Ok(TransformOrder::TranslateThenRotate),
+            _ => Err(())
         }
     }
 

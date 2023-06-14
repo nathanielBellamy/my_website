@@ -14,6 +14,11 @@ export enum WasmInputId {
   color7 = "magic_square_input_color_7",
   color8 = "magic_square_input_color_8",
 
+  // geometry
+  radiusBase = "magic_square_input_radius_base",
+  radiusStep = "magic_square_input_radius_step",
+  transformOrder = "magic_square_input_transform_order",
+
   // lfo1
   lfo1Active= "magic_square_input_lfo_1_active",
   lfo1Amp = "magic_square_input_lfo_1_amp",
@@ -45,10 +50,6 @@ export enum WasmInputId {
   lfo4Freq = "magic_square_input_lfo_4_freq",
   lfo4Phase = "magic_square_input_lfo_4_phase",
   lfo4Shape = "magic_square_input_lfo_4_shape",
-
-  // geometry
-  radiusBase = "magic_square_input_radius_base",
-  radiusStep = "magic_square_input_radius_step",
 
   // rotation
   pitchBase = "magic_square_input_y_rot_base",

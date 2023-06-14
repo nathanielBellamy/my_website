@@ -5,6 +5,7 @@ use crate::magic_square::ui_manifest::{
     INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8,
     INPUT_DRAW_PATTERN, INPUT_MOUSE_TRACKING,
     INPUT_RADIUS_BASE, INPUT_RADIUS_STEP,
+    INPUT_TRANSFORM_ORDER,
     INPUT_X_ROT_BASE, INPUT_Y_ROT_BASE, INPUT_Z_ROT_BASE,
     INPUT_X_ROT_SPREAD, INPUT_Y_ROT_SPREAD, INPUT_Z_ROT_SPREAD,
     INPUT_X_AXIS_X_ROT_COEFF, INPUT_X_AXIS_Y_ROT_COEFF, INPUT_X_AXIS_Z_ROT_COEFF,
@@ -114,6 +115,11 @@ impl UiBuffer {
             INPUT_RADIUS_STEP => {
                 if let Ok(val) = val.parse::<f32>() {
                     self.settings.radius_step = val;
+                }
+            },
+            INPUT_TRANSFORM_ORDER => {
+                if let Ok(val) = Settings::try_into_transform_order(val) {
+                    self.settings.transform_order = val;
                 }
             },
             INPUT_X_ROT_BASE => {

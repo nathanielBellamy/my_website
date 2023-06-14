@@ -13,6 +13,7 @@ use crate::magic_square::ui_buffer::UiBuffer;
 use crate::magic_square::lfo::Lfo;
 
 use super::settings::{MouseTracking, Settings};
+use super::transformations::Transformation;
 // use crate::magic_square::traits::VertexStore;
 // use super::geometry::icosohedron::Icosohedron;
 // use crate::magic_square::worker::Worker;
@@ -438,8 +439,11 @@ impl MagicSquare {
             // let _ = Worker::spawn(move || {
                 let icosohedron = Geometry::icosohedron(
                     ui_buffer.settings.radius_step * idx_f32 + ui_buffer.settings.radius_base, 
-                    rot_seq,
-                    translation
+                    Transformation { 
+                        order: ui_buffer.settings.transform_order,
+                        rot_seq,
+                        translation
+                    }
                 );
                 
                 geometry_cache.borrow_mut().set_next(icosohedron.arr, Shape::Icosohedron, max_idx);

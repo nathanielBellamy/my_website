@@ -2,7 +2,8 @@ use std::ops::{Index, IndexMut};
 use std::convert::From;
 use ndarray::prelude::*;
 use ndarray::Array;
-use crate::magic_square::transformations::{RotationSequence, Translation};
+use crate::magic_square::transformations::{RotationSequence, Transformation, Translation};
+use super::settings::TransformOrder;
 use super::traits::VertexStore;
 
 // const ORIGIN: Vertex = Vertex { arr: [0.0, 0.0, 0.0] };
@@ -45,6 +46,17 @@ impl Vertex {
             arr: [
                 self[0] + translation.x, self[1] + translation.y, self[2] + translation.z
             ]
+        }
+    }
+
+    pub fn transform(&self, transformation: Transformation) -> Vertex {
+        match transformation.order {
+            TransformOrder::RotateThenTranslate => {
+                self.rot(transformation.rot_seq).translate(transformation.translation)
+            },
+            TransformOrder::TranslateThenRotate => {
+                self.translate(transformation.translation).rot(transformation.rot_seq)
+            }
         }
     }
 }

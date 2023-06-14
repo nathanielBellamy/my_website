@@ -10,6 +10,11 @@ pub const INPUT_COLOR_6: &'static str = "magic_square_input_color_6";
 pub const INPUT_COLOR_7: &'static str = "magic_square_input_color_7";
 pub const INPUT_COLOR_8: &'static str = "magic_square_input_color_8";
 
+// GEOMETRY
+pub const INPUT_RADIUS_BASE: &'static str = "magic_square_input_radius_base";
+pub const INPUT_RADIUS_STEP: &'static str = "magic_square_input_radius_step";
+pub const INPUT_TRANSFORM_ORDER: &'static str = "magic_square_input_transform_order";
+
 // LFO 1
 pub const INPUT_LFO_1_ACTIVE: &'static str = "magic_square_input_lfo_1_active";
 pub const INPUT_LFO_1_AMP: &'static str = "magic_square_input_lfo_1_amp";
@@ -45,10 +50,6 @@ pub const INPUT_LFO_4_SHAPE: &'static str = "magic_square_input_lfo_4_shape";
 // PATTERN
 pub const INPUT_DRAW_PATTERN: &'static str = "magic_square_input_draw_pattern";
 
-// RADIUS
-pub const INPUT_RADIUS_BASE: &'static str = "magic_square_input_radius_base";
-pub const INPUT_RADIUS_STEP: &'static str = "magic_square_input_radius_step";
-
 pub const INPUT_X_ROT_BASE: &'static str = "magic_square_input_x_rot_base";
 pub const INPUT_Y_ROT_BASE: &'static str = "magic_square_input_y_rot_base";
 pub const INPUT_Z_ROT_BASE: &'static str = "magic_square_input_z_rot_base";
@@ -81,7 +82,7 @@ pub const INPUT_MOUSE_TRACKING: &'static str = "magic_square_input_mouse_trackin
 // to ensure that all inputs are accounted for
 // 
 // also handy for copying and pasting when writing matches
-pub const INPUT_IDS: [&'static str; 54] = [
+pub const INPUT_IDS: [&'static str; 55] = [
     // COLOR
     INPUT_COLOR_1,
     INPUT_COLOR_2,
@@ -91,6 +92,11 @@ pub const INPUT_IDS: [&'static str; 54] = [
     INPUT_COLOR_6,
     INPUT_COLOR_7,
     INPUT_COLOR_8,
+
+    // GEOMETRY
+    INPUT_RADIUS_BASE,
+    INPUT_RADIUS_STEP,
+    INPUT_TRANSFORM_ORDER,
 
     // LFO_1
     INPUT_LFO_1_ACTIVE,
@@ -126,10 +132,6 @@ pub const INPUT_IDS: [&'static str; 54] = [
 
     // PATTERN
     INPUT_DRAW_PATTERN,
-
-    // RADIUS
-    INPUT_RADIUS_BASE,
-    INPUT_RADIUS_STEP,
 
     // ROTATION
     INPUT_X_ROT_BASE,

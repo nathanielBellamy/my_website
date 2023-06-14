@@ -2,6 +2,7 @@ import type { DrawPattern } from "./ControlModules/DrawPattern"
 import type { LfoDestination } from "./ControlModules/LfoDestination"
 import type { LfoShape } from "./ControlModules/LfoShape"
 import type { MouseTracking } from "./ControlModules/MouseTracking"
+import type { TransformOrder } from "./ControlModules/TransformOrder"
 
 export interface StorageSettings {
   // COLOR
@@ -13,6 +14,11 @@ export interface StorageSettings {
   color_6: number[],
   color_7: number[],
   color_8: number[],
+
+  // GEOMETRY
+  radius_base: number,
+  radius_step: number,
+  transform_order: TransformOrder
 
   // lfo_1
   lfo_1_active: boolean,
@@ -49,9 +55,6 @@ export interface StorageSettings {
   // PATTERN
   draw_pattern: DrawPattern,
 
-  // RADIUS
-  radius_base: number,
-  radius_step: number,
 
   // ROTATION
   x_rot_base: number,
