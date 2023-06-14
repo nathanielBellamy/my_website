@@ -20,6 +20,7 @@ use crate::magic_square::ui_manifest::{
 };
 
 use super::main::Rgba;
+use super::shader_compiler::ShaderCompiler;
 
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
@@ -86,7 +87,18 @@ impl UiBuffer {
         self.settings.color_8 = color_b;
     }
 
-    pub fn update(&mut self, input_id: String, val: String) {
+    pub fn update_frag_shader_cache(&self, frag_shader_cache: &mut Vec<String>) {
+        frag_shader_cache[0] = ShaderCompiler::into_frag_shader_string(&self.settings.color_1);
+        frag_shader_cache[1] = ShaderCompiler::into_frag_shader_string(&self.settings.color_2);
+        frag_shader_cache[2] = ShaderCompiler::into_frag_shader_string(&self.settings.color_3);
+        frag_shader_cache[3] = ShaderCompiler::into_frag_shader_string(&self.settings.color_4);
+        frag_shader_cache[4] = ShaderCompiler::into_frag_shader_string(&self.settings.color_5);
+        frag_shader_cache[5] = ShaderCompiler::into_frag_shader_string(&self.settings.color_6);
+        frag_shader_cache[6] = ShaderCompiler::into_frag_shader_string(&self.settings.color_7);
+        frag_shader_cache[7] = ShaderCompiler::into_frag_shader_string(&self.settings.color_8);
+    }
+
+    pub fn update(&mut self, input_id: String, val: String, frag_shader_cache: &mut Vec<String>) {
         // log(&input_id);
         // log(&val);
         match input_id.as_str() {
@@ -100,6 +112,7 @@ impl UiBuffer {
                     if new_mode == ColorMode::Gradient {
                         // set colors as gradient from color_1 to color_8
                         self.set_color_gradient(self.settings.color_1, self.settings.color_8);
+                        self.update_frag_shader_cache(frag_shader_cache);
                     }
                 
                     self.settings.color_mode = new_mode
@@ -141,6 +154,7 @@ impl UiBuffer {
                             INPUT_COLOR_8 => self.settings.color_8 = [r,g,b,a],
                             _ => {}
                         }
+                        self.update_frag_shader_cache(frag_shader_cache)
                     }
             },
             INPUT_DRAW_PATTERN => {

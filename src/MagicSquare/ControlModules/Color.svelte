@@ -176,12 +176,7 @@
           Fix
         </button>
       </div>
-      <div class="grow flex flex-col justify-between items-stretch">
-        <button class="grow color_mode_option"
-                on:click={() => handleColorModeClick(ColorMode.gradient)}>
-          Gradient &emsp; 1️⃣ ➡️ 8️⃣
-        </button>
-      </div>
+
       <div class="grow m-2">
         <slot name="speed"/>
       </div>
@@ -218,6 +213,12 @@
         </button>
       {/each}
     </div>
+  </div>
+  <div class="grow flex flex-col justify-between items-stretch">
+    <button class="grow color_mode_option"
+            on:click={() => handleColorModeClick(ColorMode.gradient)}>
+      Gradient &emsp; 1️⃣ ➡️ 8️⃣
+    </button>
   </div>
   <slot name="hiddenInputs"/>
 </div>

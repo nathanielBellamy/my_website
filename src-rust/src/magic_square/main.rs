@@ -92,6 +92,18 @@ impl MagicSquare {
         let geometry_cache = Rc::new(RefCell::new(geometry_cache));
         // )); 
         
+        let frag_shader_cache: Vec<String> = vec![
+            ShaderCompiler::into_frag_shader_string(&ui_buffer.clone().borrow().settings.color_1),
+            ShaderCompiler::into_frag_shader_string(&ui_buffer.clone().borrow().settings.color_2),
+            ShaderCompiler::into_frag_shader_string(&ui_buffer.clone().borrow().settings.color_3),
+            ShaderCompiler::into_frag_shader_string(&ui_buffer.clone().borrow().settings.color_4),
+            ShaderCompiler::into_frag_shader_string(&ui_buffer.clone().borrow().settings.color_5),
+            ShaderCompiler::into_frag_shader_string(&ui_buffer.clone().borrow().settings.color_6),
+            ShaderCompiler::into_frag_shader_string(&ui_buffer.clone().borrow().settings.color_7),
+            ShaderCompiler::into_frag_shader_string(&ui_buffer.clone().borrow().settings.color_8)
+        ];
+        let frag_shader_cache: Rc<RefCell<Vec<String>>> = Rc::new(RefCell::new(frag_shader_cache));
+
         let form = MagicSquare::form();
         let form = Rc::new(form);
 
@@ -126,6 +138,7 @@ impl MagicSquare {
             // init UI control settings listener
             let form = form.clone();
             let ui_buffer = ui_buffer.clone();
+            let frag_shader_cache = frag_shader_cache.clone();
 
             let closure_handle_input =
                 Closure::<dyn FnMut(_)>::new(move |event: web_sys::Event| {
@@ -138,7 +151,7 @@ impl MagicSquare {
                     let val = input.value();
                     // log(&id);
                     // log(&val);
-                    ui_buffer.clone().borrow_mut().update(id, val);
+                    ui_buffer.clone().borrow_mut().update(id, val, &mut *frag_shader_cache.clone().borrow_mut());
                 });
 
             form.add_event_listener_with_callback(
@@ -175,6 +188,7 @@ impl MagicSquare {
             // set up animation loop
             let geometry_cache = geometry_cache.clone();
             let ui_buffer = ui_buffer.clone();
+            let frag_shader_cache = frag_shader_cache.clone();
 
             // let performance = MagicSquare::performance();
             let mut x: f32 = -3.14159;
@@ -230,8 +244,6 @@ impl MagicSquare {
                         ui_buffer.borrow().settings.lfo_4_shape,
                     );
 
-
-
                     // let start: f64 = performance.now();
                     // let val: f32 = lfo_1.eval(x);
                     // log(&format!("{x}, {val}"));
@@ -247,8 +259,6 @@ impl MagicSquare {
                     lfo_2.modify(x, &mut ui_buffer);
                     lfo_3.modify(x, &mut ui_buffer);
                     lfo_4.modify(x, &mut ui_buffer);
-
-                    // log(&format!("{}", ui_buffer.settings.translation_x));
 
                     let delay_reset: u8 = std::cmp::max(22 - ui_buffer.settings.color_speed, 1);
 
@@ -272,7 +282,6 @@ impl MagicSquare {
                     }
                     
                     color_idx_offset_delay[1] = color_idx_offset_delay[1] + 1;
-                    
 
                     // compute
                     MagicSquare::render_all_lines(
@@ -283,10 +292,9 @@ impl MagicSquare {
                     
                     // display
                     for idx in 0..max_idx {
-
                         match MagicSquare::render(
                             geometry_cache.borrow().gl_vertices(idx), 
-                            &MagicSquare::get_rgba(&ui_buffer, idx, color_idx_offset), 
+                            &*frag_shader_cache.clone().borrow()[(idx + color_idx_offset_delay[0] as usize) % 8], 
                             &context
                         ) {
                             Ok(_) =>  {}, // log("SUCCESSFUL RENDER"),
@@ -521,12 +529,12 @@ impl MagicSquare {
 
     fn render(
         vertices: &[f32],
-        color: &Rgba,
+        frag_shader_str: &str,
         context: &web_sys::WebGl2RenderingContext,
     ) -> Result<(), JsValue> {
         // TODO
         let vert_shader = ShaderCompiler::vert_default(context)?;
-        let frag_shader = ShaderCompiler::frag_default(context, color)?;
+        let frag_shader = ShaderCompiler::frag_default(context, frag_shader_str)?;
 
         let program = ProgramLinker::exec(context, &vert_shader, &frag_shader)?;
         context.use_program(Some(&program));

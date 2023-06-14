@@ -29,11 +29,8 @@ impl ShaderCompiler {
         }
     }
 
-    pub fn frag_default(
-        context: &WebGl2RenderingContext,
-        rgba: &Rgba,
-    ) -> Result<WebGlShader, String> {
-        let string = format!(
+    pub fn into_frag_shader_string(rgba: &Rgba) -> String {
+        format!(
             r##"#version 300 es
                 precision highp float;
                 out vec4 outColor;
@@ -43,9 +40,18 @@ impl ShaderCompiler {
                 }}
                 "##,
             rgba[0], rgba[1], rgba[2], rgba[3]
-        );
+        )
+    }
 
-        ShaderCompiler::exec(&context, WebGl2RenderingContext::FRAGMENT_SHADER, &string)
+    pub fn frag_default(
+        context: &WebGl2RenderingContext,
+        frag_str: &str,
+    ) -> Result<WebGlShader, String> {
+        ShaderCompiler::exec(
+            &context, 
+            WebGl2RenderingContext::FRAGMENT_SHADER, 
+            frag_str
+        )
     }
 
     pub fn vert_default(context: &WebGl2RenderingContext) -> Result<WebGlShader, String> {
