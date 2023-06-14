@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { WasmInputId } from '../WasmInputId';
   import { DrawPattern } from './DrawPattern'
   const drawPatternFormId: string = 'draw_pattern_form'
   const drawPatternHiddenInputId: string = 'magic_square_input_draw_pattern'
@@ -85,7 +86,7 @@
     drawPatternDirection = direction
   }
 
-  function handleDrawPatternDirectionClick(direction: DrawPatternDirection) {
+  function handleDrawPatternDirectionClick(e: any, direction: DrawPatternDirection) {
     setCurrDrawPatternDirection(direction)
     let form = document.getElementById(drawPatternFormId)
     form.dispatchEvent(new Event('submit', {bubbles: true}))
@@ -103,7 +104,7 @@
     drawPatternCount = count
   }
 
-  function handleDrawPatternCountClick(count: number) {
+  function handleDrawPatternCountClick(e: any, count: number) {
     setCurrDrawPatternCount(count)
     let form = document.getElementById(drawPatternFormId)
     form.dispatchEvent(new Event('submit', {bubbles: true}))
@@ -118,8 +119,7 @@
   }
 
   function handleDrawPatternFormSubmit(e: any) {
-    e.preventDefault()
-    var input = document.getElementById(drawPatternHiddenInputId)
+    var input = document.getElementById(WasmInputId.drawPattern)
     input.value = deriveCurrDrawPattern()
     input.dispatchEvent(new Event('input', {bubbles: true}))
     return false // do not refresh page
@@ -138,7 +138,7 @@
              class="grow max-h-20 flex justify-around items-stretch">
           {#each Object.values(DrawPatternDirection) as dir}
             <button class="grow max-h-26 pr-3 pl-3"
-                    on:click={() => handleDrawPatternDirectionClick(dir)}
+                    on:click={(e) => handleDrawPatternDirectionClick(e, dir)}
                     on:keydown={(e) => handleDrawPatternDirectionKeydown(e, dir)}
                     class:selected={drawPatternDirection === dir}>
               {dir}
@@ -153,7 +153,7 @@
                class="grow flex justify-evenly items-stretch gap-0">
             {#each [1,2,3,4].map(x => x + countShifter) as count}
               <button class="grow max-h-20"
-                      on:click={() => handleDrawPatternCountClick(count)}
+                      on:click={(e) => handleDrawPatternCountClick(e, count)}
                       on:keydown={(e) => handleDrawPatternCountKeydown(e, count)}
                       class:selected={drawPatternCount === count}>
                 {count}

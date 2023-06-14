@@ -109,35 +109,39 @@
   }
 </script>
 
-<div class="h-full pt-5 pb-5 flex flex-col justify-between items-stretch">
+<div class="h-full pb-5 flex flex-col justify-between items-stretch">
   <div id="magic_square_lfo_select"
-       class="grid grid-cols-4">
+       class="lfo_select pb-2 flex flex-col justify-between items-stretch">
     <button on:click = {() => lfo = Lfo.one}
             class:active = {lfo1Active}
             class:selected = {lfo === Lfo.one}
-            class="flex justify-around items-center text-lg border-4 rounded-xl">
-      {Lfo.one}
+            class="grid grid-cols-5 ml-5 mr-5 text-sm border-4 rounded-xl">
+      <p> {Lfo.one} </p>
+      <p class="col-span-4"> {lfo1Dest} </p>
     </button>
     <button on:click = {() => lfo = Lfo.two}
             class:active = {lfo2Active}
             class:selected = {lfo === Lfo.two}
-            class="flex justify-around items-center text-lg border-4 rounded-xl">
-      {Lfo.two}
+            class="grid grid-cols-5 ml-5 mr-5 text-sm border-4 rounded-xl">
+      <p> {Lfo.two} </p>
+      <p class="col-span-4"> {lfo2Dest} </p>
     </button>
     <button on:click = {() => lfo = Lfo.three}
             class:active = {lfo3Active}
             class:selected = {lfo === Lfo.three}
-            class="flex justify-around items-center text-lg border-4 rounded-xl">
-      {Lfo.three}
+            class="grid grid-cols-5 ml-5 mr-5 text-sm border-4 rounded-xl">
+      <p> {Lfo.three} </p>
+      <p class="col-span-4"> {lfo3Dest} </p>
     </button>
     <button on:click = {() => lfo = Lfo.four}
             class:active = {lfo4Active}
             class:selected = {lfo === Lfo.four}
-            class="flex justify-around items-center text-lg border-4 rounded-xl">
-      {Lfo.four}
+            class="grid grid-cols-5 ml-5 mr-5 text-sm border-4 rounded-xl">
+      <p> {Lfo.four} </p>
+      <p class="col-span-4"> {lfo4Dest} </p>
     </button>
   </div>
-  <div class="grow pt-5 pb-5 flex flex-col justify-between items-stretch">
+  <div class="grow pt-1 flex flex-col justify-between items-stretch">
     <div class="grow flex flex-col justify-around items-center">
       <div class="w-full pl-5 pr-5 flex flex-col justify-around items-stretch">
         <label for="lfo_dest_select"
@@ -230,7 +234,7 @@
             {i18n.t("shape", langVal)}
           </div>
         </label>
-        <select id="lfo_dest_select"
+        <select id="lfo_shape_select"
                 value={currShape}
                 on:input={e => e.stopPropagation()}
                 on:change={e => handleLfoShapeChange(e, lfo)}>
@@ -256,7 +260,12 @@
 
   .selected
     background-color: color.$blue-7
+    box-shadow: 0 0
 
   .active
     border-color: color.$red-5
+
+  .lfo_select
+    flex-grow: 0.2
+    border-bottom: 5px double color.$blue-7
 </style>

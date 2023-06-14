@@ -567,7 +567,7 @@
                           lfo4Shape={lfo4Shape}>
 
             <!-- LFO1 START-->
-            <div class="w-full h-full p-5 grow flex flex-col justify-around items-stretch"
+            <div class="w-full h-full pl-5 pr-5 grow flex flex-col justify-around items-stretch"
                  slot="lfo1">
               <!-- hidden input for destination select  -->
               <input id={WasmInputId.lfo1Dest}
@@ -578,7 +578,7 @@
                      class="hidden_input"/>
               <div class="grow w-full flex flex-col justify-center items-stretch">
                 <!-- TODO: lfo active/selected colors for buttons  -->
-                <button class="mb-5"
+                <button class="mt-2 mb-2"
                         class:active={lfo1Active}
                         on:click={() => handleLfoActiveToggle(Lfo.one)}>
                   <input id={WasmInputId.lfo1Active}
@@ -630,7 +630,7 @@
             <!-- LFO1 END-->
 
             <!-- lfo2 START-->
-            <div class="w-full h-full p-5 grow flex flex-col justify-around items-stretch"
+            <div class="w-full h-full pl-5 pr-5 grow flex flex-col justify-around items-stretch"
                  slot="lfo2">
               <!-- hidden input for destination select  -->
               <input id={WasmInputId.lfo2Dest}
@@ -641,7 +641,7 @@
                      class="hidden_input"/>
               <div class="grow w-full flex flex-col justify-center items-stretch">
                 <!-- TODO: lfo active/selected colors for buttons  -->
-                <button class="mb-5"
+                <button class="mt-2 mb-2"
                         class:active={lfo2Active}
                         on:click={() => handleLfoActiveToggle(Lfo.two)}>
                   <input id={WasmInputId.lfo2Active}
@@ -693,7 +693,7 @@
             <!-- lfo2 END-->
 
             <!-- lfo3 START-->
-            <div class="w-full h-full p-5 grow flex flex-col justify-around items-stretch"
+            <div class="w-full h-full pl-5 pr-5 grow flex flex-col justify-around items-stretch"
                  slot="lfo3">
               <!-- hidden input for destination select  -->
               <input id={WasmInputId.lfo3Dest}
@@ -704,7 +704,7 @@
                      class="hidden_input"/>
               <div class="grow w-full flex flex-col justify-center items-stretch">
                 <!-- TODO: lfo active/selected colors for buttons  -->
-                <button class="mb-5"
+                <button class="mt-2 mb-2"
                         class:active={lfo3Active}
                         on:click={() => handleLfoActiveToggle(Lfo.three)}>
                   <input id={WasmInputId.lfo3Active}
@@ -756,7 +756,7 @@
             <!-- lfo3 END-->
 
             <!-- lfo4 START-->
-            <div class="w-full h-full p-5 grow flex flex-col justify-around items-stretch"
+            <div class="w-full h-full pl-5 pr-5 grow flex flex-col justify-around items-stretch"
                  slot="lfo4">
               <!-- hidden input for destination select  -->
               <input id={WasmInputId.lfo4Dest}
@@ -767,7 +767,7 @@
                      class="hidden_input"/>
               <div class="grow w-full flex flex-col justify-center items-stretch">
                 <!-- TODO: lfo active/selected colors for buttons  -->
-                <button class="mb-5"
+                <button class="mt-2 mb-2"
                         class:active={lfo4Active}
                         on:click={() => handleLfoActiveToggle(Lfo.four)}>
                   <input id={WasmInputId.lfo4Active}

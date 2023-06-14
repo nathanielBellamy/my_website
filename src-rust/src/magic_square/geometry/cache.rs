@@ -1,7 +1,7 @@
 use crate::magic_square::vertices::VertexArr;
 use crate::magic_square::geometry::Shape;
 
-pub const CACHE_CAPACITY: usize = 50;
+pub const CACHE_CAPACITY: usize = 8;
 
 pub struct Cache {
     pub idx: usize, // get & set

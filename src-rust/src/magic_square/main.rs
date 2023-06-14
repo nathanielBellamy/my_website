@@ -85,7 +85,7 @@ impl MagicSquare {
         //Arc::new(Mutex::new(
         let geometry_cache = GeometryCache::new(
                 26, 
-                [[0.0; 1_200]; CACHE_CAPACITY], 
+                [[0.0; 300]; CACHE_CAPACITY], 
                 [Shape::None; CACHE_CAPACITY]
             );
 
@@ -446,30 +446,6 @@ impl MagicSquare {
         }
 
 
-    }
-
-    // TODO: replace with pre-formated shaders
-    fn get_rgba(ui_buffer: &UiBuffer, idx: usize, offset: u8) -> Rgba {
-        let local_idx = (idx + offset as usize) % 16;
-        match local_idx {
-            0 => ui_buffer.settings.color_1,
-            1 => ui_buffer.settings.color_2,
-            2 => ui_buffer.settings.color_3,
-            3 => ui_buffer.settings.color_4,
-            4 => ui_buffer.settings.color_5,
-            5 => ui_buffer.settings.color_6,
-            6 => ui_buffer.settings.color_7,
-            7 => ui_buffer.settings.color_8,
-            8 => ui_buffer.settings.color_1,
-            9 => ui_buffer.settings.color_2,
-            10 => ui_buffer.settings.color_3,
-            11 => ui_buffer.settings.color_4,
-            12 => ui_buffer.settings.color_5,
-            13 => ui_buffer.settings.color_6,
-            14 => ui_buffer.settings.color_7,
-            15 => ui_buffer.settings.color_8,
-            _ => ui_buffer.settings.color_1
-        }
     }
 
     fn window() -> web_sys::Window {
