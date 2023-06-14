@@ -124,7 +124,6 @@ impl MagicSquare {
 
         {
             // init UI control settings listener
-            let magic_square = magic_square.clone();
             let form = form.clone();
             let ui_buffer = ui_buffer.clone();
 
@@ -140,9 +139,6 @@ impl MagicSquare {
                     // log(&id);
                     // log(&val);
                     ui_buffer.clone().borrow_mut().update(id, val);
-                    
-                    //trigger re-render
-                    magic_square.dispatch_event(&web_sys::Event::new("render").unwrap()).unwrap();
                 });
 
             form.add_event_listener_with_callback(
@@ -165,8 +161,6 @@ impl MagicSquare {
                 context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
                 mouse_pos_buffer.clone().borrow_mut()[0] = MagicSquare::clip_x(event.offset_x(), width);
                 mouse_pos_buffer.clone().borrow_mut()[1] = MagicSquare::clip_x(event.offset_y(), height);
-                // mouse_pos_buffer[0] = MagicSquare::clip_x(event.offset_x(), width);
-                // mouse_pos_buffer[1] = MagicSquare::clip_y(event.offset_y(), height);
                 magic_square.dispatch_event(&web_sys::Event::new("render").unwrap()).unwrap();
             });
 
@@ -177,28 +171,6 @@ impl MagicSquare {
             closure.forget();
         }
 
-        // {
-        //     let magic_square = magic_square.clone();
-        //     let geometry_cache = geometry_cache.clone();
-        //     let mouse_pos_buffer = mouse_pos_buffer.clone();
-        //     let ui_buffer = ui_buffer.clone();
-
-        //     // set up render listener
-        //     let closure = Closure::<dyn FnMut(_)>::new(move |_event: web_sys::Event| {
-        //         MagicSquare::render_all_lines(
-        //             &mouse_pos_buffer,
-        //             &ui_buffer.clone().borrow(), 
-        //             &geometry_cache,
-        //         );
-        //     });
-
-        //     magic_square.add_event_listener_with_callback(
-        //         "render",
-        //         closure.as_ref().unchecked_ref()
-        //     ).unwrap();
-        //     closure.forget();
-        // }
-    
         {
             // set up animation loop
             let geometry_cache = geometry_cache.clone();
@@ -468,15 +440,8 @@ impl MagicSquare {
 
     }
 
+    // TODO: replace with pre-formated shaders
     fn get_rgba(ui_buffer: &UiBuffer, idx: usize, offset: u8) -> Rgba {
-        // let mut result: Rgba = [0.0, 0.0, 0.0, 0.0];
-        // result[0] = ui_buffer.settings.color_1[0] / 255.0;// 1.0 - mouse_pos_buffer[0];
-        // result[1] = ui_buffer.settings.color_1[1] / 255.0;// 1.0 - mouse_pos_buffer[1];
-        // result[2] = ui_buffer.settings.color_1[2] / 255.0; // 1.0 - (idx as f32 / CACHE_CAPACITY as f32);
-        // result[3] = ui_buffer.settings.color_1[3] / 255.0; // 0.1 * idx as f32;
-        // result
-        //
-        // log(&format!("{idx}"));
         let local_idx = (idx + offset as usize) % 16;
         match local_idx {
             0 => ui_buffer.settings.color_1,

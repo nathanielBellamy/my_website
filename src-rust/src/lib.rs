@@ -2,7 +2,6 @@ use wasm_bindgen::prelude::*;
 #[allow(unused)]
 use give_me_a_sine; // ensure wasm-bindgen creates bindings for sub-module
 
-pub mod magic_banner;
 #[macro_use] pub mod magic_square;
 
 #[wasm_bindgen]

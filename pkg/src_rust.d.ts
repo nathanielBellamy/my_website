@@ -21,14 +21,6 @@ declare namespace wasm_bindgen {
 	}
 	/**
 	*/
-	export class MagicBanner {
-	  free(): void;
-	/**
-	*/
-	  static run(): void;
-	}
-	/**
-	*/
 	export class MagicSquare {
 	  free(): void;
 	/**
@@ -47,8 +39,6 @@ declare interface InitOutput {
   readonly worker_entry_point: (a: number) => void;
   readonly magicsquare_run: (a: number) => number;
   readonly __wbg_magicsquare_free: (a: number) => void;
-  readonly magicbanner_run: (a: number) => void;
-  readonly __wbg_magicbanner_free: (a: number) => void;
   readonly init_message: (a: number, b: number, c: number) => void;
   readonly gmaswasm_run: () => number;
   readonly __wbg_gmaswasm_free: (a: number) => void;
