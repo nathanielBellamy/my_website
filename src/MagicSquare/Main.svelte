@@ -366,7 +366,7 @@
       // Geometry
       radius_base: radiusBase,
       radius_step: radiusStep,
-      transform_order: TransformOrder.translateThenRotate,
+      transform_order: transformOrder,
 
       // lfo_1
       lfo_1_active: lfo1Active,
@@ -827,7 +827,7 @@
           <Loading />
         {:else}
           <Translation>
-            <div  class="p-5 grow flex flex-col justify-around items-stretch"
+            <div  class="pl-5 pr-5 grow flex flex-col justify-around items-stretch"
                   slot="xSliders">
               <div class="w-full flex flex-col justify-between items-stretch">
                 <label class="slider_label flex justify-between" 
@@ -856,7 +856,7 @@
                        step={.01}/>
               </div>
             </div>
-            <div  class="p-5 grow flex flex-col justify-around items-stretch"
+            <div  class="pl-5 pr-5 grow flex flex-col justify-around items-stretch"
                   slot="ySliders">
               <div class="w-full flex flex-col justify-between items-stretch">
                 <label class="slider_label flex justify-between" 
