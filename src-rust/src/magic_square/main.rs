@@ -300,7 +300,7 @@ impl MagicSquare {
                     );
                     
                     // display
-                    for idx in 0..max_idx {
+                    for idx in 0..max_idx+1 {
                         match MagicSquare::render(
                             geometry_cache.borrow().gl_vertices(idx), 
                             &*frag_shader_cache.clone().borrow()[(idx + color_idx_offset_delay[0] as usize) % 8], 
