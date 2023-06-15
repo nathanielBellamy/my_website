@@ -4,6 +4,7 @@ export enum TransformOrder {
 }
 
 export function intoTransformOrder(order: string): TransformOrder {
+  console.log(order)
   switch (order) {
     case "RotateThenTranslate":
       return TransformOrder.rotateThenTranslate

@@ -1,3 +1,4 @@
+use crate::magic_square::geometry::empty::Empty;
 use crate::magic_square::geometry::hexagon::Hexagon;
 use crate::magic_square::geometry::icosohedron::Icosohedron;
 use crate::magic_square::transformations::Transformation;
@@ -6,6 +7,7 @@ use crate::magic_square::transformations::Transformation;
 pub mod cache;
 
 // shapes
+pub mod empty;
 pub mod hexagon;
 pub mod icosohedron;
 
@@ -39,6 +41,10 @@ impl Geometry {
         transformation: Transformation
     ) -> Icosohedron {
         Icosohedron::new(radius, transformation)
+    }
+
+    pub fn empty() -> Empty {
+        Empty::new()
     }
 }
 

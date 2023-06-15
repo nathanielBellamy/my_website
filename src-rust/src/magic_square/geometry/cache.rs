@@ -1,4 +1,4 @@
-use crate::magic_square::vertices::VertexArr;
+use crate::magic_square::vertices::{VertexArr, VERTEX_ARRAY_SIZE};
 use crate::magic_square::geometry::Shape;
 
 pub const CACHE_CAPACITY: usize = 8;
@@ -29,6 +29,19 @@ impl Cache {
             vertices,
             shapes
         }
+    }
+
+    pub fn clear(&mut self) {
+        for arr in self.vertices.iter_mut() {
+            *arr = [0.0; VERTEX_ARRAY_SIZE];
+        }
+
+        for shape in self.shapes.iter_mut() {
+            *shape = Shape::None;
+        }
+
+        self.idx = 0;
+        self.max_idx = 7;
     }
 
     pub fn set_next(&mut self, vertices: VertexArr, shape: Shape, max_idx: usize) {

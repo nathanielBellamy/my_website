@@ -10,7 +10,6 @@ const PI: f32 = std::f32::consts::PI;
 // const V_ANGLE_SIN: f32 = V_ANGLE.sin();
 // const V_ANGLE_COS: f32 = V_ANGLE.cos();
 
-
 pub struct Icosohedron {
     pub arr: [f32; VERTEX_ARRAY_SIZE], // # coordinates needed to define hexagon
     idx: usize

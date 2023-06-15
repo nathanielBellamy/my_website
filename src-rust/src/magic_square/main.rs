@@ -139,6 +139,7 @@ impl MagicSquare {
             let form = form.clone();
             let ui_buffer = ui_buffer.clone();
             let frag_shader_cache = frag_shader_cache.clone();
+            let geometry_cache = geometry_cache.clone();
 
             let closure_handle_input =
                 Closure::<dyn FnMut(_)>::new(move |event: web_sys::Event| {
@@ -151,7 +152,15 @@ impl MagicSquare {
                     let val = input.value();
                     // log(&id);
                     // log(&val);
-                    ui_buffer.clone().borrow_mut().update(id, val, &mut *frag_shader_cache.clone().borrow_mut());
+                    ui_buffer
+                        .clone()
+                        .borrow_mut()
+                        .update(
+                            id, 
+                            val, 
+                            &mut *frag_shader_cache.clone().borrow_mut(),
+                            &mut *geometry_cache.clone().borrow_mut()
+                    );
                 });
 
             form.add_event_listener_with_callback(
@@ -432,20 +441,18 @@ impl MagicSquare {
                 // );
 
             // let _ = Worker::spawn(move || {
-                let icosohedron = Geometry::icosohedron(
-                    ui_buffer.settings.radius_step * idx_f32 + ui_buffer.settings.radius_base, 
-                    Transformation { 
-                        order: ui_buffer.settings.transform_order,
-                        rot_seq,
-                        translation
-                    }
-                );
-                
-                geometry_cache.borrow_mut().set_next(icosohedron.arr, Shape::Icosohedron, max_idx);
+            let icosohedron = Geometry::icosohedron(
+                ui_buffer.settings.radius_step * idx_f32 + ui_buffer.settings.radius_base, 
+                Transformation { 
+                    order: ui_buffer.settings.transform_order,
+                    rot_seq,
+                    translation
+                }
+            );
+            
+            geometry_cache.borrow_mut().set_next(icosohedron.arr, Shape::Icosohedron, max_idx);
             // });
         }
-
-
     }
 
     fn window() -> web_sys::Window {

@@ -131,8 +131,8 @@
 </script>
 
 <form id={formId}
-      class="h-full flex flex-col justify-around items-stretch">
-  <h2 class="mouse_tracking_title text-left pl-5">
+      class="h-full pl-2 pr-2 flex flex-col justify-around items-stretch">
+  <h2 class="mouse_tracking_title text-left pl-3">
     {i18n.t("mouse", langVal)}
   </h2>
   <div id="mouse_tracking_toggle"
