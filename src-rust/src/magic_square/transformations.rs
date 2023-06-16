@@ -3,14 +3,14 @@ use ndarray::Array;
 use crate::magic_square::main::Axis;
 use super::settings::TransformOrder;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct Transformation {
     pub order: TransformOrder,
     pub rot_seq: RotationSequence,
     pub translation: Translation
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct RotationSequence {
     pub arr: [Rotation; 3] // all rotations acheivable in three
 }
@@ -29,7 +29,7 @@ impl RotationSequence {
 }
 
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct Rotation {
     axis: Axis,
     theta: f32
@@ -67,7 +67,7 @@ impl Rotation {
     } 
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct Translation {
     pub x: f32,
     pub y: f32,

@@ -10,22 +10,22 @@ const PI: f32 = std::f32::consts::PI;
 // const V_ANGLE_SIN: f32 = V_ANGLE.sin();
 // const V_ANGLE_COS: f32 = V_ANGLE.cos();
 
-pub struct Icosohedron {
+pub struct Icosahedron {
     pub arr: [f32; VERTEX_ARRAY_SIZE], // # coordinates needed to define hexagon
     idx: usize
 }
 
-impl Icosohedron {
-    fn init() -> Icosohedron {
-        Icosohedron { arr: [0.0; VERTEX_ARRAY_SIZE], idx: 0 }
+impl Icosahedron {
+    fn init() -> Icosahedron {
+        Icosahedron { arr: [0.0; VERTEX_ARRAY_SIZE], idx: 0 }
     }
     // write to vertices
     // return array to be cached 
     pub fn new(
         radius: f32, 
         transformation: Transformation
-    ) -> Icosohedron {
-        let mut icosohedron = Icosohedron::init();
+    ) -> Icosahedron {
+        let mut icosahedron = Icosahedron::init();
 
         let h_angle: f32 = PI / 180.0 * 72.0; // 72 degrees = 360/5
         let v_angle: f32 = 0.5_f32.atan(); // elevation = 26.565 degrees
@@ -41,20 +41,20 @@ impl Icosohedron {
         // each iteration draws a V - top -> bottom -> top
         for _ in 1..6 {
             let next_angle_top = h_angle_top + h_angle;
-            icosohedron.set_next(
+            icosahedron.set_next(
                 Vertex::new(xy * h_angle_top.cos(), z, xy * h_angle_top.sin())
                     .transform(transformation)
             );
-            icosohedron.set_next(
+            icosahedron.set_next(
                 Vertex::new(xy * h_angle_bottom.cos(), -z, xy * h_angle_bottom.sin())
                     .transform(transformation)
             );
 
-            icosohedron.set_next(
+            icosahedron.set_next(
                 Vertex::new(xy * h_angle_bottom.cos(), -z, xy * h_angle_bottom.sin())
                     .transform(transformation)
             );
-            icosohedron.set_next(
+            icosahedron.set_next(
                 Vertex::new(xy * next_angle_top.cos(), z, xy * next_angle_top.sin())
                     .transform(transformation)
             );
@@ -65,11 +65,11 @@ impl Icosohedron {
 
         // connect bottom vertex to five bottom-row vertices
         for _ in 1..6 {
-            icosohedron.set_next(
+            icosahedron.set_next(
                 Vertex::new(0.0, -radius, 0.0)
                     .transform(transformation)
             );
-            icosohedron.set_next(
+            icosahedron.set_next(
                 Vertex::new(xy * h_angle_bottom.cos(), -z, xy * h_angle_bottom.sin())
                     .transform(transformation)
             );
@@ -81,11 +81,11 @@ impl Icosohedron {
         // connect bottom row vertices
         for _ in 1..6 {
             let next_angle = h_angle_bottom + h_angle;
-            icosohedron.set_next(
+            icosahedron.set_next(
                 Vertex::new(xy * h_angle_bottom.cos(), -z, xy * h_angle_bottom.sin())
                     .transform(transformation)
             );
-            icosohedron.set_next(
+            icosahedron.set_next(
                 Vertex::new(xy * next_angle.cos(), -z, xy * next_angle.sin())
                     .transform(transformation)
             );
@@ -96,11 +96,11 @@ impl Icosohedron {
 
         // connect top vertex to five top-row vertices
         for _ in 1..6 {
-            icosohedron.set_next(
+            icosahedron.set_next(
                 Vertex::new(0.0, radius, 0.0)
                     .transform(transformation)
             );
-            icosohedron.set_next(
+            icosahedron.set_next(
                 Vertex::new(xy * h_angle_top.cos(), z, xy * h_angle_top.sin())
                     .transform(transformation)
             );
@@ -111,11 +111,11 @@ impl Icosohedron {
         // connect top-row vertices
         for _ in 1..6 {
             let next_angle = h_angle_top + h_angle;
-            icosohedron.set_next(
+            icosahedron.set_next(
                 Vertex::new(xy * h_angle_top.cos(), z, xy * h_angle_top.sin())
                     .transform(transformation)
             );
-            icosohedron.set_next(
+            icosahedron.set_next(
                 Vertex::new(xy * next_angle.cos(), z, xy * next_angle.sin())
                     .transform(transformation)
             );
@@ -123,24 +123,24 @@ impl Icosohedron {
             h_angle_top += h_angle;
         }
 
-        icosohedron
+        icosahedron
     }
 }
 
-impl Index<usize> for Icosohedron {
+impl Index<usize> for Icosahedron {
     type Output = f32;
     fn index<'a>(&'a self, i: usize) -> &'a f32 {
         &self.arr[i]
     }
 }
 
-impl IndexMut<usize> for Icosohedron {
+impl IndexMut<usize> for Icosahedron {
     fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut f32 {
         &mut self.arr[i]
     }
 }
 
-impl VertexStore<Icosohedron> for Icosohedron {
+impl VertexStore<Icosahedron> for Icosahedron {
     fn idx(&self) -> usize {
         self.idx
     }

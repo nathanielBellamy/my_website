@@ -1,8 +1,9 @@
 use crate::magic_square::vertices::{VertexArr, VERTEX_ARRAY_SIZE};
 use crate::magic_square::geometry::Shape;
 
-pub const CACHE_CAPACITY: usize = 8;
+pub const CACHE_CAPACITY: usize = 16;
 
+#[derive(Clone, Copy, Debug)]
 pub struct Cache {
     pub idx: usize, // get & set
     pub max_idx: usize, // <= CACHE_CAPACITY
@@ -44,10 +45,10 @@ impl Cache {
         self.max_idx = 7;
     }
 
-    pub fn set_next(&mut self, vertices: VertexArr, shape: Shape, max_idx: usize) {
+    pub fn set_next(&mut self, vertices: VertexArr, shape: Shape) {
         self.vertices[self.idx] = vertices;
         self.shapes[self.idx] = shape;
-        self.idx = (self.idx + 1) % max_idx;
+        self.idx = (self.idx + 1) % CACHE_CAPACITY;
     }
 
     pub fn gl_vertices(&self, idx: usize) -> &[f32] {
@@ -60,7 +61,7 @@ impl Cache {
     pub fn gl_vert_len_from_shape(shape: Shape) -> usize {
         match shape {
             Shape::Hexagon => 42,
-            Shape::Icosohedron => 300,
+            Shape::Icosahedron => 300,
             Shape::None => 0,
             _ => 0
         }

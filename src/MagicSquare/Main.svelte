@@ -20,12 +20,13 @@
   import Translation from './ControlModules/Translation.svelte'
   import { WasmInputId } from './WasmInputId'
   import { prevSettingsStore } from './PrevSettingsStore'
+  import { intoTransformOrder, TransformOrder } from './ControlModules/TransformOrder'
+  import { ColorDirection, intoColorDirection, ColorMode, intoColorMode } from './ControlModules/Color'
+  import { intoShape, Shape } from './ControlModules/Shape'
   // INIT LANG BOILER PLATE
   import { I18n, Lang } from '../I18n'
   import { lang } from '../stores/lang'
-  import { intoTransformOrder, TransformOrder } from './ControlModules/TransformOrder';
-  import { ColorDirection, intoColorDirection, ColorMode, intoColorMode } from './ControlModules/Color';
-
+  
   const i18n = new I18n('magicSquare/main')
   let langVal: Lang
   lang.subscribe(val => langVal = val)
@@ -134,11 +135,13 @@
   // GEOMETRY
   let radiusBase: number
   let radiusStep: number
+  let shapes: Shape[]
   let transformOrder: TransformOrder
 
   function setInitialGeometryVars(initialUiBuffer: any) {
     radiusBase = round2(initialUiBuffer.settings.radius_base)
     radiusStep = round2(initialUiBuffer.settings.radius_step)
+    shapes = initialUiBuffer.settings.shapes.map((x:string) => intoShape(x))
     transformOrder = intoTransformOrder(initialUiBuffer.settings.transform_order)
   }
 
@@ -366,6 +369,7 @@
       // Geometry
       radius_base: radiusBase,
       radius_step: radiusStep,
+      shapes: shapes,
       transform_order: transformOrder,
 
       // lfo_1
@@ -922,7 +926,7 @@
                      bind:value={transformOrder}
                      class="hidden_input"/>
             </div>
-            <div  class="p-5 grow flex flex-col justify-around items-stretch"
+            <div  class="pt-2 pl-5 pr-5 grow flex flex-col justify-around items-stretch"
                   slot="radiusSliders">
               <div class="w-full flex flex-col justify-between items-stretch">
                 <label class="slider_label flex justify-between" 

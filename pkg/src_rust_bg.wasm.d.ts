@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
-export function worker_entry_point(a: number): void;
 export function init_message(a: number, b: number, c: number): void;
+export function worker_entry_point(a: number): void;
 export function magicsquare_run(a: number): number;
 export function __wbg_magicsquare_free(a: number): void;
 export function gmaswasm_run(): number;

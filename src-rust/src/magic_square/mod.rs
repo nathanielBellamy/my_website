@@ -1,7 +1,10 @@
+pub mod animation;
+pub mod draw;
 pub mod geometry;
 pub mod lfo;
 pub mod main;
 pub mod program_linker;
+pub mod render;
 pub mod settings;
 pub mod shader_compiler;
 pub mod traits;

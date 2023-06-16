@@ -2,14 +2,14 @@ declare namespace wasm_bindgen {
 	/* tslint:disable */
 	/* eslint-disable */
 	/**
-	* @param {number} addr
-	*/
-	export function worker_entry_point(addr: number): void;
-	/**
 	* @param {string} message
 	* @returns {string}
 	*/
 	export function init_message(message: string): string;
+	/**
+	* @param {number} addr
+	*/
+	export function worker_entry_point(addr: number): void;
 	/**
 	*/
 	export class GmasWasm {
@@ -36,8 +36,8 @@ declare type InitInput = RequestInfo | URL | Response | BufferSource | WebAssemb
 
 declare interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly worker_entry_point: (a: number) => void;
   readonly init_message: (a: number, b: number, c: number) => void;
+  readonly worker_entry_point: (a: number) => void;
   readonly magicsquare_run: (a: number) => number;
   readonly __wbg_magicsquare_free: (a: number) => void;
   readonly gmaswasm_run: () => number;

@@ -18,6 +18,7 @@ use crate::magic_square::ui_manifest::{
     INPUT_LFO_3_ACTIVE, INPUT_LFO_3_AMP, INPUT_LFO_3_DEST, INPUT_LFO_3_FREQ, INPUT_LFO_3_PHASE, INPUT_LFO_3_SHAPE,
     INPUT_LFO_4_ACTIVE, INPUT_LFO_4_AMP, INPUT_LFO_4_DEST, INPUT_LFO_4_FREQ, INPUT_LFO_4_PHASE, INPUT_LFO_4_SHAPE,
 };
+use super::animation::Animation;
 use super::geometry::cache::Cache;
 use super::main::Rgba;
 use super::shader_compiler::ShaderCompiler;
@@ -103,7 +104,8 @@ impl UiBuffer {
             input_id: String, 
             val: String, 
             frag_shader_cache: &mut Vec<String>,
-            geometry_cache: &mut Cache
+            geometry_cache: &mut Cache,
+            // animation: &mut Animation,
     ) {
         // log(&input_id);
         // log(&val);
@@ -166,7 +168,9 @@ impl UiBuffer {
             INPUT_DRAW_PATTERN => {
                 if let Ok(draw_pattern) = Settings::try_into_draw_pattern(val) {
                     geometry_cache.clear();
-                    self.settings.draw_pattern = draw_pattern            
+                    self.settings.draw_pattern = draw_pattern;
+                    // animation.draw_pattern = draw_pattern;
+                    // animation.set_reel();
                 }
             },
             INPUT_MOUSE_TRACKING => {

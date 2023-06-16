@@ -1,6 +1,9 @@
 use crate::magic_square::main::Rgba;
 use crate::magic_square::lfo::{LfoDestination, LfoShape};
 use serde::{Deserialize, Serialize};
+
+use super::geometry::Shape;
+use super::geometry::cache::CACHE_CAPACITY;
 // use crate::magic_square::main::log;
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
@@ -86,6 +89,7 @@ pub struct Settings {
     // GEOMETRY
     pub radius_base: f32,
     pub radius_step: f32,
+    pub shapes: [Shape; CACHE_CAPACITY],
     pub transform_order: TransformOrder,
 
     // lfo_1
@@ -160,13 +164,14 @@ pub struct Settings {
     // cache_per: usize,
 }
 
+
 impl Settings {
     pub fn new() -> Settings {
         Settings {
             // COLOR
             color_direction: ColorDirection::Fix,
             color_mode: ColorMode::Eight,
-            color_speed: 200,
+            color_speed: 17,
             color_1: [1.0, 0.0, 1.0, 1.0],
             color_2: [0.0, 1.0, 1.0, 1.0],
             color_3: [1.0, 0.0, 0.5, 1.0],
@@ -180,6 +185,7 @@ impl Settings {
             radius_base: 0.1,
             radius_step: 0.1,
             transform_order: TransformOrder::RotateThenTranslate,
+            shapes: [Shape::Icosahedron; CACHE_CAPACITY],
 
             // lfo_1
             lfo_1_active: true,

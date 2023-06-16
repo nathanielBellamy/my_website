@@ -1,7 +1,10 @@
+use serde::{Serialize, Deserialize};
 use crate::magic_square::geometry::empty::Empty;
 use crate::magic_square::geometry::hexagon::Hexagon;
-use crate::magic_square::geometry::icosohedron::Icosohedron;
+use crate::magic_square::geometry::icosahedron::Icosahedron;
 use crate::magic_square::transformations::Transformation;
+
+use super::vertices::VERTEX_ARRAY_SIZE;
 
 // store
 pub mod cache;
@@ -9,42 +12,43 @@ pub mod cache;
 // shapes
 pub mod empty;
 pub mod hexagon;
-pub mod icosohedron;
+pub mod icosahedron;
 
 
+#[derive(Clone, Copy, Debug)]
+pub struct Geometry {
+    pub radius: f32,
+    pub transformation: Transformation,
+}
 
-pub struct Geometry;
-
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug, Default, Serialize, Deserialize)]
 pub enum Shape {
     Triangle,
     Square,
     Pentagon,
     Hexagon,
-    Icosohedron,
+    Icosahedron,
+    #[default]
     None
 }
 
 impl Geometry {
+    pub fn new(radius: f32, transformation: Transformation) -> Geometry {
+        Geometry { radius, transformation }
+    }
     // per shape:
     //  shape -> accepts &mut Vertices, writes directly to array that will be passed to GL
     //  shape_cached -> Returns ShapeCache, array of vertices need to define the shape
-    pub fn hexagon(
-        radius: f32,
-        transformation: Transformation
-    ) -> Hexagon {
-        Hexagon::new(radius, transformation)
+    pub fn hexagon(&self) -> [f32; VERTEX_ARRAY_SIZE] {
+        Hexagon::new(self.radius, self.transformation).arr
     }
 
-    pub fn icosohedron(
-        radius: f32,
-        transformation: Transformation
-    ) -> Icosohedron {
-        Icosohedron::new(radius, transformation)
+    pub fn icosahedron(&self) -> [f32; VERTEX_ARRAY_SIZE] {
+        Icosahedron::new(self.radius, self.transformation).arr
     }
 
-    pub fn empty() -> Empty {
-        Empty::new()
+    pub fn empty(&self) -> [f32; VERTEX_ARRAY_SIZE] {
+        Empty::new().arr
     }
 }
 

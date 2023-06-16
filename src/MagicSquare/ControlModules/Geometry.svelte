@@ -1,6 +1,7 @@
 <script lang="ts">
   import { TransformOrder } from "./TransformOrder"
   import { WasmInputId } from "../WasmInputId"
+  import { Shape } from "./Shape"
 
   export let transformOrder: TransformOrder
 
@@ -18,8 +19,8 @@
     <div class="title flex items-stretch pl-5 underline">
       shape
     </div>
-    <div class="grow flex flex-col justify-between items-stretch m-5">
-      <select class="shape_select p-5">
+    <div class="pl-5 pr-5 grid grid-cols-4">
+      <select class="col-span-3 shape_select">
         <optgroup label="2d">
           <option>
             Triangle
@@ -58,26 +59,35 @@
           </option>
         </optgroup>
       </select>
+      <button class="col-span-1">
+        all
+      </button>
+    </div>
+    <div class="pt-2 pl-5 pr-5 grid grid-cols-4 grid-rows-4 gap-0">
+      {#each {length: 16} as _, i}
+        <button>
+          {i + 1}
+        </button>
+      {/each}
     </div>
   </div>
   <div class="grow flex flex-col justify-between items-stretch">
     <div class="title flex items-stretch pl-5 underline">
       transform order
     </div>
-    <button class="grow flex justify-around items-center"
-            class:selected={transformOrder === TransformOrder.rotateThenTranslate}
-            on:click={() => handleTransformOrderClick(TransformOrder.rotateThenTranslate)}>
-      Rotate -> Translate
-    </button>
-    <button class="grow flex justify-around items-center"
-            class:selected={transformOrder === TransformOrder.translateThenRotate}
-            on:click={() => handleTransformOrderClick(TransformOrder.translateThenRotate)}>
-      Translate -> Rotate 
-    </button>
+    <div class="pl-2 pr-2 flex justify-around">
+      <button class="grow flex justify-around items-center"
+              class:selected={transformOrder === TransformOrder.rotateThenTranslate}
+              on:click={() => handleTransformOrderClick(TransformOrder.rotateThenTranslate)}>
+        R -> T
+      </button>
+      <button class="grow flex justify-around items-center"
+              class:selected={transformOrder === TransformOrder.translateThenRotate}
+              on:click={() => handleTransformOrderClick(TransformOrder.translateThenRotate)}>
+        T -> R
+      </button>
+    </div>
     <slot name="transformOrder"/>
-  </div>
-  <div class="grow">
-    <!-- TODO   -->
   </div>
   <div class="grow flex flex-col justify-between items-stretch">
     <div class="title flex items-stretch pl-5 underline">
