@@ -4,7 +4,6 @@ use std::cell::RefCell;
 use wasm_bindgen::prelude::*;
 use web_sys::WebGl2RenderingContext;
 // use crate::magic_square::vertices::Vertices;
-use crate::magic_square::animation::Animation;
 use crate::magic_square::shader_compiler::ShaderCompiler;
 use crate::magic_square::geometry::Shape;
 use crate::magic_square::geometry::cache::{Cache as GeometryCache, CACHE_CAPACITY};
@@ -62,8 +61,9 @@ impl MagicSquare {
             ShaderCompiler::into_frag_shader_string(&ui_buffer.settings.color_8)
         ];
         let frag_shader_cache: Rc<RefCell<Vec<String>>> = Rc::new(RefCell::new(frag_shader_cache));
-
-        // let animation: Animation = Animation::new_from_settings(&ui_buffer.settings);
+        
+        // instantiate pre-written patterns in memeory
+        // let animation: Animation = Animation::new();
         // let animation = Rc::new(RefCell::new(animation));
 
         let ui_buffer = Rc::new(RefCell::new(ui_buffer));
@@ -191,6 +191,7 @@ impl MagicSquare {
             let geometry_cache = geometry_cache.clone();
             let ui_buffer = ui_buffer.clone();
             let frag_shader_cache = frag_shader_cache.clone();
+            let mut animation_idx: usize = 0;
             // let animation = animation.clone();
 
             // let performance = MagicSquare::performance();
@@ -201,6 +202,9 @@ impl MagicSquare {
             // closures used to allocate and clean up resources
             let f: Rc<RefCell<Option<wasm_bindgen::prelude::Closure<_>> >> = Rc::new(RefCell::new(None));
             let g = f.clone();
+
+
+            let mut frame_counter: usize = 0;
 
             *g.borrow_mut() = Some(Closure::new(move || {
                 let mut ui_buffer = *ui_buffer.clone().borrow();
@@ -289,8 +293,16 @@ impl MagicSquare {
                         &mouse_pos_buffer,
                         &ui_buffer, 
                         &geometry_cache,
+                        animation_idx
                         // &animation,
                     );
+
+                    if frame_counter % (21 - ui_buffer.settings.draw_pattern_speed as usize) == 0 {
+                        animation_idx = (animation_idx  + 1) % CACHE_CAPACITY;
+                    }
+
+                    frame_counter = (frame_counter + 1) % 21;
+
 
                     // DRAW
                     if let Err(_) = Draw::scene(

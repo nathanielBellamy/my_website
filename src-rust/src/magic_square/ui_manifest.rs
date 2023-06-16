@@ -13,9 +13,16 @@ pub const INPUT_COLOR_6: &'static str = "magic_square_input_color_6";
 pub const INPUT_COLOR_7: &'static str = "magic_square_input_color_7";
 pub const INPUT_COLOR_8: &'static str = "magic_square_input_color_8";
 
+// DRAW PATTERN
+pub const INPUT_DRAW_PATTERN_TYPE: &'static str = "magic_square_input_draw_pattern_type";
+pub const INPUT_DRAW_PATTERN_COUNT: &'static str = "magic_square_input_draw_pattern_count";
+pub const INPUT_DRAW_PATTERN_OFFSET: &'static str = "magic_square_input_draw_pattern_offset";
+pub const INPUT_DRAW_PATTERN_SPEED: &'static str = "magic_square_input_draw_pattern_speed";
+
 // GEOMETRY
 pub const INPUT_RADIUS_BASE: &'static str = "magic_square_input_radius_base";
 pub const INPUT_RADIUS_STEP: &'static str = "magic_square_input_radius_step";
+pub const INPUT_RADIUS_OFFSET: &'static str = "magic_square_input_radius_offset";
 pub const INPUT_TRANSFORM_ORDER: &'static str = "magic_square_input_transform_order";
 
 // LFO 1
@@ -85,7 +92,7 @@ pub const INPUT_MOUSE_TRACKING: &'static str = "magic_square_input_mouse_trackin
 // to ensure that all inputs are accounted for
 // 
 // also handy for copying and pasting when writing matches
-pub const INPUT_IDS: [&'static str; 58] = [
+pub const INPUT_IDS: [&'static str; 61] = [
     // COLOR
     INPUT_COLOR_DIRECTION,
     INPUT_COLOR_MODE,
@@ -98,6 +105,12 @@ pub const INPUT_IDS: [&'static str; 58] = [
     INPUT_COLOR_6,
     INPUT_COLOR_7,
     INPUT_COLOR_8,
+
+    // DRAW PATTERN
+    INPUT_DRAW_PATTERN_TYPE,
+    INPUT_DRAW_PATTERN_COUNT,
+    INPUT_DRAW_PATTERN_OFFSET,
+    INPUT_DRAW_PATTERN_SPEED,
 
     // GEOMETRY
     INPUT_RADIUS_BASE,
@@ -135,9 +148,6 @@ pub const INPUT_IDS: [&'static str; 58] = [
     INPUT_LFO_4_FREQ,
     INPUT_LFO_4_PHASE,
     INPUT_LFO_4_SHAPE,
-
-    // PATTERN
-    INPUT_DRAW_PATTERN,
 
     // ROTATION
     INPUT_X_ROT_BASE,

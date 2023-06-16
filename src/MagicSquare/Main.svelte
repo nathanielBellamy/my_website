@@ -2,8 +2,8 @@
   import { afterUpdate, onMount, onDestroy } from 'svelte'
   import Loading from '../lib/Loading.svelte'
   import DrawPatternContainer from './ControlModules/DrawPattern.svelte'
-  import type { DrawPattern } from './ControlModules/DrawPattern'
-  import { intoDrawPattern } from './ControlModules/DrawPattern'
+  import { DrawPatternType } from './ControlModules/DrawPattern'
+  import { intoDrawPatternType } from './ControlModules/DrawPattern'
   import Color from './ControlModules/Color.svelte'
   import ControlRack from './ControlRack.svelte'
   import Geometry from './ControlModules/Geometry.svelte'
@@ -61,40 +61,19 @@
   //    -> this should persist ui_settings
   //    -> while destroying and loading new wasm module instances
   
-
-
   export let sideLength: number = 0.0
 
   // DRAW PATTERN
-  let drawPattern: DrawPattern
-  enum DrawPatternDirection {
-    Fix = "Fix",
-    In = "In",
-    Out = "Out"
-  }
-  let initialDrawPatternDirection: DrawPatternDirection = DrawPatternDirection.Fix
-  let initialDrawPatternCount: number
+  let drawPatternType: DrawPatternType
+  let drawPatternCount: number
+  let drawPatternOffset: number
+  let drawPatternSpeed: number
+
   function setInitialDrawPatternVars(initialUiBuffer: any) {
-    drawPattern = intoDrawPattern(initialUiBuffer.settings.draw_pattern)
-    setInitialDrawPatternCount(parseInt(drawPattern.slice(-1)[0]))
-    let first_letter = drawPattern[0]
-    switch (first_letter) {
-      case 'F':
-        setInitialDrawPatternDirection(DrawPatternDirection.Fix)
-        break
-      case 'I': 
-        setInitialDrawPatternDirection(DrawPatternDirection.In)
-        break
-      case 'O':
-        setInitialDrawPatternDirection(DrawPatternDirection.Out)
-        break
-    }
-  }
-  function setInitialDrawPatternDirection(direction: DrawPatternDirection) {
-    initialDrawPatternDirection = direction
-  }
-  function setInitialDrawPatternCount(count: number) {
-    initialDrawPatternCount = count
+    drawPatternType = intoDrawPatternType(initialUiBuffer.settings.draw_pattern_type)
+    drawPatternCount = initialUiBuffer.settings.draw_pattern_count
+    drawPatternOffset = initialUiBuffer.settings.draw_pattern_offset
+    drawPatternSpeed = initialUiBuffer.settings.draw_pattern_speed
   }
 
   // COLOR
@@ -366,6 +345,12 @@
       color_7: color7,
       color_8: color8,
 
+      // DRAW PATTERN
+      draw_pattern_type: drawPatternType,
+      draw_pattern_count: drawPatternCount,
+      draw_pattern_offset: drawPatternOffset,
+      draw_pattern_speed: drawPatternSpeed,
+
       // Geometry
       radius_base: radiusBase,
       radius_step: radiusStep,
@@ -404,8 +389,7 @@
       lfo_4_phase: lfo4Phase,
       lfo_4_shape: lfo4Shape,
 
-      // PATTERN
-      draw_pattern: drawPattern,
+
 
       // ROTATION
       x_rot_base: rollBase,
@@ -542,11 +526,57 @@
         {#if !renderDataReady}
           <Loading />
         {:else}
-          <DrawPatternContainer bind:drawPatternDirection={initialDrawPatternDirection}
-                                bind:drawPatternCount={initialDrawPatternCount}>
+          <DrawPatternContainer drawPatternType={drawPatternType}
+                                drawPatternCount={drawPatternCount}>
+            <div slot="countAndSpeed"
+                 class="grow flex flex-col justify-between items-stretch">
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.drawPatternCount}>
+                  <div> {i18n.t("count", langVal)} </div>
+                  <div> {drawPatternCount} </div>
+                </label>
+                <input id={WasmInputId.drawPatternCount}
+                       type="range"
+                       min={1}
+                       max={16}
+                       bind:value={drawPatternCount}
+                       step={1}/>
+              </div>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <label class="slider_label flex justify-between" 
+                       class:disabled={drawPatternType == DrawPatternType.fix}
+                       for={WasmInputId.drawPatternSpeed}>
+                  <div> {i18n.t("speed", langVal)} </div>
+                  <div> {drawPatternSpeed} </div>
+                </label>
+                <input id={WasmInputId.drawPatternSpeed}
+                       type="range"
+                       min={1}
+                       max={20}
+                       disabled={drawPatternType == DrawPatternType.fix}
+                       bind:value={drawPatternSpeed}
+                       step={1}/>
+              </div>
+              <div class="grow w-full flex flex-col justify-center items-stretch">
+                <label class="slider_label flex justify-between"
+                       class:disabled={drawPatternType !== DrawPatternType.fix}
+                       for={WasmInputId.drawPatternOffset}>
+                  <div> {i18n.t("offset", langVal)} </div>
+                  <div> {drawPatternOffset} </div>
+                </label>
+                <input id={WasmInputId.drawPatternOffset}
+                       type="range"
+                       min={1}
+                       max={15}
+                       bind:value={drawPatternOffset}
+                       disabled={drawPatternType !== DrawPatternType.fix}
+                       step={1}/>
+              </div>
+            </div>
             <div slot="hiddenInput">
-              <input id={WasmInputId.drawPattern}
-                     bind:value={drawPattern}
+              <input id={WasmInputId.drawPatternType}
+                     bind:value={drawPatternType}
                      class="hidden_input"/>
             </div>
           </DrawPatternContainer>

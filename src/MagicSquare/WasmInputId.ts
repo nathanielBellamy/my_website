@@ -2,7 +2,6 @@
 // see src-rust/magic_square/ui_manifest.rs
 export enum WasmInputId {
   // there should exist a class variable by the left-hand name for each of these
-  drawPattern = "magic_square_input_draw_pattern",
 
   // color
   colorDirection = "magic_square_input_color_direction",
@@ -16,6 +15,12 @@ export enum WasmInputId {
   color6 = "magic_square_input_color_6",
   color7 = "magic_square_input_color_7",
   color8 = "magic_square_input_color_8",
+
+  // drawPattern
+  drawPatternType = "magic_square_input_draw_pattern_type",
+  drawPatternCount = "magic_square_input_draw_pattern_count",
+  drawPatternOffset = "magic_square_input_draw_pattern_offset",
+  drawPatternSpeed = "magic_square_input_draw_pattern_speed",
 
   // geometry
   radiusBase = "magic_square_input_radius_base",

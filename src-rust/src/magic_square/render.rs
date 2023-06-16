@@ -2,7 +2,7 @@ use std::rc::Rc;
 use std::cell::RefCell;
 use super::animation::Animation;
 use super::main::Axis;
-use super::main::log;
+// use super::main::log;
 use super::transformations::{RotationSequence, Rotation, Transformation, Translation};
 use super::ui_buffer::UiBuffer;
 use super::geometry::cache::{Cache as GeometryCache, CACHE_CAPACITY};
@@ -19,11 +19,13 @@ impl Render {
         ui_buffer: &UiBuffer,
         // geometry_cache: Arc<Mutex<GeometryCache>>,
         geometry_cache: &Rc<RefCell<GeometryCache>>,
-        // animation: &Rc<RefCell<Animation>>,
+        animation_idx: usize,
+        // animation: &mut Animation,
     ) {
         // let max_idx = Settings::max_idx_from_draw_pattern(ui_buffer.settings.draw_pattern);
         let mouse_pos_buffer = *mouse_pos_buffer.clone().borrow();
-        let animation = Animation::new_from_settings(&ui_buffer.settings);
+        let mut animation = Animation::new();
+        animation.set_reel(&ui_buffer.settings);
 
         for idx in 0..CACHE_CAPACITY { // geometry_cache.max_idx + 1 { //TODO: settings.cache_per
             let idx_f32 = idx as f32;
@@ -108,17 +110,7 @@ impl Render {
                 },
             };
             
-            // TODO: Debug animation.set_real()
-            let mut shape: Shape = animation.reel[animation.idx][idx];
-        
-            // set for testing
-            // proof of concept for refactor
-            shape = Shape::Icosahedron;
-            if idx % 2 == 1 {
-                shape = Shape::Hexagon;
-            }
-
-            log(&format!("{:?}", shape));
+            let shape: Shape = animation.reel[animation_idx][idx];
 
             let radius: f32 = ui_buffer.settings.radius_step * idx_f32 + ui_buffer.settings.radius_base; 
             let geometry: Geometry = Geometry {

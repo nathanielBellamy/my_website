@@ -18,6 +18,12 @@ export interface StorageSettings {
   color_7: number[],
   color_8: number[],
 
+  // PATTERN
+  draw_pattern_type: DrawPatternType,
+  draw_pattern_count: i32,
+  draw_pattern_offset: i32,
+  draw_pattern_speed: i32,
+
   // GEOMETRY
   radius_base: number,
   radius_step: number,
@@ -55,8 +61,7 @@ export interface StorageSettings {
   lfo_4_phase: number,
   lfo_4_shape: LfoShape,
 
-  // PATTERN
-  draw_pattern: DrawPattern,
+
 
 
   // ROTATION

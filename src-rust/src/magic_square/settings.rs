@@ -4,35 +4,14 @@ use serde::{Deserialize, Serialize};
 
 use super::geometry::Shape;
 use super::geometry::cache::CACHE_CAPACITY;
-// use crate::magic_square::main::log;
+use crate::magic_square::main::log;
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
-pub enum DrawPattern {
-    Fix1,
-    Fix2,
-    Fix3,
-    Fix4,
-    Fix5,
-    Fix6,
-    Fix7,
-    Fix8,
-    Out1,
-    Out2,
-    Out3,
-    Out4,
-    Out5,
-    Out6,
-    Out7,
+pub enum DrawPatternType {
     #[default]
-    Out8,
-    In1,
-    In2,
-    In3,
-    In4,
-    In5,
-    In6,
-    In7,
-    In8,
+    Fix,
+    In,
+    Out,
     // TODO:
     //  Conv,
     //  Div,
@@ -86,6 +65,13 @@ pub struct Settings {
     pub color_7: Rgba,
     pub color_8: Rgba,
 
+    // DRAW PATTERN
+    pub draw_pattern_type: DrawPatternType,
+    pub draw_pattern_count: i32,
+    pub draw_pattern_speed: i32,
+    pub draw_pattern_offset: i32,
+ 
+
     // GEOMETRY
     pub radius_base: f32,
     pub radius_step: f32,
@@ -128,9 +114,6 @@ pub struct Settings {
     // TODO:
     // mouse settings
     // MouseFollow - Always, Click + Drag, DoubleClick On/Off
-
-    // PATTERN
-    pub draw_pattern: DrawPattern,
 
     // ROTATION
     pub x_rot_base: f32,
@@ -181,6 +164,12 @@ impl Settings {
             color_7: [0.80, 0.44, 0.925, 1.0],
             color_8: [0.0, 0.1, 1.0, 1.0],
 
+            // DRAW PATTERN
+            draw_pattern_type: DrawPatternType::Out,
+            draw_pattern_count: 7,
+            draw_pattern_offset: 8,
+            draw_pattern_speed: 17,
+
             // GEOMETRY
             radius_base: 0.1,
             radius_step: 0.1,
@@ -218,10 +207,6 @@ impl Settings {
             lfo_4_freq: 35.0,
             lfo_4_phase: 0.0,
             lfo_4_shape: LfoShape::Sine,
-
-
-            // PATTERN
-            draw_pattern: DrawPattern::Out8,
             
             // ROTATION
             x_rot_base: 0.0,
@@ -306,62 +291,14 @@ impl Settings {
         }
     }
 
-    pub fn try_into_draw_pattern(pattern: String) -> Result<DrawPattern, ()> {
-        match pattern.as_str() {
-            "Fix1" => Ok(DrawPattern::Fix1),
-            "Fix2" => Ok(DrawPattern::Fix2),
-            "Fix3" => Ok(DrawPattern::Fix3),
-            "Fix4" => Ok(DrawPattern::Fix4),
-            "Fix5" => Ok(DrawPattern::Fix5),
-            "Fix6" => Ok(DrawPattern::Fix6),
-            "Fix7" => Ok(DrawPattern::Fix7),
-            "Fix8" => Ok(DrawPattern::Fix8),
-            "Out1" => Ok(DrawPattern::Out1),
-            "Out2" => Ok(DrawPattern::Out2),
-            "Out3" => Ok(DrawPattern::Out3),
-            "Out4" => Ok(DrawPattern::Out4),
-            "Out5" => Ok(DrawPattern::Out5),
-            "Out6" => Ok(DrawPattern::Out6),
-            "Out7" => Ok(DrawPattern::Out7),
-            "Out8" => Ok(DrawPattern::Out8),
-            "In1" => Ok(DrawPattern::In1),
-            "In2" => Ok(DrawPattern::In2),
-            "In3" => Ok(DrawPattern::In3),
-            "In4" => Ok(DrawPattern::In4),
-            "In5" => Ok(DrawPattern::In5),
-            "In6" => Ok(DrawPattern::In6),
-            "In7" => Ok(DrawPattern::In7),
-            "In8" => Ok(DrawPattern::In8),
+    pub fn try_into_draw_pattern_type(pt: String) -> Result<DrawPatternType, ()> {
+        log("HERHEHERHE WOW ZOW");
+        log(&pt);
+        match pt.as_str() {
+            "Fix" => Ok(DrawPatternType::Fix),
+            "Out" => Ok(DrawPatternType::Out),
+            "In" => Ok(DrawPatternType::In),
             _ => Err(())
-        }
-    }
-
-    pub fn string_from_draw_pattern(pattern: DrawPattern) -> String {
-        match pattern {
-            DrawPattern::Fix1 => "Fix1".to_string(), 
-            DrawPattern::Fix2 => "Fix2".to_string(), 
-            DrawPattern::Fix3 => "Fix3".to_string(), 
-            DrawPattern::Fix4 => "Fix4".to_string(), 
-            DrawPattern::Fix5 => "Fix5".to_string(), 
-            DrawPattern::Fix6 => "Fix6".to_string(), 
-            DrawPattern::Fix7 => "Fix7".to_string(), 
-            DrawPattern::Fix8 => "Fix8".to_string(), 
-            DrawPattern::Out1 => "Out1".to_string(), 
-            DrawPattern::Out2 => "Out2".to_string(),
-            DrawPattern::Out3 => "Out3".to_string(),
-            DrawPattern::Out4 => "Out4".to_string(),
-            DrawPattern::Out5 => "Out5".to_string(),
-            DrawPattern::Out6 => "Out6".to_string(),
-            DrawPattern::Out7 => "Out7".to_string(),
-            DrawPattern::Out8 => "Out8".to_string(),
-            DrawPattern::In1 => "In1".to_string(),
-            DrawPattern::In2 => "In2".to_string(),
-            DrawPattern::In3 => "In3".to_string(),
-            DrawPattern::In4 => "In4".to_string(),
-            DrawPattern::In5 => "In5".to_string(),
-            DrawPattern::In6 => "In6".to_string(),
-            DrawPattern::In7 => "In7".to_string(),
-            DrawPattern::In8 => "In8".to_string()
         }
     }
 
@@ -373,35 +310,6 @@ impl Settings {
             "Inv Y" => Ok(MouseTracking::InvY),
             "Inv XY" => Ok(MouseTracking::InvXY),
             _ => Err(())
-        }
-    }
-
-    pub fn max_idx_from_draw_pattern(pattern: DrawPattern) -> usize {
-        match pattern {
-                DrawPattern::Fix1 => 1,
-                DrawPattern::Fix2 => 2,
-                DrawPattern::Fix3 => 3,
-                DrawPattern::Fix4 => 4,
-                DrawPattern::Fix5 => 5,
-                DrawPattern::Fix6 => 6,
-                DrawPattern::Fix7 => 7,
-                DrawPattern::Fix8 => 8,
-                DrawPattern::Out1 => 1,
-                DrawPattern::Out2 => 2,
-                DrawPattern::Out3 => 3,
-                DrawPattern::Out4 => 4,
-                DrawPattern::Out5 => 5,
-                DrawPattern::Out6 => 6,
-                DrawPattern::Out7 => 7,
-                DrawPattern::Out8 => 8,
-                DrawPattern::In1 => 1,
-                DrawPattern::In2 => 2,
-                DrawPattern::In3 => 3,
-                DrawPattern::In4 => 4,
-                DrawPattern::In5 => 5,
-                DrawPattern::In6 => 6,
-                DrawPattern::In7 => 7,
-                DrawPattern::In8 => 8,
         }
     }
 

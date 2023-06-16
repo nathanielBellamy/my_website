@@ -1,7 +1,7 @@
 use std::rc::Rc;
 use std::cell::RefCell;
 use wasm_bindgen::prelude::*;
-use crate::magic_square::main::log;
+// use crate::magic_square::main::log;
 
 use web_sys::WebGl2RenderingContext;
 use super::geometry::cache::{Cache, CACHE_CAPACITY};
