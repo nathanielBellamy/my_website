@@ -20,6 +20,7 @@ pub const INPUT_DRAW_PATTERN_OFFSET: &'static str = "magic_square_input_draw_pat
 pub const INPUT_DRAW_PATTERN_SPEED: &'static str = "magic_square_input_draw_pattern_speed";
 
 // GEOMETRY
+pub const INPUT_SHAPES: &'static str = "magic_square_input_shapes";
 pub const INPUT_RADIUS_BASE: &'static str = "magic_square_input_radius_base";
 pub const INPUT_RADIUS_STEP: &'static str = "magic_square_input_radius_step";
 pub const INPUT_RADIUS_OFFSET: &'static str = "magic_square_input_radius_offset";
@@ -92,7 +93,7 @@ pub const INPUT_MOUSE_TRACKING: &'static str = "magic_square_input_mouse_trackin
 // to ensure that all inputs are accounted for
 // 
 // also handy for copying and pasting when writing matches
-pub const INPUT_IDS: [&'static str; 61] = [
+pub const INPUT_IDS: [&'static str; 62] = [
     // COLOR
     INPUT_COLOR_DIRECTION,
     INPUT_COLOR_MODE,
@@ -113,6 +114,7 @@ pub const INPUT_IDS: [&'static str; 61] = [
     INPUT_DRAW_PATTERN_SPEED,
 
     // GEOMETRY
+    INPUT_SHAPES,
     INPUT_RADIUS_BASE,
     INPUT_RADIUS_STEP,
     INPUT_TRANSFORM_ORDER,

@@ -582,6 +582,57 @@
           </DrawPatternContainer>
         {/if}
       </div>
+        <!-- START GEOMETRY -->
+      <div slot="geometry"
+           class="h-full">
+        {#if !renderDataReady}
+          <Loading />
+        {:else}
+          <Geometry bind:transformOrder={transformOrder}
+                    bind:shapes={shapes}>
+            <div slot="shapes">
+              <input id={WasmInputId.shapes} 
+                     class="hidden_input"/>
+            </div>
+            <div slot="transformOrder">
+              <input id={WasmInputId.transformOrder}
+                     bind:value={transformOrder}
+                     class="hidden_input"/>
+            </div>
+            <div  class="pt-2 pl-5 pr-5 grow flex flex-col justify-around items-stretch"
+                  slot="radiusSliders">
+              <div class="w-full flex flex-col justify-between items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.radiusBase}>
+                  <div> {i18n.t("base", langVal)} </div>
+                  <div> {radiusBase} </div>
+                </label>
+                <input id={WasmInputId.radiusBase}
+                       type="range"
+                       min={0.1}
+                       max={1.1}
+                       bind:value={radiusBase}
+                       step={.01}/>
+              </div>
+              <div class="w-full flex flex-col justify-between items-stretch">
+                <label class="slider_label flex justify-between" 
+                       for={WasmInputId.radiusStep}>
+                  <div> {i18n.t("step", langVal)} </div>
+                  <div> {radiusStep} </div>
+                </label>
+                <input id={WasmInputId.radiusStep}
+                       type="range"
+                       min={-0.5}
+                       max={0.5}
+                       bind:value={radiusStep}
+                       step={.01}/>
+              </div>
+            </div>
+          </Geometry>
+        {/if}
+      </div>
+        <!-- END GEOMETRY -->
+      <!-- START LFO  -->
       <div slot="lfo"
            class="h-full">
         {#if !renderDataReady}
@@ -945,49 +996,9 @@
           </Translation>
         {/if}
       </div>
-      <div slot="geometry"
-           class="h-full">
-        {#if !renderDataReady}
-          <Loading />
-        {:else}
-          <Geometry bind:transformOrder={transformOrder}>
-            <div slot="transformOrder">
-              <input id={WasmInputId.transformOrder}
-                     bind:value={transformOrder}
-                     class="hidden_input"/>
-            </div>
-            <div  class="pt-2 pl-5 pr-5 grow flex flex-col justify-around items-stretch"
-                  slot="radiusSliders">
-              <div class="w-full flex flex-col justify-between items-stretch">
-                <label class="slider_label flex justify-between" 
-                       for={WasmInputId.radiusBase}>
-                  <div> {i18n.t("base", langVal)} </div>
-                  <div> {radiusBase} </div>
-                </label>
-                <input id={WasmInputId.radiusBase}
-                       type="range"
-                       min={0.1}
-                       max={1.1}
-                       bind:value={radiusBase}
-                       step={.01}/>
-              </div>
-              <div class="w-full flex flex-col justify-between items-stretch">
-                <label class="slider_label flex justify-between" 
-                       for={WasmInputId.radiusStep}>
-                  <div> {i18n.t("step", langVal)} </div>
-                  <div> {radiusStep} </div>
-                </label>
-                <input id={WasmInputId.radiusStep}
-                       type="range"
-                       min={-0.5}
-                       max={0.5}
-                       bind:value={radiusStep}
-                       step={.01}/>
-              </div>
-            </div>
-          </Geometry>
-        {/if}
-      </div>
+      <!-- LFO END -->
+
+      <!-- ROTATION START -->
       <div slot="rotation"
            class="h-full">
         {#if !renderDataReady}

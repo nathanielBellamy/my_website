@@ -61,10 +61,6 @@ impl MagicSquare {
             ShaderCompiler::into_frag_shader_string(&ui_buffer.settings.color_8)
         ];
         let frag_shader_cache: Rc<RefCell<Vec<String>>> = Rc::new(RefCell::new(frag_shader_cache));
-        
-        // instantiate pre-written patterns in memeory
-        // let animation: Animation = Animation::new();
-        // let animation = Rc::new(RefCell::new(animation));
 
         let ui_buffer = Rc::new(RefCell::new(ui_buffer));
 

@@ -1,6 +1,7 @@
 use crate::magic_square::main::Rgba;
 use crate::magic_square::lfo::{LfoDestination, LfoShape};
 use serde::{Deserialize, Serialize};
+use wasm_bindgen::JsValue;
 
 use super::geometry::Shape;
 use super::geometry::cache::CACHE_CAPACITY;
@@ -174,7 +175,7 @@ impl Settings {
             radius_base: 0.1,
             radius_step: 0.1,
             transform_order: TransformOrder::RotateThenTranslate,
-            shapes: [Shape::Icosahedron; CACHE_CAPACITY],
+            shapes: [Shape::Hexagon; CACHE_CAPACITY],
 
             // lfo_1
             lfo_1_active: true,
@@ -330,5 +331,35 @@ impl Settings {
             arr[3]
         )
     }
+
+    pub fn try_into_indexed_shape(val: String) -> Result<IndexedShape, ()> {
+        let val = js_sys::JSON::parse(&val).unwrap();
+        let res: IndexedShapeRaw = serde_wasm_bindgen::from_value(val).unwrap();
+        let shape = Settings::try_into_shape(res.shape).unwrap();
+        Ok(IndexedShape { shape, index: res.index })
+    }
+
+    pub fn try_into_shape(val: String) -> Result<Shape, ()> {
+        match val.as_str() {
+            "Hexagon" => Ok(Shape::Hexagon),
+            "Icosahedron" => Ok(Shape::Icosahedron),
+            _ => Err(())
+        }
+    }
 }
+
+#[derive(Clone, Deserialize, Serialize, Debug)]
+pub struct IndexedShapeRaw {
+    pub shape: String, 
+    pub index: usize
+}
+
+#[derive(Clone, Deserialize, Serialize, Debug)]
+pub struct IndexedShape {
+    pub shape: Shape, 
+    pub index: usize
+}
+
+
+
 

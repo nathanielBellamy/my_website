@@ -17,6 +17,7 @@ export enum WasmInputId {
   color8 = "magic_square_input_color_8",
 
   // drawPattern
+  shapes = "magic_square_input_shapes",
   drawPatternType = "magic_square_input_draw_pattern_type",
   drawPatternCount = "magic_square_input_draw_pattern_count",
   drawPatternOffset = "magic_square_input_draw_pattern_offset",

@@ -6,6 +6,7 @@ use crate::magic_square::ui_manifest::{
     INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8,
     INPUT_DRAW_PATTERN_TYPE, INPUT_DRAW_PATTERN_COUNT, INPUT_DRAW_PATTERN_OFFSET, INPUT_DRAW_PATTERN_SPEED,
     INPUT_MOUSE_TRACKING,
+    INPUT_SHAPES,
     INPUT_RADIUS_BASE, INPUT_RADIUS_STEP,
     INPUT_TRANSFORM_ORDER,
     INPUT_X_ROT_BASE, INPUT_Y_ROT_BASE, INPUT_Z_ROT_BASE,
@@ -164,6 +165,11 @@ impl UiBuffer {
                         }
                         self.update_frag_shader_cache(frag_shader_cache)
                     }
+            },
+            INPUT_SHAPES => {
+                if let Ok(indexed_shape) = Settings::try_into_indexed_shape(val) {
+                    self.settings.shapes[indexed_shape.index] = indexed_shape.shape
+                }
             },
             INPUT_DRAW_PATTERN_TYPE => {
                 if let Ok(draw_pattern_type) = Settings::try_into_draw_pattern_type(val) {
