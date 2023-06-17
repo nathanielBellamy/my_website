@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import iro from '@jaames/iro'
-  import { ColorDirection, ColorMode } from './Color'
+  import { ColorDirection } from './Color'
+  import type { ColorGradient } from './Color'
   import { WasmInputId } from '../WasmInputId'
   import ControlModule from '../ControlModule.svelte';
 
@@ -14,8 +15,14 @@
     return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, 1)`
   }
 
+  let idx_a: number
+  let idx_b: number
+
+  $: idxLeft = idx_a < idx_b ? idx_a : idx_b
+  $: idxRight = idx_a > idx_b ? idx_a : idx_b
+
   export let colorDirection: ColorDirection
-  export let colorMode: ColorMode
+  export let colors: number[][]
 
   function handleColorDirectionClick(cd: ColorDirection) {
     colorDirection = cd
@@ -24,64 +31,53 @@
     input.dispatchEvent(new Event('input', { bubbles: true }))
   }
 
-  function colorGradientAtStep(step: number): number[] {
-    const t: number = step / 7
+  function colorGradientAtStep(step: number, width: number, colorLeft: number[], colorRight: number[]): number[] {
+    const t: number = step / width
     var result: number[] = [0, 0, 0, 0]
     for (let idx = 0; idx < 4; idx++) {
-      result[idx] = (1 - t) * color1[idx] + t * color8[idx]
+      result[idx] = (1 - t) * colorLeft[idx] + t * colorRight[idx]
     }
     return result
   }
 
-  function setColorGradient(colorA: number[], colorB: number[]) {
-    color1 = colorA
-    color8 = colorB
-    color2 = colorGradientAtStep(1)
-    color3 = colorGradientAtStep(2)
-    color4 = colorGradientAtStep(3)
-    color5 = colorGradientAtStep(4)
-    color6 = colorGradientAtStep(5)
-    color7 = colorGradientAtStep(6)
-  }
-
-  function handleColorModeClick(cm: ColorMode) {
-    colorMode = cm
-    const input = document.getElementById(WasmInputId.colorMode)
-    input.value = cm
-    input.dispatchEvent(new Event('input', { bubbles: true }))
-
-    if (cm === ColorMode.gradient) {
-      setColorGradient(color1, color8)
+  function setColorGradient() {
+    const width: number = idxRight - idxLeft
+    if (!!width) {
+      const colorLeft: number[] = colors[idxLeft]
+      const colorRight: number[] = colors[idxRight]
+      let step: number = 0
+      while (idxLeft + step < idxRight) {
+        colors[idxLeft + step] = colorGradientAtStep(step, width, colorLeft, colorRight)
+        step += 1 
+      }
+      colors = [...colors]
     }
   }
+
+  function handleGradientIndexChange(e: any, id: string) {
+    e.stopPropagation()
+    switch (id) {
+      case 'a':
+        idx_a = parseInt(e.target.value)
+        break
+      case 'b':
+        idx_b = parseInt(e.target.value)
+        break
+      default:
+        break
+    }
+  }
+
+  function handleColorGradientClick() {
+    const input = document.getElementById(WasmInputId.colorGradient)
+    input.value = JSON.stringify({idx_a: idxLeft,  idx_b: idxRight})
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+    setColorGradient()
+  }
   
-  export let color1: number[]
-  export let color2: number[]
-  export let color3: number[]
-  export let color4: number[]
-  export let color5: number[]
-  export let color6: number[]
-  export let color7: number[]
-  export let color8: number[]
-
-  let color1Str: string
-  let color2Str: string
-  let color3Str: string
-  let color4Str: string
-  let color5Str: string
-  let color6Str: string
-  let color7Str: string
-  let color8Str: string
-
-  $: color1Str = rgbaToString(color1)
-  $: color2Str = rgbaToString(color2)
-  $: color3Str = rgbaToString(color3)
-  $: color4Str = rgbaToString(color4)
-  $: color5Str = rgbaToString(color5)
-  $: color6Str = rgbaToString(color6)
-  $: color7Str = rgbaToString(color7)
-  $: color8Str = rgbaToString(color8)
-  let currId: string = 'magic_square_input_color_1'
+  let colorStrings: string[]
+  $: colorStrings = colors.map(x => rgbaToString(x))
+  let currIdx: number = 0
 
   const colorPickerOptions = {
     width: 110,
@@ -91,54 +87,28 @@
     layoutDirection: 'horizontal'
   }
 
-  function onIdClick(id: number) {
-    currId = toIdString(id)
+  function onIdxClick(idx: number) {
+    currIdx = idx
   }
 
-  function toIdString(id: number) {
-    return `magic_square_input_color_${id}`
+  function setNewColor(color: number[], idx: number) {
+    colors[idx] = [...color]
+    colors = [...colors]
   }
 
-  function setNewColor(color: number[], id: number) {
-    switch (id) {
-      case 1:
-        color1 = [...color]
-        break
-      case 2:
-        color2 = [...color]
-        break
-      case 3:
-        color3 = [...color]
-        break
-      case 4:
-        color4 = [...color]
-        break
-      case 5:
-        color5 = [...color]
-        break
-      case 6:
-        color6 = [...color]
-        break
-      case 7:
-        color7 = [...color]
-        break
-      case 8:
-        color8 = [...color]
-        break
-    }
+  function toIdxString(idx: number): string {
+    return `ms_color_picker_picker_${idx}`
   }
 
   onMount(async () => {
     // get height/width for picker
     var colorPickerDiv: any = document.getElementById('color_mode_and_curr')
     const width: number = Math.floor(colorPickerDiv.offsetWidth / 1.7);
+    var input = document.getElementById(WasmInputId.colors)
 
-    [color1, color2, color3, color4, color5, color6, color7, color8].forEach((color: number[], idx: number) => {
-      const id: number = idx + 1
-      const idStr: string = toIdString(id)
-      var picker = iro.ColorPicker(`#${idStr}_picker`, Object.assign(colorPickerOptions, {height: width, width}))
+    colors.forEach((color: number[], idx: number) => {
+      var picker = iro.ColorPicker(`#${toIdxString(idx)}`, Object.assign(colorPickerOptions, {height: width, width}))
       picker.color.rgba = { r: color[0], g: color[1], b: color[2], a: 1 }
-      var input = document.getElementById(idStr)
 
       picker.on('color:change', (newColor: any) => {
         const arr = [newColor.rgba.r, newColor.rgba.g, newColor.rgba.b, 1]
@@ -147,9 +117,9 @@
         // -> order matters here
         // -> dispatchEvent synchronyously to send the String to be parsed by Wasm
         // -> sets color1 to be the corresponding number[]
-        input.value = `${arr[0]},${arr[1]},${arr[2]},1`
+        input.value = JSON.stringify({index: idx, rgba: `${arr[0]},${arr[1]},${arr[2]},1`})
         input.dispatchEvent(new Event('input', {bubbles: true}))
-        setNewColor(arr, id)
+        setNewColor(arr, idx)
       })
     })
   })
@@ -184,41 +154,51 @@
     <div  id="magic_square_color_curr_picker"
           class="curr_picker flex justify-around">
       <div class="curr_picker_id">
-        {currId.split("_").slice(-1)[0]}
+        {currIdx + 1}
       </div>
       <div class="mt-5 flex justify-around items-stretch">
-        {#each [1,2,3,4,5,6,7,8] as id }
-          <div id={`${toIdString(id)}_picker`}
-               class:hidden_input={currId !== toIdString(id)}/>
+        {#each {length: 16} as _, idx }
+          <div id={toIdxString(idx)}
+               class:hidden_input={currIdx !== idx}/>
         {/each}
       </div>
     </div>
   </div>
-  <div class="color_rows grid grid-rows-2">
-    <div class="color_row">
-      {#each [color1Str, color2Str, color3Str, color4Str] as rgbaStr, idx}
+  <div class="color_rows grid grid-cols-4 grid-rows-4">
+      {#each colorStrings as rgbaStr, idx}
         <button class="color_button"
-                on:click={() => onIdClick(idx + 1)}
+                on:click={() => onIdxClick(idx)}
                 style:background-color={rgbaStr}>
           {idx + 1}
         </button>
       {/each}
-    </div>
-    <div class="color_row">
-      {#each [color5Str, color6Str, color7Str, color8Str] as rgbaStr, idx}
-        <button class="color_button"
-                on:click={() => onIdClick(idx + 5)}
-                style:background-color={rgbaStr}>
-          {idx+5}
-        </button>
-      {/each}
-    </div>
   </div>
-  <div class="grow flex flex-col justify-between items-stretch">
+  <div class="grow flex justify-between items-stretch">
     <button class="grow color_mode_option"
-            on:click={() => handleColorModeClick(ColorMode.gradient)}>
-      Gradient &emsp; 1️⃣ ➡️ 8️⃣
+            on:click={handleColorGradientClick}>
+      Gradient
     </button>
+    <select bind:value={idx_a}
+            on:input={(e) => e.stopPropagation()}
+            on:change={(e) => handleGradientIndexChange(e, 'a')}>
+      {#each {length: 16} as _, idx}
+        <option selected={idx_a === idx}
+                value={idx}>
+          {idx + 1}
+        </option>
+      {/each}
+    </select>
+    <select bind:value={idx_b}
+            on:input={(e) => e.stopPropagation()}
+            on:change={(e) => handleGradientIndexChange(e, 'b')}>
+      {#each {length: 16} as _, idx}
+        <option selected={idx_b === idx}
+                value={idx}>
+          {idx + 1}
+        </option>
+      {/each}
+    </select>
+
   </div>
   <slot name="hiddenInputs"/>
 </div>

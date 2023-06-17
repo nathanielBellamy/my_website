@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte'
   import { TransformOrder } from "./TransformOrder"
   import { WasmInputId } from "../WasmInputId"
   import { intoShape, Shape } from "./Shape"
@@ -41,6 +42,7 @@
     input.value = JSON.stringify({shape, index: 16})
     input.dispatchEvent(new Event('input', {bubbles: true}))
   }
+
 </script>
 
 <div class="h-full flex flex-col justify-between items-stretch">
@@ -51,11 +53,11 @@
     <slot name="shapes"/>
     <div class="pl-5 pr-5 grid grid-cols-4">
       <select class="col-span-3 shape_select"
-              bind:value={shape}
               on:input={(e) => e.stopPropagation()}
               on:change={handleShapeSelect}>
         <optgroup label="2d">
-          <option value={Shape.triangle}>
+          <option selected={shape === Shape.triangle}
+                  value={Shape.triangle}>
             Triangle
           </option>
           <option>
@@ -64,7 +66,8 @@
           <option>
             Pentagon
           </option>
-          <option value={Shape.hexagon}>
+          <option selected={shape === Shape.hexagon}
+                  value={Shape.hexagon}>
             Hexagon
           </option>
           <option>

@@ -27,7 +27,7 @@ impl Draw {
         for idx in 0..CACHE_CAPACITY {
             Draw::shape(
                 geometry_cache.gl_vertices(idx),
-                &frag_shader_cache.clone()[(color_offset + idx) % 8],
+                &frag_shader_cache[(color_offset + idx) % CACHE_CAPACITY].clone(),
                 context
             )?;
         }

@@ -15,16 +15,13 @@ export function intoColorDirection(cd: string): ColorDirection {
   }
 }
 
-export enum ColorMode {
-  eight = "Eight",
-  gradient = "Gradient"
+export interface ColorGradient {
+  idx_a: number,
+  idx_b: number,
 }
 
-export function intoColorMode(cm: string): ColorMode {
-  switch (cm) {
-    case "Eight":
-      return ColorMode.eight
-    case "Gradient":
-      return ColorMode.gradient
-  }
+export function intoColorGradient(cg: any): ColorGradient {
+  console.log("hai - ho! let's go!")
+  console.log(cg)
+  return { color_a: [ 255, 0, 0, 1 ], idx_a: 0, color_b: [ 0, 0, 255, 1 ], idx_b: 9 }
 }

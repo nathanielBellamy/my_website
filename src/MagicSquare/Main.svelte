@@ -21,7 +21,8 @@
   import { WasmInputId } from './WasmInputId'
   import { prevSettingsStore } from './PrevSettingsStore'
   import { intoTransformOrder, TransformOrder } from './ControlModules/TransformOrder'
-  import { ColorDirection, intoColorDirection, ColorMode, intoColorMode } from './ControlModules/Color'
+  import { ColorDirection, intoColorDirection, intoColorGradient } from './ControlModules/Color'
+  import type { ColorGradient } from './ControlModules/Color'
   import { intoShape, Shape } from './ControlModules/Shape'
   // INIT LANG BOILER PLATE
   import { I18n, Lang } from '../I18n'
@@ -78,16 +79,8 @@
 
   // COLOR
   let colorDirection: ColorDirection
-  let colorMode: ColorMode
   let colorSpeed: number
-  let color1: number[]
-  let color2: number[]
-  let color3: number[]
-  let color4: number[]
-  let color5: number[]
-  let color6: number[]
-  let color7: number[]
-  let color8: number[]
+  let colors: number[][]
 
   // CSS (inline in Color.svelte) uses Int:0-255, WebGL uses Float:0.0-1.0
   function convertRgbaValue(val: number, idx: number): number {
@@ -98,17 +91,9 @@
   }
 
   function setInitialColorVars(initialUiBuffer: any) {
+    colors = initialUiBuffer.settings.colors.map((x: number[]) => x.map((y:number , idx: number) => convertRgbaValue(y, idx)))
     colorDirection = intoColorDirection(initialUiBuffer.settings.color_direction)
-    colorMode = intoColorMode(initialUiBuffer.settings.color_mode)
     colorSpeed = initialUiBuffer.settings.color_speed
-    color1 = [...initialUiBuffer.settings.color_1].map((x,idx) => convertRgbaValue(x, idx))
-    color2 = [...initialUiBuffer.settings.color_2].map((x,idx) => convertRgbaValue(x, idx))
-    color3 = [...initialUiBuffer.settings.color_3].map((x,idx) => convertRgbaValue(x, idx))
-    color4 = [...initialUiBuffer.settings.color_4].map((x,idx) => convertRgbaValue(x, idx))
-    color5 = [...initialUiBuffer.settings.color_5].map((x,idx) => convertRgbaValue(x, idx))
-    color6 = [...initialUiBuffer.settings.color_6].map((x,idx) => convertRgbaValue(x, idx))
-    color7 = [...initialUiBuffer.settings.color_7].map((x,idx) => convertRgbaValue(x, idx))
-    color8 = [...initialUiBuffer.settings.color_8].map((x,idx) => convertRgbaValue(x, idx))
   }
 
   // GEOMETRY
@@ -333,17 +318,9 @@
   function deriveStorageSettings(): StorageSettings {
     return {
       // Color
+      colors: colors,
       color_direction: colorDirection,
-      color_mode: colorMode,
       color_speed: colorSpeed,
-      color_1: color1,
-      color_2: color2,
-      color_3: color3,
-      color_4: color4,
-      color_5: color5,
-      color_6: color6,
-      color_7: color7,
-      color_8: color8,
 
       // DRAW PATTERN
       draw_pattern_type: drawPatternType,
@@ -388,8 +365,6 @@
       lfo_4_freq: lfo4Freq,
       lfo_4_phase: lfo4Phase,
       lfo_4_shape: lfo4Shape,
-
-
 
       // ROTATION
       x_rot_base: rollBase,
@@ -460,15 +435,7 @@
           <Loading />
         {:else}
           <Color bind:colorDirection={colorDirection}
-                 bind:colorMode={colorMode}
-                 bind:color1={color1}
-                 bind:color2={color2}
-                 bind:color3={color3}
-                 bind:color4={color4}
-                 bind:color5={color5}
-                 bind:color6={color6}
-                 bind:color7={color7}
-                 bind:color8={color8}>
+                 bind:colors={colors}>
             <div slot="speed">
               <div class="grow w-full flex flex-col justify-center items-stretch">
                 <label class="slider_label flex justify-between" 
@@ -490,32 +457,10 @@
               <input id={WasmInputId.colorDirection}
                      bind:value={colorDirection}
                      class="hidden_input">
-              <input id={WasmInputId.colorMode}
-                     bind:value={colorMode}
+              <input id={WasmInputId.colorGradient}
                      class="hidden_input">
-              <input id={WasmInputId.color1}
-                     bind:value={color1}
-                     class="hidden_input">
-              <input id={WasmInputId.color2}
-                     bind:value={color2}
-                     class="hidden_input">
-              <input id={WasmInputId.color3}
-                     bind:value={color3}
-                     class="hidden_input">
-              <input id={WasmInputId.color4}
-                     bind:value={color4}
-                     class="hidden_input">
-              <input id={WasmInputId.color5}
-                     bind:value={color5}
-                     class="hidden_input">
-              <input id={WasmInputId.color6}
-                     bind:value={color6}
-                     class="hidden_input">
-              <input id={WasmInputId.color7}
-                     bind:value={color7}
-                     class="hidden_input">
-              <input id={WasmInputId.color8}
-                     bind:value={color8}
+              <input id={WasmInputId.colors}
+                     bind:value={colors}
                      class="hidden_input">
             </div>
           </Color>

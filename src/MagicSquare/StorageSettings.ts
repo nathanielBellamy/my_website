@@ -1,30 +1,25 @@
-import type { ColorDirection, ColorMode } from './ControlModules/Color'
-import type { DrawPattern } from "./ControlModules/DrawPattern"
+import type { ColorDirection } from './ControlModules/Color'
+import type { DrawPatternType } from "./ControlModules/DrawPattern"
 import type { LfoDestination } from "./ControlModules/LfoDestination"
 import type { LfoShape } from "./ControlModules/LfoShape"
 import type { MouseTracking } from "./ControlModules/MouseTracking"
+import type { Shape } from './ControlModules/Shape'
 import type { TransformOrder } from "./ControlModules/TransformOrder"
 
 export interface StorageSettings {
   // COLOR
+  colors: number[][],
   color_direction: ColorDirection,
-  color_mode: ColorMode,
-  color_1: number[],
-  color_2: number[],
-  color_3: number[],
-  color_4: number[],
-  color_5: number[],
-  color_6: number[],
-  color_7: number[],
-  color_8: number[],
+  color_speed: number,
 
   // PATTERN
   draw_pattern_type: DrawPatternType,
-  draw_pattern_count: i32,
-  draw_pattern_offset: i32,
-  draw_pattern_speed: i32,
+  draw_pattern_count: number,
+  draw_pattern_offset: number,
+  draw_pattern_speed: number,
 
   // GEOMETRY
+  shapes: Shape[],
   radius_base: number,
   radius_step: number,
   transform_order: TransformOrder
@@ -60,10 +55,7 @@ export interface StorageSettings {
   lfo_4_freq: number,
   lfo_4_phase: number,
   lfo_4_shape: LfoShape,
-
-
-
-
+ 
   // ROTATION
   x_rot_base: number,
   y_rot_base: number,

@@ -1,9 +1,10 @@
 use serde::{Deserialize, Serialize};
 use crate::magic_square::main::log;
-use crate::magic_square::settings::{ColorMode, Settings};
+use crate::magic_square::settings::Settings;
 use crate::magic_square::ui_manifest::{
-    INPUT_COLOR_DIRECTION, INPUT_COLOR_MODE, INPUT_COLOR_SPEED,
-    INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8,
+    INPUT_COLORS,
+    INPUT_COLOR_DIRECTION, INPUT_COLOR_GRADIENT, INPUT_COLOR_SPEED,
+    // INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8,
     INPUT_DRAW_PATTERN_TYPE, INPUT_DRAW_PATTERN_COUNT, INPUT_DRAW_PATTERN_OFFSET, INPUT_DRAW_PATTERN_SPEED,
     INPUT_MOUSE_TRACKING,
     INPUT_SHAPES,
@@ -23,7 +24,9 @@ use crate::magic_square::ui_manifest::{
 use super::geometry::cache::{Cache, CACHE_CAPACITY};
 use super::main::Rgba;
 use super::shader_compiler::ShaderCompiler;
+use super::settings::{Colors, IndexedGradient};
 
+pub const EMPTY_COLORS: Colors = [[0.0;4]; 16];
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub struct UiBuffer {
@@ -38,16 +41,13 @@ impl UiBuffer {
     }
 
     pub fn from_prev_settings(prev_settings: Settings) -> UiBuffer {
+        let mut colors: Colors = EMPTY_COLORS;
+        prev_settings.colors.iter().enumerate().map(|(idx, x)| {
+            colors[idx] = UiBuffer::convert_rgba(*x)
+        });
         UiBuffer { 
             settings: Settings {
-                color_1: UiBuffer::convert_rgba(prev_settings.color_1),
-                color_2: UiBuffer::convert_rgba(prev_settings.color_2),
-                color_3: UiBuffer::convert_rgba(prev_settings.color_3),
-                color_4: UiBuffer::convert_rgba(prev_settings.color_4),
-                color_5: UiBuffer::convert_rgba(prev_settings.color_5),
-                color_6: UiBuffer::convert_rgba(prev_settings.color_6),
-                color_7: UiBuffer::convert_rgba(prev_settings.color_7),
-                color_8: UiBuffer::convert_rgba(prev_settings.color_8),
+                colors,
                 ..prev_settings 
             }
         }
@@ -66,38 +66,32 @@ impl UiBuffer {
         UiBuffer { settings: Settings {..self.settings} }
     }
 
-    pub fn color_gradient_at_step(&self, step: u8) -> Rgba {
+    pub fn color_gradient_at_step(&self, step: u8, idx_a: usize, idx_b:usize) -> Rgba {
         let mut result = [0.0, 0.0, 0.0, 0.0];
-        let t: f32 = step as f32 / 7.0;
-        
-        for idx in 0..4 {
-            result[idx] = (1.0 - t) * self.settings.color_1[idx]
-                            + t * self.settings.color_8[idx];
+        let width: usize = idx_b - idx_a;
+        if width > 0 && step < width as u8 {
+            let t: f32 = step as f32 / width as f32;
+            
+            for idx in 0..4 as usize {
+                result[idx] = (1.0 - t) * self.settings.colors[idx_a][idx]
+                                + t * self.settings.colors[idx_b][idx];
+            }
         }
-
         result
     }
 
-    pub fn set_color_gradient(&mut self, color_a: Rgba, color_b: Rgba) {
-        self.settings.color_1 = color_a;
-        self.settings.color_2 = self.color_gradient_at_step(1);
-        self.settings.color_3 = self.color_gradient_at_step(2);
-        self.settings.color_4 = self.color_gradient_at_step(3);
-        self.settings.color_5 = self.color_gradient_at_step(4);
-        self.settings.color_6 = self.color_gradient_at_step(5);
-        self.settings.color_7 = self.color_gradient_at_step(6);
-        self.settings.color_8 = color_b;
+    pub fn set_color_gradient(&mut self, ig: IndexedGradient){
+        let mut idx: usize = 1;
+        while ig.idx_a + idx < ig.idx_b {
+            self.settings.colors[idx] = self.color_gradient_at_step(idx as u8, ig.idx_a,  ig.idx_b);
+            idx += 1
+        }
     }
 
     pub fn update_frag_shader_cache(&self, frag_shader_cache: &mut Vec<String>) {
-        frag_shader_cache[0] = ShaderCompiler::into_frag_shader_string(&self.settings.color_1);
-        frag_shader_cache[1] = ShaderCompiler::into_frag_shader_string(&self.settings.color_2);
-        frag_shader_cache[2] = ShaderCompiler::into_frag_shader_string(&self.settings.color_3);
-        frag_shader_cache[3] = ShaderCompiler::into_frag_shader_string(&self.settings.color_4);
-        frag_shader_cache[4] = ShaderCompiler::into_frag_shader_string(&self.settings.color_5);
-        frag_shader_cache[5] = ShaderCompiler::into_frag_shader_string(&self.settings.color_6);
-        frag_shader_cache[6] = ShaderCompiler::into_frag_shader_string(&self.settings.color_7);
-        frag_shader_cache[7] = ShaderCompiler::into_frag_shader_string(&self.settings.color_8);
+        for (idx, shader) in frag_shader_cache.iter_mut().enumerate() {
+            *shader = ShaderCompiler::into_frag_shader_string(&self.settings.colors[idx]);
+        }
     }
 
     pub fn update(
@@ -116,15 +110,10 @@ impl UiBuffer {
                     self.settings.color_direction = val
                 }
             },
-            INPUT_COLOR_MODE => {
-                if let Ok(new_mode) = Settings::try_into_color_mode(val) {
-                    if new_mode == ColorMode::Gradient {
-                        // set colors as gradient from color_1 to color_8
-                        self.set_color_gradient(self.settings.color_1, self.settings.color_8);
-                        self.update_frag_shader_cache(frag_shader_cache);
-                    }
-                
-                    self.settings.color_mode = new_mode
+            INPUT_COLOR_GRADIENT => {
+                if let Ok(indexed_gradient) = Settings::try_into_indexed_gradient(val) {
+                    self.set_color_gradient(indexed_gradient);
+                    self.update_frag_shader_cache(frag_shader_cache);
                 }
             },
             INPUT_COLOR_SPEED => {
@@ -132,39 +121,11 @@ impl UiBuffer {
                     self.settings.color_speed = val
                 }
             },
-            INPUT_COLOR_1
-                | INPUT_COLOR_2
-                | INPUT_COLOR_3
-                | INPUT_COLOR_4
-                | INPUT_COLOR_5
-                | INPUT_COLOR_6
-                | INPUT_COLOR_7
-                | INPUT_COLOR_8 => {
-                    let rgba: Vec<&str> = val.split(",").collect();
-                    // validate rgba string
-                    if let (Ok(r), Ok(g), Ok(b), Ok(a)) = (
-                        rgba[0].parse::<f32>(),
-                        rgba[1].parse::<f32>(),
-                        rgba[2].parse::<f32>(),
-                        rgba[3].parse::<f32>(),
-                    ) {
-                        let r: f32 = r / 255.0; // CSS uses u8, WebGl uses f32:0.0-1.0
-                        let g: f32 = g / 255.0;
-                        let b: f32 = b / 255.0;
-                        match input_id.as_str() {
-                            // INPUT_A => self.function.a = val.parse::<f64>().unwrap(),
-                            INPUT_COLOR_1 => self.settings.color_1 = [r,g,b,a],
-                            INPUT_COLOR_2 => self.settings.color_2 = [r,g,b,a],
-                            INPUT_COLOR_3 => self.settings.color_3 = [r,g,b,a],
-                            INPUT_COLOR_4 => self.settings.color_4 = [r,g,b,a],
-                            INPUT_COLOR_5 => self.settings.color_5 = [r,g,b,a],
-                            INPUT_COLOR_6 => self.settings.color_6 = [r,g,b,a],
-                            INPUT_COLOR_7 => self.settings.color_7 = [r,g,b,a],
-                            INPUT_COLOR_8 => self.settings.color_8 = [r,g,b,a],
-                            _ => {}
-                        }
-                        self.update_frag_shader_cache(frag_shader_cache)
-                    }
+            INPUT_COLORS => {
+                if let Ok(indexed_color) = Settings::try_into_indexed_color(val) {
+                    self.settings.colors[indexed_color.index] = indexed_color.rgba;
+                    self.update_frag_shader_cache(frag_shader_cache);
+                }
             },
             INPUT_SHAPES => {
                 if let Ok(indexed_shape) = Settings::try_into_indexed_shape(val) {

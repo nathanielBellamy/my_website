@@ -5,16 +5,9 @@ export enum WasmInputId {
 
   // color
   colorDirection = "magic_square_input_color_direction",
-  colorMode = "magic_square_input_color_mode",
+  colorGradient = "magic_square_input_color_gradient",
   colorSpeed = "magic_square_input_color_speed",
-  color1 = "magic_square_input_color_1",
-  color2 = "magic_square_input_color_2",
-  color3 = "magic_square_input_color_3",
-  color4 = "magic_square_input_color_4",
-  color5 = "magic_square_input_color_5",
-  color6 = "magic_square_input_color_6",
-  color7 = "magic_square_input_color_7",
-  color8 = "magic_square_input_color_8",
+  colors = "magic_square_input_colors",
 
   // drawPattern
   shapes = "magic_square_input_shapes",

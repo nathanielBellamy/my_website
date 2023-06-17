@@ -50,16 +50,15 @@ impl MagicSquare {
             }
         };
 
-        let frag_shader_cache: Vec<String> = vec![
-            ShaderCompiler::into_frag_shader_string(&ui_buffer.settings.color_1),
-            ShaderCompiler::into_frag_shader_string(&ui_buffer.settings.color_2),
-            ShaderCompiler::into_frag_shader_string(&ui_buffer.settings.color_3),
-            ShaderCompiler::into_frag_shader_string(&ui_buffer.settings.color_4),
-            ShaderCompiler::into_frag_shader_string(&ui_buffer.settings.color_5),
-            ShaderCompiler::into_frag_shader_string(&ui_buffer.settings.color_6),
-            ShaderCompiler::into_frag_shader_string(&ui_buffer.settings.color_7),
-            ShaderCompiler::into_frag_shader_string(&ui_buffer.settings.color_8)
-        ];
+        // TODO:
+        //  we should in theory be able to store these as static slices
+        //  and unsafely mutate those slices in place
+        //  to avoid Strings
+        //  possible fun optimization
+        let frag_shader_cache: Vec<String> = ui_buffer.settings.colors
+                                                .iter()
+                                                .map(|x| ShaderCompiler::into_frag_shader_string(x))
+                                                .collect();
         let frag_shader_cache: Rc<RefCell<Vec<String>>> = Rc::new(RefCell::new(frag_shader_cache));
 
         let ui_buffer = Rc::new(RefCell::new(ui_buffer));
@@ -79,7 +78,6 @@ impl MagicSquare {
         // when idx_delay reaches a desired delay value
         // incriment idx_offset
         let mut color_idx_offset_delay: [u8; 2] = [0, 0];
-        //Arc::new(Mutex::new(
         let geometry_cache = GeometryCache::new(
                 26, 
                 [[0.0; 300]; CACHE_CAPACITY], 
@@ -87,9 +85,6 @@ impl MagicSquare {
             );
 
         let geometry_cache = Rc::new(RefCell::new(geometry_cache));
-        // )); 
-        
-
 
         let form = MagicSquare::form();
         let form = Rc::new(form);
@@ -106,7 +101,6 @@ impl MagicSquare {
             // onDestroy hook in Main.svelte dispatches destroymswasm event
             // this closure flips destroy_flag
             // requestAnimationFrame checks value, cleans up resources
-
             let app_main = MagicSquare::app_main();
             let destroy_flag = destroy_flag.clone();
             let closure = Closure::<dyn FnMut(_)>::new(move |_event: web_sys::Event| {
@@ -127,7 +121,6 @@ impl MagicSquare {
             let ui_buffer = ui_buffer.clone();
             let frag_shader_cache = frag_shader_cache.clone();
             let geometry_cache = geometry_cache.clone();
-            // let animation = animation.clone();
 
             let closure_handle_input =
                 Closure::<dyn FnMut(_)>::new(move |event: web_sys::Event| {
@@ -148,7 +141,6 @@ impl MagicSquare {
                             val, 
                             &mut *frag_shader_cache.clone().borrow_mut(),
                             &mut *geometry_cache.clone().borrow_mut(),
-                            // &mut *animation.clone().borrow_mut()
                     );
                 });
 
@@ -188,7 +180,6 @@ impl MagicSquare {
             let ui_buffer = ui_buffer.clone();
             let frag_shader_cache = frag_shader_cache.clone();
             let mut animation_idx: usize = 0;
-            // let animation = animation.clone();
 
             // let performance = MagicSquare::performance();
             let mut x: f32 = -3.14159;
@@ -290,7 +281,6 @@ impl MagicSquare {
                         &ui_buffer, 
                         &geometry_cache,
                         animation_idx
-                        // &animation,
                     );
 
                     if frame_counter % (21 - ui_buffer.settings.draw_pattern_speed as usize) == 0 {

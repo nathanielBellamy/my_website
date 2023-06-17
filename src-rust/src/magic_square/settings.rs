@@ -44,34 +44,27 @@ pub enum ColorDirection{
     Out,
 }
 
-#[derive(Serialize, Deserialize, Clone, Copy, Default, Debug, Eq, PartialEq)]
-pub enum ColorMode{
-    #[default]
-    Eight,
-    Gradient,
+pub type Colors = [Rgba; CACHE_CAPACITY];
+
+
+#[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
+pub struct ColorGradient {
+    idx_a: i32,
+    idx_b: i32
 }
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub struct Settings {
     // COLOR
+    pub colors: Colors,
     pub color_direction: ColorDirection,
-    pub color_mode: ColorMode,
     pub color_speed: u8,
-    pub color_1: Rgba,
-    pub color_2: Rgba,
-    pub color_3: Rgba,
-    pub color_4: Rgba,
-    pub color_5: Rgba,
-    pub color_6: Rgba,
-    pub color_7: Rgba,
-    pub color_8: Rgba,
 
     // DRAW PATTERN
     pub draw_pattern_type: DrawPatternType,
     pub draw_pattern_count: i32,
     pub draw_pattern_speed: i32,
     pub draw_pattern_offset: i32,
- 
 
     // GEOMETRY
     pub radius_base: f32,
@@ -111,7 +104,6 @@ pub struct Settings {
     pub lfo_4_phase: f32,
     pub lfo_4_shape: LfoShape,
 
-
     // TODO:
     // mouse settings
     // MouseFollow - Always, Click + Drag, DoubleClick On/Off
@@ -142,10 +134,6 @@ pub struct Settings {
     pub translation_z_base: f32,
     pub translation_z_spread: f32,
     pub mouse_tracking: MouseTracking,
-
-    // // cache
-    // cache_max_idx: usize, // 0..50
-    // cache_per: usize,
 }
 
 
@@ -154,16 +142,25 @@ impl Settings {
         Settings {
             // COLOR
             color_direction: ColorDirection::Fix,
-            color_mode: ColorMode::Eight,
             color_speed: 17,
-            color_1: [1.0, 0.0, 1.0, 1.0],
-            color_2: [0.0, 1.0, 1.0, 1.0],
-            color_3: [1.0, 0.0, 0.5, 1.0],
-            color_4: [1.0, 0.1, 1.0, 1.0],
-            color_5: [0.0, 0.9, 0.64, 1.0],
-            color_6: [0.0, 1.0, 1.0, 1.0],
-            color_7: [0.80, 0.44, 0.925, 1.0],
-            color_8: [0.0, 0.1, 1.0, 1.0],
+            colors: [
+                [1.0, 1.0, 1.0, 1.0],
+                [0.0, 0.0, 0.0, 1.0],
+                [1.0, 1.0, 1.0, 1.0],
+                [0.0, 0.0, 0.0, 1.0],
+                [1.0, 1.0, 1.0, 1.0],
+                [0.0, 0.0, 0.0, 1.0],
+                [1.0, 1.0, 1.0, 1.0],
+                [0.0, 0.0, 0.0, 1.0],
+                [1.0, 1.0, 1.0, 1.0],
+                [0.0, 0.0, 0.0, 1.0],
+                [1.0, 1.0, 1.0, 1.0],
+                [0.0, 0.0, 0.0, 1.0],
+                [1.0, 1.0, 1.0, 1.0],
+                [0.0, 0.0, 0.0, 1.0],
+                [1.0, 1.0, 1.0, 1.0],
+                [0.0, 0.0, 0.0, 1.0],
+            ],
 
             // DRAW PATTERN
             draw_pattern_type: DrawPatternType::Out,
@@ -245,13 +242,11 @@ impl Settings {
             _ => Err(())
         }
     }
-
-    pub fn try_into_color_mode(cm: String) -> Result<ColorMode, ()> {
-        match cm.as_str() {
-            "Eight" => Ok(ColorMode::Eight),
-            "Gradient" => Ok(ColorMode::Gradient),
-            _ => Err(())
-        }
+ 
+    pub fn try_into_indexed_gradient(val: String) -> Result<IndexedGradient, JsValue> {
+        let val = js_sys::JSON::parse(&val).unwrap();
+        let res: IndexedGradient = serde_wasm_bindgen::from_value(val)?;
+        Ok(res)
     }
 
     pub fn try_into_lfo_destination(dest: String) -> Result<LfoDestination, ()> {
@@ -332,12 +327,26 @@ impl Settings {
         )
     }
 
-    pub fn try_into_indexed_shape(val: String) -> Result<IndexedShape, ()> {
+    pub fn try_into_indexed_shape(val: String) -> Result<IndexedShape, JsValue> {
         let val = js_sys::JSON::parse(&val).unwrap();
-        let res: IndexedShape = serde_wasm_bindgen::from_value(val).unwrap();
-        // let shape = Settings::try_into_shape(res.shape).unwrap();
-        Ok(IndexedShape { shape: res.shape, index: res.index })
+        let res: IndexedShape = serde_wasm_bindgen::from_value(val)?;
+        Ok(res)
     }
+
+    pub fn try_into_indexed_color(val: String) -> Result<IndexedColor, JsValue> {
+        let val = js_sys::JSON::parse(&val).unwrap();
+        let res: IndexedColorRaw = serde_wasm_bindgen::from_value(val)?;
+        let mut rgba: Rgba = [0.0, 0.0, 0.0, 0.0];
+        for (idx, num_str) in res.rgba.split(",").enumerate() {
+            let mut num: f32 = num_str.parse::<f32>().expect("ERROR PARSING RGBA IN RUST WASM");
+            if idx < 3 {
+                num = num / 255.0;
+            }
+            rgba[idx] = num;
+        }
+        Ok(IndexedColor{index: res.index, rgba})
+    }
+
 
     pub fn try_into_shape(val: String) -> Result<Shape, ()> {
         match val.as_str() {
@@ -349,17 +358,25 @@ impl Settings {
 }
 
 #[derive(Clone, Deserialize, Serialize, Debug)]
-pub struct IndexedShapeRaw {
-    pub shape: String, 
-    pub index: usize
-}
-
-#[derive(Clone, Deserialize, Serialize, Debug)]
 pub struct IndexedShape {
     pub shape: Shape, 
     pub index: usize
 }
 
+#[derive(Clone, Deserialize, Serialize, Debug)]
+pub struct IndexedColor {
+    pub rgba: Rgba, 
+    pub index: usize
+}
 
+#[derive(Clone, Deserialize, Serialize, Debug)]
+pub struct IndexedColorRaw {
+    pub rgba: String, 
+    pub index: usize
+}
 
-
+#[derive(Clone, Deserialize, Serialize, Debug)]
+pub struct IndexedGradient {
+    pub idx_a: usize,
+    pub idx_b: usize,
+}
