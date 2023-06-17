@@ -334,9 +334,9 @@ impl Settings {
 
     pub fn try_into_indexed_shape(val: String) -> Result<IndexedShape, ()> {
         let val = js_sys::JSON::parse(&val).unwrap();
-        let res: IndexedShapeRaw = serde_wasm_bindgen::from_value(val).unwrap();
-        let shape = Settings::try_into_shape(res.shape).unwrap();
-        Ok(IndexedShape { shape, index: res.index })
+        let res: IndexedShape = serde_wasm_bindgen::from_value(val).unwrap();
+        // let shape = Settings::try_into_shape(res.shape).unwrap();
+        Ok(IndexedShape { shape: res.shape, index: res.index })
     }
 
     pub fn try_into_shape(val: String) -> Result<Shape, ()> {

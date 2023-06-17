@@ -168,7 +168,13 @@ impl UiBuffer {
             },
             INPUT_SHAPES => {
                 if let Ok(indexed_shape) = Settings::try_into_indexed_shape(val) {
-                    self.settings.shapes[indexed_shape.index] = indexed_shape.shape
+                    if indexed_shape.index == 16 { // magic number indicating update all
+                        for shape in self.settings.shapes.iter_mut() {
+                            *shape = indexed_shape.shape;
+                        }
+                    } else {
+                        self.settings.shapes[indexed_shape.index] = indexed_shape.shape;
+                    }
                 }
             },
             INPUT_DRAW_PATTERN_TYPE => {

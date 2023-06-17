@@ -13,7 +13,6 @@
 
   function handleShapeIndexSelect(e: any, new_idx: number) {
     e.stopPropagation()
-    console.log(shapes)
     shapeIndex = new_idx
     shape = shapes[new_idx]
   }
@@ -32,6 +31,14 @@
     transformOrder = tr_or
     var input = document.getElementById(WasmInputId.transformOrder)
     input.value = tr_or
+    input.dispatchEvent(new Event('input', {bubbles: true}))
+  }
+
+  function handleAllClick() {
+    shapes.forEach(old_shape => old_shape = shape)
+    var input = document.getElementById(WasmInputId.shapes)
+    shapes = [...shapes]
+    input.value = JSON.stringify({shape, index: 16})
     input.dispatchEvent(new Event('input', {bubbles: true}))
   }
 </script>
@@ -85,7 +92,8 @@
           </option>
         </optgroup>
       </select>
-      <button class="col-span-1">
+      <button class="col-span-1"
+              on:click={handleAllClick}>
         all
       </button>
     </div>
