@@ -27,7 +27,7 @@
     <div class="title underline text-left">
       transform order
     </div>
-    <div class="pl-2 pr-2 flex flex-col justify-around items-stretch">
+    <div class="grow pl-2 pr-2 flex flex-col justify-around items-stretch">
       <button class="grow flex justify-around items-center"
               class:selected={transformOrder === TransformOrder.rotateThenTranslate}
               on:click={() => handleTransformOrderClick(TransformOrder.rotateThenTranslate)}>

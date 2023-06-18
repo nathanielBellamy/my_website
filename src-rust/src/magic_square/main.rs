@@ -307,7 +307,7 @@ impl MagicSquare {
             MagicSquare::request_animation_frame(g.borrow().as_ref().unwrap());
         }
         
-        let to_js = ui_buffer.clone().borrow().clone();
+        let to_js = ui_buffer.clone().borrow().clone().settings;
         serde_wasm_bindgen::to_value(&to_js).unwrap()
     }
 }

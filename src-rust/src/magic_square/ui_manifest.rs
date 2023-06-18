@@ -11,13 +11,14 @@ pub const INPUT_DRAW_PATTERN_TYPE: &'static str = "magic_square_input_draw_patte
 pub const INPUT_DRAW_PATTERN_COUNT: &'static str = "magic_square_input_draw_pattern_count";
 pub const INPUT_DRAW_PATTERN_OFFSET: &'static str = "magic_square_input_draw_pattern_offset";
 pub const INPUT_DRAW_PATTERN_SPEED: &'static str = "magic_square_input_draw_pattern_speed";
+pub const INPUT_TRANSFORM_ORDER: &'static str = "magic_square_input_transform_order";
+
 
 // GEOMETRY
 pub const INPUT_SHAPES: &'static str = "magic_square_input_shapes";
 pub const INPUT_RADIUS_BASE: &'static str = "magic_square_input_radius_base";
 pub const INPUT_RADIUS_STEP: &'static str = "magic_square_input_radius_step";
 pub const INPUT_RADIUS_OFFSET: &'static str = "magic_square_input_radius_offset";
-pub const INPUT_TRANSFORM_ORDER: &'static str = "magic_square_input_transform_order";
 
 // LFO 1
 pub const INPUT_LFO_1_ACTIVE: &'static str = "magic_square_input_lfo_1_active";
@@ -51,8 +52,10 @@ pub const INPUT_LFO_4_FREQ: &'static str = "magic_square_input_lfo_4_freq";
 pub const INPUT_LFO_4_PHASE: &'static str = "magic_square_input_lfo_4_phase";
 pub const INPUT_LFO_4_SHAPE: &'static str = "magic_square_input_lfo_4_shape";
 
-// PATTERN
-pub const INPUT_DRAW_PATTERN: &'static str = "magic_square_input_draw_pattern";
+// PRESET
+pub const INPUT_PRESET: &'static str = "magic_square_input_preset";
+
+//ROTATION
 
 pub const INPUT_X_ROT_BASE: &'static str = "magic_square_input_x_rot_base";
 pub const INPUT_Y_ROT_BASE: &'static str = "magic_square_input_y_rot_base";
@@ -86,7 +89,7 @@ pub const INPUT_MOUSE_TRACKING: &'static str = "magic_square_input_mouse_trackin
 // to ensure that all inputs are accounted for
 // 
 // also handy for copying and pasting when writing matches
-pub const INPUT_IDS: [&'static str; 54] = [
+pub const INPUT_IDS: [&'static str; 55] = [
     // COLOR
     INPUT_COLORS,
     INPUT_COLOR_DIRECTION,
@@ -135,6 +138,9 @@ pub const INPUT_IDS: [&'static str; 54] = [
     INPUT_LFO_4_FREQ,
     INPUT_LFO_4_PHASE,
     INPUT_LFO_4_SHAPE,
+
+    // PRESET
+    INPUT_PRESET,
 
     // ROTATION
     INPUT_X_ROT_BASE,

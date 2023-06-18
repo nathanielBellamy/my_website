@@ -104,6 +104,9 @@ pub struct Settings {
     pub lfo_4_phase: f32,
     pub lfo_4_shape: LfoShape,
 
+    // PRESET
+    pub preset: usize,
+
     // TODO:
     // mouse settings
     // MouseFollow - Always, Click + Drag, DoubleClick On/Off
@@ -205,6 +208,9 @@ impl Settings {
             lfo_4_freq: 35.0,
             lfo_4_phase: 0.0,
             lfo_4_shape: LfoShape::Sine,
+
+            // PRESET
+            preset: 0,
             
             // ROTATION
             x_rot_base: 0.0,
@@ -313,6 +319,17 @@ impl Settings {
             "RotateThenTranslate" => Ok(TransformOrder::RotateThenTranslate),
             "TranslateThenRotate" => Ok(TransformOrder::TranslateThenRotate),
             _ => Err(())
+        }
+    }
+
+    pub fn try_into_preset_idx(val: String) -> Result<usize, ()> {
+        let u: usize = match val.parse::<usize>() {
+            Ok(val) => val,
+            Err(_) => 0
+        };
+        match u < 64 {
+            true => Ok(u),
+            false => Ok(0)
         }
     }
 

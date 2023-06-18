@@ -4,10 +4,10 @@ use crate::magic_square::settings::Settings;
 use crate::magic_square::ui_manifest::{
     INPUT_COLORS,
     INPUT_COLOR_DIRECTION, INPUT_COLOR_SPEED,
-    // INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8,
     INPUT_DRAW_PATTERN_TYPE, INPUT_DRAW_PATTERN_COUNT, INPUT_DRAW_PATTERN_OFFSET, INPUT_DRAW_PATTERN_SPEED,
     INPUT_MOUSE_TRACKING,
     INPUT_SHAPES,
+    INPUT_PRESET,
     INPUT_RADIUS_BASE, INPUT_RADIUS_STEP,
     INPUT_TRANSFORM_ORDER,
     INPUT_X_ROT_BASE, INPUT_Y_ROT_BASE, INPUT_Z_ROT_BASE,
@@ -27,16 +27,29 @@ use super::shader_compiler::ShaderCompiler;
 use super::settings::{Colors, IndexedGradient};
 
 pub const EMPTY_COLORS: Colors = [[0.0;4]; CACHE_CAPACITY];
+pub const PRESET_CAPACITY: usize = 64;
 
-#[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct UiBuffer {
     pub settings: Settings,
+    pub presets: [Settings; PRESET_CAPACITY]
+}
+
+impl Default for UiBuffer{
+    fn default() -> UiBuffer {
+        UiBuffer {
+            settings: Settings::default(),
+            // TODO: default presets
+            presets: [Settings::default(); PRESET_CAPACITY],
+        }
+    }
 }
 
 impl UiBuffer {
     pub fn new() -> UiBuffer {
         UiBuffer {
             settings: Settings::new(),
+            presets: [Settings::new(); PRESET_CAPACITY]
         }
     }
 
@@ -52,7 +65,8 @@ impl UiBuffer {
             settings: Settings {
                 colors,
                 ..prev_settings
-            }
+            },
+            presets: [Settings::default(); PRESET_CAPACITY]
         }
     }
 
@@ -66,7 +80,10 @@ impl UiBuffer {
     }
 
     pub fn copy(&self) -> UiBuffer {
-        UiBuffer { settings: Settings {..self.settings} }
+        UiBuffer { 
+            settings: Settings {..self.settings},
+            presets: self.presets,
+        }
     }
 
     pub fn color_gradient_at_step(&self, step: u8, idx_a: usize, idx_b:usize) -> Rgba {
@@ -184,6 +201,11 @@ impl UiBuffer {
             INPUT_TRANSFORM_ORDER => {
                 if let Ok(val) = Settings::try_into_transform_order(val) {
                     self.settings.transform_order = val;
+                }
+            },
+            INPUT_PRESET => {
+                if let Ok(val) = Settings::try_into_preset_idx(val) {
+                    self.settings.preset = val
                 }
             },
             INPUT_X_ROT_BASE => {

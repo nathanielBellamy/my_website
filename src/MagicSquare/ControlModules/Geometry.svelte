@@ -87,7 +87,7 @@
         all
       </button>
     </div>
-    <div class="pt-2 pl-5 pr-5 grid grid-cols-4 grid-rows-4 gap-0">
+    <div class="grow pt-2 pl-5 pr-5 grid grid-cols-4 grid-rows-4 gap-0">
       {#each {length: 16} as _, i}
         <button on:click={(e) => handleShapeIndexSelect(e, i)}
                 class:selected={shapeIndex === i}>
