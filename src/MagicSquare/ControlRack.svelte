@@ -52,6 +52,11 @@
                        side={Side.left}>
           <slot name="geometry" />
         </ControlModule>
+      {:else if curr_mod_left === Module.presets}
+        <ControlModule title={i18n.t(Module.presets, langVal)}
+                       side={Side.left}>
+          <slot name="presets" />
+        </ControlModule>
       {:else if curr_mod_left === Module.rotation}
         <ControlModule title={i18n.t(Module.rotation, langVal)}
                        side={Side.left}>
@@ -86,6 +91,11 @@
         <ControlModule title={i18n.t(Module.geometry, langVal)}
                        side={Side.right}>
           <slot name="geometry" />
+        </ControlModule>
+      {:else if curr_mod_right === Module.presets}
+        <ControlModule title={i18n.t(Module.presets, langVal)}
+                       side={Side.right}>
+          <slot name="presets" />
         </ControlModule>
       {:else if curr_mod_right === Module.rotation}
         <ControlModule title={i18n.t(Module.rotation, langVal)}

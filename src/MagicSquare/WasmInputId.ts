@@ -52,6 +52,9 @@ export enum WasmInputId {
   lfo4Phase = "magic_square_input_lfo_4_phase",
   lfo4Shape = "magic_square_input_lfo_4_shape",
 
+  // presets
+  presetIdx = "magic_square_input_preset_idx",
+
   // rotation
   pitchBase = "magic_square_input_y_rot_base",
   pitchSpread = "magic_square_input_y_rot_spread",

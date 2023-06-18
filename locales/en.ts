@@ -30,6 +30,7 @@ export const localeEn: any = {
       geometry: 'geometry',
       lfo: "lfo",
       modules: "modules",
+      presets: "presets",
       radius: "radius",
       rotation: "rotation",
       translation: "translation"
@@ -91,6 +92,7 @@ export const localeEn: any = {
       drawPattern: "pattern",
       geometry: 'geometry',
       lfo: "lfo",
+      presets: "presets",
       radius: "radius",
       rotation: "rotation",
       translation: "translation"

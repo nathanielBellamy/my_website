@@ -266,9 +266,9 @@ impl MagicSquare {
                     // 0 < color_speed < 21
                     if color_idx_delay == delay_reset {
                         color_idx_offset_delay[0] = match ui_buffer.settings.color_direction {
-                            ColorDirection::In => (color_idx_offset + 1) % 8,
+                            ColorDirection::In => (color_idx_offset + 1) % CACHE_CAPACITY as u8,
                             ColorDirection::Fix => color_idx_offset,
-                            ColorDirection::Out => (color_idx_offset - 1) % 8,
+                            ColorDirection::Out => (color_idx_offset - 1) % CACHE_CAPACITY as u8,
                         };
                         color_idx_offset_delay[1] = 0;
                     }

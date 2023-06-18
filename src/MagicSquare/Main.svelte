@@ -23,6 +23,7 @@
   import { intoTransformOrder, TransformOrder } from './ControlModules/TransformOrder'
   import { ColorDirection, intoColorDirection } from './ControlModules/Color'
   import { intoShape, Shape } from './ControlModules/Shape'
+  import Presets from './ControlModules/Presets.svelte'
   // INIT LANG BOILER PLATE
   import { I18n, Lang } from '../I18n'
   import { lang } from '../stores/lang'
@@ -85,9 +86,9 @@
   function convertRgba(rgba: number[]): number[] {
     return rgba.map((x:number, idx: number) => {
       if (idx < 3) {
-        return x * 255
+        return round2(x * 255)
       } else {
-        return x
+        return round2(x)
       }
     })
   }
@@ -272,13 +273,6 @@
     yawY = round2(initialUiBuffer.settings.y_axis_z_rot_coeff)
   }
 
-  function handleRotationSliderDoubleClick(inputId: string) {
-    var input = document.getElementById(inputId)
-    input.value = 0.0
-    input.dispatchEvent(new Event('input', {bubbles: true}))
-  }
-
-  export let instance: number
   let prevSettings: StorageSettings | null
   let renderDataReady = false
   let hasBeenDestroyed = false
@@ -397,8 +391,8 @@
       translation_x_spread: translationXSpread,
       translation_y_base: translationYBase,
       translation_y_spread: translationYSpread,
-      translation_z_base: 0.0,
-      translation_z_spread: 0.0,
+      translation_z_base: translationXBase, // unused
+      translation_z_spread: translationXSpread, // unused
       mouse_tracking: mouseTracking,
     }
   }
@@ -407,16 +401,18 @@
 
   onDestroy(() => {
     hasBeenDestroyed = true
-    prevSettingsStore.update((_: StorageSettings) => {
-      return deriveStorageSettings()
-    })
+    const storageSettings: StorageSettings = deriveStorageSettings()
+    if (!Object.values(storageSettings).some(x => typeof x === 'undefined')) {
+      prevSettingsStore.update((_: StorageSettings) => storageSettings)
+      window.localStorage.setItem("magic_square_settings", JSON.stringify(storageSettings))
+    }
     unsubscribe()
     let app = document.getElementById(("app_main"))
     app.dispatchEvent(new Event("destroymswasm", {bubbles: true}))
   })
 
   afterUpdate(() => {
-    const res = deriveStorageSettings()
+    const res: StorageSettings = deriveStorageSettings()
     if (Object.values(res).every(x => typeof x !== 'undefined')){
       window.localStorage.setItem(
         "magic_square_settings",
@@ -427,6 +423,7 @@
 </script>
 
 <div id="magic_square"
+     on:click={() => console.dir(deriveStorageSettings())}
      class="magic_square flex flex-wrap gap-2">
   <div id="magic_square_canvas_container"
        class="magic_square_canvas_container flex flex-col justify-around display">
@@ -548,8 +545,7 @@
         {#if !renderDataReady}
           <Loading />
         {:else}
-          <Geometry bind:transformOrder={transformOrder}
-                    bind:shapes={shapes}>
+          <Geometry bind:shapes={shapes}>
             <div slot="shapes">
               <input id={WasmInputId.shapes} 
                      class="hidden_input"/>
@@ -876,6 +872,24 @@
           </LfoContainer>
         {/if}
       </div>
+      <!-- LFO END -->
+      <!-- PRESETS START -->
+      <div slot="presets"
+           class="h-full">
+        {#if !renderDataReady}
+          <Loading />
+        {:else}
+          <Presets>
+            <input id={WasmInputId.presetIdx}
+                   value={presetIdx}
+                   class="hidden_input"/>
+          </Presets>
+        {/if}
+      </div>
+      <!-- PRESETS ENDS -->
+
+
+      <!-- TRANSLATION -->
       <div slot="translation"
            class="h-full">
         {#if !renderDataReady}
@@ -970,7 +984,7 @@
           </Translation>
         {/if}
       </div>
-      <!-- LFO END -->
+      <!-- TRANSFORMATION END -->
 
       <!-- ROTATION START -->
       <div slot="rotation"
