@@ -423,8 +423,8 @@
 </script>
 
 <div id="magic_square"
-     on:click={() => console.dir(deriveStorageSettings())}
      class="magic_square flex flex-wrap gap-2">
+     <!-- on:click={() => console.dir(deriveStorageSettings())} -->
   <div id="magic_square_canvas_container"
        class="magic_square_canvas_container flex flex-col justify-around display">
     <canvas id="magic_square_canvas"

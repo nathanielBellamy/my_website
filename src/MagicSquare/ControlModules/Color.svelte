@@ -50,7 +50,7 @@
 
         colors[idxLeft + step] = newColor
         colorPickers[idxLeft + step].color.rgba = {r: newColor[0], g: newColor[1], b: newColor[2], a: newColor[3]}
-        input.value = JSON.stringify({idx: step, rgba: newColor})
+        input.value = JSON.stringify({idx: idxLeft + step, rgba: newColor})
         input.dispatchEvent(new Event('input', {bubbles: true}))
         step += 1 
       }

@@ -104,7 +104,7 @@ impl Lfo {
             match self.dest {
                 LfoDestination::PitchBase => {
                     ui_buffer.settings.y_rot_base = ui_buffer.settings.y_rot_base 
-                                                        + self.eval(t)
+                                                        + self.eval(t) * 3.14
                 },
                 LfoDestination::PitchSpread => {
                     ui_buffer.settings.y_rot_spread = ui_buffer.settings.y_rot_spread
@@ -120,7 +120,7 @@ impl Lfo {
                 },
                 LfoDestination::RollBase => {
                     ui_buffer.settings.x_rot_base = ui_buffer.settings.x_rot_base 
-                                                        + self.eval(t)
+                                                        + self.eval(t) * 3.14
                 },
                 LfoDestination::RollSpread => {
                     ui_buffer.settings.x_rot_spread = ui_buffer.settings.x_rot_spread
@@ -136,7 +136,7 @@ impl Lfo {
                 },
                 LfoDestination::YawBase => {
                     ui_buffer.settings.z_rot_base = ui_buffer.settings.z_rot_base 
-                                                        + self.eval(t)
+                                                        + self.eval(t) * 3.14
                 },
                 LfoDestination::YawSpread => {
                     ui_buffer.settings.z_rot_spread = ui_buffer.settings.z_rot_spread
