@@ -108,7 +108,7 @@ impl Lfo {
                 },
                 LfoDestination::PitchSpread => {
                     ui_buffer.settings.y_rot_spread = ui_buffer.settings.y_rot_spread
-                                                        + self.eval(t)
+                                                        + self.eval(t) * 0.05
                 },
                 LfoDestination::PitchX => {
                     ui_buffer.settings.x_axis_y_rot_coeff = ui_buffer.settings.x_axis_y_rot_coeff
@@ -124,7 +124,7 @@ impl Lfo {
                 },
                 LfoDestination::RollSpread => {
                     ui_buffer.settings.x_rot_spread = ui_buffer.settings.x_rot_spread
-                                                        + self.eval(t)
+                                                        + self.eval(t) * 0.05
                 },
                 LfoDestination::RollX => {
                     ui_buffer.settings.x_axis_x_rot_coeff = ui_buffer.settings.x_axis_x_rot_coeff
@@ -140,7 +140,7 @@ impl Lfo {
                 },
                 LfoDestination::YawSpread => {
                     ui_buffer.settings.z_rot_spread = ui_buffer.settings.z_rot_spread
-                                                        + self.eval(t)
+                                                        + self.eval(t) * 0.05
                 },
                 LfoDestination::YawX => {
                     ui_buffer.settings.x_axis_z_rot_coeff = ui_buffer.settings.x_axis_z_rot_coeff

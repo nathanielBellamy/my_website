@@ -3,6 +3,7 @@ export enum Module {
   drawPattern = 'drawPattern',
   geometry = 'geometry',
   lfo = 'lfo',
+  presets = 'presets',
   rotation = 'rotation',
   translation = 'translation'
 }

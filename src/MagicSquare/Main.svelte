@@ -478,8 +478,13 @@
         {#if !renderDataReady}
           <Loading />
         {:else}
-          <DrawPatternContainer drawPatternType={drawPatternType}
-                                drawPatternCount={drawPatternCount}>
+          <DrawPatternContainer bind:transformOrder={transformOrder}
+                                drawPatternType={drawPatternType}>
+            <div slot="transformOrder">
+              <input id={WasmInputId.transformOrder}
+                     bind:value={transformOrder}
+                     class="hidden_input"/>
+            </div>
             <div slot="countAndSpeed"
                  class="grow flex flex-col justify-between items-stretch">
               <div class="grow w-full flex flex-col justify-center items-stretch"
@@ -549,11 +554,7 @@
               <input id={WasmInputId.shapes} 
                      class="hidden_input"/>
             </div>
-            <div slot="transformOrder">
-              <input id={WasmInputId.transformOrder}
-                     bind:value={transformOrder}
-                     class="hidden_input"/>
-            </div>
+
             <div  class="pt-2 pl-5 pr-5 grow flex flex-col justify-around items-stretch"
                   slot="radiusSliders">
               <div class="w-full flex flex-col justify-between items-stretch"

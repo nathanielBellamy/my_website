@@ -1,10 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { TransformOrder } from "./TransformOrder"
   import { WasmInputId } from "../WasmInputId"
   import { intoShape, Shape } from "./Shape"
 
-  export let transformOrder: TransformOrder
   export let shapes: Shape[]
 
   let shapeIndex: number = 0
@@ -22,13 +20,6 @@
     input.value = JSON.stringify({shape: shapes[shapeIndex], index: shapeIndex})
     input.dispatchEvent(new Event('input', {bubbles: true}))
   } 
-
-  function handleTransformOrderClick(tr_or: TransformOrder) {
-    transformOrder = tr_or
-    var input = document.getElementById(WasmInputId.transformOrder)
-    input.value = tr_or
-    input.dispatchEvent(new Event('input', {bubbles: true}))
-  }
 
   function handleAllClick() {
     const new_shapes = shapes.map(_ => shapes[shapeIndex])
@@ -104,24 +95,6 @@
         </button>
       {/each}
     </div>
-  </div>
-  <div class="grow flex flex-col justify-between items-stretch">
-    <div class="title flex items-stretch pl-5 underline">
-      transform order
-    </div>
-    <div class="pl-2 pr-2 flex justify-around">
-      <button class="grow flex justify-around items-center"
-              class:selected={transformOrder === TransformOrder.rotateThenTranslate}
-              on:click={() => handleTransformOrderClick(TransformOrder.rotateThenTranslate)}>
-        R -> T
-      </button>
-      <button class="grow flex justify-around items-center"
-              class:selected={transformOrder === TransformOrder.translateThenRotate}
-              on:click={() => handleTransformOrderClick(TransformOrder.translateThenRotate)}>
-        T -> R
-      </button>
-    </div>
-    <slot name="transformOrder"/>
   </div>
   <div class="grow flex flex-col justify-between items-stretch">
     <div class="title flex items-stretch pl-5 underline">

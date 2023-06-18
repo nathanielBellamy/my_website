@@ -44,8 +44,9 @@ impl UiBuffer {
         log(&format!("from_prev_settings prev_settings: {:?}", prev_settings));
         let mut colors: [Rgba; CACHE_CAPACITY] = EMPTY_COLORS;
         for (idx, color) in prev_settings.colors.iter().enumerate() {
-            colors[idx] = conver_rgba(*color);
+            colors[idx] = UiBuffer::convert_rgba(*color)
         }
+
         UiBuffer { 
             settings: Settings {
                 colors,
