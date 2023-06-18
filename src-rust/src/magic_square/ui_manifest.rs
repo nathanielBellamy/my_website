@@ -3,7 +3,6 @@
 // COLOR
 pub const INPUT_COLORS: &'static str = "magic_square_input_colors";
 pub const INPUT_COLOR_DIRECTION: &'static str = "magic_square_input_color_direction";
-pub const INPUT_COLOR_GRADIENT: &'static str = "magic_square_input_color_gradient";
 pub const INPUT_COLOR_SPEED: &'static str = "magic_square_input_color_speed";
 
 
@@ -87,11 +86,10 @@ pub const INPUT_MOUSE_TRACKING: &'static str = "magic_square_input_mouse_trackin
 // to ensure that all inputs are accounted for
 // 
 // also handy for copying and pasting when writing matches
-pub const INPUT_IDS: [&'static str; 55] = [
+pub const INPUT_IDS: [&'static str; 54] = [
     // COLOR
     INPUT_COLORS,
     INPUT_COLOR_DIRECTION,
-    INPUT_COLOR_GRADIENT,
     INPUT_COLOR_SPEED,
 
     // DRAW PATTERN

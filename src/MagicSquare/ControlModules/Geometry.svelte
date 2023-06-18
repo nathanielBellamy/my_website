@@ -8,23 +8,18 @@
   export let shapes: Shape[]
 
   let shapeIndex: number = 0
-  let shape: Shape
-
-  $: shapes[shapeIndex] = shape
 
   function handleShapeIndexSelect(e: any, new_idx: number) {
     e.stopPropagation()
     shapeIndex = new_idx
-    shape = shapes[new_idx]
   }
 
   function handleShapeSelect(e: any) {
     e.stopPropagation()
     var input = document.getElementById(WasmInputId.shapes)
-    shape = intoShape(e.target.value.trim())
-    shapes[shapeIndex] = shape
+    shapes[shapeIndex] = intoShape(e.target.value.trim())
     shapes = [...shapes]
-    input.value = JSON.stringify({shape, index: shapeIndex})
+    input.value = JSON.stringify({shape: shapes[shapeIndex], index: shapeIndex})
     input.dispatchEvent(new Event('input', {bubbles: true}))
   } 
 
@@ -36,10 +31,10 @@
   }
 
   function handleAllClick() {
-    shapes.forEach(old_shape => old_shape = shape)
+    const new_shapes = shapes.map(_ => shapes[shapeIndex])
+    shapes = [...new_shapes]
     var input = document.getElementById(WasmInputId.shapes)
-    shapes = [...shapes]
-    input.value = JSON.stringify({shape, index: 16})
+    input.value = JSON.stringify({shape: shapes[shapeIndex], index: 16})
     input.dispatchEvent(new Event('input', {bubbles: true}))
   }
 
@@ -56,7 +51,7 @@
               on:input={(e) => e.stopPropagation()}
               on:change={handleShapeSelect}>
         <optgroup label="2d">
-          <option selected={shape === Shape.triangle}
+          <option selected={shapes[shapeIndex] === Shape.triangle}
                   value={Shape.triangle}>
             Triangle
           </option>
@@ -66,7 +61,7 @@
           <option>
             Pentagon
           </option>
-          <option selected={shape === Shape.hexagon}
+          <option selected={shapes[shapeIndex] === Shape.hexagon}
                   value={Shape.hexagon}>
             Hexagon
           </option>
@@ -90,7 +85,8 @@
           <option>
             Dodecahedron
           </option>
-          <option value={Shape.icosahedron}>
+          <option selected={shapes[shapeIndex] === Shape.icosahedron}
+                  value={Shape.icosahedron}>
             Icosahedron
           </option>
         </optgroup>

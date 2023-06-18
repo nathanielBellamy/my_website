@@ -5,7 +5,7 @@ use wasm_bindgen::JsValue;
 
 use super::geometry::Shape;
 use super::geometry::cache::CACHE_CAPACITY;
-use crate::magic_square::main::log;
+// use crate::magic_square::main::log;
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub enum DrawPatternType {
@@ -288,8 +288,7 @@ impl Settings {
     }
 
     pub fn try_into_draw_pattern_type(pt: String) -> Result<DrawPatternType, ()> {
-        log("HERHEHERHE WOW ZOW");
-        log(&pt);
+        // log(&pt);
         match pt.as_str() {
             "Fix" => Ok(DrawPatternType::Fix),
             "Out" => Ok(DrawPatternType::Out),
@@ -335,16 +334,11 @@ impl Settings {
 
     pub fn try_into_indexed_color(val: String) -> Result<IndexedColor, JsValue> {
         let val = js_sys::JSON::parse(&val).unwrap();
-        let res: IndexedColorRaw = serde_wasm_bindgen::from_value(val)?;
-        let mut rgba: Rgba = [0.0, 0.0, 0.0, 0.0];
-        for (idx, num_str) in res.rgba.split(",").enumerate() {
-            let mut num: f32 = num_str.parse::<f32>().expect("ERROR PARSING RGBA IN RUST WASM");
-            if idx < 3 {
-                num = num / 255.0;
-            }
-            rgba[idx] = num;
+        let mut res: IndexedColor = serde_wasm_bindgen::from_value(val)?;
+        for i in 0..3 {
+            res.rgba[i] = res.rgba[i] / 255.0
         }
-        Ok(IndexedColor{index: res.index, rgba})
+        Ok(res)
     }
 
 
@@ -366,14 +360,9 @@ pub struct IndexedShape {
 #[derive(Clone, Deserialize, Serialize, Debug)]
 pub struct IndexedColor {
     pub rgba: Rgba, 
-    pub index: usize
+    pub idx: usize
 }
 
-#[derive(Clone, Deserialize, Serialize, Debug)]
-pub struct IndexedColorRaw {
-    pub rgba: String, 
-    pub index: usize
-}
 
 #[derive(Clone, Deserialize, Serialize, Debug)]
 pub struct IndexedGradient {

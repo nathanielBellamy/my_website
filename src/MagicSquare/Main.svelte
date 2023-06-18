@@ -21,8 +21,7 @@
   import { WasmInputId } from './WasmInputId'
   import { prevSettingsStore } from './PrevSettingsStore'
   import { intoTransformOrder, TransformOrder } from './ControlModules/TransformOrder'
-  import { ColorDirection, intoColorDirection, intoColorGradient } from './ControlModules/Color'
-  import type { ColorGradient } from './ControlModules/Color'
+  import { ColorDirection, intoColorDirection } from './ControlModules/Color'
   import { intoShape, Shape } from './ControlModules/Shape'
   // INIT LANG BOILER PLATE
   import { I18n, Lang } from '../I18n'
@@ -83,15 +82,18 @@
   let colors: number[][]
 
   // CSS (inline in Color.svelte) uses Int:0-255, WebGL uses Float:0.0-1.0
-  function convertRgbaValue(val: number, idx: number): number {
-    if (idx < 3) { // do for r, g, b, but not a
-      val = val * 255
-    }
-    return val
+  function convertRgba(rgba: number[]): number[] {
+    return rgba.map((x:number, idx: number) => {
+      if (idx < 3) {
+        return x * 255
+      } else {
+        return x
+      }
+    })
   }
 
   function setInitialColorVars(initialUiBuffer: any) {
-    colors = initialUiBuffer.settings.colors.map((x: number[]) => x.map((y:number , idx: number) => convertRgbaValue(y, idx)))
+    colors = initialUiBuffer.settings.colors.map((x: number[]) => convertRgba(x))
     colorDirection = intoColorDirection(initialUiBuffer.settings.color_direction)
     colorSpeed = initialUiBuffer.settings.color_speed
   }
@@ -456,8 +458,6 @@
             <div slot="hiddenInputs">
               <input id={WasmInputId.colorDirection}
                      bind:value={colorDirection}
-                     class="hidden_input">
-              <input id={WasmInputId.colorGradient}
                      class="hidden_input">
               <input id={WasmInputId.colors}
                      bind:value={colors}

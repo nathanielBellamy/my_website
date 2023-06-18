@@ -3,7 +3,7 @@ use crate::magic_square::main::log;
 use crate::magic_square::settings::Settings;
 use crate::magic_square::ui_manifest::{
     INPUT_COLORS,
-    INPUT_COLOR_DIRECTION, INPUT_COLOR_GRADIENT, INPUT_COLOR_SPEED,
+    INPUT_COLOR_DIRECTION, INPUT_COLOR_SPEED,
     // INPUT_COLOR_1, INPUT_COLOR_2, INPUT_COLOR_3, INPUT_COLOR_4, INPUT_COLOR_5, INPUT_COLOR_6, INPUT_COLOR_7, INPUT_COLOR_8,
     INPUT_DRAW_PATTERN_TYPE, INPUT_DRAW_PATTERN_COUNT, INPUT_DRAW_PATTERN_OFFSET, INPUT_DRAW_PATTERN_SPEED,
     INPUT_MOUSE_TRACKING,
@@ -26,7 +26,7 @@ use super::main::Rgba;
 use super::shader_compiler::ShaderCompiler;
 use super::settings::{Colors, IndexedGradient};
 
-pub const EMPTY_COLORS: Colors = [[0.0;4]; 16];
+pub const EMPTY_COLORS: Colors = [[0.0;4]; CACHE_CAPACITY];
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub struct UiBuffer {
@@ -41,14 +41,15 @@ impl UiBuffer {
     }
 
     pub fn from_prev_settings(prev_settings: Settings) -> UiBuffer {
-        let mut colors: Colors = EMPTY_COLORS;
-        prev_settings.colors.iter().enumerate().map(|(idx, x)| {
-            colors[idx] = UiBuffer::convert_rgba(*x)
-        });
+        log(&format!("from_prev_settings prev_settings: {:?}", prev_settings));
+        let mut colors: [Rgba; CACHE_CAPACITY] = EMPTY_COLORS;
+        for (idx, color) in prev_settings.colors.iter().enumerate() {
+            colors[idx] = conver_rgba(*color);
+        }
         UiBuffer { 
             settings: Settings {
                 colors,
-                ..prev_settings 
+                ..prev_settings
             }
         }
     }
@@ -83,7 +84,7 @@ impl UiBuffer {
     pub fn set_color_gradient(&mut self, ig: IndexedGradient){
         let mut idx: usize = 1;
         while ig.idx_a + idx < ig.idx_b {
-            self.settings.colors[idx] = self.color_gradient_at_step(idx as u8, ig.idx_a,  ig.idx_b);
+            self.settings.colors[ig.idx_a + idx] = self.color_gradient_at_step(idx as u8, ig.idx_a,  ig.idx_b);
             idx += 1
         }
     }
@@ -110,12 +111,6 @@ impl UiBuffer {
                     self.settings.color_direction = val
                 }
             },
-            INPUT_COLOR_GRADIENT => {
-                if let Ok(indexed_gradient) = Settings::try_into_indexed_gradient(val) {
-                    self.set_color_gradient(indexed_gradient);
-                    self.update_frag_shader_cache(frag_shader_cache);
-                }
-            },
             INPUT_COLOR_SPEED => {
                 if let Ok(val) = val.parse::<u8>() {
                     self.settings.color_speed = val
@@ -123,7 +118,7 @@ impl UiBuffer {
             },
             INPUT_COLORS => {
                 if let Ok(indexed_color) = Settings::try_into_indexed_color(val) {
-                    self.settings.colors[indexed_color.index] = indexed_color.rgba;
+                    self.settings.colors[indexed_color.idx] = indexed_color.rgba;
                     self.update_frag_shader_cache(frag_shader_cache);
                 }
             },

@@ -5,7 +5,6 @@ export enum WasmInputId {
 
   // color
   colorDirection = "magic_square_input_color_direction",
-  colorGradient = "magic_square_input_color_gradient",
   colorSpeed = "magic_square_input_color_speed",
   colors = "magic_square_input_colors",
 
