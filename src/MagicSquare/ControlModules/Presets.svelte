@@ -1,25 +1,53 @@
 <script lang="ts">
   let bank: number = 0
   let preset: number = 0
+
+  const banks: string[] = ['A', 'B', 'C', 'D']
+  
+  function toBank(preset: number): string {
+
+    if ( 0< preset && preset < 16) {
+      return banks[0]
+    } else if (15 < preset && preset < 32) {
+      return banks[1]
+    } else if (31 < preset && preset < 48) {
+      return banks[2]
+    } else if (47 < preset && preset < 64) {
+      return banks[3]
+    }
+
+    return ''
+  }
 </script>
 
 <section class="h-full flex flex-col justify-around items-stretch">
+  <div class="flex justify-around items-center">
+    <div class="flex justify-around">
+      CURR
+    </div>
+    <div class="flex justify-around">
+      BANK {toBank(preset)}
+    </div>
+    <div class="flex justify-around">
+      PRESET {preset + 1}
+    </div>
+  </div>
   <div class="flex flex-col justify-between items-stretch">
-    <div class="title text-left">
-      Bank {bank + 1}
+    <div class="title pl-5 text-left">
+      Bank
     </div>
     <div class="grid grid-cols-4">
       {#each {length: 4} as _, i}
         <button on:click={() => bank = i}
                 class:selected={bank === i}>
-          {i + 1}
+        {banks[i]}
         </button>
       {/each}
     </div>
   </div>
   <div class="grow flex flex-col justify-around items-stretch">
-    <div class="title text-left">
-      Preset {preset + 1}
+    <div class="title pl-5 text-left">
+      Preset
     </div>
     <div class="grow grid grid-cols-4 grid-rows-4">
       {#if bank === 0}
