@@ -1,3 +1,4 @@
+use crate::JsValue;
 use crate::magic_square::main::log;
 use crate::magic_square::settings::Settings;
 use crate::magic_square::ui_manifest::{
@@ -27,7 +28,7 @@ use super::settings::{Colors, IOGradient, IOPresetAction};
 
 pub const EMPTY_COLORS: Colors = [[0.0;4]; CACHE_CAPACITY];
 pub const PRESET_CAPACITY: usize = 64;
-pub const PRESETS_DEFAULT: [Settings; PRESET_CAPACITY] = [Settings::new(); PRESET_CAPACITY];
+// pub const PRESETS_DEFAULT: [Settings; PRESET_CAPACITY] = [Settings::new(); PRESET_CAPACITY];
 
 #[derive(Clone, Copy, Debug)]
 pub struct UiBuffer {
@@ -53,37 +54,45 @@ impl UiBuffer {
         }
     }
 
-    pub fn from_prev_settings(prev_settings: Settings) -> UiBuffer {
-        let mut colors: [Rgba; CACHE_CAPACITY] = EMPTY_COLORS;
-        for (idx, color) in prev_settings.colors.iter().enumerate() {
-            if idx < CACHE_CAPACITY {
-                colors[idx] = UiBuffer::convert_rgba(*color)
-            }
-        }
-
-            UiBuffer { 
-            settings: Settings {
-                colors,
-                ..prev_settings
-            },
-            presets: [Settings::new(); PRESET_CAPACITY]
-        }
-    }
-
-    pub fn convert_rgba(rgba: [f32; 4]) -> [f32; 4] {
-        let mut res: [f32; 4] = [0.0, 0.0, 0.0, 0.0];
-        res[0] = rgba[0] / 255.0;
-        res[1] = rgba[1] / 255.0;
-        res[2] = rgba[2] / 255.0;
-        res[3] = rgba[3];
-        res
-    }
-
     pub fn copy(&self) -> UiBuffer {
         UiBuffer { 
             settings: Settings {..self.settings},
             presets: self.presets,
         }
+    }
+
+    pub fn from(settings: JsValue, presets: JsValue) -> UiBuffer {
+                // log(&format!("{:?}", prev_settings));
+        let settings: Settings = match serde_wasm_bindgen::from_value(settings){
+            Ok(res) => {
+                log("SUCCESSFUL SETTINGS PARSE");
+                // log(&format!("{:?}", res));
+                res
+            },
+            Err(e) => {
+                log(&format!("{:?}", e));
+                Settings::new()
+            }
+        };
+
+        let presets_vec: Vec<Settings> = match serde_wasm_bindgen::from_value(presets) {
+            Ok(res) => {
+                log("SUCCESSFUL PRESETS PARSE");
+                res
+
+            },
+            Err(e) => {
+                log(&format!("{:?}", e));
+                [Settings::new(); PRESET_CAPACITY].to_vec()
+            }
+        };
+
+        let mut presets: [Settings; PRESET_CAPACITY] = [Settings::new(); PRESET_CAPACITY];
+        for (idx, p) in presets.iter_mut().enumerate() {
+            *p = presets_vec[idx];
+        }
+
+        UiBuffer { settings, presets }
     }
 
     pub fn color_gradient_at_step(&self, step: u8, idx_a: usize, idx_b:usize) -> Rgba {

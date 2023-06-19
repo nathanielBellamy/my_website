@@ -83,10 +83,12 @@
   let colors: number[][]
 
   // CSS (inline in Color.svelte) uses Int:0-255, WebGL uses Float:0.0-1.0
-  function convertRgba(rgba: number[]): number[] {
+  function convertRgba(rgba: number[], dir: string): number[] {
     return rgba.map((x:number, idx: number) => {
-      if (idx < 3) {
+      if (idx < 3 && dir == 'up') {
         return round2(x * 255)
+      } else if (idx < 3 && dir == 'down') {
+        return round2(x / 255)
       } else {
         return round2(x)
       }
@@ -100,7 +102,7 @@
   }
 
   function setInitialColorVars(initialSettings: any) {
-    colors = initialSettings.colors.map((x: number[]) => convertRgba(x))
+    colors = initialSettings.colors.map((x: number[]) => convertRgba(x, 'up'))
     colorDirection = intoColorDirection(initialSettings.color_direction)
     colorSpeed = initialSettings.color_speed
   }
@@ -338,7 +340,7 @@
   function deriveStorageSettings(): StorageSettings {
     return {
       // Color
-      colors: colors,
+      colors: (colors || []).map(color => convertRgba(color, 'down')),
       color_direction: colorDirection,
       color_speed: colorSpeed,
 

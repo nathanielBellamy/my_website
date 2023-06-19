@@ -69,7 +69,7 @@
     <div class="title pl-5 text-left">
       Preset
     </div>
-    <div class="grow p-5 grid grid-cols-4 grid-rows-5">
+    <div class="grow p-5 grid grid-cols-4 grid-rows-5 gap-2">
       <button class="col-span-2"
               on:click={() => presetAction(PresetAction.set)}>
         SET
