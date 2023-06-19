@@ -53,7 +53,7 @@ export enum WasmInputId {
   lfo4Shape = "magic_square_input_lfo_4_shape",
 
   // presets
-  presetIdx = "magic_square_input_preset_idx",
+  preset = "magic_square_input_preset",
 
   // rotation
   pitchBase = "magic_square_input_y_rot_base",

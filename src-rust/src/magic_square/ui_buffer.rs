@@ -1,4 +1,3 @@
-use serde::{Deserialize, Serialize};
 use crate::magic_square::main::log;
 use crate::magic_square::settings::Settings;
 use crate::magic_square::ui_manifest::{
@@ -24,7 +23,7 @@ use crate::magic_square::ui_manifest::{
 use super::geometry::cache::{Cache, CACHE_CAPACITY};
 use super::main::Rgba;
 use super::shader_compiler::ShaderCompiler;
-use super::settings::{Colors, IndexedGradient};
+use super::settings::{Colors, IOGradient, IOPresetAction};
 
 pub const EMPTY_COLORS: Colors = [[0.0;4]; CACHE_CAPACITY];
 pub const PRESET_CAPACITY: usize = 64;
@@ -32,15 +31,17 @@ pub const PRESET_CAPACITY: usize = 64;
 #[derive(Clone, Copy, Debug)]
 pub struct UiBuffer {
     pub settings: Settings,
+    pub temp: Settings,
     pub presets: [Settings; PRESET_CAPACITY]
 }
 
 impl Default for UiBuffer{
     fn default() -> UiBuffer {
         UiBuffer {
-            settings: Settings::default(),
+            settings: Settings::new(),
+            temp: Settings::new(), // for a temporarily loaded preset 
             // TODO: default presets
-            presets: [Settings::default(); PRESET_CAPACITY],
+            presets: [Settings::new(); PRESET_CAPACITY],
         }
     }
 }
@@ -49,6 +50,7 @@ impl UiBuffer {
     pub fn new() -> UiBuffer {
         UiBuffer {
             settings: Settings::new(),
+            temp: Settings::new(),
             presets: [Settings::new(); PRESET_CAPACITY]
         }
     }
@@ -61,12 +63,13 @@ impl UiBuffer {
             }
         }
 
-        UiBuffer { 
+            UiBuffer { 
             settings: Settings {
                 colors,
                 ..prev_settings
             },
-            presets: [Settings::default(); PRESET_CAPACITY]
+            temp: Settings::new(),
+            presets: [Settings::new(); PRESET_CAPACITY]
         }
     }
 
@@ -82,6 +85,7 @@ impl UiBuffer {
     pub fn copy(&self) -> UiBuffer {
         UiBuffer { 
             settings: Settings {..self.settings},
+            temp: Settings {..self.temp},
             presets: self.presets,
         }
     }
@@ -100,7 +104,7 @@ impl UiBuffer {
         result
     }
 
-    pub fn set_color_gradient(&mut self, ig: IndexedGradient){
+    pub fn set_color_gradient(&mut self, ig: IOGradient){
         let mut idx: usize = 1;
         while ig.idx_a + idx < ig.idx_b {
             self.settings.colors[ig.idx_a + idx] = self.color_gradient_at_step(idx as u8, ig.idx_a,  ig.idx_b);
@@ -113,6 +117,13 @@ impl UiBuffer {
             *shader = ShaderCompiler::into_frag_shader_string(&self.settings.colors[idx]);
         }
     }
+
+    pub fn swap_settings_and_temp(&mut self) {
+        let old_settings = self.settings;
+        self.settings = self.temp;
+        self.temp = old_settings;
+    }
+
 
     pub fn update(
             &mut self, 
@@ -136,19 +147,19 @@ impl UiBuffer {
                 }
             },
             INPUT_COLORS => {
-                if let Ok(indexed_color) = Settings::try_into_indexed_color(val) {
-                    self.settings.colors[indexed_color.idx] = indexed_color.rgba;
+                if let Ok(io_color) = Settings::try_into_io_color(val) {
+                    self.settings.colors[io_color.idx] = io_color.rgba;
                     self.update_frag_shader_cache(frag_shader_cache);
                 }
             },
             INPUT_SHAPES => {
-                if let Ok(indexed_shape) = Settings::try_into_indexed_shape(val) {
-                    if indexed_shape.index == 16 { // magic number indicating update all
+                if let Ok(io_shape) = Settings::try_into_io_shape(val) {
+                    if io_shape.index == 16 { // magic number indicating update all TODO: make not magic
                         for shape in self.settings.shapes.iter_mut() {
-                            *shape = indexed_shape.shape;
+                            *shape = io_shape.shape;
                         }
                     } else {
-                        self.settings.shapes[indexed_shape.index] = indexed_shape.shape;
+                        self.settings.shapes[io_shape.index] = io_shape.shape;
                     }
                 }
             },
@@ -204,8 +215,20 @@ impl UiBuffer {
                 }
             },
             INPUT_PRESET => {
-                if let Ok(val) = Settings::try_into_preset_idx(val) {
-                    self.settings.preset = val
+                if let Ok(io_preset) = Settings::try_into_io_preset(val) {
+                    self.settings.preset = io_preset.preset;
+                    match io_preset.action {
+                        IOPresetAction::Load => self.temp = self.presets[io_preset.preset],
+                        IOPresetAction::Save => self.presets[io_preset.preset] = Settings {..self.settings},
+                        IOPresetAction::Set => {
+                            self.settings = self.presets[io_preset.preset];
+                            self.update_frag_shader_cache(frag_shader_cache);
+                        },
+                        IOPresetAction::Show => {
+                            self.swap_settings_and_temp();
+                            self.update_frag_shader_cache(frag_shader_cache);
+                        },
+                    }
                 }
             },
             INPUT_X_ROT_BASE => {

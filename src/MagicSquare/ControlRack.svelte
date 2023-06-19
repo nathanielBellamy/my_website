@@ -18,8 +18,8 @@
     right = 'right'
   }
 
-  let curr_mod_left: Module = Module.geometry
-  let curr_mod_right: Module = Module.lfo
+  let curr_mod_left: Module = Module.presets
+  let curr_mod_right: Module = Module.color
 </script>
 
 <div id="magic_square_control_rack"

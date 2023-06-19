@@ -55,6 +55,9 @@ export interface StorageSettings {
   lfo_4_freq: number,
   lfo_4_phase: number,
   lfo_4_shape: LfoShape,
+
+  // PRESET
+  preset: number,
  
   // ROTATION
   x_rot_base: number,

@@ -70,11 +70,11 @@
   let drawPatternOffset: number
   let drawPatternSpeed: number
 
-  function setInitialDrawPatternVars(initialUiBuffer: any) {
-    drawPatternType = intoDrawPatternType(initialUiBuffer.settings.draw_pattern_type)
-    drawPatternCount = initialUiBuffer.settings.draw_pattern_count
-    drawPatternOffset = initialUiBuffer.settings.draw_pattern_offset
-    drawPatternSpeed = initialUiBuffer.settings.draw_pattern_speed
+  function setInitialDrawPatternVars(initialSettings: any) {
+    drawPatternType = intoDrawPatternType(initialSettings.draw_pattern_type)
+    drawPatternCount = initialSettings.draw_pattern_count
+    drawPatternOffset = initialSettings.draw_pattern_offset
+    drawPatternSpeed = initialSettings.draw_pattern_speed
   }
 
   // COLOR
@@ -99,10 +99,10 @@
     input.dispatchEvent(new Event('input', {bubbles: true}))
   }
 
-  function setInitialColorVars(initialUiBuffer: any) {
-    colors = initialUiBuffer.settings.colors.map((x: number[]) => convertRgba(x))
-    colorDirection = intoColorDirection(initialUiBuffer.settings.color_direction)
-    colorSpeed = initialUiBuffer.settings.color_speed
+  function setInitialColorVars(initialSettings: any) {
+    colors = initialSettings.colors.map((x: number[]) => convertRgba(x))
+    colorDirection = intoColorDirection(initialSettings.color_direction)
+    colorSpeed = initialSettings.color_speed
   }
 
   // GEOMETRY
@@ -111,11 +111,11 @@
   let shapes: Shape[]
   let transformOrder: TransformOrder
 
-  function setInitialGeometryVars(initialUiBuffer: any) {
-    radiusBase = round2(initialUiBuffer.settings.radius_base)
-    radiusStep = round2(initialUiBuffer.settings.radius_step)
-    shapes = initialUiBuffer.settings.shapes.map((x:string) => intoShape(x))
-    transformOrder = intoTransformOrder(initialUiBuffer.settings.transform_order)
+  function setInitialGeometryVars(initialSettings: any) {
+    radiusBase = round2(initialSettings.radius_base)
+    radiusStep = round2(initialSettings.radius_step)
+    shapes = initialSettings.shapes.map((x:string) => intoShape(x))
+    transformOrder = intoTransformOrder(initialSettings.transform_order)
   }
 
   function round2(val: number){
@@ -151,34 +151,34 @@
   let lfo4Phase: number
   let lfo4Shape: LfoShape
   
-  function setInitialLfoVars(initialUiBuffer: any) {
-    lfo1Active = initialUiBuffer.settings.lfo_1_active
-    lfo1Amp = round2(initialUiBuffer.settings.lfo_1_amp)
-    lfo1Dest = intoLfoDestination(initialUiBuffer.settings.lfo_1_dest)
-    lfo1Freq = round2(initialUiBuffer.settings.lfo_1_freq)
-    lfo1Phase = round2(initialUiBuffer.settings.lfo_1_phase)
-    lfo1Shape = intoLfoShape(initialUiBuffer.settings.lfo_1_shape)
+  function setInitialLfoVars(initialSettings: any) {
+    lfo1Active = initialSettings.lfo_1_active
+    lfo1Amp = round2(initialSettings.lfo_1_amp)
+    lfo1Dest = intoLfoDestination(initialSettings.lfo_1_dest)
+    lfo1Freq = round2(initialSettings.lfo_1_freq)
+    lfo1Phase = round2(initialSettings.lfo_1_phase)
+    lfo1Shape = intoLfoShape(initialSettings.lfo_1_shape)
 
-    lfo2Active = initialUiBuffer.settings.lfo_2_active
-    lfo2Amp = round2(initialUiBuffer.settings.lfo_2_amp)
-    lfo2Dest = intoLfoDestination(initialUiBuffer.settings.lfo_2_dest)
-    lfo2Freq = round2(initialUiBuffer.settings.lfo_2_freq)
-    lfo2Phase = round2(initialUiBuffer.settings.lfo_2_phase)
-    lfo2Shape = intoLfoShape(initialUiBuffer.settings.lfo_2_shape)
+    lfo2Active = initialSettings.lfo_2_active
+    lfo2Amp = round2(initialSettings.lfo_2_amp)
+    lfo2Dest = intoLfoDestination(initialSettings.lfo_2_dest)
+    lfo2Freq = round2(initialSettings.lfo_2_freq)
+    lfo2Phase = round2(initialSettings.lfo_2_phase)
+    lfo2Shape = intoLfoShape(initialSettings.lfo_2_shape)
 
-    lfo3Active = initialUiBuffer.settings.lfo_3_active
-    lfo3Amp = round2(initialUiBuffer.settings.lfo_3_amp)
-    lfo3Dest = intoLfoDestination(initialUiBuffer.settings.lfo_3_dest)
-    lfo3Freq = round2(initialUiBuffer.settings.lfo_3_freq)
-    lfo3Phase = round2(initialUiBuffer.settings.lfo_3_phase)
-    lfo3Shape = intoLfoShape(initialUiBuffer.settings.lfo_3_shape)
+    lfo3Active = initialSettings.lfo_3_active
+    lfo3Amp = round2(initialSettings.lfo_3_amp)
+    lfo3Dest = intoLfoDestination(initialSettings.lfo_3_dest)
+    lfo3Freq = round2(initialSettings.lfo_3_freq)
+    lfo3Phase = round2(initialSettings.lfo_3_phase)
+    lfo3Shape = intoLfoShape(initialSettings.lfo_3_shape)
 
-    lfo4Active = initialUiBuffer.settings.lfo_4_active
-    lfo4Amp = round2(initialUiBuffer.settings.lfo_4_amp)
-    lfo4Dest = intoLfoDestination(initialUiBuffer.settings.lfo_4_dest)
-    lfo4Freq = round2(initialUiBuffer.settings.lfo_4_freq)
-    lfo4Phase = round2(initialUiBuffer.settings.lfo_4_phase)
-    lfo4Shape = intoLfoShape(initialUiBuffer.settings.lfo_4_shape)
+    lfo4Active = initialSettings.lfo_4_active
+    lfo4Amp = round2(initialSettings.lfo_4_amp)
+    lfo4Dest = intoLfoDestination(initialSettings.lfo_4_dest)
+    lfo4Freq = round2(initialSettings.lfo_4_freq)
+    lfo4Phase = round2(initialSettings.lfo_4_phase)
+    lfo4Shape = intoLfoShape(initialSettings.lfo_4_shape)
   }
 
   function handleLfoActiveToggle(lfo: Lfo) {
@@ -223,6 +223,13 @@
     }
   }
 
+  // PRESET
+  let preset: number
+
+  function setInitialPreset(initialSettings: any) {
+    preset = initialSettings.preset
+  }
+
   // TRANSLATION
   let translationXBase: number
   let translationXSpread: number
@@ -230,18 +237,18 @@
   let translationYSpread: number
   // let translationZ: number
 
-  function setInitialTranslationVars(initialUiBuffer: any) {
-    translationXBase = round2(initialUiBuffer.settings.translation_x_base)
-    translationXSpread = round2(initialUiBuffer.settings.translation_x_spread)
-    translationYBase = round2(initialUiBuffer.settings.translation_y_base)
-    translationYSpread = round2(initialUiBuffer.settings.translation_y_spread)
-    // translationZ = initialUiBuffer.settings.translation_z
+  function setInitialTranslationVars(initialSettings: any) {
+    translationXBase = round2(initialSettings.translation_x_base)
+    translationXSpread = round2(initialSettings.translation_x_spread)
+    translationYBase = round2(initialSettings.translation_y_base)
+    translationYSpread = round2(initialSettings.translation_y_spread)
+    // translationZ = initialSettings.translation_z
   }
 
   let mouseTracking: MouseTracking
 
-  function setInitialMouseTracking(initialUiBuffer: any) {
-    mouseTracking = initialUiBuffer.settings.mouse_tracking
+  function setInitialMouseTracking(initialSettings: any) {
+    mouseTracking = initialSettings.mouse_tracking
   }
 
   // ROTATION
@@ -258,19 +265,19 @@
   let yawX: number  
   let yawY: number
 
-  function setInitialRotationVars(initialUiBuffer: any) {
-    pitchBase = round2(initialUiBuffer.settings.y_rot_base)
-    pitchSpread = round2(initialUiBuffer.settings.y_rot_spread)
-    pitchX = round2(initialUiBuffer.settings.x_axis_y_rot_coeff)
-    pitchY = round2(initialUiBuffer.settings.y_axis_y_rot_coeff)
-    rollBase = round2(initialUiBuffer.settings.x_rot_base)
-    rollSpread = round2(initialUiBuffer.settings.x_rot_spread)
-    rollX = round2(initialUiBuffer.settings.x_axis_x_rot_coeff)
-    rollY = round2(initialUiBuffer.settings.y_axis_x_rot_coeff)
-    yawBase = round2(initialUiBuffer.settings.z_rot_base)
-    yawSpread = round2(initialUiBuffer.settings.z_rot_spread)
-    yawX = round2(initialUiBuffer.settings.x_axis_z_rot_coeff)
-    yawY = round2(initialUiBuffer.settings.y_axis_z_rot_coeff)
+  function setInitialRotationVars(initialSettings: any) {
+    pitchBase = round2(initialSettings.y_rot_base)
+    pitchSpread = round2(initialSettings.y_rot_spread)
+    pitchX = round2(initialSettings.x_axis_y_rot_coeff)
+    pitchY = round2(initialSettings.y_axis_y_rot_coeff)
+    rollBase = round2(initialSettings.x_rot_base)
+    rollSpread = round2(initialSettings.x_rot_spread)
+    rollX = round2(initialSettings.x_axis_x_rot_coeff)
+    rollY = round2(initialSettings.y_axis_x_rot_coeff)
+    yawBase = round2(initialSettings.z_rot_base)
+    yawSpread = round2(initialSettings.z_rot_spread)
+    yawX = round2(initialSettings.x_axis_z_rot_coeff)
+    yawY = round2(initialSettings.y_axis_z_rot_coeff)
   }
 
   let prevSettings: StorageSettings | null
@@ -304,15 +311,16 @@
       )
       
       // init wasm process and set initial values
-      const initialUiBuffer = await MagicSquare.run(prevSettings)
-      // console.dir({prevSettings, uibuff: initialUiBuffer.settings})
-      setInitialDrawPatternVars(initialUiBuffer)
-      setInitialColorVars(initialUiBuffer)
-      setInitialLfoVars(initialUiBuffer)
-      setInitialGeometryVars(initialUiBuffer)
-      setInitialMouseTracking(initialUiBuffer)
-      setInitialRotationVars(initialUiBuffer)
-      setInitialTranslationVars(initialUiBuffer)
+      const initialSettings = await MagicSquare.run(prevSettings)
+      // console.dir({prevSettings, uibuff: initialSettings})
+      setInitialDrawPatternVars(initialSettings)
+      setInitialColorVars(initialSettings)
+      setInitialLfoVars(initialSettings)
+      setInitialGeometryVars(initialSettings)
+      setInitialMouseTracking(initialSettings)
+      setInitialPreset(initialSettings)
+      setInitialRotationVars(initialSettings)
+      setInitialTranslationVars(initialSettings)
       renderDataReady = true
     }
   })
@@ -367,6 +375,8 @@
       lfo_4_freq: lfo4Freq,
       lfo_4_phase: lfo4Phase,
       lfo_4_shape: lfo4Shape,
+
+      preset: preset,
 
       // ROTATION
       x_rot_base: rollBase,
@@ -576,10 +586,10 @@
                 </label>
                 <input id={WasmInputId.radiusStep}
                        type="range"
-                       min={-0.5}
-                       max={0.5}
+                       min={-0.2}
+                       max={0.2}
                        bind:value={radiusStep}
-                       step={.01}/>
+                       step={.001}/>
               </div>
             </div>
           </Geometry>
@@ -880,9 +890,11 @@
           <Loading />
         {:else}
           <Presets>
-            <input id={WasmInputId.presetIdx}
-                   value={presetIdx}
-                   class="hidden_input"/>
+            <div slot="preset">
+              <input id={WasmInputId.preset}
+                     value={preset}
+                     class="hidden_input"/>
+            </div>
           </Presets>
         {/if}
       </div>

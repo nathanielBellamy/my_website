@@ -37,7 +37,7 @@
       shape
     </div>
     <slot name="shapes"/>
-    <div class="pl-5 pr-5 grid grid-cols-4">
+    <div class="pt-5 pl-5 pr-5 grid grid-cols-4">
       <select class="col-span-3 shape_select"
               on:input={(e) => e.stopPropagation()}
               on:change={handleShapeSelect}>
@@ -96,7 +96,7 @@
       {/each}
     </div>
   </div>
-  <div class="grow flex flex-col justify-between items-stretch">
+  <div class="grow pt-5 flex flex-col justify-between items-stretch">
     <div class="title flex items-stretch pl-5 underline">
       radius
     </div>

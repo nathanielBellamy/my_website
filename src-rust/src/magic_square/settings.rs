@@ -249,9 +249,9 @@ impl Settings {
         }
     }
  
-    pub fn try_into_indexed_gradient(val: String) -> Result<IndexedGradient, JsValue> {
+    pub fn try_into_io_gradient(val: String) -> Result<IOGradient, JsValue> {
         let val = js_sys::JSON::parse(&val).unwrap();
-        let res: IndexedGradient = serde_wasm_bindgen::from_value(val)?;
+        let res: IOGradient = serde_wasm_bindgen::from_value(val)?;
         Ok(res)
     }
 
@@ -343,19 +343,25 @@ impl Settings {
         )
     }
 
-    pub fn try_into_indexed_shape(val: String) -> Result<IndexedShape, JsValue> {
+    pub fn try_into_io_shape(val: String) -> Result<IOShape, JsValue> {
         let val = js_sys::JSON::parse(&val).unwrap();
-        let res: IndexedShape = serde_wasm_bindgen::from_value(val)?;
+        let res: IOShape = serde_wasm_bindgen::from_value(val)?;
         Ok(res)
     }
 
-    pub fn try_into_indexed_color(val: String) -> Result<IndexedColor, JsValue> {
+    pub fn try_into_io_color(val: String) -> Result<IOColor, JsValue> {
         let val = js_sys::JSON::parse(&val).unwrap();
-        let mut res: IndexedColor = serde_wasm_bindgen::from_value(val)?;
+        let mut res: IOColor = serde_wasm_bindgen::from_value(val)?;
         for i in 0..3 {
             res.rgba[i] = res.rgba[i] / 255.0
         }
         Ok(res)
+    }
+
+    pub fn try_into_io_preset(val: String) -> Result<IOPreset, JsValue> {
+        let val = js_sys::JSON::parse(&val).unwrap();
+        let res: IOPreset = serde_wasm_bindgen::from_value(val)?;
+        Ok(res)     
     }
 
 
@@ -369,20 +375,34 @@ impl Settings {
 }
 
 #[derive(Clone, Deserialize, Serialize, Debug)]
-pub struct IndexedShape {
-    pub shape: Shape, 
-    pub index: usize
-}
-
-#[derive(Clone, Deserialize, Serialize, Debug)]
-pub struct IndexedColor {
+pub struct IOColor {
     pub rgba: Rgba, 
     pub idx: usize
 }
 
 
 #[derive(Clone, Deserialize, Serialize, Debug)]
-pub struct IndexedGradient {
+pub struct IOGradient {
     pub idx_a: usize,
     pub idx_b: usize,
+}
+
+#[derive(Clone, Deserialize, Serialize, Debug)]
+pub struct IOPreset {
+    pub preset: usize,
+    pub action: IOPresetAction
+}
+
+#[derive(Clone, Deserialize, Serialize, Debug)]
+pub enum IOPresetAction {
+    Load,
+    Save,
+    Set,
+    Show,
+}
+
+#[derive(Clone, Deserialize, Serialize, Debug)]
+pub struct IOShape {
+    pub shape: Shape, 
+    pub index: usize
 }
