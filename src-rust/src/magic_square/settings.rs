@@ -240,6 +240,93 @@ impl Settings {
         }
     }
 
+
+    pub fn rgba_string(arr: Rgba) -> String {
+        format!(
+            "{},{},{},{}",
+            arr[0],
+            arr[1],
+            arr[2],
+            arr[3]
+        )
+    }
+}
+
+#[derive(Clone, Deserialize, Serialize, Debug)]
+pub struct IOColor {
+    pub rgba: Rgba, 
+    pub idx: usize
+}
+
+
+#[derive(Clone, Deserialize, Serialize, Debug)]
+pub struct IOGradient {
+    pub idx_a: usize,
+    pub idx_b: usize,
+}
+
+#[derive(Clone, Deserialize, Serialize, Debug)]
+pub struct IOPreset {
+    pub preset: usize,
+    pub action: IOPresetAction
+}
+
+#[derive(Clone, Deserialize, Serialize, Debug)]
+pub enum IOPresetAction {
+    Save,
+    Set,
+}
+
+#[derive(Clone, Deserialize, Serialize, Debug)]
+pub struct IOShape {
+    pub shape: Shape, 
+    pub index: usize
+}
+
+
+pub struct Validate;
+
+impl Validate {
+    pub fn try_into_draw_pattern_type(pt: String) -> Result<DrawPatternType, ()> {
+        // log(&pt);
+        match pt.as_str() {
+            "Fix" => Ok(DrawPatternType::Fix),
+            "Out" => Ok(DrawPatternType::Out),
+            "In" => Ok(DrawPatternType::In),
+            _ => Err(())
+        }
+    }
+
+    pub fn try_into_io_shape(val: String) -> Result<IOShape, JsValue> {
+        let val = js_sys::JSON::parse(&val).unwrap();
+        let res: IOShape = serde_wasm_bindgen::from_value(val)?;
+        Ok(res)
+    }
+
+    pub fn try_into_io_color(val: String) -> Result<IOColor, JsValue> {
+        let val = js_sys::JSON::parse(&val).unwrap();
+        let mut res: IOColor = serde_wasm_bindgen::from_value(val)?;
+        for i in 0..3 {
+            res.rgba[i] = res.rgba[i] / 255.0
+        }
+        Ok(res)
+    }
+
+    pub fn try_into_io_preset(val: String) -> Result<IOPreset, JsValue> {
+        let val = js_sys::JSON::parse(&val).unwrap();
+        let res: IOPreset = serde_wasm_bindgen::from_value(val)?;
+        Ok(res)     
+    }
+
+
+    pub fn try_into_shape(val: String) -> Result<Shape, ()> {
+        match val.as_str() {
+            "Hexagon" => Ok(Shape::Hexagon),
+            "Icosahedron" => Ok(Shape::Icosahedron),
+            _ => Err(())
+        }
+    }
+
     pub fn try_into_color_direction(cd: String) -> Result<ColorDirection, ()> {
         match cd.as_str() {
             "In" => Ok(ColorDirection::In),
@@ -293,16 +380,6 @@ impl Settings {
         }
     }
 
-    pub fn try_into_draw_pattern_type(pt: String) -> Result<DrawPatternType, ()> {
-        // log(&pt);
-        match pt.as_str() {
-            "Fix" => Ok(DrawPatternType::Fix),
-            "Out" => Ok(DrawPatternType::Out),
-            "In" => Ok(DrawPatternType::In),
-            _ => Err(())
-        }
-    }
-
     pub fn try_into_mouse_tracking(mt: String) -> Result<MouseTracking, ()> {
         match mt.as_str() {
             "On" => Ok(MouseTracking::On),
@@ -332,75 +409,4 @@ impl Settings {
             false => Ok(0)
         }
     }
-
-    pub fn rgba_string(arr: Rgba) -> String {
-        format!(
-            "{},{},{},{}",
-            arr[0],
-            arr[1],
-            arr[2],
-            arr[3]
-        )
-    }
-
-    pub fn try_into_io_shape(val: String) -> Result<IOShape, JsValue> {
-        let val = js_sys::JSON::parse(&val).unwrap();
-        let res: IOShape = serde_wasm_bindgen::from_value(val)?;
-        Ok(res)
-    }
-
-    pub fn try_into_io_color(val: String) -> Result<IOColor, JsValue> {
-        let val = js_sys::JSON::parse(&val).unwrap();
-        let mut res: IOColor = serde_wasm_bindgen::from_value(val)?;
-        for i in 0..3 {
-            res.rgba[i] = res.rgba[i] / 255.0
-        }
-        Ok(res)
-    }
-
-    pub fn try_into_io_preset(val: String) -> Result<IOPreset, JsValue> {
-        let val = js_sys::JSON::parse(&val).unwrap();
-        let res: IOPreset = serde_wasm_bindgen::from_value(val)?;
-        Ok(res)     
-    }
-
-
-    pub fn try_into_shape(val: String) -> Result<Shape, ()> {
-        match val.as_str() {
-            "Hexagon" => Ok(Shape::Hexagon),
-            "Icosahedron" => Ok(Shape::Icosahedron),
-            _ => Err(())
-        }
-    }
-}
-
-#[derive(Clone, Deserialize, Serialize, Debug)]
-pub struct IOColor {
-    pub rgba: Rgba, 
-    pub idx: usize
-}
-
-
-#[derive(Clone, Deserialize, Serialize, Debug)]
-pub struct IOGradient {
-    pub idx_a: usize,
-    pub idx_b: usize,
-}
-
-#[derive(Clone, Deserialize, Serialize, Debug)]
-pub struct IOPreset {
-    pub preset: usize,
-    pub action: IOPresetAction
-}
-
-#[derive(Clone, Deserialize, Serialize, Debug)]
-pub enum IOPresetAction {
-    Save,
-    Set,
-}
-
-#[derive(Clone, Deserialize, Serialize, Debug)]
-pub struct IOShape {
-    pub shape: Shape, 
-    pub index: usize
 }

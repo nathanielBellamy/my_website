@@ -1,6 +1,6 @@
 use crate::JsValue;
 use crate::magic_square::main::log;
-use crate::magic_square::settings::Settings;
+use crate::magic_square::settings::{Settings, Validate};
 use crate::magic_square::ui_manifest::{
     INPUT_COLORS,
     INPUT_COLOR_DIRECTION, INPUT_COLOR_SPEED,
@@ -133,9 +133,15 @@ impl UiBuffer {
     ) {
         // log(&input_id);
         // log(&val);
+        //
+        // TODO:
+        //  // more try_into methods
+        //  // store ranges in a json
+        //  load json here
+        //  use json to hydrate ui
         match input_id.as_str() {
             INPUT_COLOR_DIRECTION => {
-                if let Ok(val) = Settings::try_into_color_direction(val) {
+                if let Ok(val) = Validate::try_into_color_direction(val) {
                     self.settings.color_direction = val
                 }
             },
@@ -145,13 +151,13 @@ impl UiBuffer {
                 }
             },
             INPUT_COLORS => {
-                if let Ok(io_color) = Settings::try_into_io_color(val) {
+                if let Ok(io_color) = Validate::try_into_io_color(val) {
                     self.settings.colors[io_color.idx] = io_color.rgba;
                     self.update_frag_shader_cache(frag_shader_cache);
                 }
             },
             INPUT_SHAPES => {
-                if let Ok(io_shape) = Settings::try_into_io_shape(val) {
+                if let Ok(io_shape) = Validate::try_into_io_shape(val) {
                     if io_shape.index == 16 { // magic number indicating update all TODO: make not magic
                         for shape in self.settings.shapes.iter_mut() {
                             *shape = io_shape.shape;
@@ -162,7 +168,7 @@ impl UiBuffer {
                 }
             },
             INPUT_DRAW_PATTERN_TYPE => {
-                if let Ok(draw_pattern_type) = Settings::try_into_draw_pattern_type(val) {
+                if let Ok(draw_pattern_type) = Validate::try_into_draw_pattern_type(val) {
                     log(&format!("{:?}", draw_pattern_type));
                     geometry_cache.clear();
                     self.settings.draw_pattern_type = draw_pattern_type;
@@ -193,7 +199,7 @@ impl UiBuffer {
                 }
             },
             INPUT_MOUSE_TRACKING => {
-                if let Ok(mouse_traking) = Settings::try_into_mouse_tracking(val) {
+                if let Ok(mouse_traking) = Validate::try_into_mouse_tracking(val) {
                     self.settings.mouse_tracking = mouse_traking            
                 }
             },
@@ -208,12 +214,12 @@ impl UiBuffer {
                 }
             },
             INPUT_TRANSFORM_ORDER => {
-                if let Ok(val) = Settings::try_into_transform_order(val) {
+                if let Ok(val) = Validate::try_into_transform_order(val) {
                     self.settings.transform_order = val;
                 }
             },
             INPUT_PRESET => {
-                if let Ok(io_preset) = Settings::try_into_io_preset(val) {
+                if let Ok(io_preset) = Validate::try_into_io_preset(val) {
                     self.settings.preset = io_preset.preset;
                     match io_preset.action {
                         IOPresetAction::Save => {
@@ -338,7 +344,7 @@ impl UiBuffer {
                 }
             },
             INPUT_LFO_1_DEST => {
-                if let Ok(dest) = Settings::try_into_lfo_destination(val) {
+                if let Ok(dest) = Validate::try_into_lfo_destination(val) {
                     self.settings.lfo_1_dest = dest;
                 }
             },
@@ -353,7 +359,7 @@ impl UiBuffer {
                 }
             },
             INPUT_LFO_1_SHAPE => {
-                if let Ok(shape) = Settings::try_into_lfo_shape(val) {
+                if let Ok(shape) = Validate::try_into_lfo_shape(val) {
                     self.settings.lfo_1_shape = shape;
                 }
             },
@@ -368,7 +374,7 @@ impl UiBuffer {
                 }
             },
             INPUT_LFO_2_DEST => {
-                if let Ok(dest) = Settings::try_into_lfo_destination(val) {
+                if let Ok(dest) = Validate::try_into_lfo_destination(val) {
                     self.settings.lfo_2_dest = dest;
                 }
             },
@@ -383,7 +389,7 @@ impl UiBuffer {
                 }
             },
             INPUT_LFO_2_SHAPE => {
-                if let Ok(shape) = Settings::try_into_lfo_shape(val) {
+                if let Ok(shape) = Validate::try_into_lfo_shape(val) {
                     self.settings.lfo_2_shape = shape;
                 }
             },
@@ -398,7 +404,7 @@ impl UiBuffer {
                 }
             },
             INPUT_LFO_3_DEST => {
-                if let Ok(dest) = Settings::try_into_lfo_destination(val) {
+                if let Ok(dest) = Validate::try_into_lfo_destination(val) {
                     self.settings.lfo_3_dest = dest;
                 }
             },
@@ -413,7 +419,7 @@ impl UiBuffer {
                 }
             },
             INPUT_LFO_3_SHAPE => {
-                if let Ok(shape) = Settings::try_into_lfo_shape(val) {
+                if let Ok(shape) = Validate::try_into_lfo_shape(val) {
                     self.settings.lfo_3_shape = shape;
                 }
             },
@@ -428,7 +434,7 @@ impl UiBuffer {
                 }
             },
             INPUT_LFO_4_DEST => {
-                if let Ok(dest) = Settings::try_into_lfo_destination(val) {
+                if let Ok(dest) = Validate::try_into_lfo_destination(val) {
                     self.settings.lfo_4_dest = dest;
                 }
             },
@@ -443,7 +449,7 @@ impl UiBuffer {
                 }
             },
             INPUT_LFO_4_SHAPE => {
-                if let Ok(shape) = Settings::try_into_lfo_shape(val) {
+                if let Ok(shape) = Validate::try_into_lfo_shape(val) {
                     self.settings.lfo_4_shape = shape;
                 }
             },
