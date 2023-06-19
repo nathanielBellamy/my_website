@@ -889,7 +889,7 @@
         {#if !renderDataReady}
           <Loading />
         {:else}
-          <Presets>
+          <Presets bind:preset={preset}>
             <div slot="preset">
               <input id={WasmInputId.preset}
                      value={preset}

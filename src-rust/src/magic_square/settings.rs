@@ -395,10 +395,8 @@ pub struct IOPreset {
 
 #[derive(Clone, Deserialize, Serialize, Debug)]
 pub enum IOPresetAction {
-    Load,
     Save,
     Set,
-    Show,
 }
 
 #[derive(Clone, Deserialize, Serialize, Debug)]

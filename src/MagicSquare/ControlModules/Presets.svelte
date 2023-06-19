@@ -3,13 +3,14 @@
   import { PresetAction } from "./Preset"
 
   let bank: number = 0
-  let preset: number = 0
+  export let preset: number
+  let presetNext: number = preset
 
   const banks: string[] = ['A', 'B', 'C', 'D']
   
   function toBank(preset: number): string {
 
-    if ( 0< preset && preset < 16) {
+    if (-1 < preset && preset < 16) {
       return banks[0]
     } else if (15 < preset && preset < 32) {
       return banks[1]
@@ -23,40 +24,30 @@
   }
 
   function presetAction(action: PresetAction) {
+    preset = presetNext
     var input = document.getElementById(WasmInputId.preset)
     input.value = JSON.stringify({preset, action})
     input.dispatchEvent(new Event('input', {bubbles: true}))
   }
 
   function handlePresetClick(idx: number) {
-    preset = idx
-    presetAction(PresetAction.load)
+    presetNext = idx
   }
 </script>
 
 <section class="h-full flex flex-col justify-around items-stretch">
   <slot name="preset"/>
-  <div class="flex justify-around items-center">
-    <div class="flex justify-around">
-      CURR
+
+  <div class="grid grid-cols-4 grid-rows-1">
+    <div class="title col-span-2">
+      ACTIVE:
     </div>
-    <div class="flex justify-around">
-      BANK {toBank(preset)}
+    <div class="title flex justify-around">
+      {toBank(preset)}
     </div>
-    <div class="flex justify-around">
-      PRESET {preset + 1}
+    <div class="title flex justify-around">
+      {preset + 1}
     </div>
-  </div>
-  <div class="flex justify-around items-center">
-    <button on:click={() => presetAction(PresetAction.set)}>
-      SET
-    </button>
-    <button on:click={() => presetAction(PresetAction.show)}>
-      SHOW
-    </button>
-    <button on:click={() => presetAction(PresetAction.save)}>
-      SAVE
-    </button>
   </div>
   <div class="flex flex-col justify-between items-stretch">
     <div class="title pl-5 text-left">
@@ -75,37 +66,55 @@
     <div class="title pl-5 text-left">
       Preset
     </div>
-    <div class="grow p-5 grid grid-cols-4 grid-rows-4">
+    <div class="grow p-5 grid grid-cols-4 grid-rows-5">
+      <button class="col-span-2"
+              on:click={() => presetAction(PresetAction.set)}>
+        SET
+      </button>
+      <button class="col-span-2"
+              on:click={() => presetAction(PresetAction.save)}>
+        SAVE
+      </button>
       {#if bank === 0}
         {#each {length: 16} as _, idx}
-          <button on:click={() => handlePresetClick(idx)}
-                  class:selected={preset === idx}>
+          <button class="no_shadow"
+                  on:click={() => handlePresetClick(idx)}
+                  class:active={preset === idx}
+                  class:selected={presetNext === idx}>
             {idx + 1}
           </button>
         {/each}
       {:else if bank === 1}
         {#each {length: 16} as _, idx}
-          <button on:click={() => handlePresetClick(idx + 16)}
-                  class:selected={preset === idx + 16}>
+          <button class="no_shadow"
+                  on:click={() => handlePresetClick(idx + 16)}
+                  class:active={preset === idx + 16}
+                  class:selected={presetNext === idx + 16}>
             {idx + 17}
           </button>
         {/each}
       {:else if bank === 2}
         {#each {length: 16} as _, idx}
-          <button on:click={() => handlePresetClick(idx + 32)}
-                  class:selected={preset === idx + 32}>
+          <button class="no_shadow"
+                  on:click={() => handlePresetClick(idx + 32)}
+                  class:active={preset === idx + 32}
+                  class:selected={presetNext === idx + 32}>
             {idx + 33}
           </button>
         {/each}
-
       {:else if bank === 3}
         {#each {length: 16} as _, idx}
-          <button on:click={() => handlePresetClick(idx + 48)}
-                  class:selected={preset === idx + 48}>
+          <button class="no_shadow"
+                  on:click={() => handlePresetClick(idx + 48)}
+                  class:active={preset === idx + 48}
+                  class:selected={presetNext === idx + 48}>
             {idx + 49}
           </button>
         {/each}
       {/if}
+    </div>
+    <div class="pl-5 pr-5 flex justify-around items-center">
+
     </div>
   </div>
 </section>
@@ -119,6 +128,14 @@
     font-size: text.$fs-ml
     font-weight: text.$fw-l
 
+  .active
+    border: solid
+    border-width: 5px
+    border-color: color.$red-5
+
   .selected
     background-color: color.$blue-7
+
+  .no_shadow
+    box-shadow: 0 0 
 </style>

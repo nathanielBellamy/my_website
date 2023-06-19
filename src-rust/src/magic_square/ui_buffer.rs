@@ -31,7 +31,6 @@ pub const PRESET_CAPACITY: usize = 64;
 #[derive(Clone, Copy, Debug)]
 pub struct UiBuffer {
     pub settings: Settings,
-    pub temp: Settings,
     pub presets: [Settings; PRESET_CAPACITY]
 }
 
@@ -39,7 +38,6 @@ impl Default for UiBuffer{
     fn default() -> UiBuffer {
         UiBuffer {
             settings: Settings::new(),
-            temp: Settings::new(), // for a temporarily loaded preset 
             // TODO: default presets
             presets: [Settings::new(); PRESET_CAPACITY],
         }
@@ -50,7 +48,6 @@ impl UiBuffer {
     pub fn new() -> UiBuffer {
         UiBuffer {
             settings: Settings::new(),
-            temp: Settings::new(),
             presets: [Settings::new(); PRESET_CAPACITY]
         }
     }
@@ -68,7 +65,6 @@ impl UiBuffer {
                 colors,
                 ..prev_settings
             },
-            temp: Settings::new(),
             presets: [Settings::new(); PRESET_CAPACITY]
         }
     }
@@ -85,7 +81,6 @@ impl UiBuffer {
     pub fn copy(&self) -> UiBuffer {
         UiBuffer { 
             settings: Settings {..self.settings},
-            temp: Settings {..self.temp},
             presets: self.presets,
         }
     }
@@ -117,13 +112,6 @@ impl UiBuffer {
             *shader = ShaderCompiler::into_frag_shader_string(&self.settings.colors[idx]);
         }
     }
-
-    pub fn swap_settings_and_temp(&mut self) {
-        let old_settings = self.settings;
-        self.settings = self.temp;
-        self.temp = old_settings;
-    }
-
 
     pub fn update(
             &mut self, 
@@ -218,14 +206,13 @@ impl UiBuffer {
                 if let Ok(io_preset) = Settings::try_into_io_preset(val) {
                     self.settings.preset = io_preset.preset;
                     match io_preset.action {
-                        IOPresetAction::Load => self.temp = self.presets[io_preset.preset],
-                        IOPresetAction::Save => self.presets[io_preset.preset] = Settings {..self.settings},
+                        IOPresetAction::Save => {
+                            self.presets[io_preset.preset] = Settings {..self.settings};
+                            self.update_frag_shader_cache(frag_shader_cache);
+                            log(&format!("{:?}", self.presets));
+                        },
                         IOPresetAction::Set => {
                             self.settings = self.presets[io_preset.preset];
-                            self.update_frag_shader_cache(frag_shader_cache);
-                        },
-                        IOPresetAction::Show => {
-                            self.swap_settings_and_temp();
                             self.update_frag_shader_cache(frag_shader_cache);
                         },
                     }
