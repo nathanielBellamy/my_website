@@ -1,17 +1,17 @@
 use std::rc::Rc;
 use std::cell::RefCell;
-// use std::sync::{Arc, Mutex};
 use wasm_bindgen::prelude::*;
 use web_sys::WebGl2RenderingContext;
-// use crate::magic_square::vertices::Vertices;
 use crate::magic_square::shader_compiler::ShaderCompiler;
 use crate::magic_square::geometry::Shape;
 use crate::magic_square::geometry::cache::{Cache as GeometryCache, CACHE_CAPACITY};
 use crate::magic_square::ui_buffer::UiBuffer;
 use crate::magic_square::lfo::Lfo;
 use crate::magic_square::render::Render;
+use crate::magic_square::settings::Settings;
 use super::draw::Draw;
 use super::settings::ColorDirection;
+use super::ui_buffer::{PRESET_CAPACITY, PRESETS_DEFAULT};
 
 #[wasm_bindgen]
 extern "C" {
@@ -36,19 +36,39 @@ pub struct MagicSquare;
 impl MagicSquare {
     // Entry point into Rust WASM from JS
     // https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
-    pub async fn run(prev_settings: JsValue) -> JsValue {
+    pub async fn run(prev_settings: JsValue, presets: JsValue) -> JsValue {
+
         // log(&format!("{:?}", prev_settings));
-        let ui_buffer: UiBuffer = match serde_wasm_bindgen::from_value(prev_settings){
+        let settings: Settings = match serde_wasm_bindgen::from_value(prev_settings){
             Ok(res) => {
                 log("SUCCESSFUL SETTINGS PARSE");
                 // log(&format!("{:?}", res));
-                UiBuffer::from_prev_settings(res)
+                res
             },
             Err(e) => {
                 log(&format!("{:?}", e));
-                UiBuffer::new()
+                Settings::new()
             }
         };
+
+        let presets_vec: Vec<Settings> = match serde_wasm_bindgen::from_value(presets) {
+            Ok(res) => {
+                log("SUCCESSFUL PRESETS PARSE");
+                res
+
+            },
+            Err(e) => {
+                log(&format!("{:?}", e));
+                PRESETS_DEFAULT.to_vec()
+            }
+        };
+
+        let mut presets: [Settings; PRESET_CAPACITY] = [Settings::new(); PRESET_CAPACITY];
+        for (idx, p) in presets.iter_mut().enumerate() {
+            *p = presets_vec[idx];
+        }
+
+        let ui_buffer = UiBuffer { settings, presets };
 
         // TODO:
         //  we should in theory be able to store these as static slices

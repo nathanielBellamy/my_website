@@ -4,6 +4,7 @@
 
   let bank: number = 0
   export let preset: number
+  export let updateUiSettings: Function
   let presetNext: number = preset
 
   const banks: string[] = ['A', 'B', 'C', 'D']
@@ -28,6 +29,8 @@
     var input = document.getElementById(WasmInputId.preset)
     input.value = JSON.stringify({preset, action})
     input.dispatchEvent(new Event('input', {bubbles: true}))
+
+    updateUiSettings()
   }
 
   function handlePresetClick(idx: number) {

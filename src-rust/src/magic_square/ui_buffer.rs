@@ -27,6 +27,7 @@ use super::settings::{Colors, IOGradient, IOPresetAction};
 
 pub const EMPTY_COLORS: Colors = [[0.0;4]; CACHE_CAPACITY];
 pub const PRESET_CAPACITY: usize = 64;
+pub const PRESETS_DEFAULT: [Settings; PRESET_CAPACITY] = [Settings::new(); PRESET_CAPACITY];
 
 #[derive(Clone, Copy, Debug)]
 pub struct UiBuffer {
@@ -209,6 +210,15 @@ impl UiBuffer {
                         IOPresetAction::Save => {
                             self.presets[io_preset.preset] = Settings {..self.settings};
                             self.update_frag_shader_cache(frag_shader_cache);
+                            let presets_string: String = js_sys::JSON::stringify(
+                                &serde_wasm_bindgen::to_value(&self.presets.to_vec()).unwrap()
+                            ).unwrap().into();
+                            let local_storage = web_sys::window().unwrap().local_storage().unwrap().unwrap();
+                            local_storage.set_item(
+                                "magic_square_presets",
+                                &presets_string
+                            ).unwrap();
+                    
                             log(&format!("{:?}", self.presets));
                         },
                         IOPresetAction::Set => {

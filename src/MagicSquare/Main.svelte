@@ -284,6 +284,22 @@
   let renderDataReady = false
   let hasBeenDestroyed = false
 
+  function setAllSettings(settings: StorageSettings) {
+      setInitialDrawPatternVars(settings)
+      setInitialColorVars(settings)
+      setInitialLfoVars(settings)
+      setInitialGeometryVars(settings)
+      setInitialMouseTracking(settings)
+      setInitialPreset(settings)
+      setInitialRotationVars(settings)
+      setInitialTranslationVars(settings)
+  }
+
+  function setAllSettingsFromPreset() {
+    let presets = JSON.parse(localStorage.getItem("magic_square_presets"))
+    setAllSettings(presets[preset])
+  }
+
   onMount(async () => {
     // console.dir({instance, prevSettings})
     // load wasm
@@ -299,6 +315,8 @@
       })
     }
 
+    let presets = JSON.parse(localStorage.getItem("magic_square_presets"))
+
     if (!hasBeenDestroyed) { 
       // resize + key block in Container.svelte may destroy component before wasm_bindgen can load
       // without this check, it is possible to load two wasm instances
@@ -311,16 +329,8 @@
       )
       
       // init wasm process and set initial values
-      const initialSettings = await MagicSquare.run(prevSettings)
-      // console.dir({prevSettings, uibuff: initialSettings})
-      setInitialDrawPatternVars(initialSettings)
-      setInitialColorVars(initialSettings)
-      setInitialLfoVars(initialSettings)
-      setInitialGeometryVars(initialSettings)
-      setInitialMouseTracking(initialSettings)
-      setInitialPreset(initialSettings)
-      setInitialRotationVars(initialSettings)
-      setInitialTranslationVars(initialSettings)
+      const initialSettings = await MagicSquare.run(prevSettings, presets)
+      setAllSettings(initialSettings)
       renderDataReady = true
     }
   })
@@ -889,7 +899,8 @@
         {#if !renderDataReady}
           <Loading />
         {:else}
-          <Presets bind:preset={preset}>
+          <Presets  updateUiSettings={setAllSettingsFromPreset}
+                    bind:preset={preset}>
             <div slot="preset">
               <input id={WasmInputId.preset}
                      value={preset}
