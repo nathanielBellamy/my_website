@@ -1,15 +1,11 @@
 use wasm_bindgen::prelude::*;
 use web_sys::{WebGl2RenderingContext, WebGlProgram};
-
-// use crate::magic_square::main::log;
 use super::animation::Shapes;
 use super::geometry::Geometry;
 use super::geometry::cache::CACHE_CAPACITY;
 use super::gl_uniforms::GlUniforms;
-use super::main::log;
-// use super::main::log;
 use super::settings::TransformOrder;
-
+// use super::main::log;
 
 pub struct GlDraw;
 
@@ -19,18 +15,23 @@ impl GlDraw {
         program: &WebGlProgram,
         uniforms: &GlUniforms,
         shapes: &Shapes,
-        _order: TransformOrder,
+        order: TransformOrder,
     ) -> Result<(), JsValue>{
+        // NOTE FOR DEBUGGING
+        // - the uniform name "my_uniform" is defined in the shader source text where the uniform is defined
+        // let uniform_location = gl.get_uniform_location(program, "my_uniform").unwrap();
+        // log(&format!("uniform CPU{idx}: {:?}", uniforms.my_uniforms[idx]));
+        // log(&format!("uniform GPU{idx}: {:?}", js_sys::JSON::stringify(&gl.get_uniform(program, &uniform_location))));
+        
         // lookup uniforms
         let translation_location = gl.get_uniform_location(program, "u_translation").unwrap();
-        // // let order_location: WebGlUniformLocation = gl.get_uniform_location(program, "u_order").unwrap();
+        let order_location = gl.get_uniform_location(program, "u_order").unwrap();
         let rgba_location = gl.get_uniform_location(program, "u_rgba").unwrap();
-        // let radius_location = gl.get_uniform_location(program, "u_radius").unwrap();
-        // let rotation_0_location = gl.get_uniform_location(program, "u_rotation_0").unwrap();
-        // let rotation_1_location = gl.get_uniform_location(program, "u_rotation_1").unwrap();
-        // let rotation_2_location = gl.get_uniform_location(program, "u_rotation_2").unwrap();
+        let radius_location = gl.get_uniform_location(program, "u_radius").unwrap();
+        let rotation_zero_location = gl.get_uniform_location(program, "u_rotation_zero").unwrap();
+        let rotation_one_location = gl.get_uniform_location(program, "u_rotation_one").unwrap();
+        let rotation_two_location = gl.get_uniform_location(program, "u_rotation_two").unwrap();
         
-        gl.use_program(Some(program));
         // set uniforms
         for idx in 0..CACHE_CAPACITY {
             gl.uniform4f(
@@ -40,28 +41,17 @@ impl GlDraw {
                 uniforms.rgbas[idx][2],
                 uniforms.rgbas[idx][3],
             );
-            // // gl.uniform1f(
-            // //     Some(&order_location),
-            // //     match order {
-            // //         TransformOrder::RotateThenTranslate => 1.0,
-            // //         TransformOrder::TranslateThenRotate => 0.0,
-            // //     }
-            // // );
-            // gl.uniform4fv_with_f32_array(Some(&radius_location), &uniforms.radii[idx]);
-            // let arr: [f32; 16]= [
-            //         0.0, 1.0, 0.0, 0.0,
-            //         -1.0, 0.0, 0.0, 0.0,
-            //         0.0, 0.0, 1.0, 0.0,
-            //         0.0, 0.0, 0.0, 1.0,
-            //     ];
-            // log(&format!("{:?}", arr));
-            // gl.uniform_matrix4fv_with_f32_array(
-            //     Some(&rotation_0_location),
-            //     false,
-            //     &arr                //&uniforms.rotations[idx][0]
-            // );
-            // gl.uniform4fv_with_f32_array(Some(&rotation_1_location), &uniforms.rotations[idx][1]);
-            // gl.uniform4fv_with_f32_array(Some(&rotation_2_location), &uniforms.rotations[idx][2]);
+            gl.uniform1i(
+                Some(&order_location),
+                match order {
+                    TransformOrder::RotateThenTranslate => 1,
+                    TransformOrder::TranslateThenRotate => 0,
+                }
+            );
+            gl.uniform_matrix4fv_with_f32_array(Some(&radius_location), false, &uniforms.radii[idx]);
+            gl.uniform_matrix4fv_with_f32_array(Some(&rotation_zero_location), false, &uniforms.rotations[idx][0]);
+            gl.uniform_matrix4fv_with_f32_array(Some(&rotation_one_location), false, &uniforms.rotations[idx][1]);
+            gl.uniform_matrix4fv_with_f32_array(Some(&rotation_two_location), false, &uniforms.rotations[idx][2]);
             gl.uniform4f(
                 Some(&translation_location), 
                 uniforms.translations[idx][0],
@@ -69,14 +59,6 @@ impl GlDraw {
                 uniforms.translations[idx][2],
                 1.0
             );
-
-            // log("hey wow wow wow");
-            log(&format!("TRANS {idx}: {:?}", js_sys::JSON::stringify(&gl.get_uniform(program, &translation_location))));
-            // log(&format!("TRANS uniforms {idx}: {:?}", uniforms.translations[idx]));
-            // log(&format!("RGBA {idx}: {:?}", js_sys::JSON::stringify(&gl.get_uniform(program, &rgba_location))));
-            // log(&format!("RGBA uniforms {idx}: {:?}", uniforms.rgbas[idx]));
-
-            // log(&format!("ROT 0 {idx}: {:?}", js_sys::JSON::stringify(&gl.get_uniform(program, &rotation_0_location))));
 
             // Draw the geometry.
             let _offset = idx * 300;
