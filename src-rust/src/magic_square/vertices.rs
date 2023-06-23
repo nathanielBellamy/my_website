@@ -1,9 +1,5 @@
 use std::ops::{Index, IndexMut};
 use std::convert::From;
-use ndarray::prelude::*;
-use ndarray::Array;
-use crate::magic_square::transformations::{RotationSequence, Transformation, Translation};
-use super::settings::TransformOrder;
 use super::traits::VertexStore;
 
 // const ORIGIN: Vertex = Vertex { arr: [0.0, 0.0, 0.0] };
@@ -25,39 +21,6 @@ impl From<[f32; 3]> for Vertex {
 impl Vertex {
     pub fn new(x: f32, y: f32, z: f32) -> Vertex {
         Vertex { arr: [x, y, z] }
-    }
-
-    pub fn lh_mult(&self, matrix: Array<f32, Ix2>) -> Vertex {
-        Vertex {
-            arr: [
-                self[0] * matrix[[0,0]] + self[1] * matrix[[0, 1]] + self[2] * matrix[[0,2]],
-                self[0] * matrix[[1,0]] + self[1] * matrix[[1, 1]] + self[2] * matrix[[1,2]],
-                self[0] * matrix[[2,0]] + self[1] * matrix[[2, 1]] + self[2] * matrix[[2,2]],
-            ]
-        }
-    }
-
-    pub fn rot(&self, rotation: RotationSequence) ->  Vertex {
-        self.lh_mult(rotation.matrix())
-    }
-
-    pub fn translate(&self, translation: Translation) -> Vertex {
-        Vertex {
-            arr: [
-                self[0] + translation.x, self[1] + translation.y, self[2] + translation.z
-            ]
-        }
-    }
-
-    pub fn transform(&self, transformation: Transformation) -> Vertex {
-        match transformation.order {
-            TransformOrder::RotateThenTranslate => {
-                self.rot(transformation.rot_seq).translate(transformation.translation)
-            },
-            TransformOrder::TranslateThenRotate => {
-                self.translate(transformation.translation).rot(transformation.rot_seq)
-            }
-        }
     }
 }
 

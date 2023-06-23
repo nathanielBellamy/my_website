@@ -1,16 +1,19 @@
-use ndarray::prelude::*;
-use ndarray::Array;
 use crate::magic_square::main::Axis;
-use super::settings::TransformOrder;
 
-#[derive(Clone, Copy, Debug)]
-pub struct Transformation {
-    pub order: TransformOrder,
-    pub rot_seq: RotationSequence,
-    pub translation: Translation
-}
+pub type Mat4 = [f32; 16]; 
+pub const MAT4_ID: Mat4 = [
+    1.0, 0.0, 0.0, 0.0,
+    0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0,
+    0.0, 0.0, 0.0, 1.0,
+];
+pub const MAT4_ZERO: Mat4 = [
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0,
+];
 
-#[derive(Clone, Copy, Debug)]
 pub struct RotationSequence {
     pub arr: [Rotation; 3] // all rotations acheivable in three
 }
@@ -20,12 +23,16 @@ impl RotationSequence {
         RotationSequence { arr: [r1, r2, r3] }
     }
 
-    pub fn matrix(&self) -> Array<f32, Ix2> {
-        self.arr[2].matrix()
-            .dot(
-                &self.arr[1].matrix().dot(&self.arr[0].matrix())
-            )
+    pub fn default() -> RotationSequence {
+        RotationSequence {
+            arr: [
+                Rotation { axis: Axis::X, theta: 0.0 },
+                Rotation { axis: Axis::Y, theta: 0.0 },
+                Rotation { axis: Axis::Z, theta: 0.0 },
+            ]
+        }
     }
+
 }
 
 
@@ -40,27 +47,30 @@ impl Rotation {
         Rotation { axis, theta }
     }
     
-    pub fn matrix(&self) -> Array<f32, Ix2> {
+    pub fn matrix(&self) -> Mat4 {
         match self.axis {
             Axis::X => {
-                array![
-                    [1.0, 0.0, 0.0],
-                    [0.0, self.theta.cos(), -self.theta.sin()],
-                    [0.0, self.theta.sin(), self.theta.cos()],
+                [
+                    1.0, 0.0, 0.0, 0.0,
+                    0.0, self.theta.cos(), -self.theta.sin(), 0.0,
+                    0.0, self.theta.sin(), self.theta.cos(), 0.0,
+                    0.0, 0.0, 0.0, 1.0,
                 ]
             },
             Axis::Y => {
-                array![
-                    [self.theta.cos(), 0.0, self.theta.sin()],
-                    [0.0, 1.0, 0.0],
-                    [-self.theta.sin(), 0.0, self.theta.cos()],
+                [
+                    self.theta.cos(), 0.0, self.theta.sin(), 0.0,
+                    0.0, 1.0, 0.0, 0.0,
+                    -self.theta.sin(), 0.0, self.theta.cos(), 0.0,
+                    0.0, 0.0, 0.0, 1.0,
                 ]
             },           
             Axis::Z => {
-                array![
-                    [self.theta.cos(), self.theta.sin(), 0.0],
-                    [-self.theta.sin(), self.theta.cos(), 0.0],
-                    [0.0, 0.0, 1.0],
+                [
+                    self.theta.cos(), self.theta.sin(), 0.0, 0.0,
+                    -self.theta.sin(), self.theta.cos(), 0.0, 0.0,
+                    0.0, 0.0, 1.0, 0.0,
+                    0.0, 0.0, 0.0, 1.0,
                 ]
             },
         }
@@ -72,4 +82,23 @@ pub struct Translation {
     pub x: f32,
     pub y: f32,
     pub z: f32
+}
+
+impl Translation {
+    pub fn default() -> Translation {
+        Translation {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0
+        }
+    }
+
+    pub fn matrix(&self) -> Mat4 {
+        [
+            1.0,  0.0,  0.0,  0.0,
+            0.0,  1.0,  0.0,  0.0,
+            0.0,  0.0,  1.0,  0.0,
+            self.x, self.y, self.z, 1.0,
+        ]
+    }
 }

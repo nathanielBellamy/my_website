@@ -23,7 +23,6 @@ use crate::magic_square::ui_manifest::{
 };
 use super::geometry::cache::{Cache, CACHE_CAPACITY};
 use super::main::Rgba;
-use super::shader_compiler::ShaderCompiler;
 use super::settings::{Colors, IOGradient, IOPresetAction};
 
 pub const EMPTY_COLORS: Colors = [[0.0;4]; CACHE_CAPACITY];
@@ -117,17 +116,11 @@ impl UiBuffer {
         }
     }
 
-    pub fn update_frag_shader_cache(&self, frag_shader_cache: &mut Vec<String>) {
-        for (idx, shader) in frag_shader_cache.iter_mut().enumerate() {
-            *shader = ShaderCompiler::into_frag_shader_string(&self.settings.colors[idx]);
-        }
-    }
 
     pub fn update(
             &mut self, 
             input_id: String, 
             val: String, 
-            frag_shader_cache: &mut Vec<String>,
             geometry_cache: &mut Cache,
             // animation: &mut Animation,
     ) {
@@ -153,7 +146,6 @@ impl UiBuffer {
             INPUT_COLORS => {
                 if let Ok(io_color) = Validate::try_into_io_color(val) {
                     self.settings.colors[io_color.idx] = io_color.rgba;
-                    self.update_frag_shader_cache(frag_shader_cache);
                 }
             },
             INPUT_SHAPES => {
@@ -165,19 +157,19 @@ impl UiBuffer {
                     } else {
                         self.settings.shapes[io_shape.index] = io_shape.shape;
                     }
+                    
+                    geometry_cache.update_from_shapes(&self.settings.shapes);
                 }
             },
             INPUT_DRAW_PATTERN_TYPE => {
                 if let Ok(draw_pattern_type) = Validate::try_into_draw_pattern_type(val) {
                     log(&format!("{:?}", draw_pattern_type));
-                    geometry_cache.clear();
                     self.settings.draw_pattern_type = draw_pattern_type;
                 }
             },
             INPUT_DRAW_PATTERN_COUNT => {
                 if let Ok(count) = val.parse::<i32>() {
                     if count > 0 && count < 17 {
-                        geometry_cache.clear();
                         self.settings.draw_pattern_count = count;
                     }
                 }
@@ -185,7 +177,6 @@ impl UiBuffer {
             INPUT_DRAW_PATTERN_OFFSET => {
                 if let Ok(offset) = val.parse::<i32>() {
                     if offset > -1 && offset < CACHE_CAPACITY as i32 {
-                        geometry_cache.clear();
                         self.settings.draw_pattern_offset = offset;
                     }
                 }
@@ -193,7 +184,6 @@ impl UiBuffer {
             INPUT_DRAW_PATTERN_SPEED => {
                 if let Ok(speed) = val.parse::<i32>() {
                     if speed > -1 && speed < 21 {
-                        geometry_cache.clear();
                         self.settings.draw_pattern_speed = speed;
                     }
                 }
@@ -224,7 +214,6 @@ impl UiBuffer {
                     match io_preset.action {
                         IOPresetAction::Save => {
                             self.presets[io_preset.preset] = Settings {..self.settings};
-                            self.update_frag_shader_cache(frag_shader_cache);
                             let presets_string: String = js_sys::JSON::stringify(
                                 &serde_wasm_bindgen::to_value(&self.presets.to_vec()).unwrap()
                             ).unwrap().into();
@@ -238,7 +227,6 @@ impl UiBuffer {
                         },
                         IOPresetAction::Set => {
                             self.settings = self.presets[io_preset.preset];
-                            self.update_frag_shader_cache(frag_shader_cache);
                         },
                     }
                 }

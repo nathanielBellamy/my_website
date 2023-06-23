@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use crate::magic_square::ui_buffer::UiBuffer;
+use super::settings::Settings;
 // use crate::magic_square::main::log;
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
@@ -99,79 +99,79 @@ impl Lfo {
         }
     }
 
-    pub fn modify(&self, t: f32, ui_buffer: &mut UiBuffer) {
+    pub fn modify(&self, t: f32, settings: &mut Settings) {
         if self.active {
             match self.dest {
                 LfoDestination::PitchBase => {
-                    ui_buffer.settings.y_rot_base = ui_buffer.settings.y_rot_base 
+                    settings.y_rot_base = settings.y_rot_base 
                                                         + self.eval(t) * 3.14
                 },
                 LfoDestination::PitchSpread => {
-                    ui_buffer.settings.y_rot_spread = ui_buffer.settings.y_rot_spread
+                    settings.y_rot_spread = settings.y_rot_spread
                                                         + self.eval(t) * 0.3
                 },
                 LfoDestination::PitchX => {
-                    ui_buffer.settings.x_axis_y_rot_coeff = ui_buffer.settings.x_axis_y_rot_coeff
+                    settings.x_axis_y_rot_coeff = settings.x_axis_y_rot_coeff
                                                         + self.eval(t)
                 },
                 LfoDestination::PitchY => {
-                    ui_buffer.settings.y_axis_y_rot_coeff = ui_buffer.settings.y_axis_y_rot_coeff
+                    settings.y_axis_y_rot_coeff = settings.y_axis_y_rot_coeff
                                                         + self.eval(t)
                 },
                 LfoDestination::RollBase => {
-                    ui_buffer.settings.x_rot_base = ui_buffer.settings.x_rot_base 
+                    settings.x_rot_base = settings.x_rot_base 
                                                         + self.eval(t) * 3.14
                 },
                 LfoDestination::RollSpread => {
-                    ui_buffer.settings.x_rot_spread = ui_buffer.settings.x_rot_spread
+                    settings.x_rot_spread = settings.x_rot_spread
                                                         + self.eval(t) * 0.3
                 },
                 LfoDestination::RollX => {
-                    ui_buffer.settings.x_axis_x_rot_coeff = ui_buffer.settings.x_axis_x_rot_coeff
+                    settings.x_axis_x_rot_coeff = settings.x_axis_x_rot_coeff
                                                                 + self.eval(t)
                 },
                 LfoDestination::RollY => {
-                    ui_buffer.settings.y_axis_x_rot_coeff = ui_buffer.settings.y_axis_x_rot_coeff
+                    settings.y_axis_x_rot_coeff = settings.y_axis_x_rot_coeff
                                                                 + self.eval(t)
                 },
                 LfoDestination::YawBase => {
-                    ui_buffer.settings.z_rot_base = ui_buffer.settings.z_rot_base 
+                    settings.z_rot_base = settings.z_rot_base 
                                                         + self.eval(t) * 3.14
                 },
                 LfoDestination::YawSpread => {
-                    ui_buffer.settings.z_rot_spread = ui_buffer.settings.z_rot_spread
+                    settings.z_rot_spread = settings.z_rot_spread
                                                         + self.eval(t) * 0.3
                 },
                 LfoDestination::YawX => {
-                    ui_buffer.settings.x_axis_z_rot_coeff = ui_buffer.settings.x_axis_z_rot_coeff
+                    settings.x_axis_z_rot_coeff = settings.x_axis_z_rot_coeff
                                                                 + self.eval(t)
                 },
                 LfoDestination::YawY => {
-                    ui_buffer.settings.y_axis_z_rot_coeff = ui_buffer.settings.y_axis_z_rot_coeff
+                    settings.y_axis_z_rot_coeff = settings.y_axis_z_rot_coeff
                                                                 + self.eval(t)
                 },
                 LfoDestination::RadiusBase => {
-                    ui_buffer.settings.radius_base = ui_buffer.settings.radius_base
+                    settings.radius_base = settings.radius_base
                                                         + self.eval(t)
                 },
                 LfoDestination::RadiusStep => {
-                    ui_buffer.settings.radius_step = ui_buffer.settings.radius_step
+                    settings.radius_step = settings.radius_step
                                                         + self.eval(t)
                 },
                 LfoDestination::TranslationXBase => {
-                    ui_buffer.settings.translation_x_base =  ui_buffer.settings.translation_x_base 
+                    settings.translation_x_base =  settings.translation_x_base 
                                                                 + self.eval(t);
                 },
                 LfoDestination::TranslationXSpread => {
-                    ui_buffer.settings.translation_x_spread =  ui_buffer.settings.translation_x_spread 
+                    settings.translation_x_spread =  settings.translation_x_spread 
                                                                     + self.eval(t);
                 },
                 LfoDestination::TranslationYBase => {
-                    ui_buffer.settings.translation_y_base =  ui_buffer.settings.translation_y_base 
+                    settings.translation_y_base =  settings.translation_y_base 
                                                                 + self.eval(t);
                 },
                 LfoDestination::TranslationYSpread => {
-                    ui_buffer.settings.translation_y_spread =  ui_buffer.settings.translation_y_spread + self.eval(t);
+                    settings.translation_y_spread =  settings.translation_y_spread + self.eval(t);
                 },
                 LfoDestination::None => {}
             }

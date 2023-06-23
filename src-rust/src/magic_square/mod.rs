@@ -1,12 +1,12 @@
 pub mod animation;
-pub mod draw;
 pub mod geometry;
+pub mod gl_draw;
+pub mod gl_program;
+pub mod gl_shader;
+pub mod gl_uniforms;
 pub mod lfo;
 pub mod main;
-pub mod program_linker;
-pub mod render;
 pub mod settings;
-pub mod shader_compiler;
 pub mod traits;
 pub mod transformations;
 pub mod ui_buffer;
