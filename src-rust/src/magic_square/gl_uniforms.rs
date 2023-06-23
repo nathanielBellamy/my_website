@@ -2,7 +2,7 @@ use std::rc::Rc;
 use std::cell::RefCell;
 use super::main::{Axis, Rgba};
 // use super::main::log;
-use super::transformations::{Mat4, Rotation, Translation, MAT4_ID, MAT4_ZERO};
+use super::transformations::{Mat4, Rotation, Translation, MAT4_ID};
 use super::geometry::cache::CACHE_CAPACITY;
 use super::settings::MouseTracking;
 use super::animation::Animation;
@@ -13,7 +13,7 @@ pub struct GlUniforms {
     pub radii: [Mat4; CACHE_CAPACITY],
     pub rgbas: [Rgba; CACHE_CAPACITY],
     pub rotations: [[Mat4; 3]; CACHE_CAPACITY],
-    pub translations: [Mat4; CACHE_CAPACITY],
+    pub translations: [[f32; 3]; CACHE_CAPACITY],
 }
 
 impl GlUniforms {
@@ -22,7 +22,7 @@ impl GlUniforms {
             radii: [MAT4_ID; CACHE_CAPACITY],
             rgbas: [[0.0; 4]; CACHE_CAPACITY],
             rotations: [[MAT4_ID; 3]; CACHE_CAPACITY],
-            translations: [MAT4_ZERO; CACHE_CAPACITY]
+            translations: [[0.0; 3]; CACHE_CAPACITY]
         }
     }
 
@@ -93,7 +93,7 @@ impl GlUniforms {
                         - mouse_pos_buffer[1], 
                     z: settings.translation_z_base 
                         + (idx_f32 * settings.translation_z_spread)
-                }.matrix(),
+                }.arr(),
                 MouseTracking::Off => Translation { 
                     x: settings.translation_x_base
                         + (idx_f32 * settings.translation_x_spread), 
@@ -101,7 +101,7 @@ impl GlUniforms {
                         - (idx_f32 * settings.translation_y_spread), 
                     z: settings.translation_z_base
                         + (idx_f32 * settings.translation_z_spread)
-                }.matrix(),
+                }.arr(),
                 MouseTracking::InvX =>  Translation { 
                     x: settings.translation_x_base 
                         + (idx_f32 * settings.translation_x_spread)
@@ -111,7 +111,7 @@ impl GlUniforms {
                         - mouse_pos_buffer[1], 
                     z: settings.translation_z_base
                         + (idx_f32 * settings.translation_z_spread)
-                }.matrix(),
+                }.arr(),
                 MouseTracking::InvY =>  Translation { 
                     x: settings.translation_x_base 
                         + (idx_f32 * settings.translation_x_spread)
@@ -121,7 +121,7 @@ impl GlUniforms {
                         + mouse_pos_buffer[1], 
                     z: settings.translation_z_base
                         + (idx_f32 * settings.translation_z_spread)
-                }.matrix(),
+                }.arr(),
                 MouseTracking::InvXY =>  Translation { 
                     x: settings.translation_x_base
                         + (idx_f32 * settings.translation_x_spread)
@@ -131,7 +131,7 @@ impl GlUniforms {
                         + mouse_pos_buffer[1], 
                     z: settings.translation_z_base
                         + (idx_f32 * settings.translation_z_spread)
-                }.matrix(),
+                }.arr(),
             };
             
             // let shape: Shape = animation.reel[animation_idx][idx];

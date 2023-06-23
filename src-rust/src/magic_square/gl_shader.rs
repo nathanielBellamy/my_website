@@ -56,10 +56,10 @@ impl GlShader {
  
             in vec4 position;
 
-            uniform vec4 u_rotation_0;
+            uniform vec4 u_translation;
 
             void main() {
-                gl_Position = u_rotation_0 * position;
+                gl_Position = u_translation + position;
             }
             "##,
         )

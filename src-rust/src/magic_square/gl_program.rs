@@ -9,9 +9,10 @@ impl GlProgram {
             .create_program()
             .ok_or_else(|| format!("Unable to create gl_program"))?;
         
+        let vert_shader = GlShader::vert(gl)?;
         gl.attach_shader(
-            &gl_program, 
-            &GlShader::vert(gl)?
+            &gl_program,
+            &vert_shader
         );
         gl.attach_shader(
             &gl_program, 

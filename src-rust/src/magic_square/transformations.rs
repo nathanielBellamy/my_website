@@ -93,6 +93,10 @@ impl Translation {
         }
     }
 
+    pub fn arr(&self) -> [f32; 3] {
+        [self.x, self.y, self.z]
+    }
+
     pub fn matrix(&self) -> Mat4 {
         [
             1.0,  0.0,  0.0,  0.0,
