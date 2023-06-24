@@ -7,7 +7,7 @@ use crate::magic_square::ui_buffer::UiBuffer;
 use crate::magic_square::lfo::Lfo;
 use super::gl_draw::GlDraw;
 use super::gl_program::GlProgram;
-use super::gl_uniforms::GlUniforms;
+use super::gl_uniforms::{GlUniforms, UniformLocations};
 use super::settings::ColorDirection;
 use super::geometry::geom::Geom;
 
@@ -67,8 +67,6 @@ impl MagicSquare {
 
         let mouse_pos_buffer: [f32; 2] = [0.0, 0.0];
         let mouse_pos_buffer: Rc<RefCell<[f32; 2]>> = Rc::new(RefCell::new(mouse_pos_buffer));
-
-
 
         {
             // init destroy listener on app_main
@@ -166,14 +164,14 @@ impl MagicSquare {
             let mut frame_counter: usize = 0;
 
             // set up WebGL
-            let mut uniforms = GlUniforms::new();
-            
             let gl: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
             gl.clear_color(0.0, 0.0, 0.0, 0.0);
             gl.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
 
             let program: WebGlProgram =  GlProgram::new(&gl).expect(&format!("ISSUE INIT GL_PROGRAM"));
             gl.use_program(Some(&program));
+            let uniform_locations = UniformLocations::new(&gl, &program);
+            let mut uniforms = GlUniforms::new();
 
             let gl_buffer = gl.create_buffer().ok_or("Failed to create buffer").unwrap();
             gl.bind_buffer(WebGl2RenderingContext::ARRAY_BUFFER, Some(&gl_buffer));
@@ -309,8 +307,8 @@ impl MagicSquare {
                     // log(&format!("{:?}", geometry_cache.clone().borrow().vertices));
                     if let Err(_) = GlDraw::scene(
                         &gl,
-                        &program,
                         &uniforms,
+                        &uniform_locations,
                         &shapes,
                         settings.transform_order
                     ) {

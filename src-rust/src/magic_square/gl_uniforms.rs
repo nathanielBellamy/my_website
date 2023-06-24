@@ -1,5 +1,6 @@
 use std::rc::Rc;
 use std::cell::RefCell;
+use web_sys::{WebGl2RenderingContext, WebGlUniformLocation, WebGlProgram};
 use super::main::{Axis, Rgba};
 // use super::main::log;
 use super::transformations::{Mat4, Rotation, Translation, MAT4_ID};
@@ -7,6 +8,32 @@ use super::geometry::cache::CACHE_CAPACITY;
 use super::settings::MouseTracking;
 use super::animation::Animation;
 use super::settings::Settings;
+
+pub struct UniformLocations {
+    pub order: WebGlUniformLocation,
+    pub proj_z_zero: WebGlUniformLocation,
+    pub radius: WebGlUniformLocation,
+    pub rgba: WebGlUniformLocation,
+    pub rotation_zero: WebGlUniformLocation,
+    pub rotation_one: WebGlUniformLocation,
+    pub rotation_two: WebGlUniformLocation,
+    pub translation: WebGlUniformLocation,
+}
+
+impl UniformLocations {
+    pub fn new(gl: &WebGl2RenderingContext, program: &WebGlProgram) -> UniformLocations { 
+        UniformLocations {    
+            order: gl.get_uniform_location(program, "u_order").unwrap(),
+            proj_z_zero: gl.get_uniform_location(program, "u_projection_z_zero").unwrap(),
+            translation: gl.get_uniform_location(program, "u_translation").unwrap(),
+            radius: gl.get_uniform_location(program, "u_radius").unwrap(),
+            rgba: gl.get_uniform_location(program, "u_rgba").unwrap(),
+            rotation_zero: gl.get_uniform_location(program, "u_rotation_zero").unwrap(),
+            rotation_one: gl.get_uniform_location(program, "u_rotation_one").unwrap(),
+            rotation_two: gl.get_uniform_location(program, "u_rotation_two").unwrap(),
+        }
+    }
+}
 
 #[derive(Clone, Copy, Debug)]
 pub struct GlUniforms {
@@ -22,7 +49,7 @@ impl GlUniforms {
             radii: [MAT4_ID; CACHE_CAPACITY],
             rgbas: [[0.0; 4]; CACHE_CAPACITY],
             rotations: [[MAT4_ID; 3]; CACHE_CAPACITY],
-            translations: [[0.0; 3]; CACHE_CAPACITY]
+            translations: [[0.0; 3]; CACHE_CAPACITY],
         }
     }
 

@@ -1215,9 +1215,9 @@
       border-top: 5px double color.$blue-7
       border-bottom: 5px double color.$blue-7
       border-radius: 10px
+      cursor: crosshair
       &_container
         height: 100%
-        cursor: none
         background: color.$black-blue-horiz-grad
         border: 10px double color.$blue-7
         border-radius: 5px
