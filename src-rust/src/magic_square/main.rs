@@ -9,6 +9,7 @@ use super::gl_draw::GlDraw;
 use super::gl_program::GlProgram;
 use super::gl_uniforms::GlUniforms;
 use super::settings::ColorDirection;
+use super::geometry::geom::Geom;
 
 #[wasm_bindgen]
 extern "C" {
@@ -188,16 +189,7 @@ impl MagicSquare {
             //
             // As a result, after `Float32Array::view` we have to be very careful not to
             // do any memory allocations before it's dropped.
-            let vertices: [f32; 24] = [
-                -1.0, 0.0, 0.0, 
-                0.0, 1.0, 0.0, 
-                0.0, 1.0, 0.0, 
-                1.0, 0.0, 0.0,
-                1.0, 0.0, 0.0,
-                0.0, -1.0, 0.0,
-                0.0, -1.0, 0.0,
-                -1.0, 0.0, 0.0,
-            ];
+            let vertices: [f32; 42] = Geom::f32_array();
             unsafe {
                 let positions_array_buf_view = js_sys::Float32Array::view(&vertices);
 

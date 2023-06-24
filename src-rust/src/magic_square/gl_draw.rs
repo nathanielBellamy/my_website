@@ -1,7 +1,6 @@
 use wasm_bindgen::prelude::*;
 use web_sys::{WebGl2RenderingContext, WebGlProgram};
-use super::animation::Shapes;
-use super::geometry::Geometry;
+use super::geometry::Shapes;
 use super::geometry::cache::CACHE_CAPACITY;
 use super::gl_uniforms::GlUniforms;
 use super::settings::TransformOrder;
@@ -60,30 +59,7 @@ impl GlDraw {
                 1.0
             );
 
-            // Draw the geometry.
-            let _offset = idx * 300;
-            let _count = Geometry::to_vertex_count(shapes[idx]);
-            let idx_left: usize = match idx {
-                0 => 0,
-                1 => 2,
-                2 => 4,
-                3 => 6,
-                4 => 8,
-                5 => 0,
-                6 => 2,
-                7 => 4,
-                8 => 6,
-                9 => 8,
-                10 => 0,
-                11 => 2,
-                12 => 4,
-                13 => 6,
-                14 => 8,
-                15 => 3,
-                _ => 0
-            };
-
-            gl.draw_arrays(WebGl2RenderingContext::LINES, idx_left as i32, 2);//offset as i32, count as i32);
+            gl.draw_arrays(WebGl2RenderingContext::LINES, 0, 14);//offset as i32, count as i32);
         }
         Ok(())
     }

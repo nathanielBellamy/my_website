@@ -3,7 +3,6 @@ use crate::magic_square::geometry::cache::CACHE_CAPACITY;
 use super::settings::{Settings, DrawPatternType};
 // use super::main::log;
 
-pub type Shapes = [Shape; CACHE_CAPACITY];
 pub type Frame = [Shape; CACHE_CAPACITY];
 pub type Reel = [Frame; CACHE_CAPACITY];
 

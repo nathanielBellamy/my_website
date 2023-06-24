@@ -157,8 +157,6 @@ impl UiBuffer {
                     } else {
                         self.settings.shapes[io_shape.index] = io_shape.shape;
                     }
-                    
-                    geometry_cache.update_from_shapes(&self.settings.shapes);
                 }
             },
             INPUT_DRAW_PATTERN_TYPE => {

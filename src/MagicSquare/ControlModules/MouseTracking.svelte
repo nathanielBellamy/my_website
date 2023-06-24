@@ -91,8 +91,6 @@
     // while listening to the form
     // this way a single wasm closure can handle all ui data updates
     parseVars(currOption)
-    var form = document.getElementById(formId)
-    form.addEventListener('submit', handleFormSubmit)
   })
 
   function handleToggleKeydown(e: any, newToggle: Toggle) {
@@ -131,6 +129,7 @@
 </script>
 
 <form id={formId}
+      on:submit={handleFormSubmit}
       class="h-full pl-2 pr-2 flex flex-col justify-around items-stretch">
   <h2 class="mouse_tracking_title text-left pl-3">
     {i18n.t("mouse", langVal)}
