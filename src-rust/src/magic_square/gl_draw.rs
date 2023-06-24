@@ -4,6 +4,7 @@ use super::geometry::Shapes;
 use super::geometry::cache::CACHE_CAPACITY;
 use super::gl_uniforms::GlUniforms;
 use super::settings::TransformOrder;
+use super::transformations::Projection;
 // use super::main::log;
 
 pub struct GlDraw;
@@ -25,6 +26,7 @@ impl GlDraw {
         // lookup uniforms
         let translation_location = gl.get_uniform_location(program, "u_translation").unwrap();
         let order_location = gl.get_uniform_location(program, "u_order").unwrap();
+        let proj_z_zero_location = gl.get_uniform_location(program, "u_projection_z_zero").unwrap();
         let rgba_location = gl.get_uniform_location(program, "u_rgba").unwrap();
         let radius_location = gl.get_uniform_location(program, "u_radius").unwrap();
         let rotation_zero_location = gl.get_uniform_location(program, "u_rotation_zero").unwrap();
@@ -47,6 +49,7 @@ impl GlDraw {
                     TransformOrder::TranslateThenRotate => 0,
                 }
             );
+            gl.uniform_matrix4fv_with_f32_array(Some(&proj_z_zero_location), false, &Projection::z_zero());
             gl.uniform_matrix4fv_with_f32_array(Some(&radius_location), false, &uniforms.radii[idx]);
             gl.uniform_matrix4fv_with_f32_array(Some(&rotation_zero_location), false, &uniforms.rotations[idx][0]);
             gl.uniform_matrix4fv_with_f32_array(Some(&rotation_one_location), false, &uniforms.rotations[idx][1]);

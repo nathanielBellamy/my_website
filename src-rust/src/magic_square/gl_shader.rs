@@ -57,6 +57,7 @@ impl GlShader {
             in vec4 position;
         
             uniform int u_order;
+            uniform mat4 u_projection_z_zero;
             uniform mat4 u_radius;
             uniform mat4 u_rotation_zero;
             uniform mat4 u_rotation_one;
@@ -66,11 +67,11 @@ impl GlShader {
             void main() {
                 if (u_order == 1) 
                 {
-                    gl_Position = u_translation + (u_rotation_two * (u_rotation_one * (u_rotation_zero * (u_radius * position))));
+                    gl_Position = u_projection_z_zero * (u_translation + (u_rotation_two * (u_rotation_one * (u_rotation_zero * (u_radius * position)))));
                 } 
                 else 
                 {
-                    gl_Position = u_rotation_two * (u_rotation_one * (u_rotation_zero * (u_translation + (u_radius * position))));
+                    gl_Position = u_projection_z_zero * (u_rotation_two * (u_rotation_one * (u_rotation_zero * (u_translation + (u_radius * position)))));
                 }
             }
             "##,

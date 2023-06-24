@@ -1,4 +1,4 @@
-use crate::magic_square::geometry::{Shape, Shapes};
+use crate::magic_square::geometry::Shapes;
 use super::hexagon::VERTICES_HEXAGON;
 
 pub const CACHE_CAPACITY: usize = 16;
@@ -21,7 +21,7 @@ impl Cache {
     pub fn new(shapes: &Shapes) -> Cache {
         Cache {
             idx: 0,
-            shapes: [Shape::None; CACHE_CAPACITY]
+            shapes: *shapes
         }
     }
 

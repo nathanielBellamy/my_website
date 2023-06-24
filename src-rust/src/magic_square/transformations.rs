@@ -106,3 +106,16 @@ impl Translation {
         ]
     }
 }
+
+pub struct Projection;
+
+impl Projection {
+    pub fn z_zero() -> Mat4 {
+        [
+            1.0,  0.0,  0.0,  0.0,
+            0.0,  1.0,  0.0,  0.0,
+            0.0,  0.0,  0.0,  0.0,
+            0.0,  0.0,  0.0,  1.0,
+        ]
+    }
+}
