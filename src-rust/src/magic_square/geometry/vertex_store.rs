@@ -18,7 +18,7 @@ pub trait VertexStore<T: Index<usize> + IndexMut<usize>> {
         let idx: usize = self.idx();
         let arr: &mut [f32] = self.arr();
         if idx > arr.len() - 1 { return; }
-        for i in 0..2 {
+        for i in 0..3 {
             arr[idx + i] = vertex[i]
         }
         self.set_idx(idx + 3);
