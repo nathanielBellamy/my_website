@@ -52,7 +52,7 @@ impl GlDraw {
                 1.0
             );
 
-            gl.draw_arrays(WebGl2RenderingContext::LINES, 0, 14);//offset as i32, count as i32);
+            gl.draw_arrays(WebGl2RenderingContext::LINES, 100, 100);//offset as i32, count as i32);
         }
         Ok(())
     }

@@ -1,6 +1,6 @@
 use std::ops::{Index, IndexMut};
 use std::convert::From;
-use super::traits::VertexStore;
+use super::vertex_store::VertexStore;
 
 // const ORIGIN: Vertex = Vertex { arr: [0.0, 0.0, 0.0] };
 pub const VERTEX_ARRAY_SIZE: usize = 300;

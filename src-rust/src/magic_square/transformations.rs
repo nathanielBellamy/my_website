@@ -32,9 +32,7 @@ impl RotationSequence {
             ]
         }
     }
-
 }
-
 
 #[derive(Clone, Copy, Debug)]
 pub struct Rotation {

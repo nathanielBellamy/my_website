@@ -1,6 +1,8 @@
 use std::ops::{Index, IndexMut};
-use crate::magic_square::traits::VertexStore;
-use crate::magic_square::vertices::{Vertex, VERTEX_ARRAY_SIZE};
+use crate::magic_square::geometry::vertex_store::VertexStore;
+use crate::magic_square::geometry::vertices::Vertex;
+
+use super::vertices::VERTEX_ARRAY_SIZE;
 
 const PI: f32 = std::f32::consts::PI;
 
@@ -10,8 +12,9 @@ const PI: f32 = std::f32::consts::PI;
 // const V_ANGLE_COS: f32 = V_ANGLE.cos();
 
 pub struct Icosahedron {
-    pub arr: [f32; VERTEX_ARRAY_SIZE], // # coordinates needed to define hexagon
-    idx: usize
+    pub arr: [f32; 300], // # coordinates needed to define hexagon
+    idx: usize,
+
 }
 
 impl Icosahedron {
@@ -20,7 +23,7 @@ impl Icosahedron {
     }
     // write to vertices
     // return array to be cached 
-    pub fn new() -> Icosahedron {
+    pub fn f32_array() -> [f32; VERTEX_ARRAY_SIZE] {
         let mut icosahedron = Icosahedron::init();
 
         let h_angle: f32 = PI / 180.0 * 72.0; // 72 degrees = 360/5
@@ -107,7 +110,7 @@ impl Icosahedron {
             h_angle_top += h_angle;
         }
 
-        icosahedron
+        icosahedron.arr
     }
 }
 

@@ -1,20 +1,52 @@
-
 use std::ops::{Index, IndexMut};
-use crate::magic_square::traits::VertexStore;
-use crate::magic_square::vertices::Vertex;
+use crate::magic_square::geometry::vertex_store::VertexStore;
+use crate::magic_square::geometry::vertices::Vertex;
+
+use super::vertices::VERTEX_ARRAY_SIZE;
+
+const VERTEX_COUNT_HEXAGON: usize = 14;
 
 pub struct Hexagon {
-    pub arr: [f32; 42],
+    pub arr: [f32; VERTEX_ARRAY_SIZE],
+    pub vert_count: usize,
     idx: usize
+}
+
+impl Index<usize> for Hexagon {
+    type Output = f32;
+    fn index<'a>(&'a self, i: usize) -> &'a f32 {
+        &self.arr[i]
+    }
+}
+
+impl IndexMut<usize> for Hexagon {
+    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut f32 {
+        &mut self.arr[i]
+    }
+}
+
+impl VertexStore<Hexagon> for Hexagon {
+    fn idx(&self) -> usize {
+        self.idx
+    }
+
+    fn set_idx(&mut self, new_idx: usize) -> usize {
+        self.idx = new_idx;
+        self.idx
+    }
+
+    fn arr(&mut self) -> &mut [f32] {
+        &mut self.arr
+    }
 }
 
 impl Hexagon {
     fn init() -> Hexagon {
-        Hexagon { arr: [0.0; 42], idx: 0 }
+        Hexagon { arr: [0.0; VERTEX_ARRAY_SIZE], idx: 0, vert_count: VERTEX_COUNT_HEXAGON }
     }
     // write to vertices
     // return array to be cached 
-    pub fn f32_array() -> [f32; 42] {
+    pub fn f32_array() -> [f32; VERTEX_ARRAY_SIZE] {
         let xy: f32 = 0.0;
         let x_shift: f32 = 0.5; // cos(pi/3)
         let y_shift: f32 = 0.86602540378; // sin(pi/3)
@@ -63,30 +95,4 @@ impl Hexagon {
 }
 
 
-impl Index<usize> for Hexagon {
-    type Output = f32;
-    fn index<'a>(&'a self, i: usize) -> &'a f32 {
-        &self.arr[i]
-    }
-}
 
-impl IndexMut<usize> for Hexagon {
-    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut f32 {
-        &mut self.arr[i]
-    }
-}
-
-impl VertexStore<Hexagon> for Hexagon {
-    fn idx(&self) -> usize {
-        self.idx
-    }
-
-    fn set_idx(&mut self, new_idx: usize) -> usize {
-        self.idx = new_idx;
-        self.idx
-    }
-
-    fn arr(&mut self) -> &mut [f32] {
-        &mut self.arr
-    }
-}

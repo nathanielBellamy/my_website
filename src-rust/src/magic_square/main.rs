@@ -187,7 +187,7 @@ impl MagicSquare {
             //
             // As a result, after `Float32Array::view` we have to be very careful not to
             // do any memory allocations before it's dropped.
-            let vertices: [f32; 42] = Geom::f32_array();
+            let vertices = Geom::f32_array();
             unsafe {
                 let positions_array_buf_view = js_sys::Float32Array::view(&vertices);
 

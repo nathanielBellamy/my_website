@@ -1,5 +1,5 @@
 use std::ops::{Index, IndexMut};
-use crate::magic_square::vertices::Vertex;
+use crate::magic_square::geometry::vertices::Vertex;
 
 pub trait VertexStore<T: Index<usize> + IndexMut<usize>> {
     // to be used on Structs with

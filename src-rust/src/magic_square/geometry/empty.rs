@@ -1,4 +1,4 @@
-use crate::magic_square::vertices::VERTEX_ARRAY_SIZE;
+use crate::magic_square::geometry::vertices::VERTEX_ARRAY_SIZE;
 
 pub struct Empty {
     pub arr: [f32; VERTEX_ARRAY_SIZE],

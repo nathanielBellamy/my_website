@@ -6,6 +6,8 @@ pub mod empty;
 pub mod geom;
 pub mod hexagon;
 pub mod icosahedron;
+pub mod vertex_store;
+pub mod vertices;
 
 
 
