@@ -148,7 +148,6 @@ impl MagicSquare {
 
         {
             // set up animation loop
-            let geometry_cache = geometry_cache.clone();
             let ui_buffer = ui_buffer.clone();
             let mut animation_idx: usize = 0;
 
@@ -289,9 +288,9 @@ impl MagicSquare {
                     // 0 < color_speed < 21
                     if color_idx_delay == delay_reset {
                         color_idx_offset_delay[0] = match settings.color_direction {
-                            ColorDirection::In => (color_idx_offset + 1) % CACHE_CAPACITY as u8,
+                            ColorDirection::In => (color_idx_offset - 1) % CACHE_CAPACITY as u8,
                             ColorDirection::Fix => color_idx_offset,
-                            ColorDirection::Out => (color_idx_offset - 1) % CACHE_CAPACITY as u8,
+                            ColorDirection::Out => (color_idx_offset + 1) % CACHE_CAPACITY as u8,
                         };
                         color_idx_offset_delay[1] = 0;
                     }
@@ -299,7 +298,7 @@ impl MagicSquare {
                     color_idx_offset_delay[1] = color_idx_offset_delay[1] + 1;
                     
                     // compute
-                    uniforms.set_uniforms(&mouse_pos_buffer, &settings);
+                    uniforms.set_uniforms(&mouse_pos_buffer, &settings, color_idx_offset);
                     // log(&format!("{:?}", uniforms));
                     
                     // draw
@@ -309,7 +308,7 @@ impl MagicSquare {
                         &uniforms,
                         &uniform_locations,
                         &settings.shapes,
-                        settings.transform_order
+                        &settings.transform_order,
                     ) {
                         log("DRAW ERROR");
                     }

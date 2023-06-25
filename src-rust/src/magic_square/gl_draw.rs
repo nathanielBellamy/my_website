@@ -16,7 +16,7 @@ impl GlDraw {
         uniforms: &GlUniforms,
         u_locs: &UniformLocations,
         shapes: &Shapes,
-        order: TransformOrder,
+        order: &TransformOrder,
     ) -> Result<(), JsValue>{
         // NOTE FOR DEBUGGING
         // - the uniform name "my_uniform" is defined in the shader source text where the uniform is defined

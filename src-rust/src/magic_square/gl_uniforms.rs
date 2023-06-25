@@ -57,6 +57,7 @@ impl GlUniforms {
         &mut self,
         mouse_pos_buffer: &Rc<RefCell<[f32; 2]>>,
         settings: &Settings,
+        color_offset: u8,
     ) {
         // let max_idx = Settings::max_idx_from_draw_pattern(settings.draw_pattern);
         let mouse_pos_buffer = *mouse_pos_buffer.clone().borrow();
@@ -65,7 +66,10 @@ impl GlUniforms {
 
         // rgbas
         // TODO: might not need this here, just read from ui_buffer elsewhere perhaps
-        self.rgbas = settings.colors;
+        for (idx, rgba) in settings.colors.iter().enumerate() {
+            let new_idx: usize = (idx + color_offset as usize) % CACHE_CAPACITY;
+            self.rgbas[new_idx] = *rgba;
+        }
 
         for idx in 0..CACHE_CAPACITY { // geometry_cache.max_idx + 1 { //TODO: settings.cache_per
             // radii
