@@ -98,7 +98,7 @@
     if (e.keyCode === 13){
       toggle = newToggle
       let form = document.getElementById(formId)
-      form.dispatchEvent(new Event('submit', {bubbles: true}))
+      form.dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}))
     }
   }
 
@@ -106,7 +106,7 @@
     e.stopPropagation()
     toggle = newToggle
     let form = document.getElementById(formId)
-    form.dispatchEvent(new Event('submit', {bubbles: true}))
+    form.dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}))
   } 
 
   function handleInvKeydown(e: any, newInv: Inv) {
@@ -114,14 +114,14 @@
     if (e.keyCode === 13){
       inv = newInv
       let form = document.getElementById(formId)
-      form.dispatchEvent(new Event('submit', {bubbles: true}))
+      form.dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}))
     }
   }
 
   function handleInvClick(newInv: Inv) {
     inv = newInv
     let form = document.getElementById(formId)
-    form.dispatchEvent(new Event('submit', {bubbles: true}))
+    form.dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}))
   }
 
   const invGroup1: Inv[] = [Inv.x, Inv.y, Inv.xy]
