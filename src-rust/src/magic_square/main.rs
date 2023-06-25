@@ -10,6 +10,7 @@ use super::gl_program::GlProgram;
 use super::gl_uniforms::{GlUniforms, UniformLocations};
 use super::settings::ColorDirection;
 use super::geometry::geom::Geom;
+use super::animation::Animation;
 
 #[wasm_bindgen]
 extern "C" {
@@ -149,7 +150,8 @@ impl MagicSquare {
         {
             // set up animation loop
             let ui_buffer = ui_buffer.clone();
-            let mut animation_idx: usize = 0;
+            let mut animation = Animation::new();
+            animation.set_from(&ui_buffer.clone().borrow().settings);
 
             // let performance = MagicSquare::performance();
             let mut x: f32 = -3.14159;
@@ -214,6 +216,8 @@ impl MagicSquare {
             
             *g.borrow_mut() = Some(Closure::new(move || {
                 let mut settings = ui_buffer.clone().borrow().settings;
+
+                animation.set_from(&settings);
 
                 if *destroy_flag.clone().borrow() {
                     // cleanup resource
@@ -296,7 +300,9 @@ impl MagicSquare {
                     }
                     
                     color_idx_offset_delay[1] = color_idx_offset_delay[1] + 1;
-                    
+
+
+
                     // compute
                     uniforms.set_uniforms(&mouse_pos_buffer, &settings, color_idx_offset);
                     // log(&format!("{:?}", uniforms));
@@ -307,16 +313,20 @@ impl MagicSquare {
                         &gl,
                         &uniforms,
                         &uniform_locations,
-                        &settings.shapes,
+                        &animation.curr_shapes(),
                         &settings.transform_order,
                     ) {
                         log("DRAW ERROR");
                     }
                     
-                    let frame_counter_limit: i32 = if settings.draw_pattern_speed > 19 { 1 } else { settings.draw_pattern_speed };
+                    let frame_counter_limit: i32 = if settings.draw_pattern_speed > 19 { 1 } else { 21 - settings.draw_pattern_speed };
+    
+                    if frame_counter >  frame_counter_limit as usize {
+                        frame_counter = 0;
+                    }
 
-                    if frame_counter % frame_counter_limit as usize == 0 {
-                        animation_idx = (animation_idx  + 1) % CACHE_CAPACITY;
+                    if frame_counter %  frame_counter_limit as usize == 0 {
+                        animation.inc();
                     }
                     frame_counter = (frame_counter + 1) % (frame_counter_limit as usize);
                     // log("index out of bounds hunt 4");

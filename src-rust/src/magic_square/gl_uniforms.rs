@@ -6,7 +6,6 @@ use super::main::{Axis, Rgba};
 use super::geometry::transformations::{Mat4, Rotation, Translation, MAT4_ID};
 use super::geometry::cache::CACHE_CAPACITY;
 use super::settings::MouseTracking;
-use super::animation::Animation;
 use super::settings::Settings;
 
 pub struct UniformLocations {
@@ -61,8 +60,6 @@ impl GlUniforms {
     ) {
         // let max_idx = Settings::max_idx_from_draw_pattern(settings.draw_pattern);
         let mouse_pos_buffer = *mouse_pos_buffer.clone().borrow();
-        let mut animation = Animation::new();
-        animation.set_reel(&settings);
 
         // rgbas
         // TODO: might not need this here, just read from ui_buffer elsewhere perhaps
