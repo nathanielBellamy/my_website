@@ -303,13 +303,12 @@ impl MagicSquare {
                     // log(&format!("{:?}", uniforms));
                     
                     // draw
-                    let shapes = geometry_cache.clone().borrow().shapes;
                     // log(&format!("{:?}", geometry_cache.clone().borrow().vertices));
                     if let Err(_) = GlDraw::scene(
                         &gl,
                         &uniforms,
                         &uniform_locations,
-                        &shapes,
+                        &settings.shapes,
                         settings.transform_order
                     ) {
                         log("DRAW ERROR");

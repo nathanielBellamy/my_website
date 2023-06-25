@@ -7,7 +7,6 @@ pub mod gl_uniforms;
 pub mod lfo;
 pub mod main;
 pub mod settings;
-pub mod transformations;
 pub mod ui_buffer;
 pub mod ui_manifest;
 pub mod worker;

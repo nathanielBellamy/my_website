@@ -6,15 +6,37 @@ use super::vertices::VERTEX_ARRAY_SIZE;
 
 const PI: f32 = std::f32::consts::PI;
 
-// const H_ANGLE: f32 = PI / (180.0 * 72.0); // 72 degrees = 2pi/5; rotate horizontal
-// const V_ANGLE: f32 = 0.5_f32.atan(); // elevation = 26.565 degrees
-// const V_ANGLE_SIN: f32 = V_ANGLE.sin();
-// const V_ANGLE_COS: f32 = V_ANGLE.cos();
-
 pub struct Icosahedron {
     pub arr: [f32; 300], // # coordinates needed to define hexagon
     idx: usize,
+}
 
+impl Index<usize> for Icosahedron {
+    type Output = f32;
+    fn index<'a>(&'a self, i: usize) -> &'a f32 {
+        &self.arr[i]
+    }
+}
+
+impl IndexMut<usize> for Icosahedron {
+    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut f32 {
+        &mut self.arr[i]
+    }
+}
+
+impl VertexStore<Icosahedron> for Icosahedron {
+    fn idx(&self) -> usize {
+        self.idx
+    }
+
+    fn set_idx(&mut self, new_idx: usize) -> usize {
+        self.idx = new_idx;
+        self.idx
+    }
+
+    fn arr(&mut self) -> &mut [f32] {
+        &mut self.arr
+    }
 }
 
 impl Icosahedron {
@@ -114,31 +136,4 @@ impl Icosahedron {
     }
 }
 
-impl Index<usize> for Icosahedron {
-    type Output = f32;
-    fn index<'a>(&'a self, i: usize) -> &'a f32 {
-        &self.arr[i]
-    }
-}
-
-impl IndexMut<usize> for Icosahedron {
-    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut f32 {
-        &mut self.arr[i]
-    }
-}
-
-impl VertexStore<Icosahedron> for Icosahedron {
-    fn idx(&self) -> usize {
-        self.idx
-    }
-
-    fn set_idx(&mut self, new_idx: usize) -> usize {
-        self.idx = new_idx;
-        self.idx
-    }
-
-    fn arr(&mut self) -> &mut [f32] {
-        &mut self.arr
-    }
-}
 

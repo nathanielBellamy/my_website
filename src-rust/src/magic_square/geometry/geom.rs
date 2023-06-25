@@ -5,7 +5,7 @@ use super::vertices::VERTEX_ARRAY_SIZE;
 
 pub struct Geom;
 
-pub type IdxVc = (i32, i32);
+pub type OffsetVc = (i32, i32);
 
 type GeomVertArrays = [[f32; VERTEX_ARRAY_SIZE]; 2];
 impl Geom {
@@ -24,12 +24,12 @@ impl Geom {
         result
     }
 
-    pub fn into_idx_vc(shape: Shape) -> IdxVc {
+    pub fn into_offset_vc(shape: Shape) -> OffsetVc {
         match shape {
             Shape::Hexagon => (0, 14),
-            Shape::Icosahedron => (1, 100),
-            Shape::None => (-1, -1),
-            _ => (-1, -1)
+            Shape::Icosahedron => (100, 100),
+            Shape::None => (0, 0),
+            _ => (0, 0)
         }
     }
 }

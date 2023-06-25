@@ -2,9 +2,10 @@ use wasm_bindgen::prelude::*;
 use web_sys::WebGl2RenderingContext;
 use super::geometry::Shapes;
 use super::geometry::cache::CACHE_CAPACITY;
+use super::geometry::geom::Geom;
 use super::gl_uniforms::{GlUniforms, UniformLocations};
 use super::settings::TransformOrder;
-use super::transformations::Projection;
+use super::geometry::transformations::Projection;
 // use super::main::log;
 
 pub struct GlDraw;
@@ -14,7 +15,7 @@ impl GlDraw {
         gl: &WebGl2RenderingContext,
         uniforms: &GlUniforms,
         u_locs: &UniformLocations,
-        _shapes: &Shapes,
+        shapes: &Shapes,
         order: TransformOrder,
     ) -> Result<(), JsValue>{
         // NOTE FOR DEBUGGING
@@ -51,8 +52,8 @@ impl GlDraw {
                 uniforms.translations[idx][2],
                 1.0
             );
-
-            gl.draw_arrays(WebGl2RenderingContext::LINES, 100, 100);//offset as i32, count as i32);
+            let offset_vc: (i32, i32) = Geom::into_offset_vc(shapes[idx]);
+            gl.draw_arrays(WebGl2RenderingContext::LINES, offset_vc.0, offset_vc.1);//offset as i32, count as i32);
         }
         Ok(())
     }

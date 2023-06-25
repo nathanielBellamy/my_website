@@ -3,7 +3,7 @@ use std::cell::RefCell;
 use web_sys::{WebGl2RenderingContext, WebGlUniformLocation, WebGlProgram};
 use super::main::{Axis, Rgba};
 // use super::main::log;
-use super::transformations::{Mat4, Rotation, Translation, MAT4_ID};
+use super::geometry::transformations::{Mat4, Rotation, Translation, MAT4_ID};
 use super::geometry::cache::CACHE_CAPACITY;
 use super::settings::MouseTracking;
 use super::animation::Animation;
