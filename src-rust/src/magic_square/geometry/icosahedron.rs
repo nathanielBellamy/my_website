@@ -6,8 +6,11 @@ use super::vertices::VERTEX_ARRAY_SIZE;
 
 const PI: f32 = std::f32::consts::PI;
 
+pub const VERTEX_COUNT_ICOSAHEDRON: i32 = 100;
+
 pub struct Icosahedron {
     pub arr: [f32; 300], // # coordinates needed to define hexagon
+    pub vertex_count: i32,
     idx: usize,
 }
 
@@ -41,7 +44,7 @@ impl VertexStore<Icosahedron> for Icosahedron {
 
 impl Icosahedron {
     fn init() -> Icosahedron {
-        Icosahedron { arr: [0.0; VERTEX_ARRAY_SIZE], idx: 0 }
+        Icosahedron { arr: [0.0; VERTEX_ARRAY_SIZE], idx: 0, vertex_count: VERTEX_COUNT_ICOSAHEDRON }
     }
     // write to vertices
     // return array to be cached 

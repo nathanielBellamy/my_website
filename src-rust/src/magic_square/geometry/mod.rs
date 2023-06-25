@@ -2,6 +2,7 @@ use serde::{Serialize, Deserialize};
 use self::cache::CACHE_CAPACITY;
 
 pub mod cache;
+pub mod cube;
 pub mod empty;
 pub mod geom;
 pub mod hexagon;
@@ -18,6 +19,7 @@ pub enum Shape {
     Square,
     Pentagon,
     Hexagon,
+    Cube,
     Icosahedron,
     #[default]
     None

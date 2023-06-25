@@ -67,7 +67,8 @@
           <option>
             Tetrahedron
           </option>
-          <option>
+          <option selected={shapes[shapeIndex] === Shape.cube}
+                  value={Shape.cube}>
             Cube
           </option>
           <option>

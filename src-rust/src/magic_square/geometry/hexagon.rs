@@ -4,11 +4,11 @@ use crate::magic_square::geometry::vertices::Vertex;
 
 use super::vertices::VERTEX_ARRAY_SIZE;
 
-const VERTEX_COUNT_HEXAGON: usize = 14;
+pub const VERTEX_COUNT_HEXAGON: i32 = 14;
 
 pub struct Hexagon {
     pub arr: [f32; VERTEX_ARRAY_SIZE],
-    pub vert_count: usize,
+    pub vert_count: i32,
     idx: usize
 }
 
