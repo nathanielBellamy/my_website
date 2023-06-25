@@ -1,5 +1,5 @@
 use wasm_bindgen::prelude::*;
-use web_sys::{WebGl2RenderingContext, WebGlProgram};
+use web_sys::WebGl2RenderingContext;
 use super::geometry::Shapes;
 use super::geometry::cache::CACHE_CAPACITY;
 use super::gl_uniforms::{GlUniforms, UniformLocations};

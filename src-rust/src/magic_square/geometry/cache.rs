@@ -1,5 +1,4 @@
 use crate::magic_square::geometry::Shapes;
-use super::hexagon::VERTICES_HEXAGON;
 
 pub const CACHE_CAPACITY: usize = 16;
 pub const CACHE_SHAPE_WIDTH: usize = 300;
@@ -14,10 +13,6 @@ pub struct Cache {
 }
 
 impl Cache {
-    pub fn f32_array() -> [f32; 42] {
-        VERTICES_HEXAGON
-    }
-
     pub fn new(shapes: &Shapes) -> Cache {
         Cache {
             idx: 0,

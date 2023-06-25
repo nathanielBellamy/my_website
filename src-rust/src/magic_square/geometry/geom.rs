@@ -1,4 +1,5 @@
-use super::{Shape, hexagon::VERTICES_HEXAGON};
+use super::Shape;
+use super::hexagon::Hexagon;
 
 pub struct Geom;
 
@@ -6,7 +7,7 @@ pub type IdxVc = (i32, i32);
 
 impl Geom {
     pub fn f32_array() -> [f32; 42] {
-        VERTICES_HEXAGON
+        Hexagon::f32_array()
     }
 
     pub fn into_idx_vc(shape: Shape) -> IdxVc {

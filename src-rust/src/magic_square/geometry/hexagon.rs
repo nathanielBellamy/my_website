@@ -1,40 +1,92 @@
-const X_SHIFT: f32 = 0.5; // cos(pi/3)
-const Y_SHIFT: f32 =  0.86602540378; // sin(pi/3)
 
-pub const VERTICES_HEXAGON: [f32; 42] = [
-    // start north east corner
-    // end east corner
-    X_SHIFT, Y_SHIFT, 0.0,
-    1.0, 0.0, 0.0,
-    
-    // start east corner
-    // end south east corner
-    1.0, 0.0, 0.0,
-    X_SHIFT, -Y_SHIFT, 0.0,
+use std::ops::{Index, IndexMut};
+use crate::magic_square::traits::VertexStore;
+use crate::magic_square::vertices::Vertex;
 
-    // start east corner
-    // end south east corner
-    1.0, 0.0, 0.0,
-    X_SHIFT, -Y_SHIFT, 0.0,
+pub struct Hexagon {
+    pub arr: [f32; 42],
+    idx: usize
+}
 
-    // start south east corner
-    // end south west corner
-    X_SHIFT, -Y_SHIFT, 0.0,
-    -X_SHIFT, -Y_SHIFT, 0.0,
+impl Hexagon {
+    fn init() -> Hexagon {
+        Hexagon { arr: [0.0; 42], idx: 0 }
+    }
+    // write to vertices
+    // return array to be cached 
+    pub fn f32_array() -> [f32; 42] {
+        let xy: f32 = 0.0;
+        let x_shift: f32 = 0.5; // cos(pi/3)
+        let y_shift: f32 = 0.86602540378; // sin(pi/3)
+        
+        let mut hexagon = Hexagon::init();
 
-    // start south west corner
-    // end west corner
-    -X_SHIFT, -Y_SHIFT, 0.0,
-    -1.0, 0.0, 0.0,
+        // draw hexagon boundary
+        // start north east corner
+        // end east corner
+        hexagon.set_next(Vertex::new(x_shift, y_shift, xy));
+        hexagon.set_next(Vertex::new(1.0, 0.0, xy));
 
-    // start west corner
-    // end north west corner
-    -1.0, 0.0, 0.0,
-    -X_SHIFT, Y_SHIFT, 0.0,
+        // start east corner
+        // end south east corner
+        hexagon.set_next(Vertex::new(1.0, 0.0, xy));
+        hexagon.set_next(Vertex::new(x_shift, -y_shift, xy));
+
+        // start east corner
+        // end south east corner
+        hexagon.set_next(Vertex::new(1.0, 0.0, xy));
+        hexagon.set_next(Vertex::new(x_shift, -y_shift, xy));
+
+        // start south east corner
+        // end south west corner
+        hexagon.set_next(Vertex::new(x_shift, -y_shift, xy));
+        hexagon.set_next(Vertex::new(-x_shift, -y_shift, xy));
+
+        // start south west corner
+        // end west corner
+        hexagon.set_next(Vertex::new(-x_shift, -y_shift, xy));
+        hexagon.set_next(Vertex::new(-1.0, 0.0, xy));
+
+        // start west corner
+        // end north west corner
+        hexagon.set_next(Vertex::new(-1.0, 0.0, xy));
+        hexagon.set_next(Vertex::new(-x_shift, y_shift, xy));
 
 
-    // start north west corner
-    // end north east corner
-    -X_SHIFT, Y_SHIFT, 0.0,
-    X_SHIFT, Y_SHIFT, 0.0,
-];
+        // start north west corner
+        // end north east corner
+        hexagon.set_next(Vertex::new(-x_shift, y_shift, xy));
+        hexagon.set_next(Vertex::new(x_shift, y_shift, xy));
+        
+        hexagon.arr
+    }
+}
+
+
+impl Index<usize> for Hexagon {
+    type Output = f32;
+    fn index<'a>(&'a self, i: usize) -> &'a f32 {
+        &self.arr[i]
+    }
+}
+
+impl IndexMut<usize> for Hexagon {
+    fn index_mut<'a>(&'a mut self, i: usize) -> &'a mut f32 {
+        &mut self.arr[i]
+    }
+}
+
+impl VertexStore<Hexagon> for Hexagon {
+    fn idx(&self) -> usize {
+        self.idx
+    }
+
+    fn set_idx(&mut self, new_idx: usize) -> usize {
+        self.idx = new_idx;
+        self.idx
+    }
+
+    fn arr(&mut self) -> &mut [f32] {
+        &mut self.arr
+    }
+}

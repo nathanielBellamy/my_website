@@ -121,7 +121,7 @@ impl UiBuffer {
             &mut self, 
             input_id: String, 
             val: String, 
-            geometry_cache: &mut Cache,
+            _geometry_cache: &mut Cache,
             // animation: &mut Animation,
     ) {
         // log(&input_id);
