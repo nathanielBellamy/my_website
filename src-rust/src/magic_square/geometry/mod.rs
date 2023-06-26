@@ -5,24 +5,18 @@ pub mod cache;
 pub mod cube;
 pub mod empty;
 pub mod geom;
-pub mod hexagon;
 pub mod icosahedron;
-pub mod square;
-pub mod triangle;
+pub mod ngon;
 pub mod transformations;
 pub mod vertex_store;
 pub mod vertices;
 
 
-
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "t", content = "c")]
 pub enum Shape {
-    Triangle,
-    Square,
-    Pentagon,
-    Hexagon,
-    Cube,
-    Icosahedron,
+    Ngon(u8),
+    PlatoThree(u8),
     #[default]
     None
 }

@@ -1,17 +1,17 @@
 use crate::magic_square::geometry::cube::Cube;
 use super::Shape;
 use super::cube::VERTEX_COUNT_CUBE;
-use super::hexagon::{Hexagon, VERTEX_COUNT_HEXAGON};
 use super::icosahedron::{Icosahedron, VERTEX_COUNT_ICOSAHEDRON};
-use super::square::{Square, VERTEX_COUNT_SQUARE};
-use super::triangle::{Triangle, VERTEX_COUNT_TRIANGLE};
+use super::ngon::Ngon;
 use super::vertices::VERTEX_ARRAY_SIZE;
 
 pub struct Geom;
 
+pub const PI: f32 = std::f32::consts::PI;
+
 pub type OffsetVc = (i32, i32);
 
-const SHAPE_COUNT: usize = 5;
+const SHAPE_COUNT: usize = 30;
 const TOTAL_LEN: usize = VERTEX_ARRAY_SIZE * SHAPE_COUNT;
 
 type GeomVertArrays = [[f32; VERTEX_ARRAY_SIZE]; SHAPE_COUNT];
@@ -19,11 +19,36 @@ impl Geom {
     pub fn f32_array() -> [f32; TOTAL_LEN] {
         let mut result: [f32; TOTAL_LEN] = [0.0; TOTAL_LEN];
         let arrays: GeomVertArrays = [
-            Hexagon::f32_array(),
+            Ngon::f32_array(3),
+            Ngon::f32_array(4),
+            Ngon::f32_array(5),
+            Ngon::f32_array(6),
+            Ngon::f32_array(7),
+            Ngon::f32_array(8),
+            Ngon::f32_array(9),
+            Ngon::f32_array(10),
+            Ngon::f32_array(11),
+            Ngon::f32_array(12),
+            Ngon::f32_array(13),
+            Ngon::f32_array(14),
+            Ngon::f32_array(15),
+            Ngon::f32_array(16),
+            Ngon::f32_array(17),
+            Ngon::f32_array(18),
+            Ngon::f32_array(19),
+            Ngon::f32_array(20),
+            Ngon::f32_array(21),
+            Ngon::f32_array(22),
+            Ngon::f32_array(23),
+            Ngon::f32_array(24),
+            Ngon::f32_array(25),
+            Ngon::f32_array(26),
+            Ngon::f32_array(27),
+            Ngon::f32_array(28),
+            Ngon::f32_array(29),
+            Ngon::f32_array(30),
             Cube::f32_array(),
             Icosahedron::f32_array(),
-            Square::f32_array(),
-            Triangle::f32_array(),
         ];
         for (idx_arr, array) in arrays.iter().enumerate() {
             for (idx_el, el) in array.iter().enumerate() {
@@ -35,13 +60,13 @@ impl Geom {
 
     pub fn into_offset_vc(shape: Shape) -> OffsetVc {
         match shape {
-            Shape::Hexagon => (0, VERTEX_COUNT_HEXAGON),
-            Shape::Cube => (100, VERTEX_COUNT_CUBE),
-            Shape::Icosahedron => (200, VERTEX_COUNT_ICOSAHEDRON),
-            Shape::Square => (300, VERTEX_COUNT_SQUARE),
-            Shape::Triangle => (400, VERTEX_COUNT_TRIANGLE),
+            Shape::Ngon(n) => (100 * (n - 3) as i32, 2 * n as i32),
+            Shape::PlatoThree(n) => match n {
+                6 => (2800, VERTEX_COUNT_CUBE),
+                20 => (2900, VERTEX_COUNT_ICOSAHEDRON),
+                _ => (0,0)
+            }
             Shape::None => (0, 0),
-            _ => (0, 0)
         }
     }
 }

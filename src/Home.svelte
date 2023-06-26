@@ -16,9 +16,6 @@
     </h1>
     <ul class="home_intro_list text-left p-5 flex flex-col justify-between items-stretch">
       <li>
-        {i18n.t("intro/1", langVal)}
-      </li>
-      <li>
         {i18n.t("intro/2", langVal)}
         <p>
           <Link href="https://www.rust-lang.org/"

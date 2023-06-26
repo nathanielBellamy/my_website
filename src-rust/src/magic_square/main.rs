@@ -315,6 +315,7 @@ impl MagicSquare {
                         &uniform_locations,
                         &animation.curr_shapes(),
                         &settings.transform_order,
+                        &x
                     ) {
                         log("DRAW ERROR");
                     }

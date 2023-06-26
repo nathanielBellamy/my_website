@@ -5,7 +5,7 @@ use wasm_bindgen::JsValue;
 
 use super::geometry::Shape;
 use super::geometry::cache::CACHE_CAPACITY;
-// use crate::magic_square::main::log;
+use crate::magic_square::main::log;
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub enum DrawPatternType {
@@ -175,7 +175,7 @@ impl Settings {
             radius_base: 0.1,
             radius_step: 0.1,
             transform_order: TransformOrder::RotateThenTranslate,
-            shapes: [Shape::Hexagon; CACHE_CAPACITY],
+            shapes: [Shape::Ngon(30); CACHE_CAPACITY],
 
             // lfo_1
             lfo_1_active: true,
@@ -283,7 +283,6 @@ pub struct IOShape {
     pub index: usize
 }
 
-
 pub struct Validate;
 
 impl Validate {
@@ -298,8 +297,10 @@ impl Validate {
     }
 
     pub fn try_into_io_shape(val: String) -> Result<IOShape, JsValue> {
+        log(&val);
         let val = js_sys::JSON::parse(&val).unwrap();
         let res: IOShape = serde_wasm_bindgen::from_value(val)?;
+        log(&format!{"serde res: {:?}", res});
         Ok(res)
     }
 
@@ -316,15 +317,6 @@ impl Validate {
         let val = js_sys::JSON::parse(&val).unwrap();
         let res: IOPreset = serde_wasm_bindgen::from_value(val)?;
         Ok(res)     
-    }
-
-
-    pub fn try_into_shape(val: String) -> Result<Shape, ()> {
-        match val.as_str() {
-            "Hexagon" => Ok(Shape::Hexagon),
-            "Icosahedron" => Ok(Shape::Icosahedron),
-            _ => Err(())
-        }
     }
 
     pub fn try_into_color_direction(cd: String) -> Result<ColorDirection, ()> {

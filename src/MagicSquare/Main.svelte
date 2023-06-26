@@ -22,7 +22,8 @@
   import { prevSettingsStore } from './PrevSettingsStore'
   import { intoTransformOrder, TransformOrder } from './ControlModules/TransformOrder'
   import { ColorDirection, intoColorDirection } from './ControlModules/Color'
-  import { intoShape, Shape } from './ControlModules/Shape'
+  import { intoShape } from './ControlModules/Shape'
+  import type { Shape } from './ControlModules/Shape'
   import Presets from './ControlModules/Presets.svelte'
   // INIT LANG BOILER PLATE
   import { I18n, Lang } from '../I18n'

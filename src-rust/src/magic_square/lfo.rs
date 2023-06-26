@@ -60,7 +60,7 @@ impl Lfo {
     pub fn eval(&self, x: f32) -> f32 {
         // log(&format!("{:?}", self.shape));
         match self.shape {
-            LfoShape::Sine => self.amp * ((self.freq * x) + self.phase).sin(),
+            LfoShape::Sine => self.amp * (((self.freq / 2.0)  * x) + self.phase).sin(),
             LfoShape::Linear => {
                 // | LfoShape::Square
                 // | LfoShape::Sawtooth => {

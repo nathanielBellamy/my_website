@@ -150,13 +150,7 @@ impl UiBuffer {
             },
             INPUT_SHAPES => {
                 if let Ok(io_shape) = Validate::try_into_io_shape(val) {
-                    if io_shape.index == 16 { // magic number indicating update all TODO: make not magic
-                        for shape in self.settings.shapes.iter_mut() {
-                            *shape = io_shape.shape;
-                        }
-                    } else {
-                        self.settings.shapes[io_shape.index] = io_shape.shape;
-                    }
+                    self.settings.shapes[io_shape.index] = io_shape.shape;
                 }
             },
             INPUT_DRAW_PATTERN_TYPE => {

@@ -17,6 +17,7 @@ impl GlDraw {
         u_locs: &UniformLocations,
         shapes: &Shapes,
         order: &TransformOrder,
+        _x: &f32
     ) -> Result<(), JsValue>{
         // NOTE FOR DEBUGGING
         // - the uniform name "my_uniform" is defined in the shader source text where the uniform is defined
@@ -53,7 +54,10 @@ impl GlDraw {
                 1.0
             );
             let offset_vc: (i32, i32) = Geom::into_offset_vc(shapes[idx]);
-            gl.draw_arrays(WebGl2RenderingContext::LINES, offset_vc.0, offset_vc.1);//offset as i32, count as i32);
+            // TODO: Mosh DrawPattern Setting
+            let offset = offset_vc.0; // 6 * (50.0 * (x/4.0).sin()).abs().floor() as i32;
+            let vert_count = offset_vc.1; // i32 = 100;
+            gl.draw_arrays(WebGl2RenderingContext::LINES, offset, vert_count);//offset as i32, count as i32);
         }
         Ok(())
     }

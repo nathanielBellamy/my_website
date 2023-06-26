@@ -2,9 +2,8 @@ use std::ops::{Index, IndexMut};
 use crate::magic_square::geometry::vertex_store::VertexStore;
 use crate::magic_square::geometry::vertices::Vertex;
 
+use super::geom::PI;
 use super::vertices::VERTEX_ARRAY_SIZE;
-
-const PI: f32 = std::f32::consts::PI;
 
 pub const VERTEX_COUNT_ICOSAHEDRON: i32 = 100;
 
