@@ -74,6 +74,7 @@
 
   let colorStrings: string[]
   $: colorStrings = colors.map(x => rgbaToString(x))
+  $: gradient = `linear-gradient(90deg, ${colorStrings[idx_a]} 0%, ${colorStrings[idx_b]} 100%)`
   let currIdx: number = 0
 
   const colorPickerOptions = {
@@ -172,11 +173,8 @@
       {/each}
   </div>
   <div class="grow p-2 flex justify-around items-stretch gap-2">
-    <button class="grow color_mode_option flex justify-around items-center"
-            on:click={setColorGradient}>
-      Gradient
-    </button>
     <select bind:value={idx_a}
+            class="flex justify-around items-center"
             on:input={(e) => e.stopPropagation()}
             on:change={(e) => handleGradientIndexChange(e, 'a')}>
       {#each {length: 16} as _, idx}
@@ -186,7 +184,12 @@
         </option>
       {/each}
     </select>
+    <button class="grow color_mode_option flex justify-around items-center"
+            style:background="{gradient}"
+            on:click={setColorGradient}>
+    </button>
     <select bind:value={idx_b}
+            class="flex justify-around items-center"
             on:input={(e) => e.stopPropagation()}
             on:change={(e) => handleGradientIndexChange(e, 'b')}>
       {#each {length: 16} as _, idx}

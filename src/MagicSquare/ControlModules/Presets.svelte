@@ -10,7 +10,6 @@
   const banks: string[] = ['A', 'B', 'C', 'D']
   
   function toBank(preset: number): string {
-
     if (-1 < preset && preset < 16) {
       return banks[0]
     } else if (15 < preset && preset < 32) {
@@ -40,16 +39,26 @@
 
 <section class="h-full flex flex-col justify-around items-stretch">
   <slot name="preset"/>
-
   <div class="grid grid-cols-4 grid-rows-1">
-    <div class="title col-span-2">
-      ACTIVE:
+    <div class="title pl-5 col-span-2">
+      curr:
     </div>
     <div class="title flex justify-around">
       {toBank(preset)}
     </div>
-    <div class="title flex justify-around">
+    <div class="title flex justify-around items-center">
       {preset + 1}
+    </div>
+  </div>
+  <div class="grid grid-cols-4 grid-rows-1">
+    <div class="title pl-5 col-span-2">
+      load/save:
+    </div>
+    <div class="title flex justify-around">
+      {toBank(presetNext)}
+    </div>
+    <div class="title flex justify-around items-center">
+      {presetNext + 1}
     </div>
   </div>
   <div class="flex flex-col justify-between items-stretch">
@@ -80,7 +89,7 @@
       </button>
       {#if bank === 0}
         {#each {length: 16} as _, idx}
-          <button class="no_shadow"
+          <button class="no_shadow flex justify-around items-center"
                   on:click={() => handlePresetClick(idx)}
                   class:active={preset === idx}
                   class:selected={presetNext === idx}>
@@ -89,7 +98,7 @@
         {/each}
       {:else if bank === 1}
         {#each {length: 16} as _, idx}
-          <button class="no_shadow"
+          <button class="no_shadow flex justify-around items-center"
                   on:click={() => handlePresetClick(idx + 16)}
                   class:active={preset === idx + 16}
                   class:selected={presetNext === idx + 16}>
@@ -98,7 +107,7 @@
         {/each}
       {:else if bank === 2}
         {#each {length: 16} as _, idx}
-          <button class="no_shadow"
+          <button class="no_shadow flex justify-around items-center"
                   on:click={() => handlePresetClick(idx + 32)}
                   class:active={preset === idx + 32}
                   class:selected={presetNext === idx + 32}>
@@ -107,7 +116,7 @@
         {/each}
       {:else if bank === 3}
         {#each {length: 16} as _, idx}
-          <button class="no_shadow"
+          <button class="no_shadow flex justify-around items-center"
                   on:click={() => handlePresetClick(idx + 48)}
                   class:active={preset === idx + 48}
                   class:selected={presetNext === idx + 48}>
@@ -128,8 +137,9 @@
 
   .title
     color: color.$blue-7
-    font-size: text.$fs-ml
+    font-size: text.$fs-m
     font-weight: text.$fw-l
+    text-align: left
 
   .active
     border: solid

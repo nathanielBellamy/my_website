@@ -54,8 +54,9 @@ impl Icosahedron {
         let h_angle: f32 = PI / 180.0 * 72.0; // 72 degrees = 360/5
         let v_angle: f32 = 0.5_f32.atan(); // elevation = 26.565 degrees
         
-        let z: f32 = v_angle.sin();
-        let xy: f32 = v_angle.cos();
+        let r: f32 = 2.0_f32.sqrt();
+        let z: f32 = r * v_angle.sin();
+        let xy: f32 = r * v_angle.cos();
 
         let mut h_angle_top: f32 = -PI / 2.0 - h_angle / 2.0; // start from -126 degree 
         let mut h_angle_bottom: f32 = -PI / 2.0; // start from -90deg
@@ -86,7 +87,7 @@ impl Icosahedron {
         // connect bottom vertex to five bottom-row vertices
         for _ in 1..6 {
             icosahedron.set_next(
-                Vertex::new(0.0, -1.0, 0.0)
+                Vertex::new(0.0, -r, 0.0)
             );
             icosahedron.set_next(
                 Vertex::new(xy * h_angle_bottom.cos(), -z, xy * h_angle_bottom.sin())
@@ -113,7 +114,7 @@ impl Icosahedron {
         // connect top vertex to five top-row vertices
         for _ in 1..6 {
             icosahedron.set_next(
-                Vertex::new(0.0, 1.0, 0.0)
+                Vertex::new(0.0, r, 0.0)
             );
             icosahedron.set_next(
                 Vertex::new(xy * h_angle_top.cos(), z, xy * h_angle_top.sin())

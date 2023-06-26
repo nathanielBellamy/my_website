@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Module } from './ControlModules/Module'
+  import { onDestroy, onMount } from 'svelte'
+  import { into_module, Module } from './ControlModules/Module'
   import ControlModule from './ControlModule.svelte'
   import Select from './ControlModules/Select.svelte'
 
@@ -18,12 +19,36 @@
     right = 'right'
   }
 
-  let curr_mod_left: Module = Module.presets
-  let curr_mod_right: Module = Module.color
+  let curr_mod_left: Module
+  let curr_mod_right: Module
+
+  $: storage_mods = set_curr_mods(curr_mod_left, curr_mod_right)
+
+  function set_curr_mods(left: Module, right: Module): {[key: string]: Module} {
+    const res: {[key: string]: Module} = {curr_mod_left: left, curr_mod_right: right}
+    if (!!left && !!right){
+      localStorage.setItem('magic_square_curr_mods', JSON.stringify(res))
+    }
+    return res
+  }
+
+  onMount(() => {
+    const curr_mods: any = JSON.parse(localStorage.getItem('magic_square_curr_mods'))
+    if (curr_mods){
+      curr_mod_left = into_module(curr_mods.curr_mod_left)
+      curr_mod_right = into_module(curr_mods.curr_mod_right)
+    } else {
+      curr_mod_left = Module.presets
+      curr_mod_right = Module.color
+    }
+  })
 </script>
 
 <div id="magic_square_control_rack"
      class="magic_square_control_rack flex flex-row-reverse justify-between">
+  <div class="hidden">
+    {storage_mods}
+  </div>
   <div class="mod_select">
     <ControlModule title={i18n.t("modules", langVal)}>
       <Select bind:curr_mod_left={curr_mod_left}
@@ -146,4 +171,7 @@
     min-width: 200px
     grid-area: right_slot
     overflow: hidden
+
+  .hidden
+    display: none
 </style>

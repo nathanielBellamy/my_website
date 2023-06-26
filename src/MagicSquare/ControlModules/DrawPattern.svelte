@@ -22,11 +22,8 @@
 </script>
 
 <section class="h-full pl-5 pr-5 flex flex-col justify-between items-stretch">
-  <div class="grow flex flex-col justify-between items-stretch">
+  <div class="transform_order flex flex-col justify-between items-stretch">
     <slot name="transformOrder"/>
-    <div class="title underline text-left">
-      transform order
-    </div>
     <div class="grow p-5 flex flex-col justify-around items-stretch gap-8">
       <button class="grow flex justify-around items-center"
               class:selected={transformOrder === TransformOrder.rotateThenTranslate}
@@ -40,9 +37,9 @@
       </button>
     </div>
   </div>
-  <div class="text-left flex flex-col justify-betwen items-stretch">
+  <div class="grow text-left flex flex-col justify-betwen items-stretch">
     <div class="title flex items-stretch underline">
-      type
+      direction
     </div>
     <select class="w-full"
             value={drawPatternType}
@@ -58,9 +55,9 @@
         Fix
       </option>
     </select>
-  </div>
-  <div class="grow flex flex-col justify-between items-stretch">
-    <slot name="countAndSpeed" />
+    <div class="grow flex flex-col justify-between items-stretch">
+      <slot name="countAndSpeed" />
+    </div>
   </div>
   <slot name="hiddenInput" />
 </section>
@@ -70,9 +67,12 @@
   @use "../../styles/text"
   .title
     color: color.$blue-7
-    font-size: text.$fs-ml
+    font-size: text.$fs-m
     font-weight: text.$fw-l
 
   .selected
     background-color: color.$blue-8
+
+  .transform_order
+    flex-grow: 0.25
 </style>
