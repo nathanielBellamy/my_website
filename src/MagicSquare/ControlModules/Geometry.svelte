@@ -46,7 +46,8 @@
                   value={Shape.triangle}>
             Triangle
           </option>
-          <option>
+          <option selected={shapes[shapeIndex] === Shape.square}
+                  value={Shape.square}>
             Square
           </option>
           <option>

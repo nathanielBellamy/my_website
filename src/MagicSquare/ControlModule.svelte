@@ -37,7 +37,6 @@
     border-radius: 5px
     height: 98%
     min-width: 226px
-    max-width: 226px
     min-height: 480px
     &_slot
       height: 98%
