@@ -67,7 +67,7 @@
           title="nbschieber@gmail.com"
           sameOrigin={false}/>
   </div>
-  <div>
+  <div class="city">
     PORTLAND, OR
   </div>
   <Language />
@@ -85,4 +85,7 @@
     font-size: text.$fs-l
     font-weight: text.$fw-l
     margin-top: -10px
+
+  .city
+    font-weight: text.$fw-l
 </style>

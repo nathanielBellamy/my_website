@@ -38,7 +38,7 @@
     </div>
   </div>
   <div class="grow text-left flex flex-col justify-betwen items-stretch">
-    <div class="title flex items-stretch underline">
+    <div class="slider_label flex items-stretch">
       direction
     </div>
     <select class="w-full"
@@ -75,4 +75,10 @@
 
   .transform_order
     flex-grow: 0.25
+
+  .slider_label
+      width: 100%
+      font-weight: text.$fw-l
+      font-size: text.$fs-m
+      padding-right: 5%
 </style>

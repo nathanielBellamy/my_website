@@ -183,10 +183,9 @@
         </option>
       {/each}
     </select>
-    <button class="grow color_mode_option flex justify-around items-center"
+    <button class="grow color_mode_option"
             style:background="{gradient}"
-            on:click={setColorGradient}>
-    </button>
+            on:click={setColorGradient}/>
     <select bind:value={idx_b}
             class="flex justify-around items-center"
             on:input={(e) => e.stopPropagation()}
