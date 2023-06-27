@@ -40,24 +40,24 @@
 <section class="h-full flex flex-col justify-around items-stretch">
   <slot name="preset"/>
   <div class="grid grid-cols-4 grid-rows-1">
-    <div class="title pl-5 col-span-2">
+    <div class="title_m pl-5 col-span-2">
       curr:
     </div>
-    <div class="title flex justify-around">
+    <div class="title_m flex justify-around">
       {toBank(preset)}
     </div>
-    <div class="title flex justify-around items-center">
+    <div class="title_m flex justify-around items-center">
       {preset + 1}
     </div>
   </div>
   <div class="grid grid-cols-4 grid-rows-1">
-    <div class="title pl-5 col-span-2">
+    <div class="title_m pl-5 col-span-2">
       load/save:
     </div>
-    <div class="title flex justify-around">
+    <div class="title_m flex justify-around">
       {toBank(presetNext)}
     </div>
-    <div class="title flex justify-around items-center">
+    <div class="title_m flex justify-around items-center">
       {presetNext + 1}
     </div>
   </div>
@@ -137,9 +137,16 @@
 
   .title
     color: color.$blue-7
-    font-size: text.$fs-m
+    font-size: text.$fs-ml
     font-weight: text.$fw-l
     text-align: left
+    &_m
+      color: color.$blue-7
+      font-size: text.$fs-m
+      font-weight: text.$fw-l
+      text-align: left
+
+
 
   .active
     border: solid

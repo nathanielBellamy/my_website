@@ -574,7 +574,7 @@
                      class="hidden_input"/>
             </div>
 
-            <div  class="pt-2 pl-5 pr-5 grow flex flex-col justify-around items-stretch"
+            <div  class="pl-5 pr-5 grow flex flex-col justify-around items-stretch"
                   slot="radiusSliders">
               <div class="w-full flex flex-col justify-between items-stretch"
                        on:dblclick={() => handleRangeDoubleClick(WasmInputId.radiusBase)}>

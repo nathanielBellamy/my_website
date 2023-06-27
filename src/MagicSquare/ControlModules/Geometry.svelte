@@ -163,7 +163,7 @@
       </select>
     </div>
   </div>
-  <div class="grow flex flex-col justify-between items-stretch">
+  <div class="grow pt-2 flex flex-col justify-between items-stretch">
     <div class="title flex items-stretch pl-5 underline">
       radius
     </div>
