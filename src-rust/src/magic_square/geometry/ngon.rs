@@ -61,7 +61,7 @@ impl Ngon {
     }
 
     pub fn f32_array(n: u8) -> [f32; VERTEX_ARRAY_SIZE] {
-        let r: f32 = 1.15;
+        let r: f32 = 2.0_f32.sqrt();
         let mut ngon = Ngon::init(n);
         let iter_max: usize = (ngon.n as usize) + 1;
 

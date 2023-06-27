@@ -1,11 +1,3 @@
-// export enum Shape {
-//   cube = "Cube",
-//   ngon = "Ngon",
-//   icosahedron = "Icosahedron",
-//   none = "None",
-// }
-//
-
 export interface Shape {
   t: ShapeTag,
   c: number

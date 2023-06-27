@@ -7,7 +7,7 @@
 
   let shapeIndex: number = 0
   $: shapeJson = JSON.stringify({shape: shapes[shapeIndex], index: shapeIndex})
-  let n: number = 3
+  let n: number = shapes[shapeIndex].c
 
   let idx_a: number = 0
   let idx_b: number = 4
@@ -18,13 +18,9 @@
   function handleShapeIndexSelect(e: any, new_idx: number) {
     e.stopPropagation()
     shapeIndex = new_idx
+    n = shapes[shapeIndex].c
     var sel = document.getElementById('magic_square_shape_select')
-    if (shapes[shapeIndex].t === ShapeTag.ngon) {
-      sel.value = JSON.stringify({t: shapes[shapeIndex].t, c: n})
-      n = shapes[shapeIndex].c
-    } else {
-      sel.value = JSON.stringify({t: ShapeTag.platoThree, c: shapes[shapeIndex].c})
-    }
+    sel.value = JSON.stringify({t: shapes[shapeIndex].t, c: n})
   }
 
   function handleShapeSelect(e: any) {
@@ -94,6 +90,7 @@
     <div class="pt-5 pl-5 pr-5 grid grid-cols-4">
       <select id="magic_square_shape_select"
               class="col-span-3 shape_select"
+              value={JSON.stringify({t: shapes[shapeIndex].t, c: n})}
               on:input={(e) => e.stopPropagation()}
               on:change={handleShapeSelect}>
         <optgroup label="2d">
