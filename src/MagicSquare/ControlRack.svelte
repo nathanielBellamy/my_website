@@ -167,6 +167,8 @@
     grid-template-rows: 100%
     gap: 5px
 
+  .mod_select
+    height: 100%
 
   .slot_grid_1
     height: 100%
@@ -187,7 +189,6 @@
     padding: 5px 40px 5px 40px
     border-radius: 5px
     background: color.$black-blue-grad
-    min-height: 100%
     
   .left_slot
     min-width: 226px

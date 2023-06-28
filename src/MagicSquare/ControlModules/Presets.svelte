@@ -2,6 +2,8 @@
   import { WasmInputId } from "../WasmInputId"
   import { PresetAction } from "./Preset"
 
+  // TODO: CSS prevent top cutoff on small screen
+
   let bank: number = 0
   export let preset: number
   export let updateUiSettings: Function
@@ -37,7 +39,7 @@
   }
 </script>
 
-<section class="h-full flex flex-col justify-around items-stretch">
+<section class="grow flex flex-col justify-around items-stretch">
   <slot name="preset"/>
   <div class="grid grid-cols-4 grid-rows-1">
     <div class="title_m pl-5 col-span-2">

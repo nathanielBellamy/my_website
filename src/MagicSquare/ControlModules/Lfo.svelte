@@ -109,7 +109,7 @@
   }
 </script>
 
-<div class="h-full pb-5 flex flex-col justify-between items-stretch">
+<div class="grow pb-5 flex flex-col justify-between items-stretch">
   <div id="magic_square_lfo_select"
        class="lfo_select pb-2 flex flex-col justify-between items-stretch">
     <button on:click = {() => lfo = Lfo.one}

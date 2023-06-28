@@ -21,10 +21,10 @@
   }
 </script>
 
-<section class="h-full pl-5 pr-5 flex flex-col justify-between items-stretch">
+<section class="grow pb-5 pl-5 pr-5 flex flex-col justify-between items-stretch">
   <div class="transform_order flex flex-col justify-between items-stretch">
     <slot name="transformOrder"/>
-    <div class="grow p-5 flex flex-col justify-around items-stretch gap-8">
+    <div class="grow p-5 flex flex-col justify-around items-stretch gap-3">
       <button class="grow flex justify-around items-center"
               class:selected={transformOrder === TransformOrder.rotateThenTranslate}
               on:click={() => handleTransformOrderClick(TransformOrder.rotateThenTranslate)}>
