@@ -9,6 +9,7 @@
 
   export let curr_mod_left: Module = Module.color
   export let curr_mod_right: Module = Module.rotation
+  export let small = false
 
   enum Side {
     left = 'left',
@@ -24,6 +25,10 @@
   }
 
   function setMod(mod: Module) {
+    if (small) { // only one module is displayed at a time
+      curr_mod_left = mod 
+      return
+    }
     if (mod === curr_mod_left || mod === curr_mod_right) return
     if (sideToSet === Side.left) {
       curr_mod_left = mod
@@ -39,25 +44,27 @@
   }
 </script>
 
-<div class="module_selector flex flex-col">
-  <div class="module_selector_side_set flex">
-    <button class="side_set side_set_left"
-            class:side_set_left_selected="{sideToSet === Side.left}"
-            on:dblclick={() => swap()}
-            on:click={() => sideToSet = Side.left}>
-      {i18n.t("left", langVal)}
-    </button>
-    <button class="side_set side_set_right"
-            class:side_set_right_selected="{sideToSet === Side.right}"
-            on:dblclick={() => swap()}
-            on:click={() => sideToSet = Side.right}>
-      {i18n.t("right", langVal)}
-    </button>
-  </div>
+<div class="module_selector h-full flex flex-col justify-around items-stretch">
+  {#if !small}
+    <div class="module_selector_side_set flex">
+      <button class="side_set side_set_left"
+              class:side_set_left_selected="{sideToSet === Side.left}"
+              on:dblclick={() => swap()}
+              on:click={() => sideToSet = Side.left}>
+        {i18n.t("left", langVal)}
+      </button>
+      <button class="side_set side_set_right"
+              class:side_set_right_selected="{sideToSet === Side.right}"
+              on:dblclick={() => swap()}
+              on:click={() => sideToSet = Side.right}>
+        {i18n.t("right", langVal)}
+      </button>
+    </div>
+  {/if}
   {#each Object.values(Module) as mod}
     <button class="module_option"
             class:selected_left="{curr_mod_left === mod}"
-            class:selected_right="{curr_mod_right === mod}"
+            class:selected_right="{curr_mod_right === mod && !small}"
             on:click={() => setMod(mod)}
             on:keydown={(e) => handleModKeydown(e, mod)}>
         {i18n.t(mod, langVal)}
@@ -110,7 +117,6 @@
   .module_selector
     justify-content: space-between
     border-radius: 5px
-    height: 100%
 
   .hidden_input
     display: none

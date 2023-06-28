@@ -171,9 +171,9 @@
         </button>
       {/each}
   </div>
-  <div class="grow p-2 flex justify-around items-stretch gap-2">
+  <div class="color_gradient p-2 flex justify-around items-stretch gap-2">
     <select bind:value={idx_a}
-            class="flex justify-around items-center"
+            class="grow flex justify-around items-center"
             on:input={(e) => e.stopPropagation()}
             on:change={(e) => handleGradientIndexChange(e, 'a')}>
       {#each {length: 16} as _, idx}
@@ -187,7 +187,7 @@
             style:background="{gradient}"
             on:click={setColorGradient}/>
     <select bind:value={idx_b}
-            class="flex justify-around items-center"
+            class="grow flex justify-around items-center"
             on:input={(e) => e.stopPropagation()}
             on:change={(e) => handleGradientIndexChange(e, 'b')}>
       {#each {length: 16} as _, idx}
@@ -209,6 +209,9 @@
   .selected
     background-color: color.$blue-4
 
+  .color_gradient
+    min-height: 75px
+
   .color_mode
     &s
       flex-grow: .75
@@ -221,12 +224,6 @@
   
   .color_rows
     flex-grow: .75
-
-  .color_row
-    width: 100%
-    display: flex
-    justify-content: stretch
-    align-items: stretch
 
   .color_button
     flex-grow: 1

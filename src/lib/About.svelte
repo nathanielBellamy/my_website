@@ -123,8 +123,8 @@
 
 </script>
 
-<div class="about_me flex flex-col justify-start items-stretch">
-  <div class="section grid grid-rows-10 md:grid-cols-10 ">
+<div class="about_me flex flex-col justify-start items-stretch gap-2">
+  <div class="section grid grid-rows-10 md:grid-cols-10 gap-4">
     <div class="section_title text-xl font-extrabold row-span-2 md:col-span-2 md:row-span-1">
       Personal Projects
     </div>
@@ -147,7 +147,7 @@
       {/each}
     </div>
   </div>
-  <div class="section grid grid-rows-10 md:grid-cols-10">
+  <div class="section grid grid-rows-10 md:grid-cols-10 gap-4">
     <div class="section_title text-xl font-extrabold row-span-2 md:col-span-2 md:row-span-1">
       Technical Knowledge
     </div>
@@ -219,6 +219,7 @@
       border-top: 0px solid white
       border-left: 0px solid white
       border-radius: 5px
+      color: color.$blue-4
       &:hover
         background-color: color.$blue-6
         transition: background-color .25s
@@ -233,7 +234,7 @@
       text-align: left
       padding-left: 1em
       font-weight: 700
-      color: color.$white
+      color: color.$green-2
       margin: 2px 5px 2px 5px
       border-bottom: 3px solid color.$green-4
       border-left: 3px solid color.$green-4

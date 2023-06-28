@@ -32,7 +32,7 @@
   }
 </script>
 
-<nav class="nav_bar flex flex-row justify-between items-stretch">
+<nav class="nav_bar flex flex-row justify-between items-center">
   <div class="links flex justify-between items-stretch">
     <Link href="/" 
           title={i18n.t("nav/home", langVal)}
@@ -78,7 +78,7 @@
   @use "./styles/text"
   
   .nav_bar
-    min-width: 500px
+    width: 100%
     overflow-x: scroll
   .curr_section
     color: color.$blue-7
