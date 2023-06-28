@@ -29,7 +29,8 @@
     const new_shape: Shape = JSON.parse(e.target.value)
     shapes[shapeIndex] = new_shape
     shapes = [...shapes]
-    input.value = JSON.stringify({shape: {t: new_shape.t, c: new_shape.c}, index: shapeIndex})
+    n = new_shape.c
+    input.value = JSON.stringify({shape: {t: new_shape.t, c: n}, index: shapeIndex})
     input.dispatchEvent(new Event('input', {bubbles: true}))
   } 
 
