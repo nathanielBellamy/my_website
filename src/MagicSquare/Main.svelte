@@ -33,6 +33,11 @@
   let langVal: Lang
   lang.subscribe(val => langVal = val)
 
+  let innerWidth: number = window.innerWidth
+  const minInnerWidth: number = 1000
+
+  $: small = innerWidth < minInnerWidth
+
   // this component will be large
   // the decision was made to optimize for minimal plumbing
   // this component instantiates the wasm module and retrieves the initial UI values from it
@@ -445,8 +450,12 @@
   })
 </script>
 
+<svelte:window bind:innerWidth />
+
 <div id="magic_square"
-     class="magic_square flex flex-wrap gap-2">
+     class="magic_square"
+     class:grid_col={small}
+     class:grid_row={!small}>
      <!-- on:click={() => console.dir(deriveStorageSettings())} -->
   <div id="magic_square_canvas_container"
        class="magic_square_canvas_container flex flex-col justify-around display">
@@ -456,7 +465,7 @@
             width={sideLength}/>
   </div>
   <div class="control">
-    <ControlRack>
+    <ControlRack bind:small={small}>
       <div slot="color"
            class="h-full">
         {#if !renderDataReady}
@@ -1224,6 +1233,18 @@
         border-radius: 5px
         flex-grow: 1
 
+  .grid_col
+    display: grid
+    grid-template-columns: 1fr
+    grid-template-rows: 1fr 1fr
+    gap: 5px
+
+  .grid_row
+    display: grid
+    grid-template-columns: 1fr 1fr
+    grid-template-rows: 1fr
+    gap: 5px
+
   .disabled
     color: #666
 
@@ -1231,7 +1252,6 @@
     align-items: center
   
   .control
-    flex-grow: 1
     height: 100%
 
   .slider_label

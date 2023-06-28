@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte'
+  import { onMount } from 'svelte'
   import { into_module, Module } from './ControlModules/Module'
   import ControlModule from './ControlModule.svelte'
   import Select from './ControlModules/Select.svelte'
@@ -14,11 +14,7 @@
 
   $: translationTitle = i18n.t(Module.translation, langVal)
 
-
-  let innerWidth: number = window.innerWidth
-  const minInnerWidth: number = 1000
-
-  $: small = innerWidth < minInnerWidth
+  export let small: boolean = false
 
   enum Side {
     left = 'left',
@@ -52,7 +48,6 @@
 
 
 
-<svelte:window bind:innerWidth />
 
 <div id="magic_square_control_rack"
      class="magic_square_control_rack"
@@ -195,11 +190,11 @@
     min-height: 100%
     
   .left_slot
-    min-width: 200px
+    min-width: 226px
     overflow: hidden
   
   .right_slot
-    min-width: 200px
+    min-width: 226px
     overflow: hidden
 
   .hidden
