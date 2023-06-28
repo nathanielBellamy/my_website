@@ -110,6 +110,8 @@
 
 <body>
   <div class="give_me_a_sine flex flex-col md:flex-row md:justify-stretch">
+    <div id="give_me_a_sine_output"
+         class="give_me_a_sine_output device_graph_font"/>
     <div id="give_me_a_sine_form"
          class="give_me_a_sine_form flex flex-col">
       <div class="give_me_a_sine_form_header font-bold">
@@ -237,8 +239,7 @@
 
       </div>
     </div>
-    <div id="give_me_a_sine_output"
-         class="give_me_a_sine_output device_graph_font"/>
+
   </div>
 </body>
 
@@ -248,7 +249,7 @@
 
   @media (max-width : 700px) 
       .device_graph_font
-        font-size: 3px
+        font-size: 9px
     
   .give_me_a_sine
     flex-grow: 1
