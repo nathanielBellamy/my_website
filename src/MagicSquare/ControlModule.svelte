@@ -22,7 +22,7 @@
     {/if}
   </div>
   <div class="control_module_slot_container">
-    <slot class="control_module_slot flex flex-col"/> 
+    <slot class="control_module_slot flex flex-col justify-around items-stretch"/> 
   </div>
 </div>
 

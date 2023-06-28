@@ -21,7 +21,7 @@
   }
 </script>
 
-<section class="grow pb-5 pl-5 pr-5 flex flex-col justify-between items-stretch">
+<section class="h-full pb-5 pl-5 pr-5 flex flex-col justify-between items-stretch">
   <div class="transform_order flex flex-col justify-between items-stretch">
     <slot name="transformOrder"/>
     <div class="grow p-5 flex flex-col justify-around items-stretch gap-3">

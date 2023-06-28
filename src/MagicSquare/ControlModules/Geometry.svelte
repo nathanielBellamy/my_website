@@ -72,7 +72,7 @@
  }
 </script>
 
-<div class="grow pb-5 flex flex-col justify-between items-stretch">
+<div class="h-full pb-5 flex flex-col justify-between items-stretch">
   <div class="grow flex flex-col justify-between items-stretch">
     <div class="title flex items-stretch pl-5 underline">
       shape

@@ -348,12 +348,12 @@ pub type Rgba = [f32; 4];
 impl MagicSquare {
     pub fn clip_x(offset_x: i32, width: i32) -> f32 {
         // x coordinate of mouse position in clip space
-        (2.0 * (offset_x as f32) / width as f32) - 1.0
+        (3.0 * (offset_x as f32) / width as f32) - 1.52
     }
 
     pub fn clip_y(offset_y: i32, height: i32) -> f32 {
         // y coordinate of mouse position in clip space
-        1.0 - ((2.0 * offset_y as f32) / height as f32)
+        2.52 - ((3.0 * offset_y as f32) / height as f32)
     }
 
     pub fn request_animation_frame(f: &Closure<dyn FnMut()>) -> i32 {
