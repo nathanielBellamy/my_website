@@ -7,6 +7,16 @@
   const i18n = new I18n("home")
   let langVal: Lang
   lang.subscribe(val => langVal = val)
+
+  enum Preview {
+    about = "About",
+    giveMeASine = "GiveMeASine",
+    magicSquare = "MagicSquare"
+  }
+
+  function handlePreviewClick(p: Preview) {
+    alert(p)
+  }
 </script>
 
 <body class="pl-5 pr-5 pb-5 flex flex-col justify-between items-stretch gap-2">
@@ -45,34 +55,33 @@
     </ul>
   </div>
   <div class="home_title_dark text-left pl-5">
-    What's Here?
+    What's here?
   </div>
   <div class="grow pl-5 pr-5 pb-5 flex flex-col justify-between items-stretch">
-    <div class="grow grid grid-cols-3 grid-rows-1">
-      <div class="preview flex flex-col justify-between items-stretch">
-        <h3>
-          <Link href="/about" 
-                title="About"
-                sameOrigin={true}/>
-        </h3>
+    <div class="grow grid grid-cols-1 grid-rows-3 md:grid-cols-3 md:grid-rows-1 gap-3">
+      <button on:click={() => handlePreviewClick(Preview.about)}
+              class="preview grid grid-cols-1 grid-rows-4">
+        <div class="preview_title">
+          About
+        </div>
+        <div class="row-span-2" />
         <div class="flex pl-5 pr-5 justify-around items-center">
           <ul class="preview_list">
             <li>
-              An overview of what I do code-wise. 
+              An overview of what I do code-wise 
             </li>
             <li>
-              Please enjoy these AI-generated images of me.
+              Please enjoy these AI-generated images of me
             </li>
           </ul>
         </div>
-      </div>
-      <div class="preview flex flex-col justify-between items-stretch">
-        <h3>
-          <Link href="/magic_square" 
-                title="Magic Square"
-                sameOrigin={true}/>
-        </h3>
-        <div class="grow flex justify-around items-center">
+      </button>
+      <button on:click={() => handlePreviewClick(Preview.magicSquare)}
+              class="preview grid grid-cols-1 grid-rows-4">
+        <div class="preview_title">
+          Magic Square
+        </div>
+        <div class="row-span-2 flex justify-around items-center">
           <img class="magic_square_img"
                src="/src/assets/magic_square_example.gif"
                alt="Magic Square Example"/>
@@ -80,35 +89,30 @@
         <div class="flex pl-5 pr-5 justify-around items-center">
           <ul class="preview_list">
             <li>
-              Extensive user control of WebAssembly memory.
-            </li>
-            <li>
-              Implimenting
+              Interactive 3D with 
               <Link href="https://www.khronos.org/webgl/"
                     title="WebGL"
                     sameOrigin={false}/>
               +
               <Link href="https://rustwasm.github.io/wasm-bindgen/examples/webgl.html"
                     title="RustWasm"
-                    sameOrigin={false}/>.
+                    sameOrigin={false}/>
             </li>
             <li>
               Exploring concepts from
               <Link href="https://en.wikipedia.org/wiki/Modular_synthesizer"
                     title="modular synthesis"
                     sameOrigin={false}/>
-              .
             </li>
           </ul>
         </div>
-      </div>
-      <div class="preview flex flex-col justify-between items-stretch">
-        <h3>
-          <Link href="/give_me_a_sine" 
-                title="Give Me A Sine"
-                sameOrigin={true}/>
-        </h3>
-        <div class="grow flex justify-around items-center">
+      </button>
+      <button on:click={() => handlePreviewClick(Preview.giveMeASine)}
+              class="preview grid grid-cols-1 grid-rows-4">
+        <div class="preview_title">
+          Give Me A Sine
+        </div>
+        <div class="row-span-2 flex justify-around items-center">
           <img class="magic_square_img"
                src="/src/assets/give_me_a_sine_example.gif"
                alt="Give Me A Sine Example"/>
@@ -116,20 +120,21 @@
         <div class="flex pl-5 pr-5 justify-around items-center">
           <ul class="preview_list">
             <li>
-              Ascii-Graph Sine functions. 
+              All graphs copy-and-paste-able
             </li>
             <li>
-              All graphs copy-and-paste-able. 
-            </li>
-            <li>
-              A warm-up project for
+              A
+              <Link href="https://rustwasm.github.io/wasm-bindgen"
+                    title="RustWasm"
+                    sameOrigin={false}/>
+              warm-up for
               <Link href="/magic_square" 
                     title="Magic Square"
-                    sameOrigin={true}/>.
+                    sameOrigin={true}/>
             </li>
           </ul>
         </div>
-      </div>
+      </button>
     </div>
   </div>
 </body>
@@ -146,7 +151,7 @@
       &_dark
         color: color.$green-4
         font-weight: text.$fw-l
-        font-size: text.$fs-l
+        font-size: text.$fs-ml
       &_container
         border-bottom: 5px double color.$blue-5
 
@@ -159,17 +164,28 @@
     border-radius: 5px
     padding: 5px
     margin: 5px
-    max-width: 250px
-    min-height: 200px
+    max-width: 200px
+    max-height: 200px
 
   .preview
     border-radius: 5px
     margin: 0 5px 0 5px
-    padding: 0 20px 0 20px
+    padding: 0 20px 5px 20px
     color: color.$green-4
     font-weight: text.$fw-l
     font-size: text.$fs-s
     background: color.$black-blue-grad
+    border-width: 0
+    height: 100%
+    grid-template-rows: 0.5fr 2fr 1fr
+    &_title
+      color: color.$blue-6
+      font-weight: text.$fw-l
+      font-size: text.$fs-l
+      display: flex
+      justify-content: space-around
+      align-items: center
+
     &_list
       padding: 0 10px 0 10px
       text-align: left

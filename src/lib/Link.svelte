@@ -4,13 +4,13 @@
   export let href: string = "/"
   export let className: string = ""
   export let title: string = "Home"
-  export let onClick: any = () => {}
+  export let onClick: any = (e:any) => {e.stopPropagation()}
 </script>
 
 {#if sameOrigin}
   <a href={href}
      use:link
-     on:click={onClick}
+     on:click={(e) => onClick(e)}
      class={`link ${className}`}>
     <button class="link_button">
       {title}
@@ -19,7 +19,7 @@
 {:else}
   <a href={href}
      target="_blank"
-     on:click={onClick}
+     on:click={(e) => onClick(e)}
      class={`link ${className}`}>
     <button class="link_button">
       {title}
