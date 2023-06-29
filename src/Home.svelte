@@ -70,10 +70,10 @@
         <div class="flex pl-5 pr-5 justify-around items-center">
           <ul class="preview_list">
             <li>
-              An overview of what I do code-wise 
+              {i18n.t("about_1", langVal)}
             </li>
             <li>
-              Please enjoy these AI-generated images of me
+              {i18n.t("about_2", langVal)}
             </li>
           </ul>
         </div>
@@ -91,7 +91,7 @@
         <div class="flex pl-5 pr-5 justify-around items-center">
           <ul class="preview_list">
             <li>
-              Interactive 3D with 
+              {i18n.t("magicSquare_1", langVal)}
               <Link href="https://www.khronos.org/webgl/"
                     title="WebGL"
                     sameOrigin={false}/>
@@ -101,9 +101,9 @@
                     sameOrigin={false}/>
             </li>
             <li>
-              Exploring concepts from
+              {i18n.t("magicSquare_2", langVal)}
               <Link href="https://en.wikipedia.org/wiki/Modular_synthesizer"
-                    title="modular synthesis"
+                    title={i18n.t("magicSquare_3", langVal)}
                     sameOrigin={false}/>
             </li>
           </ul>
@@ -122,14 +122,13 @@
         <div class="flex pl-5 pr-5 justify-around items-center">
           <ul class="preview_list">
             <li>
-              All graphs copy-and-paste-able
+              {i18n.t("giveMeASine_1", langVal)}
             </li>
             <li>
-              A
               <Link href="https://rustwasm.github.io/wasm-bindgen"
                     title="RustWasm"
                     sameOrigin={false}/>
-              warm-up for
+              {i18n.t("giveMeASine_2", langVal)}
               <Link href="/magic_square" 
                     title="Magic Square"
                     sameOrigin={true}/>

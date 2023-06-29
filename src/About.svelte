@@ -193,6 +193,7 @@
       flex-grow: .1
       font-size: 1.25em
       padding: 0 5px 0 5px
+      color: color.$blue-4
     
     &_body
       display: flex

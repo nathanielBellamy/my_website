@@ -80,15 +80,15 @@
     <div class="title pl-5 text-left">
       Preset
     </div>
-    <div class="grow p-5 grid grid-cols-4 grid-rows-5 gap-4">
+    <div class="preset_buttons grow p-5 grid grid-cols-4 grid-rows-5 gap-4">
       <div class="col-span-2 flex justify-around items-center">
-        <button class="p-5 flex justify-around items-center"
+        <button class="p-2 flex justify-around items-center"
                 on:click={() => presetAction(PresetAction.set)}>
           LOAD
         </button>
       </div>
       <div class="col-span-2 flex justify-around items-center">
-        <button class="p-5 flex justify-around items-center"
+        <button class="p-2 flex justify-around items-center"
                 on:click={() => presetAction(PresetAction.save)}>
           SAVE
         </button>
@@ -138,6 +138,9 @@
   @use "../../styles/color"
   @use "../../styles/text"
 
+  .preset_buttons
+    grid-template-rows: 0.5fr 1fr 1fr 1fr 1fr
+
   .title
     color: color.$blue-7
     font-size: text.$fs-ml
@@ -148,8 +151,6 @@
       font-size: text.$fs-m
       font-weight: text.$fw-l
       text-align: left
-
-
 
   .active
     border: solid

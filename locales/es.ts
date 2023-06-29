@@ -15,8 +15,15 @@ export const localeEs: any = {
   home: {
     title: "El sitio nuevo de Nate",
     about: "Sobre mi",
+    about_1: "Lo que hago por lo general con codigo",
+    about_2: "Por favor, disfrute de estas imágenes generadas por inteligencia artificial de mí",
     magicSquare: "Cuadro mágico",
+    magicSquare_1: "3D interactivo con",
+    magicSquare_2: "Explorando conceptos de",
+    magicSquare_3: "síntesis modular",
     giveMeASine: "Dame uno seno",
+    giveMeASine_1: "Todos gráficos se pueden copiar y pegar",
+    giveMeASine_2: "preparación para",
     intro: {
       1: "Me gusta apprender.",
       2: "Queria apprender como mezclar",
@@ -73,6 +80,7 @@ export const localeEs: any = {
       drawPattern: "dispersión",
       geometry: 'geometría',
       lfo: "lfo",
+      presets: "preajuste",
       radius: "radio",
       rotation: "rotación",
       translation: "traslado"

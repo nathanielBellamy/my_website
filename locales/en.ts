@@ -16,8 +16,15 @@ export const localeEn: any = {
   home: {
     title: "Nate's New Website",
     about: "About",
+    about_1: "An overview of what I do code-wise",
+    about_2: "Please enjoy these AI-generated images of me",
     magicSquare: "Magic square",
+    magicSquare_1: "Interactive 3D with",
+    magicSquare_2: "Exploring concepts from",
+    magicSquare_3: "modular synthesis",
     giveMeASine: "Give me a sine",
+    giveMeASine_1: "All graphs copy-and-paste-able",
+    giveMeASine_2: "practice for",
     intro: {
       1: "I like to learn.",
       2: "I wanted to learn how to combine",
