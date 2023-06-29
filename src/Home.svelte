@@ -57,14 +57,14 @@
     </ul>
   </div>
   <div class="home_title_dark text-left pl-5">
-    What's here?
+    {i18n.t("whatsHere", langVal)}
   </div>
   <div class="grow pl-5 pr-5 pb-5 flex flex-col justify-between items-stretch">
     <div class="grow grid grid-cols-1 grid-rows-3 md:grid-cols-3 md:grid-rows-1 gap-3">
       <button on:click={() => handlePreviewClick(SiteSection.about)}
               class="preview grid grid-cols-1 grid-rows-4">
         <div class="preview_title">
-          About
+          {i18n.t("about", langVal)}
         </div>
         <div class="row-span-2" />
         <div class="flex pl-5 pr-5 justify-around items-center">
@@ -81,7 +81,7 @@
       <button on:click={() => handlePreviewClick(SiteSection.magicSquare)}
               class="preview grid grid-cols-1 grid-rows-4">
         <div class="preview_title">
-          Magic Square
+          {i18n.t("magicSquare", langVal)}
         </div>
         <div class="row-span-2 flex justify-around items-center">
           <img class="magic_square_img"
@@ -112,7 +112,7 @@
       <button on:click={() => handlePreviewClick(SiteSection.giveMeASine)}
               class="preview grid grid-cols-1 grid-rows-4">
         <div class="preview_title">
-          Give Me A Sine
+          {i18n.t("giveMeASine", langVal)}
         </div>
         <div class="row-span-2 flex justify-around items-center">
           <img class="magic_square_img"

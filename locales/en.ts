@@ -1,5 +1,9 @@
 
 export const localeEn: any = {
+  about: {
+    personalProejects: "Personal projects",
+    technicalExperience: "Technical experience" 
+  },
   app: {
     nav: {
       home: "Home",
@@ -11,15 +15,16 @@ export const localeEn: any = {
   },
   home: {
     title: "Nate's New Website",
+    about: "About",
+    magicSquare: "Magic square",
+    giveMeASine: "Give me a sine",
     intro: {
       1: "I like to learn.",
       2: "I wanted to learn how to combine",
       3: "using",
       4: "So I built this new website."
     },
-    body: {
-      title: "What's here?"
-    }
+    whatsHere: "What's here?"
   },
   magicSquare: {
     controlModule: {
@@ -97,6 +102,14 @@ export const localeEn: any = {
       radius: "radius",
       rotation: "rotation",
       translation: "translation"
+    },
+    warning: {
+      title: "Epilepsy Warning",
+      body_1: "Please be aware that this software contains sequences of flashing lights which may trigger seizures for people with photosensitive epilepsy. Viewer discretion is advised.",
+      body_2: "If you or anyone in your household has an epileptic condition, please consult a medical professional before using this software. If you experience dizziness, altered vision, eye or muscle twitches, loss of awareness, disorientation, or any involuntary movement or convulsion while using the software, immediately discontinue use and consult a medical professional.",
+      body_3: "Please ensure you enjoy Magic Square in a well-lit environment and take frequent breaks. Your safety is important to us.",
+      go_home: "Go To Home",
+      accept_and_continue: "Accept & Continue",
     }
   }
 }

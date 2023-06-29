@@ -1,5 +1,11 @@
 <script lang="ts">
-  import Link from "./Link.svelte"
+  import { lang } from "./stores/lang"
+  import { I18n, Lang } from "./I18n"
+  import Link from "./lib/Link.svelte"
+
+  let i18n = new I18n("about")
+  let langVal: Lang
+  lang.subscribe( val => langVal = val)
 
   enum EmbeddedProgram {
     giveMeASign,
@@ -126,7 +132,7 @@
 <div class="about_me flex flex-col justify-start items-stretch gap-2">
   <div class="section grid grid-rows-10 md:grid-cols-10 gap-4">
     <div class="section_title text-xl font-extrabold row-span-2 md:col-span-2 md:row-span-1">
-      Personal Projects
+      {i18n.t("personalProejects", langVal)}
     </div>
     <div class="section_body row-span-8 md:col-span-8 md:row-span-1">
       {#each personal_projects as { title, description, href, program } }
@@ -149,7 +155,7 @@
   </div>
   <div class="section grid grid-rows-10 md:grid-cols-10 gap-4">
     <div class="section_title text-xl font-extrabold row-span-2 md:col-span-2 md:row-span-1">
-      Technical Knowledge
+      {i18n.t("technicalExperience", langVal)}
     </div>
     <div class = "section_body row-span-8 md:col-span-8 md:row-span-1">
       {#each prefessional_things as { title, description, href } }
@@ -169,7 +175,7 @@
 </div>
 
 <style lang="sass">
-  @use "./../styles/color"
+  @use "./styles/color"
 
   .about_me
     width: 100%

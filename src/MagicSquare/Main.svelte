@@ -39,6 +39,9 @@
   $: small = innerWidth < minInnerWidth
 
   // this component will be large
+  // but it is meant to stay flat
+  // it inits wasm and sets a lot of values
+  // but there should not be a lot of logic in here
   // the decision was made to optimize for minimal plumbing
   // this component instantiates the wasm module and retrieves the initial UI values from it
   // the mantra is

@@ -1,24 +1,29 @@
 
 export const localeFr: any = {
+  about: {
+    personalProejects: "Projets personnels",
+    technicalExperience: "Expérience technique" 
+  },
   app: {
     nav: {
       home: "Accueil",
-      about: "De Moi",
+      about: "De moi",
       magicSquare: "Carré magique",
       giveMeASine: "Donne-moi un sinus"
     }
   },
   home: {
     title: "Le site nouveau de Nate",
+    about: "De moi",
+    magicSquare: "Carré magique",
+    giveMeASine: "Donne-moi un sinus",
     intro: {
       1: "J'aime apprendre.",
       2: "Je voulais apprendre comment mélanger",
       3: "en utilisant",
       4: "Alors, j'ai fait ce site nouveau."
     },
-    body: {
-      title: "Qu'est-ce qu'il y a ici?"
-    }
+    whatsHere: "Qu'est-ce qu'il y a ici?"
   },
   magicSquare: {
     controlModule: {
@@ -71,6 +76,14 @@ export const localeFr: any = {
       radius: "rayon",
       rotation: "rotation",
       translation: "translation"
+    },
+    warning: {
+      title: "Avertissement sur l'Épilepsie",
+      body_1: "Veuillez noter que ce logiciel contient des séquences de lumières clignotantes qui peuvent déclencher des crises d'épilepsie chez les personnes atteintes d'épilepsie photosensible. La prudence du spectateur est conseillée.",
+      body_2: "Si vous ou quelqu'un dans votre foyer souffrez d'une condition épileptique, veuillez consulter un professionnel de la santé avant d'utiliser ce logiciel. Si vous ressentez des étourdissements, une vision altérée, des tics oculaires ou musculaires, une perte de conscience, une désorientation, ou tout mouvement ou convulsion involontaire lors de l'utilisation du logiciel, arrêtez immédiatement son utilisation et consultez un professionnel de la santé.",
+      body_3: "Assurez-vous de jouer dans un environnement bien éclairé et de faire des pauses fréquentes pendant le jeu. Votre sécurité est importante pour nous.",
+      go_home: "Retour à l'accueil",
+      accept_and_continue: "Accepter et continuer",
     }
   },
   misc: {

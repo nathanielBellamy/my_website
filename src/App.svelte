@@ -13,7 +13,6 @@
   
   let i18n = new I18n("app")
   let langVal: Lang
-
   lang.subscribe( val => langVal = val)
 
   const routes: { [key: string]: any } = {
@@ -21,7 +20,7 @@
       asyncComponent: () => import('./Home.svelte')
     }),
     '/about': wrap({
-      asyncComponent: () => import('./lib/About.svelte')
+      asyncComponent: () => import('./About.svelte')
     }),
     '/give_me_a_sine': wrap({
       asyncComponent: () => import('./GiveMeASine.svelte')
