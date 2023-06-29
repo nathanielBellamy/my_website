@@ -5,7 +5,8 @@ export const localeEn: any = {
       home: "Home",
       about: "About",
       magicSquare: "Magic square",
-      giveMeASine: "Give me a sine"
+      giveMeASine: "Give me a sine",
+      none: ""
     }
   },
   home: {

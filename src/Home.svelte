@@ -1,21 +1,23 @@
 <script lang="ts">
+  import { push } from "svelte-spa-router"
   import Link from "./lib/Link.svelte"
   import { I18n, Lang } from "./I18n"
   import { lang } from './stores/lang'
+
+  import { intoUrl, siteSection, SiteSection } from "./stores/siteSection";
+
+  let siteSectionVal: SiteSection
+  siteSection.subscribe((val: SiteSection) => siteSectionVal = val)
 
   // INIT LANG BOILER PLATE
   const i18n = new I18n("home")
   let langVal: Lang
   lang.subscribe(val => langVal = val)
 
-  enum Preview {
-    about = "About",
-    giveMeASine = "GiveMeASine",
-    magicSquare = "MagicSquare"
-  }
-
-  function handlePreviewClick(p: Preview) {
-    alert(p)
+  function handlePreviewClick(s: SiteSection) {
+    localStorage.setItem('ns_site_section', s)
+    siteSection.update((_: SiteSection) => s)
+    push(intoUrl(s))
   }
 </script>
 
@@ -59,7 +61,7 @@
   </div>
   <div class="grow pl-5 pr-5 pb-5 flex flex-col justify-between items-stretch">
     <div class="grow grid grid-cols-1 grid-rows-3 md:grid-cols-3 md:grid-rows-1 gap-3">
-      <button on:click={() => handlePreviewClick(Preview.about)}
+      <button on:click={() => handlePreviewClick(SiteSection.about)}
               class="preview grid grid-cols-1 grid-rows-4">
         <div class="preview_title">
           About
@@ -76,7 +78,7 @@
           </ul>
         </div>
       </button>
-      <button on:click={() => handlePreviewClick(Preview.magicSquare)}
+      <button on:click={() => handlePreviewClick(SiteSection.magicSquare)}
               class="preview grid grid-cols-1 grid-rows-4">
         <div class="preview_title">
           Magic Square
@@ -107,7 +109,7 @@
           </ul>
         </div>
       </button>
-      <button on:click={() => handlePreviewClick(Preview.giveMeASine)}
+      <button on:click={() => handlePreviewClick(SiteSection.giveMeASine)}
               class="preview grid grid-cols-1 grid-rows-4">
         <div class="preview_title">
           Give Me A Sine

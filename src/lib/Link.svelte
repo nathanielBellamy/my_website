@@ -1,5 +1,35 @@
 <script lang="ts">
   import {link} from "svelte-spa-router"
+  import { siteSection, SiteSection } from "../stores/siteSection"
+
+  let siteSectionVal: SiteSection
+  siteSection.subscribe(val => siteSectionVal = val)
+
+  function updateSiteSection(s: SiteSection) {
+    siteSection.update((_: SiteSection) => s)
+  }
+
+  function setSiteSection(href: string){
+    var newSection: SiteSection = SiteSection.home
+
+    switch (href) {
+      case "/about":
+        newSection = SiteSection.about
+        break
+      case "/magic_square":
+        newSection = SiteSection.magicSquare
+        break
+      case "/give_me_a_sine":
+        newSection = SiteSection.giveMeASine
+        break
+      case "/":
+      default:
+        break
+    }
+
+    localStorage.setItem('ns_site_section', newSection)
+    updateSiteSection(newSection)
+  }
   export let sameOrigin:boolean = true
   export let href: string = "/"
   export let className: string = ""
@@ -10,7 +40,10 @@
 {#if sameOrigin}
   <a href={href}
      use:link
-     on:click={(e) => onClick(e)}
+     on:click={(e) => {
+      setSiteSection(href)
+      onClick(e)
+     }}
      class={`link ${className}`}>
     <button class="link_button">
       {title}
@@ -19,7 +52,9 @@
 {:else}
   <a href={href}
      target="_blank"
-     on:click={(e) => onClick(e)}
+     on:click={(e) => {
+      onClick(e)
+     }}
      class={`link ${className}`}>
     <button class="link_button">
       {title}
