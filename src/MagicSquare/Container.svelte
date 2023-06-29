@@ -6,6 +6,8 @@
 
   // INIT Prev Settings
   import { prevSettingsStore } from './PrevSettingsStore'
+  import WarningModal from "./WarningModal.svelte"
+
   let prevSettingsStoreVal: StorageSettings
   $: prevSettingsStoreVal
   const unsubscribe = prevSettingsStore.subscribe(val => prevSettingsStoreVal = val)
@@ -26,9 +28,11 @@
   })
 
   let dataReady: boolean = false
-
+  let hasAcceptedWarning: boolean = false
 
   onMount(() => {
+    hasAcceptedWarning = !!localStorage.getItem("magic_square_has_accepted_warning")
+
     let ses = localStorage.getItem("magic_square_settings")
     if (ses) {
       const res = JSON.parse(ses)
@@ -51,12 +55,15 @@
 <div id="magic_square_container"
      class="magic_square_container"
      use:watchResize={handleResize}>
+  {#if !hasAcceptedWarning}
+    <WarningModal bind:hasAccepted={hasAcceptedWarning}/>
+  {:else}
     {#key magicSquareInstance}
       {#if dataReady}
-        <Main bind:instance={magicSquareInstance}
-              sideLength={sideLength}/>
+        <Main sideLength={sideLength}/>
       {/if}
     {/key}
+  {/if}
 </div>
 
 <style lang="sass">

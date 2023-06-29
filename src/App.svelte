@@ -85,7 +85,6 @@
     color: color.$blue-7
     font-size: text.$fs-l
     font-weight: text.$fw-l
-    margin-top: -10px
 
   .city
     font-weight: text.$fw-l
