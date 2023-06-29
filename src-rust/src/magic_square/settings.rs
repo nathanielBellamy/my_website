@@ -1,10 +1,10 @@
-use crate::magic_square::main::Rgba;
 use crate::magic_square::lfo::{LfoDestination, LfoShape};
+use crate::magic_square::main::Rgba;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::JsValue;
 
-use super::geometry::Shape;
 use super::geometry::cache::CACHE_CAPACITY;
+use super::geometry::Shape;
 use crate::magic_square::main::log;
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
@@ -26,18 +26,18 @@ pub enum MouseTracking {
     Off,
     InvX,
     InvY,
-    InvXY
+    InvXY,
 }
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
-pub enum TransformOrder{
+pub enum TransformOrder {
     #[default]
     RotateThenTranslate,
     TranslateThenRotate,
 }
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
-pub enum ColorDirection{
+pub enum ColorDirection {
     In,
     #[default]
     Fix,
@@ -46,11 +46,10 @@ pub enum ColorDirection{
 
 pub type Colors = [Rgba; CACHE_CAPACITY];
 
-
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub struct ColorGradient {
     idx_a: i32,
-    idx_b: i32
+    idx_b: i32,
 }
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
@@ -120,7 +119,7 @@ pub struct Settings {
     pub y_rot_spread: f32,
     pub z_rot_spread: f32,
 
-        // rotation sensitivity to mouse movement
+    // rotation sensitivity to mouse movement
     pub x_axis_x_rot_coeff: f32,
     pub x_axis_y_rot_coeff: f32,
     pub x_axis_z_rot_coeff: f32,
@@ -138,7 +137,6 @@ pub struct Settings {
     pub translation_z_spread: f32,
     pub mouse_tracking: MouseTracking,
 }
-
 
 impl Settings {
     pub fn new() -> Settings {
@@ -211,14 +209,14 @@ impl Settings {
 
             // PRESET
             preset: 0,
-            
+
             // ROTATION
             x_rot_base: 0.0,
             y_rot_base: 0.0,
             z_rot_base: 0.0,
 
             x_rot_spread: 0.0,
-            y_rot_spread: 0.0, 
+            y_rot_spread: 0.0,
             z_rot_spread: 0.0,
 
             x_axis_x_rot_coeff: 0.0,
@@ -228,7 +226,7 @@ impl Settings {
             y_axis_x_rot_coeff: 1.0,
             y_axis_y_rot_coeff: 0.0,
             y_axis_z_rot_coeff: 0.0,
-            
+
             // TRANSLATION
             translation_x_base: 0.0,
             translation_x_spread: 0.0,
@@ -240,24 +238,16 @@ impl Settings {
         }
     }
 
-
     pub fn rgba_string(arr: Rgba) -> String {
-        format!(
-            "{},{},{},{}",
-            arr[0],
-            arr[1],
-            arr[2],
-            arr[3]
-        )
+        format!("{},{},{},{}", arr[0], arr[1], arr[2], arr[3])
     }
 }
 
 #[derive(Clone, Deserialize, Serialize, Debug)]
 pub struct IOColor {
-    pub rgba: Rgba, 
-    pub idx: usize
+    pub rgba: Rgba,
+    pub idx: usize,
 }
-
 
 #[derive(Clone, Deserialize, Serialize, Debug)]
 pub struct IOGradient {
@@ -268,7 +258,7 @@ pub struct IOGradient {
 #[derive(Clone, Deserialize, Serialize, Debug)]
 pub struct IOPreset {
     pub preset: usize,
-    pub action: IOPresetAction
+    pub action: IOPresetAction,
 }
 
 #[derive(Clone, Deserialize, Serialize, Debug)]
@@ -279,8 +269,8 @@ pub enum IOPresetAction {
 
 #[derive(Clone, Deserialize, Serialize, Debug)]
 pub struct IOShape {
-    pub shape: Shape, 
-    pub index: usize
+    pub shape: Shape,
+    pub index: usize,
 }
 
 pub struct Validate;
@@ -292,7 +282,7 @@ impl Validate {
             "Fix" => Ok(DrawPatternType::Fix),
             "Out" => Ok(DrawPatternType::Out),
             "In" => Ok(DrawPatternType::In),
-            _ => Err(())
+            _ => Err(()),
         }
     }
 
@@ -300,7 +290,7 @@ impl Validate {
         log(&val);
         let val = js_sys::JSON::parse(&val).unwrap();
         let res: IOShape = serde_wasm_bindgen::from_value(val)?;
-        log(&format!{"serde res: {:?}", res});
+        log(&format! {"serde res: {:?}", res});
         Ok(res)
     }
 
@@ -316,7 +306,7 @@ impl Validate {
     pub fn try_into_io_preset(val: String) -> Result<IOPreset, JsValue> {
         let val = js_sys::JSON::parse(&val).unwrap();
         let res: IOPreset = serde_wasm_bindgen::from_value(val)?;
-        Ok(res)     
+        Ok(res)
     }
 
     pub fn try_into_color_direction(cd: String) -> Result<ColorDirection, ()> {
@@ -324,10 +314,10 @@ impl Validate {
             "In" => Ok(ColorDirection::In),
             "Fix" => Ok(ColorDirection::Fix),
             "Out" => Ok(ColorDirection::Out),
-            _ => Err(())
+            _ => Err(()),
         }
     }
- 
+
     pub fn try_into_io_gradient(val: String) -> Result<IOGradient, JsValue> {
         let val = js_sys::JSON::parse(&val).unwrap();
         let res: IOGradient = serde_wasm_bindgen::from_value(val)?;
@@ -368,7 +358,7 @@ impl Validate {
         match shape.as_str() {
             "Linear" => Ok(LfoShape::Linear),
             "Sine" => Ok(LfoShape::Sine),
-            _ => Err(())
+            _ => Err(()),
         }
     }
 
@@ -379,7 +369,7 @@ impl Validate {
             "Inv X" => Ok(MouseTracking::InvX),
             "Inv Y" => Ok(MouseTracking::InvY),
             "Inv XY" => Ok(MouseTracking::InvXY),
-            _ => Err(())
+            _ => Err(()),
         }
     }
 
@@ -387,18 +377,18 @@ impl Validate {
         match order.as_str() {
             "RotateThenTranslate" => Ok(TransformOrder::RotateThenTranslate),
             "TranslateThenRotate" => Ok(TransformOrder::TranslateThenRotate),
-            _ => Err(())
+            _ => Err(()),
         }
     }
 
     pub fn try_into_preset_idx(val: String) -> Result<usize, ()> {
         let u: usize = match val.parse::<usize>() {
             Ok(val) => val,
-            Err(_) => 0
+            Err(_) => 0,
         };
         match u < 64 {
             true => Ok(u),
-            false => Ok(0)
+            false => Ok(0),
         }
     }
 }

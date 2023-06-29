@@ -1,7 +1,6 @@
-
-use std::ops::{Index, IndexMut};
 use crate::magic_square::geometry::vertex_store::VertexStore;
 use crate::magic_square::geometry::vertices::Vertex;
+use std::ops::{Index, IndexMut};
 
 use super::vertices::VERTEX_ARRAY_SIZE;
 
@@ -10,7 +9,7 @@ pub const VERTEX_COUNT_CUBE: i32 = 24;
 pub struct Cube {
     pub arr: [f32; VERTEX_ARRAY_SIZE],
     pub vert_count: i32,
-    idx: usize
+    idx: usize,
 }
 
 impl Index<usize> for Cube {
@@ -43,15 +42,19 @@ impl VertexStore<Cube> for Cube {
 
 impl Cube {
     fn init() -> Cube {
-        Cube { arr: [0.0; VERTEX_ARRAY_SIZE], idx: 0, vert_count: VERTEX_COUNT_CUBE }
+        Cube {
+            arr: [0.0; VERTEX_ARRAY_SIZE],
+            idx: 0,
+            vert_count: VERTEX_COUNT_CUBE,
+        }
     }
     // write to vertices
-    // return array to be cached 
+    // return array to be cached
     pub fn f32_array() -> [f32; VERTEX_ARRAY_SIZE] {
         let x: f32 = 1.0;
         let y: f32 = 1.0;
         let z: f32 = 1.0;
-        
+
         let mut cube = Cube::init();
 
         // draw cube boundary
@@ -61,17 +64,16 @@ impl Cube {
         // end back north east corner
         cube.set_next(Vertex::new(-x, y, -z));
         cube.set_next(Vertex::new(x, y, -z));
- 
+
         // start back north east corner
         // end back south east corner
         cube.set_next(Vertex::new(x, y, -z));
         cube.set_next(Vertex::new(x, -y, -z));
-    
+
         // start back south eash corner
         // end back south west corner
         cube.set_next(Vertex::new(x, -y, -z));
         cube.set_next(Vertex::new(-x, -y, -z));
-        
 
         // start back south west corner
         // end back north west corner
@@ -83,17 +85,16 @@ impl Cube {
         // end back north east corner
         cube.set_next(Vertex::new(-x, y, z));
         cube.set_next(Vertex::new(x, y, z));
- 
+
         // start back north east corner
         // end back south east corner
         cube.set_next(Vertex::new(x, y, z));
         cube.set_next(Vertex::new(x, -y, z));
-    
+
         // start back south eash corner
         // end back south west corner
         cube.set_next(Vertex::new(x, -y, z));
         cube.set_next(Vertex::new(-x, -y, z));
-        
 
         // start back south west corner
         // end back north west corner
@@ -120,10 +121,7 @@ impl Cube {
         // end front north east corner
         cube.set_next(Vertex::new(x, y, -z));
         cube.set_next(Vertex::new(x, y, z));
-        
+
         cube.arr
     }
 }
-
-
-

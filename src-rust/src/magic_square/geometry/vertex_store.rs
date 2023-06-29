@@ -1,5 +1,5 @@
-use std::ops::{Index, IndexMut};
 use crate::magic_square::geometry::vertices::Vertex;
+use std::ops::{Index, IndexMut};
 
 pub trait VertexStore<T: Index<usize> + IndexMut<usize>> {
     // to be used on Structs with
@@ -17,7 +17,9 @@ pub trait VertexStore<T: Index<usize> + IndexMut<usize>> {
     fn set_next(&mut self, vertex: Vertex) {
         let idx: usize = self.idx();
         let arr: &mut [f32] = self.arr();
-        if idx > arr.len() - 1 { return; }
+        if idx > arr.len() - 1 {
+            return;
+        }
         for i in 0..3 {
             arr[idx + i] = vertex[i]
         }
@@ -27,10 +29,12 @@ pub trait VertexStore<T: Index<usize> + IndexMut<usize>> {
     fn set_next_slice(&mut self, slice: &[f32]) {
         let idx: usize = self.idx();
         let arr: &mut [f32] = self.arr();
-        
+
         let new_idx: usize = idx + slice.len();
-        if new_idx > arr.len() - 1 { return; }
-        
+        if new_idx > arr.len() - 1 {
+            return;
+        }
+
         for (i, coord) in slice.iter().enumerate() {
             arr[idx + i] = *coord;
         }
@@ -44,7 +48,7 @@ pub trait VertexStore<T: Index<usize> + IndexMut<usize>> {
         let arr: &mut [f32] = self.arr();
         let max_idx: usize = match clear_to_idx {
             Some(int) => int,
-            None => arr.len() - 1
+            None => arr.len() - 1,
         };
 
         for i in 1..max_idx {

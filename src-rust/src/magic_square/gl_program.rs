@@ -1,5 +1,5 @@
-use web_sys::{WebGl2RenderingContext, WebGlProgram};
 use super::gl_shader::GlShader;
+use web_sys::{WebGl2RenderingContext, WebGlProgram};
 
 pub struct GlProgram;
 
@@ -8,16 +8,10 @@ impl GlProgram {
         let gl_program = gl
             .create_program()
             .ok_or_else(|| format!("Unable to create gl_program"))?;
-        
+
         let vert_shader = GlShader::vert(gl)?;
-        gl.attach_shader(
-            &gl_program,
-            &vert_shader
-        );
-        gl.attach_shader(
-            &gl_program, 
-            &GlShader::frag(gl)?
-        );
+        gl.attach_shader(&gl_program, &vert_shader);
+        gl.attach_shader(&gl_program, &GlShader::frag(gl)?);
         gl.link_program(&gl_program);
 
         if gl
@@ -33,4 +27,3 @@ impl GlProgram {
         }
     }
 }
-

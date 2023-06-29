@@ -1,16 +1,16 @@
-use std::rc::Rc;
-use std::cell::RefCell;
-use wasm_bindgen::prelude::*;
-use web_sys::{WebGl2RenderingContext, WebGlProgram};
-use crate::magic_square::geometry::cache::{Cache as GeometryCache, CACHE_CAPACITY};
-use crate::magic_square::ui_buffer::UiBuffer;
-use crate::magic_square::lfo::Lfo;
+use super::animation::Animation;
+use super::geometry::geom::Geom;
 use super::gl_draw::GlDraw;
 use super::gl_program::GlProgram;
 use super::gl_uniforms::{GlUniforms, UniformLocations};
 use super::settings::ColorDirection;
-use super::geometry::geom::Geom;
-use super::animation::Animation;
+use crate::magic_square::geometry::cache::{Cache as GeometryCache, CACHE_CAPACITY};
+use crate::magic_square::lfo::Lfo;
+use crate::magic_square::ui_buffer::UiBuffer;
+use std::cell::RefCell;
+use std::rc::Rc;
+use wasm_bindgen::prelude::*;
+use web_sys::{WebGl2RenderingContext, WebGlProgram};
 
 #[wasm_bindgen]
 extern "C" {
@@ -25,13 +25,11 @@ extern "C" {
 pub enum Axis {
     X,
     Y,
-    Z
+    Z,
 }
 
 #[wasm_bindgen]
 pub struct MagicSquare;
-
-
 
 #[wasm_bindgen]
 impl MagicSquare {
@@ -40,7 +38,9 @@ impl MagicSquare {
     pub async fn run(settings: JsValue, presets: JsValue) -> JsValue {
         let ui_buffer = UiBuffer::from(settings, presets);
 
-        let canvas = MagicSquare::canvas().dyn_into::<web_sys::HtmlCanvasElement>().unwrap();
+        let canvas = MagicSquare::canvas()
+            .dyn_into::<web_sys::HtmlCanvasElement>()
+            .unwrap();
         let canvas = Rc::new(canvas);
 
         let geometry_cache: GeometryCache = GeometryCache::new(&ui_buffer.settings.shapes);
@@ -56,8 +56,8 @@ impl MagicSquare {
         let destroy_flag: bool = false;
         let destroy_flag: Rc<RefCell<bool>> = Rc::new(RefCell::new(destroy_flag));
 
-        let height:i32 = canvas.client_height();
-        let width:i32 = canvas.client_width();
+        let height: i32 = canvas.client_height();
+        let width: i32 = canvas.client_width();
         // incriment idx_delay each render
         // when idx_delay reaches a desired delay value
         // incriment idx_offset
@@ -80,10 +80,9 @@ impl MagicSquare {
                 *destroy_flag.clone().borrow_mut() = true;
             });
 
-            app_main.add_event_listener_with_callback(
-                "destroymswasm",
-                closure.as_ref().unchecked_ref()
-            ).unwrap();
+            app_main
+                .add_event_listener_with_callback("destroymswasm", closure.as_ref().unchecked_ref())
+                .unwrap();
 
             closure.forget();
         }
@@ -105,13 +104,10 @@ impl MagicSquare {
                     let val = input.value();
                     // log(&id);
                     // log(&val);
-                    ui_buffer
-                        .clone()
-                        .borrow_mut()
-                        .update(
-                            id, 
-                            val, 
-                            &mut *geometry_cache.clone().borrow_mut(),
+                    ui_buffer.clone().borrow_mut().update(
+                        id,
+                        val,
+                        &mut *geometry_cache.clone().borrow_mut(),
                     );
                 });
 
@@ -133,15 +129,18 @@ impl MagicSquare {
             let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::MouseEvent| {
                 context.clear_color(0.0, 0.0, 0.0, 0.0);
                 context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
-                mouse_pos_buffer.clone().borrow_mut()[0] = MagicSquare::clip_x(event.offset_x(), width);
-                mouse_pos_buffer.clone().borrow_mut()[1] = MagicSquare::clip_x(event.offset_y(), height);
-                magic_square.dispatch_event(&web_sys::Event::new("render").unwrap()).unwrap();
+                mouse_pos_buffer.clone().borrow_mut()[0] =
+                    MagicSquare::clip_x(event.offset_x(), width);
+                mouse_pos_buffer.clone().borrow_mut()[1] =
+                    MagicSquare::clip_x(event.offset_y(), height);
+                magic_square
+                    .dispatch_event(&web_sys::Event::new("render").unwrap())
+                    .unwrap();
             });
 
-            canvas.add_event_listener_with_callback(
-                "mousemove", 
-                closure.as_ref().unchecked_ref()
-            ).unwrap();
+            canvas
+                .add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())
+                .unwrap();
             closure.forget();
         }
 
@@ -155,11 +154,12 @@ impl MagicSquare {
 
             // let performance = MagicSquare::performance();
             let mut x: f32 = -3.14159;
-            
+
             let destroy_flag = destroy_flag.clone();
 
             // closures used to allocate and clean up resources
-            let f: Rc<RefCell<Option<wasm_bindgen::prelude::Closure<_>> >> = Rc::new(RefCell::new(None));
+            let f: Rc<RefCell<Option<wasm_bindgen::prelude::Closure<_>>>> =
+                Rc::new(RefCell::new(None));
             let g = f.clone();
 
             let mut frame_counter: usize = 0;
@@ -169,7 +169,8 @@ impl MagicSquare {
             gl.clear_color(0.0, 0.0, 0.0, 0.0);
             gl.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
 
-            let program: WebGlProgram =  GlProgram::new(&gl).expect(&format!("ISSUE INIT GL_PROGRAM"));
+            let program: WebGlProgram =
+                GlProgram::new(&gl).expect(&format!("ISSUE INIT GL_PROGRAM"));
             gl.use_program(Some(&program));
             let uniform_locations = UniformLocations::new(&gl, &program);
             let mut uniforms = GlUniforms::new();
@@ -199,7 +200,10 @@ impl MagicSquare {
                 );
             }
 
-            let vao = gl.create_vertex_array().ok_or("Could not create vertex array object").unwrap();
+            let vao = gl
+                .create_vertex_array()
+                .ok_or("Could not create vertex array object")
+                .unwrap();
             gl.bind_vertex_array(Some(&vao));
 
             let position_attribute_location = gl.get_attrib_location(&program, "position");
@@ -213,7 +217,7 @@ impl MagicSquare {
             );
             gl.enable_vertex_attrib_array(position_attribute_location as u32);
             gl.bind_vertex_array(Some(&vao));
-            
+
             *g.borrow_mut() = Some(Closure::new(move || {
                 let mut settings = ui_buffer.clone().borrow().settings;
 
@@ -269,25 +273,24 @@ impl MagicSquare {
                     if x == 3.142 {
                         x = -3.142;
                     }
-                    
+
                     // harvest current ui_buffer for computation
                     lfo_1.modify(x, &mut settings);
                     lfo_2.modify(x, &mut settings);
                     lfo_3.modify(x, &mut settings);
                     lfo_4.modify(x, &mut settings);
 
-
                     let delay_reset: u8 = std::cmp::max(22 - settings.color_speed, 1);
 
                     if color_idx_offset_delay[1] > delay_reset {
-                        // this can happen when user changes settings.color_speed 
+                        // this can happen when user changes settings.color_speed
                         // new speed will eventually kick in anyway
                         // but this makes it immediate
                         color_idx_offset_delay[1] = 0
                     }
                     let color_idx_offset: u8 = color_idx_offset_delay[0];
                     let color_idx_delay: u8 = color_idx_offset_delay[1];
-                    
+
                     // log("index out of bounds hunt 3");
                     // 0 < color_speed < 21
                     if color_idx_delay == delay_reset {
@@ -298,15 +301,13 @@ impl MagicSquare {
                         };
                         color_idx_offset_delay[1] = 0;
                     }
-                    
+
                     color_idx_offset_delay[1] = color_idx_offset_delay[1] + 1;
-
-
 
                     // compute
                     uniforms.set_uniforms(&mouse_pos_buffer, &settings, color_idx_offset);
                     // log(&format!("{:?}", uniforms));
-                    
+
                     // draw
                     // log(&format!("{:?}", geometry_cache.clone().borrow().vertices));
                     if let Err(_) = GlDraw::scene(
@@ -315,18 +316,22 @@ impl MagicSquare {
                         &uniform_locations,
                         &animation.curr_shapes(),
                         &settings.transform_order,
-                        &x
+                        &x,
                     ) {
                         log("DRAW ERROR");
                     }
-                    
-                    let frame_counter_limit: i32 = if settings.draw_pattern_speed > 19 { 1 } else { 21 - settings.draw_pattern_speed };
-    
-                    if frame_counter >  frame_counter_limit as usize {
+
+                    let frame_counter_limit: i32 = if settings.draw_pattern_speed > 19 {
+                        1
+                    } else {
+                        21 - settings.draw_pattern_speed
+                    };
+
+                    if frame_counter > frame_counter_limit as usize {
                         frame_counter = 0;
                     }
 
-                    if frame_counter %  frame_counter_limit as usize == 0 {
+                    if frame_counter % frame_counter_limit as usize == 0 {
                         animation.inc();
                     }
                     frame_counter = (frame_counter + 1) % (frame_counter_limit as usize);
@@ -337,7 +342,7 @@ impl MagicSquare {
 
             MagicSquare::request_animation_frame(g.borrow().as_ref().unwrap());
         }
-        
+
         let to_js = ui_buffer.clone().borrow().clone().settings;
         serde_wasm_bindgen::to_value(&to_js).unwrap()
     }

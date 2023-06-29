@@ -1,6 +1,6 @@
-use std::ops::{Index, IndexMut};
-use std::convert::From;
 use super::vertex_store::VertexStore;
+use std::convert::From;
+use std::ops::{Index, IndexMut};
 
 // const ORIGIN: Vertex = Vertex { arr: [0.0, 0.0, 0.0] };
 pub const VERTEX_ARRAY_SIZE: usize = 300;
@@ -9,7 +9,7 @@ pub type VertexArr = [f32; VERTEX_ARRAY_SIZE];
 
 #[derive(Clone, Copy)]
 pub struct Vertex {
-    arr: [f32; 3]
+    arr: [f32; 3],
 }
 
 impl From<[f32; 3]> for Vertex {
@@ -39,7 +39,7 @@ impl IndexMut<usize> for Vertex {
 
 pub struct Vertices {
     pub arr: VertexArr,
-    idx: usize
+    idx: usize,
 }
 
 impl Index<usize> for Vertices {
@@ -72,9 +72,9 @@ impl VertexStore<Vertices> for Vertices {
 
 impl Vertices {
     pub fn new() -> Vertices {
-        Vertices { 
-            arr: [0.0; VERTEX_ARRAY_SIZE], 
-            idx: 0 
+        Vertices {
+            arr: [0.0; VERTEX_ARRAY_SIZE],
+            idx: 0,
         }
     }
 

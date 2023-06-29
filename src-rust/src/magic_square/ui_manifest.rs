@@ -5,14 +5,12 @@ pub const INPUT_COLORS: &'static str = "magic_square_input_colors";
 pub const INPUT_COLOR_DIRECTION: &'static str = "magic_square_input_color_direction";
 pub const INPUT_COLOR_SPEED: &'static str = "magic_square_input_color_speed";
 
-
 // DRAW PATTERN
 pub const INPUT_DRAW_PATTERN_TYPE: &'static str = "magic_square_input_draw_pattern_type";
 pub const INPUT_DRAW_PATTERN_COUNT: &'static str = "magic_square_input_draw_pattern_count";
 pub const INPUT_DRAW_PATTERN_OFFSET: &'static str = "magic_square_input_draw_pattern_offset";
 pub const INPUT_DRAW_PATTERN_SPEED: &'static str = "magic_square_input_draw_pattern_speed";
 pub const INPUT_TRANSFORM_ORDER: &'static str = "magic_square_input_transform_order";
-
 
 // GEOMETRY
 pub const INPUT_SHAPES: &'static str = "magic_square_input_shapes";
@@ -87,26 +85,23 @@ pub const INPUT_MOUSE_TRACKING: &'static str = "magic_square_input_mouse_trackin
 // that checks the length defined in the type
 // agains the length of the explicit array
 // to ensure that all inputs are accounted for
-// 
+//
 // also handy for copying and pasting when writing matches
 pub const INPUT_IDS: [&'static str; 55] = [
     // COLOR
     INPUT_COLORS,
     INPUT_COLOR_DIRECTION,
     INPUT_COLOR_SPEED,
-
     // DRAW PATTERN
     INPUT_DRAW_PATTERN_TYPE,
     INPUT_DRAW_PATTERN_COUNT,
     INPUT_DRAW_PATTERN_OFFSET,
     INPUT_DRAW_PATTERN_SPEED,
-
     // GEOMETRY
     INPUT_SHAPES,
     INPUT_RADIUS_BASE,
     INPUT_RADIUS_STEP,
     INPUT_TRANSFORM_ORDER,
-
     // LFO_1
     INPUT_LFO_1_ACTIVE,
     INPUT_LFO_1_AMP,
@@ -114,7 +109,6 @@ pub const INPUT_IDS: [&'static str; 55] = [
     INPUT_LFO_1_FREQ,
     INPUT_LFO_1_PHASE,
     INPUT_LFO_1_SHAPE,
-
     // LFO_2
     INPUT_LFO_2_ACTIVE,
     INPUT_LFO_2_AMP,
@@ -122,7 +116,6 @@ pub const INPUT_IDS: [&'static str; 55] = [
     INPUT_LFO_2_FREQ,
     INPUT_LFO_2_PHASE,
     INPUT_LFO_2_SHAPE,
-
     // LFO_3
     INPUT_LFO_3_ACTIVE,
     INPUT_LFO_3_AMP,
@@ -130,7 +123,6 @@ pub const INPUT_IDS: [&'static str; 55] = [
     INPUT_LFO_3_FREQ,
     INPUT_LFO_3_PHASE,
     INPUT_LFO_3_SHAPE,
-
     // LFO_4
     INPUT_LFO_4_ACTIVE,
     INPUT_LFO_4_AMP,
@@ -138,10 +130,8 @@ pub const INPUT_IDS: [&'static str; 55] = [
     INPUT_LFO_4_FREQ,
     INPUT_LFO_4_PHASE,
     INPUT_LFO_4_SHAPE,
-
     // PRESET
     INPUT_PRESET,
-
     // ROTATION
     INPUT_X_ROT_BASE,
     INPUT_Y_ROT_BASE,
@@ -155,7 +145,6 @@ pub const INPUT_IDS: [&'static str; 55] = [
     INPUT_Y_AXIS_X_ROT_COEFF,
     INPUT_Y_AXIS_Y_ROT_COEFF,
     INPUT_Y_AXIS_Z_ROT_COEFF,
-
     // TRANSLATION
     INPUT_TRANSLATION_X_BASE,
     INPUT_TRANSLATION_X_SPREAD,

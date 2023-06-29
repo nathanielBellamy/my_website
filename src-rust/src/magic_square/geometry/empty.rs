@@ -7,7 +7,7 @@ pub struct Empty {
 impl Empty {
     pub fn new() -> Empty {
         Empty {
-            arr: [0.0; VERTEX_ARRAY_SIZE]
+            arr: [0.0; VERTEX_ARRAY_SIZE],
         }
     }
 }

@@ -1,5 +1,5 @@
-use web_sys::{WebGl2RenderingContext, WebGlShader};
 use super::main::log;
+use web_sys::{WebGl2RenderingContext, WebGlShader};
 
 pub struct GlShader;
 
@@ -33,8 +33,8 @@ impl GlShader {
 
     pub fn frag(gl: &WebGl2RenderingContext) -> Result<WebGlShader, String> {
         GlShader::exec(
-            gl, 
-            WebGl2RenderingContext::FRAGMENT_SHADER, 
+            gl,
+            WebGl2RenderingContext::FRAGMENT_SHADER,
             r##"#version 300 es
             precision highp float;
             out vec4 outColor;
@@ -48,7 +48,7 @@ impl GlShader {
         )
     }
 
-    pub fn vert(gl: &WebGl2RenderingContext) -> Result<WebGlShader, String>{
+    pub fn vert(gl: &WebGl2RenderingContext) -> Result<WebGlShader, String> {
         GlShader::exec(
             &gl,
             WebGl2RenderingContext::VERTEX_SHADER,
@@ -78,4 +78,3 @@ impl GlShader {
         )
     }
 }
-

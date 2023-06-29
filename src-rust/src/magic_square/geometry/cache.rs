@@ -16,7 +16,7 @@ impl Cache {
     pub fn new(shapes: &Shapes) -> Cache {
         Cache {
             idx: 0,
-            shapes: *shapes
+            shapes: *shapes,
         }
     }
 

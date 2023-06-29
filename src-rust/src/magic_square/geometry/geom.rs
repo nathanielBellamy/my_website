@@ -1,9 +1,9 @@
-use crate::magic_square::geometry::cube::Cube;
-use super::Shape;
 use super::cube::VERTEX_COUNT_CUBE;
 use super::icosahedron::{Icosahedron, VERTEX_COUNT_ICOSAHEDRON};
 use super::ngon::Ngon;
 use super::vertices::VERTEX_ARRAY_SIZE;
+use super::Shape;
+use crate::magic_square::geometry::cube::Cube;
 
 pub struct Geom;
 
@@ -64,8 +64,8 @@ impl Geom {
             Shape::PlatoThree(n) => match n {
                 6 => (2800, VERTEX_COUNT_CUBE),
                 20 => (2900, VERTEX_COUNT_ICOSAHEDRON),
-                _ => (0,0)
-            }
+                _ => (0, 0),
+            },
             Shape::None => (0, 0),
         }
     }
