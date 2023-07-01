@@ -25,7 +25,7 @@ export const localeEn: any = {
     title: "Nate's New Website",
     about: "About",
     about_1: "An overview of what I do code-wise",
-    about_2: "Please enjoy these AI-generated images of \"me\"",
+    about_2: "Please enjoy these AI-generated images of \"me\" in \"natural light\"",
     magicSquare: "Magic square",
     magicSquare_1: "Interactive 3D with",
     magicSquare_2: "Exploring concepts from",

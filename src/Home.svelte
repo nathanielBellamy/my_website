@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from "svelte"
   import { push } from "svelte-spa-router"
   import Link from "./lib/Link.svelte"
   import { I18n, Lang } from "./I18n"
@@ -14,11 +15,29 @@
   let langVal: Lang
   lang.subscribe(val => langVal = val)
 
+  let ai_me_counter: number = randomIntFromInterval(0, 46)
+  $: ai_me_curr = ai_me_counter % 47 // we have 47 ai-generated images
+
+  const incr_curr_ai_me = () => ai_me_counter = randomIntFromInterval(0, 46)
+
+  const ai_me_interval: any = setInterval(incr_curr_ai_me, 4000)
+
+  function randomIntFromInterval(min: number, max: number): number { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min)
+  }
+
   function handlePreviewClick(s: SiteSection) {
     localStorage.setItem('ns_site_section', s)
     siteSection.update((_: SiteSection) => s)
     push(intoUrl(s))
   }
+
+  onDestroy(() => {
+    clearInterval(ai_me_interval)
+  })
+
+  // transitions
+
 </script>
 
 <body class="pl-5 pr-5 pb-5 flex flex-col justify-between items-stretch gap-2">
@@ -66,7 +85,17 @@
         <div class="preview_title">
           {i18n.t("about", langVal)}
         </div>
-        <div class="row-span-2" />
+        <div class="row-span-2 w-full flex justify-around items-center">
+          <div class="ai_me_container magic_square_img grid grid-rows-1 grid-cols-1">
+            {#each {length: 47} as _, idx}
+              <img class="h-full w-full ai_me ai_me_img"
+                   class:ai_me_img_hide={ai_me_curr !== idx}
+                   class:ai_me_img_show={ai_me_curr === idx}
+                   src={`/src/assets/ai_me/${ai_me_curr}.png`}
+                   alt={"AI ME"}/>
+            {/each}
+          </div>
+        </div>
         <div class="flex pl-5 pr-5 mb-2 justify-around items-center overflow-y-scroll">
           <ul class="preview_list">
             <li>
@@ -84,7 +113,7 @@
           {i18n.t("magicSquare", langVal)}
         </div>
         <div class="row-span-2 flex justify-around items-center">
-          <img class="magic_square_img"
+          <img class="magic_square_img ai_me"
                src="/src/assets/magic_square_example.gif"
                alt="Magic Square Example"/>
         </div>
@@ -167,6 +196,25 @@
     margin: 5px
     max-width: 200px
     max-height: 200px
+    border-radius: 50% 
+
+  .ai_me_container
+    grid-template-areas: "img"
+  
+  .ai_me
+    grid-area: img
+    &_img
+      border-radius: 50%
+      &_hide
+        visibility: hidden
+        border-radius: 50%
+        opacity: 0%
+        transition: opacity 1s
+      &_show
+        visibility: visible
+        border-radius: 50%
+        opacity: 100%
+        transition: opacity 1.25s ease-in
 
   .preview
     border-radius: 5px
@@ -191,6 +239,5 @@
       text-align: left
       list-style-type: square
       height: 100%
-    &_li
       
 </style>
