@@ -146,7 +146,7 @@
             {description}
             {#if program == EmbeddedProgram.giveMeASign}
               <Link href="/give_me_a_sine"
-                    title="Open the WebAssembly Build"/>
+                    title={i18n.t("openWasm", langVal)}/>
             {/if}
           </div>
         </div>

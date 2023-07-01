@@ -2,6 +2,12 @@
   import { WasmInputId } from "../WasmInputId"
   import { ShapeTag } from "./Shape"
   import type { Shape } from "./Shape"
+  import { I18n, Lang } from '../../I18n'
+  import { lang } from '../../stores/lang'
+
+  let langVal: Lang 
+  lang.subscribe(val => langVal = val)
+  let i18n = new I18n("magicSquare/geometry")
 
   export let shapes: Shape[]
 
@@ -76,7 +82,7 @@
 <div class="h-full pb-5 flex flex-col justify-between items-stretch">
   <div class="grow flex flex-col justify-between items-stretch">
     <div class="title flex items-stretch pl-5 underline">
-      shape
+      {i18n.t("shape", langVal)}
     </div>
     <slot name="shapes"/>
     <div class="grow pt-2 pl-5 pr-5 grid grid-cols-4 grid-rows-4 gap-0">
@@ -138,7 +144,7 @@
     <div class="pt-5 pr-5 pl-5 grid grid-cols-4 grid-rows-1 gap-2">
       <button class="col-span-2 flex justify-around items-center"
               on:click={setRange}>
-        Range
+       {i18n.t("range", langVal)}
       </button>
       <select bind:value={idx_a}
               class="flex justify-around items-center"
@@ -166,7 +172,7 @@
   </div>
   <div class="grow pt-2 flex flex-col justify-between items-stretch">
     <div class="title flex items-stretch pl-5 underline">
-      radius
+      {i18n.t("radius", langVal)}
     </div>
     <slot name="radiusSliders"/>
   </div>

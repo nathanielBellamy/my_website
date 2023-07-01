@@ -2,7 +2,8 @@
 export const localeEn: any = {
   about: {
     personalProejects: "Personal projects",
-    technicalExperience: "Technical experience" 
+    technicalExperience: "Technical experience",
+    openWasm: "Open the WebAssembly build"
   },
   app: {
     nav: {
@@ -12,6 +13,13 @@ export const localeEn: any = {
       giveMeASine: "Give me a sine",
       none: ""
     }
+  },
+  gmas: {
+    aboveColor: "above color",
+    belowColor: "below color",
+    graphColor: "graph color",
+    height: "height",
+    width: "width"
   },
   home: {
     title: "Nate's New Website",
@@ -34,6 +42,12 @@ export const localeEn: any = {
     whatsHere: "What's here?"
   },
   magicSquare: {
+    color: {
+      in: "in",
+      out: "out",
+      fix: "fix",
+      speed: "speed"
+    },
     controlModule: {
       empty: "empty",
     },
@@ -44,16 +58,29 @@ export const localeEn: any = {
       lfo: "lfo",
       modules: "modules",
       presets: "presets",
-      radius: "radius",
+      radius: "radius",                               
       rotation: "rotation",
       translation: "translation"
+    },
+    drawPattern: {
+      direction: "direction",
+      count: "count",
+      offset: "offset",
+      rotate: "rotate",
+      speed: "speed",
+      translate: "translate"
+    },
+    geometry: {
+      shape: "shape",
+      radius: "radius",
+      range: "range"
     },
     main: {
       active: "active",
       amplitude: "amplitude",
       base: "base",
       count: "count",
-      frequency: "frequency",
+      frequency: "speed",
       offset: "offset",
       phase: "phase",
       speed: 'speed',

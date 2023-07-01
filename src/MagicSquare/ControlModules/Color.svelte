@@ -3,6 +3,12 @@
   import iro from '@jaames/iro'
   import { ColorDirection } from './Color'
   import { WasmInputId } from '../WasmInputId'
+  import { I18n, Lang } from '../../I18n'
+  import { lang } from '../../stores/lang'
+
+  let langVal: Lang 
+  lang.subscribe(val => langVal = val)
+  let i18n = new I18n("magicSquare/color")
 
   function rgbaToString(rgba: number[]): string {
     // rgba = !!rgba ? rgba : [0, 255, 0, 1]
@@ -131,17 +137,17 @@
         <button class="grow color_mode_option"
                 class:selected={colorDirection === ColorDirection.out}
                 on:click={() => handleColorDirectionClick(ColorDirection.out)}>
-          Out
+          {i18n.t("out", langVal)}
         </button>
         <button class="grow color_mode_option"
                 class:selected={colorDirection === ColorDirection.in}
                 on:click={() => handleColorDirectionClick(ColorDirection.in)}>
-          In
+          {i18n.t("in", langVal)}
         </button>
         <button class="grow color_mode_option"
                 class:selected={colorDirection === ColorDirection.fix}
                 on:click={() => handleColorDirectionClick(ColorDirection.fix)}>
-          Fix
+          {i18n.t("fix", langVal)}
         </button>
       </div>
 

@@ -1,5 +1,12 @@
 <script lang='ts'>
   import { onMount } from 'svelte'
+  import { I18n, Lang } from "./I18n"
+  import { lang } from './stores/lang'
+  
+  // INIT LANG BOILER PLATE
+  const i18n = new I18n("gmas")
+  let langVal: Lang
+  lang.subscribe(val => langVal = val)
 
   let a: number
   let b: number
@@ -115,7 +122,6 @@
     <div id="give_me_a_sine_form"
          class="give_me_a_sine_form flex flex-col">
       <div class="give_me_a_sine_form_header font-bold">
-        <p>Give Me A Sine</p>
         <p>f(x) = a * sin(b*x + c)</p>
       </div>
       <div class="give_me_a_sine_form_body flex flex-col justify-between items-stretch">
@@ -174,7 +180,7 @@
         <div class="give_me_a_sine_form_cell">
           <label  class="give_me_a_sine_form_cell_label"
                   for={'gmas_form_input_height'}>
-            <p>Height</p> 
+            <p>{i18n.t("height", langVal)}</p> 
             <p>{height}</p>
           </label>
           <input id={'gmas_form_input_height'}
@@ -187,7 +193,7 @@
         <div class="give_me_a_sine_form_cell">
           <label  class="give_me_a_sine_form_cell_label"
                   for={'gmas_form_input_width'}>
-            <p>Width</p> 
+            <p>{i18n.t("width", langVal)}</p> 
             <p>{width}</p>
           </label>
           <input id={'gmas_form_input_width'}
@@ -200,7 +206,7 @@
         <div class="give_me_a_sine_form_cell">
           <label  class="give_me_a_sine_form_cell_label"
                   for={'gmas_form_input_above_char'}>
-            <p>Above Color</p> 
+            <p>{i18n.t("aboveColor", langVal)}</p> 
             <p>{aboveChar}</p>
           </label>
           <input id={'gmas_form_input_above_char'}
@@ -213,7 +219,7 @@
         <div class="give_me_a_sine_form_cell">
           <label  class="give_me_a_sine_form_cell_label"
                   for={'gmas_form_input_below_char'}>
-            <p>Below Color</p> 
+            <p>{i18n.t("belowColor", langVal)}</p> 
             <p>{belowChar}</p>
           </label>
           <input id={'gmas_form_input_below_char'}
@@ -226,7 +232,7 @@
         <div class="give_me_a_sine_form_cell">
           <label  class="give_me_a_sine_form_cell_label"
                   for={'gmas_form_input_graph_char'}>
-            <p>Graph Color</p> 
+            <p>{i18n.t("graphColor", langVal)}</p> 
             <p>{graphChar}</p>
           </label>
           <input id={'gmas_form_input_graph_char'}

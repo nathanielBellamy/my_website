@@ -2,6 +2,12 @@
   import { WasmInputId } from '../WasmInputId'
   import { DrawPatternType } from './DrawPattern'
   import { TransformOrder } from './TransformOrder'
+  import { I18n, Lang } from '../../I18n'
+  import { lang } from '../../stores/lang'
+
+  let langVal: Lang 
+  lang.subscribe(val => langVal = val)
+  let i18n = new I18n("magicSquare/drawPattern")
   
   export let drawPatternType: DrawPatternType
   export let transformOrder: TransformOrder
@@ -25,21 +31,35 @@
   <div class="transform_order flex flex-col justify-between items-stretch">
     <slot name="transformOrder"/>
     <div class="grow p-5 flex flex-col justify-around items-stretch gap-3">
-      <button class="grow flex justify-around items-center"
+      <button class="grow text-left flex justify-around items-center"
               class:selected={transformOrder === TransformOrder.rotateThenTranslate}
               on:click={() => handleTransformOrderClick(TransformOrder.rotateThenTranslate)}>
-        Rotate -> Translate
+        <ol>
+          <li>
+            1. {i18n.t("rotate", langVal)}
+          </li>
+          <li>
+            2. {i18n.t("translate", langVal)}
+          </li>
+        </ol>
       </button>
-      <button class="grow flex justify-around items-center"
+      <button class="grow text-left flex justify-around items-center"
               class:selected={transformOrder === TransformOrder.translateThenRotate}
               on:click={() => handleTransformOrderClick(TransformOrder.translateThenRotate)}>
-        Translate -> Rotate
+        <ol type="1">
+          <li>
+            1. {i18n.t("translate", langVal)}
+          </li>
+          <li>
+            2. {i18n.t("rotate", langVal)}
+          </li>
+        </ol>
       </button>
     </div>
   </div>
   <div class="grow text-left flex flex-col justify-betwen items-stretch">
     <div class="slider_label flex items-stretch">
-      direction
+      {i18n.t("direction", langVal)}
     </div>
     <select class="w-full"
             value={drawPatternType}

@@ -2,7 +2,8 @@
 export const localeFr: any = {
   about: {
     personalProejects: "Projets personnels",
-    technicalExperience: "Expérience technique" 
+    technicalExperience: "Expérience technique",
+    openWasm: "Ouvrir le build WebAssembly"
   },
   app: {
     nav: {
@@ -11,6 +12,13 @@ export const localeFr: any = {
       magicSquare: "Carré magique",
       giveMeASine: "Donne-moi un sinus"
     }
+  },
+  gmas: {
+    aboveColor: "couleur dessus",
+    belowColor: "couleur dessous",
+    graphColor: "couleur graph",
+    height: "hauteur",
+    width: "largeur"
   },
   home: {
     title: "Le site nouveau de Nate",
@@ -33,6 +41,12 @@ export const localeFr: any = {
     whatsHere: "Qu'est-ce qu'il y a ici?"
   },
   magicSquare: {
+    color: {
+      in: "int",
+      out: "ext",
+      fix: "fixé",
+      speed: "vitesse"
+    },
     controlModule: {
       empty: "vide",
     },
@@ -42,22 +56,57 @@ export const localeFr: any = {
       geometry: 'géométrie',
       lfo: "lfo",
       modules: "modules",
+      presets: "préréglages",
       radius: "rayon",
       rotation: "rotation",
       translation: "translation"
+    },
+    drawPattern: {
+      direction: "direction",
+      rotate: "tourner",
+      translate: "traduir"
+    },
+    geometry: {
+      shape: "forme",
+      radius: "rayon",
+      range: "gamme"
     },
     lfo: {
+      base: "base",
+      destination: "destination",
+      step: "pas",
+      minimum: "mínimo",
+      pitchBase: "tangage base",
+      pitchSpread: "tangage spread",
+      pitchX: "tangage X",
+      pitchY: "tangage Y",
+      rollBase: "roulis base",
+      rollSpread: "roulis spread",
+      rollX: "roulis X",
+      rollY: "roulis Y",
+      yawBase: "lacet base",
+      yawSpread: "lacet spread",
+      yawX: "lacet X",
+      yawY: "lacet Y",
       radius: "rayon",
       rotation: "rotation",
-      translation: "translation"
+      shape: "forme",
+      translation: "translation",
+      xBase: "X base",
+      xSpread: "X spread",
+      yBase: "Y base",
+      ySpread: "Y spread"
     },
     main: {
+      active: "actif",
       amplitude: "amplitude",
       base: "base",
-      frequency: "fréquence",
+      count: "cuenta",
+      frequency: "vitesse",
       minimum: "minimum",
+      offset: "offset",
       phase: "phase",
-      shape: "forme",
+      speed: "vitesse",
       spread: "diffuser",
       step: "pas"
     },
@@ -80,7 +129,7 @@ export const localeFr: any = {
       drawPattern: "dispersion",
       geometry: 'géométrie',
       lfo: "lfo",
-      presets: "préréglage",
+      presets: "préréglages",
       radius: "rayon",
       rotation: "rotation",
       translation: "translation"

@@ -2,7 +2,8 @@
 export const localeEs: any = {  
   about: {
     personalProejects: "Proyectos personales",
-    technicalExperience: "Experiencia técnica" 
+    technicalExperience: "Experiencia técnica",
+    openWasm: "Abrir el build WebAssembly"
   },
   app: {
     nav: {
@@ -11,6 +12,13 @@ export const localeEs: any = {
       magicSquare: "Cuadro mágico",
       giveMeASine: "Dame uno seno"
     }
+  },
+  gmas: {
+    aboveColor: "color ariba",
+    belowColor: "color abajo",
+    graphColor: "color grafico",
+    height: "altura",
+    width: "ancho"
   },
   home: {
     title: "El sitio nuevo de Nate",
@@ -32,12 +40,13 @@ export const localeEs: any = {
     },
     whatsHere: "Que hay aqui?"
   },
-  lfo: {
-    radius: "radio",
-    rotation: "rotación",
-    translation: "traslado"
-  },
   magicSquare: {
+    color: {
+      in: "dentro",
+      out: "fuera",
+      fix: "fix",
+      speed: "velocidad"
+    },
     controlModule: {
       empty: "vacío",
     },
@@ -47,17 +56,57 @@ export const localeEs: any = {
       geometry: 'geometría',
       lfo: "lfo",
       modules: "módulos",
+      presets: "preajustes",
       radius: "radio",
       rotation: "rotación",
       translation: "traslado"
     },
+    drawPattern: {
+      direction: "dirección",
+      rotate: "girar",
+      translate: "traslado"
+    },
+    geometry: {
+      shape: "forma",
+      radius: "radio",
+      range: "serie"
+    },
+    lfo: {
+      base: "base",
+      destination: "destino",
+      step: "escalón",
+      minimum: "mínimo",
+      pitchBase: "alabeo base",
+      pitchSpread: "alabeo spread",
+      pitchX: "alabeo X",
+      pitchY: "alabeo Y",
+      rollBase: "balanceo base",
+      rollSpread: "balanceo spread",
+      rollX: "balanceo X",
+      rollY: "balanceo Y",
+      yawBase: "guiñada base",
+      yawSpread: "guiñada spread",
+      yawX: "guiñada X",
+      yawY: "guiñada Y",
+      radius: "radio",
+      rotation: "rotación",
+      shape: "forma",
+      translation: "traslado",
+      xBase: "X base",
+      xSpread: "X spread",
+      yBase: "Y base",
+      ySpread: "Y spread"
+    },
     main: {
+      active: "activo",
       amplitude: "amplitud",
       base: "base",
-      frequency: "frecuencia",
+      count: "cuenta",
+      frequency: "velocidad",
       minimum: "mínimo",
+      offset: "offset",
       phase: "fase",
-      shape: "forma",
+      speed: "velocidad",
       spread: "desparramar",
       step: "paso"
     },
@@ -80,7 +129,7 @@ export const localeEs: any = {
       drawPattern: "dispersión",
       geometry: 'geometría',
       lfo: "lfo",
-      presets: "preajuste",
+      presets: "preajustes",
       radius: "radio",
       rotation: "rotación",
       translation: "traslado"
