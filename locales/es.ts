@@ -24,7 +24,7 @@ export const localeEs: any = {
     title: "El sitio nuevo de Nate",
     about: "Sobre mi",
     about_1: "Lo que hago por lo general con codigo",
-    about_2: "Por favor, disfrute de estas imágenes generadas por inteligencia artificial de mí",
+    about_2: "Por favor, disfrute de estas imágenes generadas por inteligencia artificial de \"mí\"",
     magicSquare: "Cuadro mágico",
     magicSquare_1: "3D interactivo con",
     magicSquare_2: "Explorando conceptos de",
@@ -107,7 +107,7 @@ export const localeEs: any = {
       offset: "offset",
       phase: "fase",
       speed: "velocidad",
-      spread: "desparramar",
+      spread: "escalón",
       step: "paso"
     },
     mouseTracking: {

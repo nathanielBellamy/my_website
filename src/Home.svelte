@@ -62,12 +62,12 @@
   <div class="grow pl-5 pr-5 pb-5 flex flex-col justify-between items-stretch">
     <div class="grow grid grid-cols-1 grid-rows-3 md:grid-cols-3 md:grid-rows-1 gap-3">
       <button on:click={() => handlePreviewClick(SiteSection.about)}
-              class="preview grid grid-cols-1 grid-rows-4">
+              class="preview grid grid-cols-1 grid-rows-4 gap-2">
         <div class="preview_title">
           {i18n.t("about", langVal)}
         </div>
         <div class="row-span-2" />
-        <div class="flex pl-5 pr-5 justify-around items-center">
+        <div class="flex pl-5 pr-5 mb-2 justify-around items-center overflow-y-scroll">
           <ul class="preview_list">
             <li>
               {i18n.t("about_1", langVal)}
@@ -79,7 +79,7 @@
         </div>
       </button>
       <button on:click={() => handlePreviewClick(SiteSection.magicSquare)}
-              class="preview grid grid-cols-1 grid-rows-4">
+              class="preview grid grid-cols-1 grid-rows-4 gap-2">
         <div class="preview_title">
           {i18n.t("magicSquare", langVal)}
         </div>
@@ -88,7 +88,7 @@
                src="/src/assets/magic_square_example.gif"
                alt="Magic Square Example"/>
         </div>
-        <div class="flex pl-5 pr-5 justify-around items-center">
+        <div class="flex pl-5 pr-5 mb-2 justify-around items-center overflow-y-scroll">
           <ul class="preview_list">
             <li>
               {i18n.t("magicSquare_1", langVal)}
@@ -110,7 +110,7 @@
         </div>
       </button>
       <button on:click={() => handlePreviewClick(SiteSection.giveMeASine)}
-              class="preview grid grid-cols-1 grid-rows-4">
+              class="preview grid grid-cols-1 grid-rows-4 gap-2">
         <div class="preview_title">
           {i18n.t("giveMeASine", langVal)}
         </div>
@@ -119,7 +119,7 @@
                src="/src/assets/give_me_a_sine_example.gif"
                alt="Give Me A Sine Example"/>
         </div>
-        <div class="flex pl-5 pr-5 justify-around items-center">
+        <div class="flex flex-col pl-5 pr-5 mb-2 justify-around items-stretch overflow-y-scroll">
           <ul class="preview_list">
             <li>
               {i18n.t("giveMeASine_1", langVal)}
@@ -177,8 +177,7 @@
     font-size: text.$fs-s
     background: color.$black-blue-grad
     border-width: 0
-    height: 100%
-    grid-template-rows: 0.5fr 2fr 1fr
+    grid-template-rows: 0.5fr 1fr 1fr 80px
     &_title
       color: color.$blue-6
       font-weight: text.$fw-l
@@ -191,6 +190,7 @@
       padding: 0 10px 0 10px
       text-align: left
       list-style-type: square
+      height: 100%
     &_li
       
 </style>

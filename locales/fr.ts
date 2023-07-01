@@ -24,7 +24,7 @@ export const localeFr: any = {
     title: "Le site nouveau de Nate",
     about: "De moi",
     about_1: "Ce que je fait con code",
-    about_2: "S'il vous plaît, appréciez ces images de moi générées par intelligence artificielle",
+    about_2: "S'il vous plaît, appréciez ces images de \"moi\" générées par intelligence artificielle",
     magicSquare: "Carré magique",
     magicSquare_1: "3D interactive avec",
     magicSquare_2: "Exploration de concepts de",

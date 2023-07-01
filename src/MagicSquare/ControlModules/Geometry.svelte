@@ -198,8 +198,8 @@
     background-color: color.$blue-7
 
   .slider_label
-      width: 100%
-      font-weight: text.$fw-l
-      font-size: text.$fs-m
-      padding-right: 5%
+    width: 100%
+    font-weight: text.$fw-l
+    font-size: text.$fs-m
+    padding-right: 5%
 </style>

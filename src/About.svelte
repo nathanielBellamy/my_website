@@ -142,7 +142,7 @@
                   on:click={() => openLinkInNewTab(href)}>
             {title}
           </button>
-          <div class="project_description row-span-3 md:col-span-3 md:row-span-1">
+          <div class="project_description ml-10 md:ml-0 row-span-3 md:col-span-3 md:row-span-1">
             {description}
             {#if program == EmbeddedProgram.giveMeASign}
               <Link href="/give_me_a_sine"
@@ -165,7 +165,7 @@
                   on:click={() => openLinkInNewTab(href)}>
             {title}
           </button>
-          <div class="project_description row-span-3 md:col-span-3 md:row-span-1">
+          <div class="project_description ml-10 md:ml-0 row-span-3 md:col-span-3 md:row-span-1">
             {description} 
           </div>
         </div>
@@ -242,7 +242,6 @@
       padding-left: 1em
       font-weight: 700
       color: color.$green-2
-      margin: 2px 5px 2px 5px
       border-bottom: 3px solid color.$green-4
       border-left: 3px solid color.$green-4
 
