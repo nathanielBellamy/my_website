@@ -90,7 +90,7 @@
   <div class="grow pr-5 flex flex-col justify-around items-stretch">
     <div class="preset_buttons grow pl-5 pr-5 pb-5 grid grid-cols-4 grid-rows-5 gap-4">
       <div class="col-span-2 flex justify-around items-stretch">
-        <button class="grow flex justify-around items-center"
+        <button class="grow pl-2 pr-2 flex justify-around items-center"
                 on:click={() => presetAction(PresetAction.set)}>
           {i18n.t("load", langVal)}
         </button>

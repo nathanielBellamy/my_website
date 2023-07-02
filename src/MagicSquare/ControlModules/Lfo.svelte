@@ -196,10 +196,10 @@
           </optgroup>
           <optgroup label={i18n.t("radius", langVal)}>
             <option value={LfoDestination.radiusBase}> 
-              {i18n.t("base", langVal)} 
+              {i18n.t("radiusBase", langVal)} 
             </option>
             <option value={LfoDestination.radiusStep}> 
-              {i18n.t("step", langVal)} 
+              {i18n.t("radiusStep", langVal)} 
             </option>
           </optgroup>
           <optgroup label={i18n.t("translation", langVal)}>

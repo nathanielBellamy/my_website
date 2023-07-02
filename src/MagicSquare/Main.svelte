@@ -938,7 +938,7 @@
                  on:dblclick={() => handleRangeDoubleClick(WasmInputId.translationXBase)}>
               <label class="slider_label flex justify-between" 
                      for={WasmInputId.translationXBase}>
-                <div> base </div>
+                <div> {i18n.t("base", langVal)} </div>
                 <div> {translationXBase} </div>
               </label>
               <input id={WasmInputId.translationXBase}
@@ -952,7 +952,7 @@
                  on:dblclick={() => handleRangeDoubleClick(WasmInputId.translationXSpread)}>
               <label class="slider_label flex justify-between" 
                      for={WasmInputId.translationXSpread}>
-                <div> spread </div>
+                <div> {i18n.t("spread", langVal)} </div>
                 <div> {translationXSpread} </div>
               </label>
               <input id={WasmInputId.translationXSpread}
@@ -969,7 +969,7 @@
                  on:dblclick={() => handleRangeDoubleClick(WasmInputId.translationYBase)}>
               <label class="slider_label flex justify-between" 
                      for={WasmInputId.translationYBase}>
-                <div> base </div>
+                <div> {i18n.t("base", langVal)} </div>
                 <div> {translationYBase} </div>
               </label>
               <input id={WasmInputId.translationYBase}
@@ -983,7 +983,7 @@
                  on:dblclick={() => handleRangeDoubleClick(WasmInputId.translationYSpread)}>
               <label class="slider_label flex justify-between" 
                      for={WasmInputId.translationYSpread}>
-                <div> spread </div>
+                <div> {i18n.t("spread", langVal)} </div>
                 <div> {translationYSpread} </div>
               </label>
               <input id={WasmInputId.translationYSpread}
