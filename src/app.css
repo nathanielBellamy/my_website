@@ -134,6 +134,7 @@ nav {
   display: flex;
   align-items: center;
   border-bottom: 5px double #395A6D;
+  overflow: hidden
 }
 
 nav a {
