@@ -9,7 +9,7 @@ pub type VertexArr = [f32; VERTEX_ARRAY_SIZE];
 
 #[derive(Clone, Copy)]
 pub struct Vertex {
-    arr: [f32; 3],
+    pub arr: [f32; 3],
 }
 
 impl From<[f32; 3]> for Vertex {

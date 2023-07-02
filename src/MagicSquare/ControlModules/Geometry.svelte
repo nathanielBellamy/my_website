@@ -124,7 +124,7 @@
           <option value={JSON.stringify({t: ShapeTag.platoThree, c: 8})}>
             Octohedron
           </option>
-          <option>
+          <option value={JSON.stringify({t: ShapeTag.platoThree, c: 12})}>
             Dodecahedron
           </option>
           <option value={JSON.stringify({t: ShapeTag.platoThree, c: 20})}>

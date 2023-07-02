@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 pub mod cache;
 pub mod cool_s;
 pub mod cube;
+pub mod dodecahedron;
 pub mod empty;
 pub mod geom;
 pub mod icosahedron;

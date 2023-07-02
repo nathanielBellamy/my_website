@@ -39,15 +39,15 @@ declare interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly worker_entry_point: (a: number) => void;
   readonly magicsquare_run: (a: number, b: number) => number;
-  readonly __wbg_magicsquare_free: (a: number) => void;
   readonly init_message: (a: number, b: number, c: number) => void;
+  readonly __wbg_magicsquare_free: (a: number) => void;
   readonly gmaswasm_run: () => number;
   readonly __wbg_gmaswasm_free: (a: number) => void;
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
-  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h46dec110bfda2ae4: (a: number, b: number, c: number) => void;
-  readonly _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h150188b4a70f403a: (a: number, b: number) => void;
+  readonly wasm_bindgen__convert__closures__invoke1_mut__h367586fffa7b1431: (a: number, b: number, c: number) => void;
+  readonly wasm_bindgen__convert__closures__invoke0_mut__he913c3a88dee354e: (a: number, b: number) => void;
   readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h232fbe164ebb195a: (a: number, b: number, c: number) => void;
   readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hd7b6b851350bf976: (a: number, b: number, c: number) => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;

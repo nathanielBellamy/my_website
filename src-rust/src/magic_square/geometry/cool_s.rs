@@ -10,6 +10,8 @@ pub const MISC_IDX_COOL_S: i32 = 1;
 pub const VERTEX_COUNT_COOL_S: i32 = 28;
 
 const R: f32 = 1.41421356237;// 2.0_f32.sqrt();
+//
+const P: f32 =  1.61803398875; //1/2 (1 + sqrt(5))
 const Y0: f32 = R;
 const Y1: f32 = 0.66 * R;
 const Y2: f32 = 0.25 * R;

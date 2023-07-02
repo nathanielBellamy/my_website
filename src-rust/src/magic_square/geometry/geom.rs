@@ -1,5 +1,6 @@
 use super::cool_s::{CoolS, MISC_IDX_COOL_S, VERTEX_COUNT_COOL_S};
 use super::cube::VERTEX_COUNT_CUBE;
+use super::dodecahedron::{Dodecahedron, VERTEX_COUNT_DODECAHEDRON};
 use super::icosahedron::{Icosahedron, VERTEX_COUNT_ICOSAHEDRON};
 use super::ngon::Ngon;
 use super::octohedron::{VERTEX_COUNT_OCTOHEDRON, Octohedron};
@@ -15,7 +16,7 @@ pub const PI: f32 = std::f32::consts::PI;
 
 pub type OffsetVc = (i32, i32);
 
-const SHAPE_COUNT: usize = 34;
+const SHAPE_COUNT: usize = 35;
 const TOTAL_LEN: usize = VERTEX_ARRAY_SIZE * SHAPE_COUNT;
 
 type GeomVertArrays = [[f32; VERTEX_ARRAY_SIZE]; SHAPE_COUNT];
@@ -54,6 +55,7 @@ impl Geom {
             Tetrahedron::f32_array(),
             Cube::f32_array(),
             Octohedron::f32_array(),
+            Dodecahedron::f32_array(),
             Icosahedron::f32_array(),
             StarFive::f32_array(),
             CoolS::f32_array()
@@ -78,7 +80,8 @@ impl Geom {
                 4 => (2800, VERTEX_COUNT_TETRAHEDRON),
                 6 => (2900, VERTEX_COUNT_CUBE),
                 8 => (3000, VERTEX_COUNT_OCTOHEDRON),
-                20 => (3100, VERTEX_COUNT_ICOSAHEDRON),
+                12 => (3100, VERTEX_COUNT_DODECAHEDRON),
+                20 => (3200, VERTEX_COUNT_ICOSAHEDRON),
                 _ => (0, 0),
             },
             Shape::None => (0, 0),
