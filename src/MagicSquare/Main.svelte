@@ -558,7 +558,7 @@
               </label>
               <input id={WasmInputId.drawPatternOffset}
                      type="range"
-                     min={1}
+                     min={0}
                      max={15}
                      bind:value={drawPatternOffset}
                      disabled={drawPatternType !== DrawPatternType.fix}

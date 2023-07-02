@@ -107,7 +107,7 @@
           </option>
         </optgroup>
         <optgroup label="3d">
-          <option>
+          <option value={JSON.stringify({t: ShapeTag.platoThree, c: 4})}>
             Tetrahedron
           </option>
           <option value={JSON.stringify({t: ShapeTag.platoThree, c: 6})}>
