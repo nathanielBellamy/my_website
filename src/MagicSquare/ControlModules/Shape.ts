@@ -4,6 +4,7 @@ export interface Shape {
 }
 
 export enum ShapeTag {
+  misc = "Misc",
   ngon = "Ngon",
   platoThree = "PlatoThree"
 }

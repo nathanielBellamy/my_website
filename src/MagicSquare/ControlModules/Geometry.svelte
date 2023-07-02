@@ -100,6 +100,14 @@
               value={JSON.stringify({t: shapes[shapeIndex].t, c: n})}
               on:input={(e) => e.stopPropagation()}
               on:change={handleShapeSelect}>
+        <optgroup label="Misc.">
+          <option value={JSON.stringify({t: ShapeTag.misc, c: 0})}>
+            Star
+          </option>
+          <option value={JSON.stringify({t: ShapeTag.misc, c: 1})}>
+            Cool S
+          </option>
+        </optgroup>
         <optgroup label="2d">
           <option label="Ngon"
                   value={JSON.stringify({t: ShapeTag.ngon, c: n})}>

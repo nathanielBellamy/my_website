@@ -107,6 +107,11 @@
         return WasmInputId.lfo1Shape
     }
   }
+
+  function handleLfoDoubleClick(lfo: Lfo) {
+    // TODO
+    // activate and deactivate lfo from double clicking the button to select it
+  }
 </script>
 
 <div class="h-full pb-5 flex flex-col justify-between items-stretch">
