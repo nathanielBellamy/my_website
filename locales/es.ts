@@ -42,9 +42,10 @@ export const localeEs: any = {
   },
   magicSquare: {
     color: {
-      in: "dentro",
-      out: "fuera",
-      fix: "fix",
+      animation: "animación",
+      in: "int",
+      out: "ext",
+      fix: "fijo",
       speed: "velocidad"
     },
     controlModule: {
@@ -62,7 +63,13 @@ export const localeEs: any = {
       translation: "traslado"
     },
     drawPattern: {
+      animation: "animación",
       direction: "dirección",
+      order: "orden",
+      in: "int",
+      offset: "offset",
+      out: "ext",
+      fix: "fijo",
       rotate: "girar",
       translate: "traslado"
     },
@@ -116,6 +123,14 @@ export const localeEs: any = {
       none: "ninguno",
       on: "encendido",
       off: "apagado"
+    },
+    presets: {
+      bank: "banco",
+      curr: "actual",
+      load: "carga",
+      next: "proxima",
+      preset: "preajuste",
+      save: "guarda"
     },
     rotation: {
       pitch: "alabeo",

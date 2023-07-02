@@ -46,9 +46,6 @@
   })
 </script>
 
-
-
-
 <div id="magic_square_control_rack"
      class="magic_square_control_rack"
      class:grid_col={small}

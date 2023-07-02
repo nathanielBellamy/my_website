@@ -27,10 +27,13 @@
   }
 </script>
 
-<section class="h-full pb-5 pl-5 pr-5 flex flex-col justify-between items-stretch">
+<section class="h-full pb-5 pr-5 flex flex-col justify-between items-stretch gap-2">
+  <div class="title">
+    {i18n.t("order", langVal)}
+  </div>
   <div class="transform_order flex flex-col justify-between items-stretch">
     <slot name="transformOrder"/>
-    <div class="grow p-5 flex flex-col justify-around items-stretch gap-3">
+    <div class="grow pl-5 pr-5 flex flex-col justify-around items-stretch gap-3">
       <button class="grow text-left flex justify-around items-center"
               class:selected={transformOrder === TransformOrder.rotateThenTranslate}
               on:click={() => handleTransformOrderClick(TransformOrder.rotateThenTranslate)}>
@@ -57,7 +60,10 @@
       </button>
     </div>
   </div>
-  <div class="grow text-left flex flex-col justify-betwen items-stretch">
+  <div class="title">
+    {i18n.t("animation", langVal)}
+  </div>
+  <div class="grow pl-5 text-left flex flex-col justify-betwen items-stretch">
     <div class="slider_label flex items-stretch">
       {i18n.t("direction", langVal)}
     </div>
@@ -66,13 +72,13 @@
             on:change={handleDrawPatternTypeChange}
             on:input={(e) => e.stopPropagation()}>
       <option value={DrawPatternType.out}>
-        Out
+        {i18n.t("out", langVal)}
       </option>
       <option value={DrawPatternType.in}>
-        In
+        {i18n.t("in", langVal)}
       </option>
       <option value={DrawPatternType.fix}>
-        Fix
+        {i18n.t("fix", langVal)}
       </option>
     </select>
     <div class="grow flex flex-col justify-between items-stretch">
@@ -85,10 +91,10 @@
 <style lang="sass">
   @use "../../styles/color"
   @use "../../styles/text"
+  @import "../styles/control_module_title.sass"
+
   .title
-    color: color.$blue-7
-    font-size: text.$fs-m
-    font-weight: text.$fw-l
+    @include control_module_title
 
   .selected
     background-color: color.$blue-8

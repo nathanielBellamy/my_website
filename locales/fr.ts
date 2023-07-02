@@ -42,6 +42,7 @@ export const localeFr: any = {
   },
   magicSquare: {
     color: {
+      animation: "animation",
       in: "int",
       out: "ext",
       fix: "fixé",
@@ -62,7 +63,13 @@ export const localeFr: any = {
       translation: "translation"
     },
     drawPattern: {
+      animation: "animation",
       direction: "direction",
+      order: "ordre",
+      in: "int",
+      offset: "offset",
+      out: "ext",
+      fix: "fixé",
       rotate: "tourner",
       translate: "traduir"
     },
@@ -116,6 +123,14 @@ export const localeFr: any = {
       none: "aucun",
       on: "marche",
       off: "arrêt"
+    },
+    presets: {
+      bank: "banque",
+      curr: "actuel",
+      load: "charge",
+      next: "prochain",
+      preset: "préréglage",
+      save: "sauve"
     },
     rotation: {
       pitch: "tangage",

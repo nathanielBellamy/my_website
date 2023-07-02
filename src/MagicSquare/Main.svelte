@@ -584,8 +584,7 @@
             <input id={WasmInputId.shapes} 
                    class="hidden_input"/>
           </div>
-
-          <div  class="pl-5 pr-5 grow flex flex-col justify-around items-stretch"
+          <div  class="pl-5 pr-5 pb-5 grow flex flex-col justify-between items-stretch"
                 slot="radiusSliders">
             <div class="w-full flex flex-col justify-between items-stretch"
                      on:dblclick={() => handleRangeDoubleClick(WasmInputId.radiusBase)}>

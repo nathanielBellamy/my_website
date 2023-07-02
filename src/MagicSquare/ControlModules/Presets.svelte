@@ -1,6 +1,12 @@
 <script lang="ts">
   import { WasmInputId } from "../WasmInputId"
   import { PresetAction } from "./Preset"
+  import { I18n, Lang } from '../../I18n'
+  import { lang } from '../../stores/lang'
+
+  let langVal: Lang 
+  lang.subscribe(val => langVal = val)
+  let i18n = new I18n("magicSquare/presets")
 
   // TODO: CSS prevent top cutoff on small screen
 
@@ -39,11 +45,12 @@
   }
 </script>
 
-<section class="h-full flex flex-col justify-between items-stretch">
+<section class="h-full flex flex-col justify-between items-stretch gap-2">
   <slot name="preset"/>
   <div class="grid grid-cols-4 grid-rows-1">
-    <div class="title_m pl-5 col-span-2">
-      curr:
+    <div class="title_m pl-5 col-span-2 w-full flex justify-between items-center">
+      {i18n.t("curr", langVal)}
+      <div>:</div>
     </div>
     <div class="title_m flex justify-around">
       {toBank(preset)}
@@ -53,8 +60,9 @@
     </div>
   </div>
   <div class="grid grid-cols-4 grid-rows-1">
-    <div class="title_m pl-5 col-span-2">
-      load/save:
+    <div class="title_m pl-5 col-span-2 w-full flex justify-between items-center">
+      {i18n.t("next", langVal)}
+      <div>:</div>
     </div>
     <div class="title_m flex justify-around">
       {toBank(presetNext)}
@@ -63,10 +71,10 @@
       {presetNext + 1}
     </div>
   </div>
+  <div class="title pl-5 text-left">
+    {i18n.t("bank", langVal)}
+  </div>
   <div class="flex flex-col justify-between items-stretch">
-    <div class="title pl-5 text-left">
-      Bank
-    </div>
     <div class="pl-5 pr-5 grid grid-cols-4">
       {#each {length: 4} as _, i}
         <button on:click={() => bank = i}
@@ -76,21 +84,21 @@
       {/each}
     </div>
   </div>
+  <div class="title pl-5 text-left">
+    {i18n.t("preset", langVal)}
+  </div>
   <div class="grow pr-5 flex flex-col justify-around items-stretch">
-    <div class="title pl-5 text-left">
-      Preset
-    </div>
     <div class="preset_buttons grow pl-5 pr-5 pb-5 grid grid-cols-4 grid-rows-5 gap-4">
       <div class="col-span-2 flex justify-around items-stretch">
         <button class="grow flex justify-around items-center"
                 on:click={() => presetAction(PresetAction.set)}>
-          LOAD
+          {i18n.t("load", langVal)}
         </button>
       </div>
       <div class="col-span-2 flex justify-around items-stretch">
         <button class="grow flex justify-around items-center"
                 on:click={() => presetAction(PresetAction.save)}>
-          SAVE
+          {i18n.t("save", langVal)}
         </button>
       </div>
       {#if bank === 0}
@@ -137,15 +145,15 @@
 <style lang="sass">
   @use "../../styles/color"
   @use "../../styles/text"
+  
+  @import "../styles/control_module_title.sass"
 
   .preset_buttons
     grid-template-rows: 0.5fr 1fr 1fr 1fr 1fr
 
   .title
-    color: color.$blue-7
-    font-size: text.$fs-ml
-    font-weight: text.$fw-l
-    text-align: left
+    @include control_module_title
+
     &_m
       color: color.$blue-7
       font-size: text.$fs-m

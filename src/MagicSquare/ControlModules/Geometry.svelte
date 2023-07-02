@@ -79,7 +79,7 @@
  }
 </script>
 
-<div class="h-full pb-5 flex flex-col justify-between items-stretch">
+<div class="h-full flex flex-col justify-between items-stretch gap-2">
   <div class="grow flex flex-col justify-between items-stretch">
     <div class="title flex items-stretch pl-5 underline">
       {i18n.t("shape", langVal)}
@@ -170,10 +170,10 @@
       </select>
     </div>
   </div>
-  <div class="grow pt-2 flex flex-col justify-between items-stretch">
-    <div class="title flex items-stretch pl-5 underline">
-      {i18n.t("radius", langVal)}
-    </div>
+  <div class="title flex items-stretch pl-5 underline">
+    {i18n.t("radius", langVal)}
+  </div>
+  <div class="grow flex flex-col justify-between items-stretch">
     <slot name="radiusSliders"/>
   </div>
 </div>
@@ -182,13 +182,13 @@
   @use "./../../styles/color"
   @use "./../../styles/text"
 
+  @import "../styles/control_module_title.sass"
+
   .disabled
     color: #666
 
   .title
-    color: color.$blue-7
-    font-size: text.$fs-ml
-    font-weight: text.$fw-l
+    @include control_module_title
 
   .shape_select
     font-size: 1.3em

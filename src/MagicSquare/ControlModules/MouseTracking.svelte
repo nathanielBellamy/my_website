@@ -130,7 +130,7 @@
 
 <form id={formId}
       on:submit={handleFormSubmit}
-      class="h-full pl-2 pr-2 flex flex-col justify-around items-stretch">
+      class="h-full flex flex-col justify-around items-stretch">
   <h2 class="mouse_tracking_title text-left pl-3">
     {i18n.t("mouse", langVal)}
   </h2>
@@ -181,12 +181,11 @@
 <style lang="sass">
   @use "./../../styles/color"
   @use "./../../styles/text"
+  @import "../styles/control_module_title.sass"
 
   .mouse_tracking
     &_title
-      color: color.$blue-7
-      font-weight: text.$fw-l
-      font-size: text.$fs-l
+      @include control_module_title
 
     &_inv
       border-top: 5px double color.$blue-7

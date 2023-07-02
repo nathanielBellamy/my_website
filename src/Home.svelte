@@ -17,10 +17,17 @@
 
   let ai_me_counter: number = randomIntFromInterval(0, 46)
   $: ai_me_curr = ai_me_counter % 47 // we have 47 ai-generated images
+  
+  let innerHeight: number
+  $: imgSideLength = deriveImgSideLength(innerHeight)
+
+  function deriveImgSideLength(ih: number): string {
+    return Math.floor(ih / 3.5).toString() + "px"
+  }
 
   const incr_curr_ai_me = () => ai_me_counter = randomIntFromInterval(0, 46)
 
-  const ai_me_interval: any = setInterval(incr_curr_ai_me, 4000)
+  const ai_me_interval: any = setInterval(incr_curr_ai_me, 5000)
 
   function randomIntFromInterval(min: number, max: number): number { // min and max included 
     return Math.floor(Math.random() * (max - min + 1) + min)
@@ -35,10 +42,9 @@
   onDestroy(() => {
     clearInterval(ai_me_interval)
   })
-
-  // transitions
-
 </script>
+
+<svelte:window bind:innerHeight />
 
 <body class="pl-5 pr-5 pb-5 flex flex-col justify-between items-stretch gap-2">
   <div class="home_title_container flex flex-col justify-between items-stretch md:flex-row md:justify-start md:items-center">
@@ -91,6 +97,8 @@
               <img class="h-full w-full ai_me ai_me_img"
                    class:ai_me_img_hide={ai_me_curr !== idx}
                    class:ai_me_img_show={ai_me_curr === idx}
+                   style:height={imgSideLength}
+                   style:width={imgSideLength}
                    src={`/src/assets/ai_me/${ai_me_curr}.png`}
                    alt={"AI ME"}/>
             {/each}
@@ -115,6 +123,8 @@
         <div class="row-span-2 flex justify-around items-center">
           <img class="magic_square_img ai_me"
                src="/src/assets/magic_square_example.gif"
+               style:height={imgSideLength}
+               style:width={imgSideLength}
                alt="Magic Square Example"/>
         </div>
         <div class="flex pl-5 pr-5 mb-2 justify-around items-center overflow-y-scroll">
@@ -146,6 +156,8 @@
         <div class="row-span-2 flex justify-around items-center">
           <img class="magic_square_img"
                src="/src/assets/give_me_a_sine_example.gif"
+               style:height={imgSideLength}
+               style:width={imgSideLength}
                alt="Give Me A Sine Example"/>
         </div>
         <div class="flex flex-col pl-5 pr-5 mb-2 justify-around items-stretch overflow-y-scroll">
@@ -194,8 +206,6 @@
     border-radius: 5px
     padding: 5px
     margin: 5px
-    max-width: 200px
-    max-height: 200px
     border-radius: 50% 
 
   .ai_me_container
@@ -205,6 +215,7 @@
     grid-area: img
     &_img
       border-radius: 50%
+      filter: brightness(80%)
       &_hide
         visibility: hidden
         border-radius: 50%

@@ -129,11 +129,14 @@
   })
 </script>
 
-<div class="color_container flex flex-col justify-between items-stretch">
+<div class="color_container h-full pb-10 flex flex-col justify-between items-stretch">
   <div id="color_mode_and_curr"
        class="grow w-full flex flex-col justify-around items-center">
     <div class="color_modes w-full flex flex-col justify-around items-stretch">
-      <div class="grow w-full flex justify-around">
+      <div class="title">
+        {i18n.t("animation", langVal)}
+      </div>
+      <div class="grow w-full pl-2 pr-2 flex justify-around">
         <button class="grow color_mode_option"
                 class:selected={colorDirection === ColorDirection.out}
                 on:click={() => handleColorDirectionClick(ColorDirection.out)}>
@@ -150,8 +153,7 @@
           {i18n.t("fix", langVal)}
         </button>
       </div>
-
-      <div class="grow m-2">
+      <div class="grow pl-2 pr-2 m-2">
         <slot name="speed"/>
       </div>
     </div>
@@ -211,6 +213,11 @@
 <style lang="sass">
   @use "./../../styles/color"
   @use "./../../styles/text"
+  @import "../styles/control_module_title.sass"
+
+  .title
+    @include control_module_title
+
 
   .selected
     background-color: color.$blue-4
@@ -238,10 +245,8 @@
     display: none
 
   .color_container
-    height: 100%
     overflow-y: scroll
     overflow-x: hidden
-    padding: 10px 0 10px 0
 
   .curr_picker
     position: relative
