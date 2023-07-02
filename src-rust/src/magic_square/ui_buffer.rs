@@ -150,7 +150,6 @@ impl UiBuffer {
             }
             INPUT_DRAW_PATTERN_TYPE => {
                 if let Ok(draw_pattern_type) = Validate::try_into_draw_pattern_type(val) {
-                    log(&format!("{:?}", draw_pattern_type));
                     self.settings.draw_pattern_type = draw_pattern_type;
                 }
             }
@@ -211,8 +210,6 @@ impl UiBuffer {
                             local_storage
                                 .set_item("magic_square_presets", &presets_string)
                                 .unwrap();
-
-                            log(&format!("{:?}", self.presets));
                         }
                         IOPresetAction::Set => {
                             self.settings = self.presets[io_preset.preset];

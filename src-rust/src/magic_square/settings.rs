@@ -5,7 +5,7 @@ use wasm_bindgen::JsValue;
 
 use super::geometry::cache::CACHE_CAPACITY;
 use super::geometry::Shape;
-use crate::magic_square::main::log;
+// use crate::magic_square::main::log;
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub enum DrawPatternType {
@@ -277,7 +277,6 @@ pub struct Validate;
 
 impl Validate {
     pub fn try_into_draw_pattern_type(pt: String) -> Result<DrawPatternType, ()> {
-        // log(&pt);
         match pt.as_str() {
             "Fix" => Ok(DrawPatternType::Fix),
             "Out" => Ok(DrawPatternType::Out),
@@ -287,10 +286,8 @@ impl Validate {
     }
 
     pub fn try_into_io_shape(val: String) -> Result<IOShape, JsValue> {
-        log(&val);
         let val = js_sys::JSON::parse(&val).unwrap();
         let res: IOShape = serde_wasm_bindgen::from_value(val)?;
-        log(&format! {"serde res: {:?}", res});
         Ok(res)
     }
 

@@ -1,6 +1,7 @@
 use super::cube::VERTEX_COUNT_CUBE;
 use super::icosahedron::{Icosahedron, VERTEX_COUNT_ICOSAHEDRON};
 use super::ngon::Ngon;
+use super::octohedron::{VERTEX_COUNT_OCTOHEDRON, Octohedron};
 use super::tetrahedron::{Tetrahedron, VERTEX_COUNT_TETRAHEDRON};
 use super::vertices::VERTEX_ARRAY_SIZE;
 use super::Shape;
@@ -12,7 +13,7 @@ pub const PI: f32 = std::f32::consts::PI;
 
 pub type OffsetVc = (i32, i32);
 
-const SHAPE_COUNT: usize = 31;
+const SHAPE_COUNT: usize = 32;
 const TOTAL_LEN: usize = VERTEX_ARRAY_SIZE * SHAPE_COUNT;
 
 type GeomVertArrays = [[f32; VERTEX_ARRAY_SIZE]; SHAPE_COUNT];
@@ -50,6 +51,7 @@ impl Geom {
             Ngon::f32_array(30),
             Tetrahedron::f32_array(),
             Cube::f32_array(),
+            Octohedron::f32_array(),
             Icosahedron::f32_array(),
         ];
         for (idx_arr, array) in arrays.iter().enumerate() {
@@ -66,7 +68,8 @@ impl Geom {
             Shape::PlatoThree(n) => match n {
                 4 => (2800, VERTEX_COUNT_TETRAHEDRON),
                 6 => (2900, VERTEX_COUNT_CUBE),
-                20 => (3000, VERTEX_COUNT_ICOSAHEDRON),
+                8 => (3000, VERTEX_COUNT_OCTOHEDRON),
+                20 => (3100, VERTEX_COUNT_ICOSAHEDRON),
                 _ => (0, 0),
             },
             Shape::None => (0, 0),

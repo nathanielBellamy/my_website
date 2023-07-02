@@ -8,7 +8,6 @@ use super::vertices::VERTEX_ARRAY_SIZE;
 pub const VERTEX_COUNT_TETRAHEDRON: i32 = 12;
 
 const R: f32 = 1.41421356237;// 2.0_f32.sqrt();
-const ARCCOS_NEG_ONE_THIRD: f32 = 1.04719755;
 const THETA: [f32; 4] = [0.0, 1.7, 1.7, 1.7]; //ARCCOS_NEG_ONE_THIRD, ARCCOS_NEG_ONE_THIRD, ARCCOS_NEG_ONE_THIRD];
 const PHI: [f32; 4] = [0.0, 0.0, 2.0*PI/3.0, 4.0*PI/3.0];
 
@@ -57,8 +56,8 @@ impl Tetrahedron {
 
     fn vertex(id: usize) -> Vertex {
         Vertex::new(
-            R * THETA[id].sin() * PHI[id].cos(),
             R * THETA[id].sin() * PHI[id].sin(),
+            R * THETA[id].sin() * PHI[id].cos(),
             R * THETA[id].cos(),
         )
     }

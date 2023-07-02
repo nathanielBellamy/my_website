@@ -7,6 +7,7 @@ pub mod empty;
 pub mod geom;
 pub mod icosahedron;
 pub mod ngon;
+pub mod octohedron;
 pub mod tetrahedron;
 pub mod transformations;
 pub mod vertex_store;
