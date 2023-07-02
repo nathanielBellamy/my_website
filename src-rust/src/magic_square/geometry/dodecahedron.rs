@@ -1,4 +1,3 @@
-
 use crate::magic_square::geometry::vertex_store::VertexStore;
 use crate::magic_square::geometry::vertices::Vertex;
 use std::ops::{Index, IndexMut};
@@ -7,7 +6,6 @@ use super::vertices::VERTEX_ARRAY_SIZE;
 
 pub const VERTEX_COUNT_DODECAHEDRON: i32 = 60;
 
-const R: f32 = 1.41421356237;// 2.0_f32.sqrt();
 const P: f32 = 1.61803398875; // 1/2 (1 + sqrt(5))
 
 // (±1, ±1, ±1)

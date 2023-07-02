@@ -71,8 +71,8 @@ impl Geom {
     pub fn into_offset_vc(shape: Shape) -> OffsetVc {
         match shape {
             Shape::Misc(idx) => match idx {
-                MISC_IDX_STAR_FIVE => (3200, VERTEX_COUNT_STAR_FIVE),
-                MISC_IDX_COOL_S => (3300, VERTEX_COUNT_COOL_S),
+                MISC_IDX_STAR_FIVE => (3300, VERTEX_COUNT_STAR_FIVE),
+                MISC_IDX_COOL_S => (3400, VERTEX_COUNT_COOL_S),
                 _ => (0,0)
             },
             Shape::Ngon(n) => (100 * (n - 3) as i32, 2 * n as i32),

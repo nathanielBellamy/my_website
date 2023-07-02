@@ -77,7 +77,7 @@ impl UiBuffer {
             }
             Err(e) => {
                 log(&format!("{:?}", e));
-                [Settings::new(); PRESET_CAPACITY].to_vec()
+                Settings::default_presets().to_vec()
             }
         };
 

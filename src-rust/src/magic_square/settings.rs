@@ -1,3 +1,6 @@
+use std::fs;
+use std::path::Path;
+
 use crate::magic_square::lfo::{LfoDestination, LfoShape};
 use crate::magic_square::main::Rgba;
 use serde::{Deserialize, Serialize};
@@ -5,7 +8,9 @@ use wasm_bindgen::JsValue;
 
 use super::geometry::cache::CACHE_CAPACITY;
 use super::geometry::Shape;
-// use crate::magic_square::main::log;
+use super::presets_default::PRESETS_DEFAULT;
+use super::ui_buffer::PRESET_CAPACITY;
+use crate::magic_square::main::log;
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub enum DrawPatternType {
@@ -139,6 +144,18 @@ pub struct Settings {
 }
 
 impl Settings {
+    pub fn default_presets() -> [Settings; PRESET_CAPACITY] {
+        let val = js_sys::JSON::parse(PRESETS_DEFAULT).unwrap();
+        let res: Vec<Settings> = serde_wasm_bindgen::from_value(val).unwrap();
+
+        let mut default_presets: [Settings; PRESET_CAPACITY] = [Settings::new(); PRESET_CAPACITY];
+
+        for (idx, p) in default_presets.iter_mut().enumerate() {
+            *p = res[idx];
+        }
+        default_presets
+    }
+
     pub fn new() -> Settings {
         Settings {
             // COLOR
