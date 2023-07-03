@@ -53,7 +53,7 @@ export const localeFr: any = {
       empty: "vide",
     },
     controlRack: {
-      color: "color",
+      color: "couleur",
       drawPattern: "dispersion",
       geometry: 'géométrie',
       lfo: "lfo",
