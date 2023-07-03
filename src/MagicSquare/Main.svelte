@@ -1,5 +1,6 @@
 <script lang="ts" type="module">
-  import { afterUpdate, onMount, onDestroy } from 'svelte'
+  import init, { MagicSquare, rust_init_message } from '../../pkg/src_rust.js'
+  import { afterUpdate, onDestroy } from 'svelte'
   import Loading from '../lib/Loading.svelte'
   import DrawPatternContainer from './ControlModules/DrawPattern.svelte'
   import { DrawPatternType } from './ControlModules/DrawPattern'
@@ -47,29 +48,6 @@
   // the mantra is
   //   -> Svelte/JS is for layout + display logic
   //   -> Rust/Wasm is for handling data
-
-  // update: we have reworked this pattern
-  // -> ui-related values are stored in JS and bound to pass to ui-logic components
-  // -> but input values are bound here
-  // -> ui-logic component can retrieve and edit input value
-  // -> some ui logic components are forms
-  //    -> on submit they set the value in the hidden input and trigger an input event
-  //    -> the input event bubbles up triggering an input event on the ui_buffer_form
-  //    -> wasm is listening to input events on the ui_buffer_form
-  //    -> wasm receives the input event and updates the buffer with the desired value
-
-  // TODO:
-  //  -> On load
-  //    -> Js passes the MagicSquareInstanceId to wasm
-  //    -> wasm checks localStorage for the key MagicSquareInstanceId
-  //      -> if exists it retrieves + deserializes ui_settings from localStorage
-  //      -> if none exist, it calls ::new()
-  //  -> onDestroy
-  //    -> js writes the current ui_settings to localStorage
-  //  -> onResize
-  //    -> Container.svelte manages MagicSquareInstanceId 
-  //    -> this should persist ui_settings
-  //    -> while destroying and loading new wasm module instances
   
   export let sideLength: number = 0.0
 
@@ -311,41 +289,6 @@
     setAllSettings(presets[preset])
   }
 
-  onMount(async () => {
-    // console.dir({instance, prevSettings})
-    // load wasm
-    await wasm_bindgen() // loaded in index.html from ./pkg/src_rust.js
-    
-    let ses = localStorage.getItem("magic_square_settings")
-    if (ses) {
-      const res = JSON.parse(ses)
-      // console.dir({res})
-      prevSettingsStore.update((_: StorageSettings): StorageSettings => {
-        prevSettings = res
-        return res
-      })
-    }
-
-    let presets = JSON.parse(localStorage.getItem("magic_square_presets"))
-
-    if (!hasBeenDestroyed) { 
-      // resize + key block in Container.svelte may destroy component before wasm_bindgen can load
-      // without this check, it is possible to load two wasm instances
-      // since wasm retrieves the elements using .get_element_by_id
-      // and since a new instance of the component will havee been mounted by the time wasm_bindgen loads
-      // the result is two identical wasm instances listening to the same ui elements and drawing to the same context
-      const { MagicSquare, init_message } = wasm_bindgen
-      console.log(
-        init_message("Magic Square Wasm!")
-      )
-      
-      // init wasm process and set initial values
-      const initialSettings = await MagicSquare.run(prevSettings, presets)
-      setAllSettings(initialSettings)
-      renderDataReady = true
-    }
-  })
-
   function deriveStorageSettings(): StorageSettings {
     return {
       // Color
@@ -451,6 +394,38 @@
       )
     }
   })
+
+  // effectively onMount
+  async function run() {
+    let ses = localStorage.getItem("magic_square_settings")
+    if (ses) {
+      const res = JSON.parse(ses)
+      // console.dir({res})
+      prevSettingsStore.update((_: StorageSettings): StorageSettings => {
+        prevSettings = res
+        return res
+      })
+    }
+
+    let presets = JSON.parse(localStorage.getItem("magic_square_presets"))
+
+    if (!hasBeenDestroyed) { 
+      // resize + key block in Container.svelte may destroy component before wasm_bindgen can load
+      // without this check, it is possible to load two wasm instances
+      // since wasm retrieves the elements using .get_element_by_id
+      // and since a new instance of the component will havee been mounted by the time wasm_bindgen loads
+      // the result is two identical wasm instances listening to the same ui elements and drawing to the same context
+      await init()
+      rust_init_message("Magic Square Wasm!")
+      
+      // init wasm process and set initial values
+      const initialSettings = await MagicSquare.run(prevSettings, presets)
+      setAllSettings(initialSettings)
+      renderDataReady = true
+    }
+  }
+
+  run()
 </script>
 
 <svelte:window bind:innerWidth />
