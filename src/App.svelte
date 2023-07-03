@@ -52,7 +52,7 @@
   </div>
 </nav>
 
-<main class="rounded-md flex flex-col justify-start">
+<main class="rounded-md flex flex-col justify-start pb-10 md:pb-0">
   <Router {routes}/>
 </main>
 
