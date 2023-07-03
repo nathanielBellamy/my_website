@@ -10,7 +10,8 @@ export const localeEs: any = {
       home: "Inicio",
       about: "Sobre mi",
       magicSquare: "Cuadro mágico",
-      giveMeASine: "Dame uno seno"
+      giveMeASine: "Dame uno seno",
+      none: ""
     }
   },
   gmas: {
