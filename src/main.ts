@@ -8,7 +8,7 @@ const app = new App({
 // force https
 if (location.protocol !== 'https:') {
     console.dir('NOT HTTPS')
-    // location.replace(`https:${location.href.substring(location.protocol.length)}`);
+    location.replace(`https:${location.href.substring(location.protocol.length)}`);
 }
 
 export default app
