@@ -36,8 +36,8 @@
   })
 </script>
 
-<nav class="nav_bar flex flex-row justify-between items-center">
-  <div class="links flex justify-between items-stretch">
+<nav class="nav_bar flex items-center gap-2">
+  <!-- <div class="links flex justify-between items-stretch"> -->
     <Link href="/" 
           title={i18n.t("nav/home", langVal)}/> 
     <Link href="/about" 
@@ -46,13 +46,13 @@
           title={i18n.t("nav/magicSquare", langVal)}/>
     <Link href="/give_me_a_sine" 
           title={i18n.t("nav/giveMeASine", langVal)}/>
-  </div>
-  <div class="curr_section hidden md:block">
-    {i18n.t(`nav/${siteSectionVal}`, langVal)}
-  </div>
+  <!-- </div> -->
+  <!-- <div class="curr_section hidden md:block"> -->
+  <!--   {i18n.t(`nav/${siteSectionVal}`, langVal)} -->
+  <!-- </div> -->
 </nav>
 
-<main class="rounded-md flex flex-col justify-start">
+<main class="rounded-md flex flex-col justify-start pb-20 md:pb-0">
   <Router {routes}/>
 </main>
 
