@@ -131,7 +131,10 @@ impl MagicSquare {
             });
 
             canvas
-                .add_event_listener_with_callback("mousemove touchmove", closure.as_ref().unchecked_ref())
+                .add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())
+                .unwrap();
+            canvas
+                .add_event_listener_with_callback("touchmove", closure.as_ref().unchecked_ref())
                 .unwrap();
             closure.forget();
         }
