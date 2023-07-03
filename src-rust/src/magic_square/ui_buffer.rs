@@ -57,18 +57,7 @@ impl UiBuffer {
     }
 
     pub fn from(settings: JsValue, presets: JsValue) -> UiBuffer {
-        // log(&format!("{:?}", prev_settings));
-        let settings: Settings = match serde_wasm_bindgen::from_value(settings) {
-            Ok(res) => {
-                log("SUCCESSFUL SETTINGS PARSE");
-                // log(&format!("{:?}", res));
-                res
-            }
-            Err(e) => {
-                log(&format!("{:?}", e));
-                Settings::new()
-            }
-        };
+
 
         let presets_vec: Vec<Settings> = match serde_wasm_bindgen::from_value(presets) {
             Ok(res) => {
@@ -85,6 +74,19 @@ impl UiBuffer {
         for (idx, p) in presets.iter_mut().enumerate() {
             *p = presets_vec[idx];
         }
+
+        // log(&format!("{:?}", prev_settings));
+        let settings: Settings = match serde_wasm_bindgen::from_value(settings) {
+            Ok(res) => {
+                log("SUCCESSFUL SETTINGS PARSE");
+                // log(&format!("{:?}", res));
+                res
+            }
+            Err(e) => {
+                log(&format!("{:?}", e));
+                presets[0]
+            }
+        };
 
         UiBuffer { settings, presets }
     }
