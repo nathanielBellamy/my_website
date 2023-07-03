@@ -7,19 +7,11 @@ use super::settings::ColorDirection;
 use crate::magic_square::geometry::cache::{Cache as GeometryCache, CACHE_CAPACITY};
 use crate::magic_square::lfo::Lfo;
 use crate::magic_square::ui_buffer::UiBuffer;
+use crate::log;
 use std::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use web_sys::{WebGl2RenderingContext, WebGlProgram};
-
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
-    pub fn log(s: &str);
-
-    #[wasm_bindgen(js_name = "performance")]
-    pub static PERFORMANCE: web_sys::Performance;
-}
 
 #[derive(Clone, Copy, Debug)]
 pub enum Axis {

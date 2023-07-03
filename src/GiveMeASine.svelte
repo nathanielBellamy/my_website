@@ -1,5 +1,5 @@
-<script lang='ts'>
-  import { onMount } from 'svelte'
+<script lang='ts' type="module">
+  import init, { GmasWasm, rust_init_message  } from '../pkg/src_rust.js'
   import { I18n, Lang } from "./I18n"
   import { lang } from './stores/lang'
   
@@ -24,31 +24,6 @@
   let graphCharId: number
   let graphChar: string
   $: graphChar = colorSquareFromId(graphCharId)
-
-  onMount(async () => {
-    await wasm_bindgen() // loaded in index.html from pkg/src_rust.js
-    const { GmasWasm, init_message } = wasm_bindgen
-    console.log(init_message("Wasm Running for GMAS"))
-
-    const initialData = GmasWasm.run()
-    a = initialData.function[0]
-    b = initialData.function[1]
-    c = initialData.function[2]
-    ep = initialData.settings.ep
-    height = initialData.settings.height
-    width = initialData.settings.width
-    aboveCharId = initialData.settings.above_char_id
-    belowCharId = initialData.settings.below_char_id
-    graphCharId = initialData.settings.graph_char_id
-  })
-
-  interface GmasRangeInput {
-    id: string,
-    label: string,
-    min: number,
-    max: number,
-    step: number
-  }
 
   function colorSquareFromId (id: number): string {
     switch (id) {
@@ -75,44 +50,23 @@
     }
   }
 
-  function idFromColorSquare(colorSquare: string): number {
-    switch (colorSquare) {
-      case '⬛': 
-        return 0
-      case '⬜':
-        return 1
-      case '🟪':
-        return 2
-      case '🟦':
-        return 3
-      case '🟩':
-        return 4
-      case '🟨':
-        return 5
-      case '🟧':
-        return 6
-      case '🟥':
-        return 7
-      case '🟫':
-        return 8
-      default: 
-        return -1
-    }
+  async function run() {
+    await init()
+
+    rust_init_message("GMAS")
+    const initialData = GmasWasm.run()
+    a = initialData.function[0]
+    b = initialData.function[1]
+    c = initialData.function[2]
+    ep = initialData.settings.ep
+    height = initialData.settings.height
+    width = initialData.settings.width
+    aboveCharId = initialData.settings.above_char_id
+    belowCharId = initialData.settings.below_char_id
+    graphCharId = initialData.settings.graph_char_id
   }
 
-  // the decision below to keep all inputs as raw html
-  // as opposed to excising into a Range.svelte component
-  // was the decision to avoid JS value bindings as much as possible
-  // 
-  // for similar "avoid JS data handling" reasons
-  // we do not "dry out" our code by storing data in an object/array
-  // and then using some form of an {#each} block
-  // doing so would require some getting/setting of the 
-  // component values we are binding to the inputs
-  // explicit layout means bound values appear directly in <script> and <body>
-  //
-  // from anecdotal testing, this style cooperates better with Svelte's compilation process
-  // particularly when hot-updating in dev
+  run()
 </script>
 
 <body>

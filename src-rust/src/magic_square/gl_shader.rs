@@ -1,4 +1,4 @@
-use super::main::log;
+use crate::log;
 use web_sys::{WebGl2RenderingContext, WebGlShader};
 
 pub struct GlShader;

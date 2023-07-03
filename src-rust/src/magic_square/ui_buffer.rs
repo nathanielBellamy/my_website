@@ -1,7 +1,7 @@
 use super::geometry::cache::{Cache, CACHE_CAPACITY};
 use super::main::Rgba;
 use super::settings::{Colors, IOGradient, IOPresetAction};
-use crate::magic_square::main::log;
+use crate::log;
 use crate::magic_square::settings::{Settings, Validate};
 use crate::magic_square::ui_manifest::{
     INPUT_COLORS, INPUT_COLOR_DIRECTION, INPUT_COLOR_SPEED, INPUT_DRAW_PATTERN_COUNT,
