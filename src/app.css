@@ -172,7 +172,7 @@ body {
 }
 
 footer { /*global*/
-  position: relative;
+  position: fixed;
   left: 0;
   bottom: 0;
   width: 100%;
@@ -183,6 +183,7 @@ footer { /*global*/
   padding: 0 10px 0 10px;
   border-top: 5px double #395A6D;
   gap: 10px;
+  background-color: #232323;
 }
 
 footer div {

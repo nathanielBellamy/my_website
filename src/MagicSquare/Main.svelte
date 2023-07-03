@@ -1206,7 +1206,7 @@
         border: 10px double color.$blue-7
         border-radius: 5px
         flex-grow: 1
-        touch-action: pinch-zoom
+        touch-action: auto
 
   .grid_col
     display: grid
