@@ -4,7 +4,7 @@
 
 <section>
   <h1 class="loading">
-    Loading...
+    {!!message ? message : "Loading..."}
   </h1>
   <slot />
 </section>

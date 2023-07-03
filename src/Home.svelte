@@ -1,11 +1,13 @@
 <script lang="ts">
-  import { onDestroy } from "svelte"
   import { push } from "svelte-spa-router"
   import Link from "./lib/Link.svelte"
   import { I18n, Lang } from "./I18n"
   import { lang } from './stores/lang'
+  import magicSquareExampleGif from './assets/magic_square_example.gif'
+  import giveMeASineExampleGif from './assets/give_me_a_sine_example.gif'
 
   import { intoUrl, siteSection, SiteSection } from "./stores/siteSection";
+    import AiMe from "./lib/AiMe.svelte";
 
   let siteSectionVal: SiteSection
   siteSection.subscribe((val: SiteSection) => siteSectionVal = val)
@@ -15,22 +17,11 @@
   let langVal: Lang
   lang.subscribe(val => langVal = val)
 
-  let ai_me_counter: number = randomIntFromInterval(0, 46)
-  $: ai_me_curr = ai_me_counter % 47 // we have 47 ai-generated images
-  
   let innerHeight: number
   $: imgSideLength = deriveImgSideLength(innerHeight)
 
   function deriveImgSideLength(ih: number): string {
     return Math.floor(ih / 3.5).toString() + "px"
-  }
-
-  const incr_curr_ai_me = () => ai_me_counter = randomIntFromInterval(0, 46)
-
-  const ai_me_interval: any = setInterval(incr_curr_ai_me, 5000)
-
-  function randomIntFromInterval(min: number, max: number): number { // min and max included 
-    return Math.floor(Math.random() * (max - min + 1) + min)
   }
 
   function handlePreviewClick(s: SiteSection) {
@@ -39,9 +30,6 @@
     push(intoUrl(s))
   }
 
-  onDestroy(() => {
-    clearInterval(ai_me_interval)
-  })
 </script>
 
 <svelte:window bind:innerHeight />
@@ -93,15 +81,7 @@
         </div>
         <div class="row-span-2 w-full flex justify-around items-center">
           <div class="ai_me_container magic_square_img grid grid-rows-1 grid-cols-1">
-            {#each {length: 47} as _, idx}
-              <img class="h-full w-full ai_me ai_me_img"
-                   class:ai_me_img_hide={ai_me_curr !== idx}
-                   class:ai_me_img_show={ai_me_curr === idx}
-                   style:height={imgSideLength}
-                   style:width={imgSideLength}
-                   src={`/src/assets/ai_me/${ai_me_curr}.png`}
-                   alt={"AI ME"}/>
-            {/each}
+            <AiMe imgSideLength={imgSideLength}/>
           </div>
         </div>
         <div class="flex pl-5 pr-5 mb-2 justify-around items-center overflow-y-scroll">
@@ -122,7 +102,7 @@
         </div>
         <div class="row-span-2 flex justify-around items-center">
           <img class="magic_square_img ai_me"
-               src="/src/assets/magic_square_example.gif"
+               src={magicSquareExampleGif}
                style:height={imgSideLength}
                style:width={imgSideLength}
                alt="Magic Square Example"/>
@@ -155,7 +135,7 @@
         </div>
         <div class="row-span-2 flex justify-around items-center">
           <img class="magic_square_img"
-               src="/src/assets/give_me_a_sine_example.gif"
+               src={giveMeASineExampleGif}
                style:height={imgSideLength}
                style:width={imgSideLength}
                alt="Give Me A Sine Example"/>
@@ -210,23 +190,7 @@
 
   .ai_me_container
     grid-template-areas: "img"
-  
-  .ai_me
-    grid-area: img
-    &_img
-      border-radius: 50%
-      filter: brightness(80%)
-      &_hide
-        visibility: hidden
-        border-radius: 50%
-        opacity: 0%
-        transition: opacity 1s
-      &_show
-        visibility: visible
-        border-radius: 50%
-        opacity: 100%
-        transition: opacity 1.25s ease-in
-
+ 
   .preview
     border-radius: 5px
     margin: 0 5px 0 5px
