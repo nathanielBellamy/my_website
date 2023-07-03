@@ -76,7 +76,15 @@ export const localeFr: any = {
     geometry: {
       shape: "forme",
       radius: "rayon",
-      range: "gamme"
+      range: "gamme",
+      ngon: "ngon",
+      star: "étoile",
+      coolS: "s cool",
+      tetrahedron: "tétraèdre",
+      cube: "cube",
+      octahedron: "octaèdre",
+      dodecahedron: "dodécaèdre",
+      icosahedron: "icosaèdre",
     },
     lfo: {
       destination: "destination",

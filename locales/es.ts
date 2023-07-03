@@ -76,7 +76,15 @@ export const localeEs: any = {
     geometry: {
       shape: "forma",
       radius: "radio",
-      range: "serie"
+      range: "serie",
+      ngon: "ngon",
+      star: "estrella",
+      coolS: "s cool",
+      tetrahedron: "tetraedro",
+      cube: "cubo",
+      octahedron: "octaedro",
+      dodecahedron: "dodecaedro",
+      icosahedron: "icosaedro",
     },
     lfo: {
       destination: "destino",

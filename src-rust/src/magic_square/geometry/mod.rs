@@ -9,7 +9,7 @@ pub mod empty;
 pub mod geom;
 pub mod icosahedron;
 pub mod ngon;
-pub mod octohedron;
+pub mod octahedron;
 pub mod star_five;
 pub mod tetrahedron;
 pub mod transformations;

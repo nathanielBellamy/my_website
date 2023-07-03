@@ -112,6 +112,12 @@
     // TODO
     // activate and deactivate lfo from double clicking the button to select it
   }
+
+  function lowerCaseFirstLetter(ld: LfoDestination): string {
+    const oldStr = ld.toString()
+    const newFirst = oldStr[0].toLowerCase()
+    return `${newFirst}${oldStr.substring(1)}`
+  }
 </script>
 
 <div class="h-full pb-5 flex flex-col justify-between items-stretch">
@@ -122,28 +128,36 @@
             class:selected = {lfo === Lfo.one}
             class="grid grid-cols-5 ml-5 mr-5 text-sm border-4 rounded-xl">
       <p> {Lfo.one} </p>
-      <p class="col-span-4"> {lfo1Dest} </p>
+      <p class="col-span-4"> 
+        {i18n.t(lowerCaseFirstLetter(lfo1Dest), langVal)} 
+      </p>
     </button>
     <button on:click = {() => lfo = Lfo.two}
             class:active = {lfo2Active}
             class:selected = {lfo === Lfo.two}
             class="grid grid-cols-5 ml-5 mr-5 text-sm border-4 rounded-xl">
       <p> {Lfo.two} </p>
-      <p class="col-span-4"> {lfo2Dest} </p>
+      <p class="col-span-4"> 
+        {i18n.t(lowerCaseFirstLetter(lfo2Dest), langVal)} 
+      </p>
     </button>
     <button on:click = {() => lfo = Lfo.three}
             class:active = {lfo3Active}
             class:selected = {lfo === Lfo.three}
             class="grid grid-cols-5 ml-5 mr-5 text-sm border-4 rounded-xl">
       <p> {Lfo.three} </p>
-      <p class="col-span-4"> {lfo3Dest} </p>
+      <p class="col-span-4"> 
+        {i18n.t(lowerCaseFirstLetter(lfo3Dest), langVal)} 
+      </p>
     </button>
     <button on:click = {() => lfo = Lfo.four}
             class:active = {lfo4Active}
             class:selected = {lfo === Lfo.four}
             class="grid grid-cols-5 ml-5 mr-5 text-sm border-4 rounded-xl">
       <p> {Lfo.four} </p>
-      <p class="col-span-4"> {lfo4Dest} </p>
+      <p class="col-span-4"> 
+        {i18n.t(lowerCaseFirstLetter(lfo4Dest), langVal)}
+      </p>
     </button>
   </div>
   <div class="grow pt-1 flex flex-col justify-between items-stretch">

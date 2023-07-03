@@ -1,6 +1,3 @@
-use std::fs;
-use std::path::Path;
-
 use crate::magic_square::lfo::{LfoDestination, LfoShape};
 use crate::magic_square::main::Rgba;
 use serde::{Deserialize, Serialize};
@@ -10,7 +7,7 @@ use super::geometry::cache::CACHE_CAPACITY;
 use super::geometry::Shape;
 use super::presets_default::PRESETS_DEFAULT;
 use super::ui_buffer::PRESET_CAPACITY;
-use crate::magic_square::main::log;
+// use crate::magic_square::main::log;
 
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub enum DrawPatternType {

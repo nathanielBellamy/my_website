@@ -79,7 +79,15 @@ export const localeEn: any = {
     geometry: {
       shape: "shape",
       radius: "radius",
-      range: "range"
+      range: "range",
+      ngon: "ngon",
+      star: "star",
+      coolS: "cool s",
+      tetrahedron: "tetrahedron",
+      cube: "cube",
+      octahedron: "octahedron",
+      dodecahedron: "dodecahedron",
+      icosahedron: "icosahedron",
     },
     main: {
       active: "active",

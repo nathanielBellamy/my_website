@@ -102,33 +102,33 @@
               on:change={handleShapeSelect}>
         <optgroup label="Misc.">
           <option value={JSON.stringify({t: ShapeTag.misc, c: 0})}>
-            Star
+            {i18n.t("star", langVal)}
           </option>
           <option value={JSON.stringify({t: ShapeTag.misc, c: 1})}>
-            Cool S
+            {i18n.t("coolS", langVal)}
           </option>
         </optgroup>
         <optgroup label="2d">
           <option label="Ngon"
                   value={JSON.stringify({t: ShapeTag.ngon, c: n})}>
-            Ngon
+            {i18n.t("ngon", langVal)}
           </option>
         </optgroup>
         <optgroup label="3d">
           <option value={JSON.stringify({t: ShapeTag.platoThree, c: 4})}>
-            Tetrahedron
+            {i18n.t("tetrahedron", langVal)}
           </option>
           <option value={JSON.stringify({t: ShapeTag.platoThree, c: 6})}>
-            Cube
+            {i18n.t("cube", langVal)}
           </option>
           <option value={JSON.stringify({t: ShapeTag.platoThree, c: 8})}>
-            Octohedron
+            {i18n.t("octahedron", langVal)}
           </option>
           <option value={JSON.stringify({t: ShapeTag.platoThree, c: 12})}>
-            Dodecahedron
+            {i18n.t("dodecahedron", langVal)}
           </option>
           <option value={JSON.stringify({t: ShapeTag.platoThree, c: 20})}>
-            Icosahedron
+            {i18n.t("icosahedron", langVal)}
           </option>
         </optgroup>
       </select>
