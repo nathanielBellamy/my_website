@@ -24,7 +24,7 @@
     {
       title: 'my_website (this)',
       description: 'Rust, WebAssembly, Typescript, Svelte, WebGL, Sass, Tailwind, Vite',
-      href: 'https://github.com/nathanielBellamy/my_website',
+      href: 'https://github.com/users/nathanielBellamy/projects/4',
       program: EmbeddedProgram.none
     },
     {
