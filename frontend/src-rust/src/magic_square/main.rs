@@ -27,7 +27,8 @@ pub struct MagicSquare;
 impl MagicSquare {
     // Entry point into Rust WASM from JS
     // https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
-    pub async fn run(settings: JsValue, presets: JsValue) -> JsValue {
+    pub async fn run(settings: JsValue, presets: JsValue, touch_screen: JsValue) -> JsValue {
+        let touch_screen: bool = serde_wasm_bindgen::from_value(touch_screen).unwrap();
         let ui_buffer = UiBuffer::from(settings, presets);
 
         let canvas = MagicSquare::canvas()
@@ -117,26 +118,41 @@ impl MagicSquare {
             let magic_square = magic_square.clone();
             let mouse_pos_buffer = mouse_pos_buffer.clone();
             let canvas = canvas.clone();
-            let context: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
-            let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::MouseEvent| {
-                context.clear_color(0.0, 0.0, 0.0, 0.0);
-                context.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
-                mouse_pos_buffer.clone().borrow_mut()[0] =
-                    MagicSquare::clip_x(event.offset_x(), width);
-                mouse_pos_buffer.clone().borrow_mut()[1] =
-                    MagicSquare::clip_x(event.offset_y(), height);
-                magic_square
-                    .dispatch_event(&web_sys::Event::new("render").unwrap())
-                    .unwrap();
-            });
+            if !touch_screen {
+                let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::MouseEvent| {
+                    mouse_pos_buffer.clone().borrow_mut()[0] = MagicSquare::clip_x(event.offset_x(), width);
+                    mouse_pos_buffer.clone().borrow_mut()[1] = MagicSquare::clip_x(event.offset_y(), height);
+                    magic_square
+                        .dispatch_event(&web_sys::Event::new("render").unwrap())
+                        .unwrap();
+                });
 
-            canvas
-                .add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())
-                .unwrap();
-            canvas
-                .add_event_listener_with_callback("touchmove", closure.as_ref().unchecked_ref())
-                .unwrap();
-            closure.forget();
+                canvas
+                    .add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())
+                    .unwrap();
+
+                closure.forget();
+            } else {
+                let inner_canvas = canvas.clone();
+                let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::TouchEvent| {
+                    mouse_pos_buffer.clone().borrow_mut()[0] = MagicSquare::clip_x(
+                        event.target_touches().item(0).unwrap().client_x() - inner_canvas.clone().offset_left(),
+                        width
+                    );
+
+                    mouse_pos_buffer.clone().borrow_mut()[1] = MagicSquare::clip_x(
+                        event.target_touches().item(0).unwrap().client_y() - inner_canvas.clone().offset_top(),
+                        height
+                    );
+                });
+                canvas
+                    .clone()
+                    .add_event_listener_with_callback("touchmove", closure.as_ref().unchecked_ref())
+                    .unwrap();
+
+                closure.forget();
+            }
+            
         }
 
         // log("index out of bounds hunt 1");

@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
+  import Device from 'svelte-device-info'
   import Router from "svelte-spa-router"
   import {wrap} from 'svelte-spa-router/wrap'
   import Link from "./lib/Link.svelte"
@@ -7,13 +8,22 @@
   import { I18n, Lang } from "./I18n"
   import { lang } from "./stores/lang"
   import { intoSiteSection, SiteSection, siteSection } from "./stores/siteSection"
+  import { touchScreen } from './stores/touchScreen'
+
+  let touchScreenVal: boolean
+  const unsubTouchScreen = touchScreen.subscribe((val: boolean) => touchScreenVal = val)
+  touchScreen.update((_: boolean) => isTouchScreen())
+
+  function isTouchScreen(): boolean {
+    return Device.isPhone || Device.isTablet || Device.isLegacyTouchDevice
+  }
 
   let siteSectionVal: SiteSection
-  siteSection.subscribe((val: SiteSection) => siteSectionVal = val)
+  const unsubSiteSection = siteSection.subscribe((val: SiteSection) => siteSectionVal = val)
   
   let i18n = new I18n("app")
   let langVal: Lang
-  lang.subscribe( val => langVal = val)
+  const unsubLang = lang.subscribe( val => langVal = val)
 
   const routes: { [key: string]: any } = {
     '/': wrap({
@@ -34,6 +44,13 @@
     let storageSiteSection: SiteSection = intoSiteSection(localStorage.getItem('ns_site_section'))
     siteSection.update((_:SiteSection) => storageSiteSection)
   })
+
+  onDestroy(() => {
+    unsubLang()
+    unsubSiteSection()
+    unsubTouchScreen()
+  })
+
 </script>
 
 <nav class="nav_bar flex items-center gap-2">

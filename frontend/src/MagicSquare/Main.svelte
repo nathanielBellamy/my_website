@@ -29,10 +29,22 @@
   // INIT LANG BOILER PLATE
   import { I18n, Lang } from '../I18n'
   import { lang } from '../stores/lang'
+  import { touchScreen } from '../stores/touchScreen.js'
+
+  // TODO:
+  // this combination of touchSreen store and value updates works 
+  // to ensure that the touchScreen value is updated by the time it is passed to RustWasm
+  // this includes the hidden element using touchScreenVal in the html
+  // not sure why this magic combo gets it done
+  // but we won't worry about it right now
+  const id = (x: any): any => x
+  let touchScreenVal: boolean
+  const unsubTouchScreen = touchScreen.subscribe((val: boolean) => touchScreenVal = val)
+  $: isTouchScreen = id(touchScreenVal)
   
   const i18n = new I18n('magicSquare/main')
   let langVal: Lang
-  lang.subscribe(val => langVal = val)
+  const unsubLang = lang.subscribe(val => langVal = val)
 
   let innerWidth: number = window.innerWidth
   const minInnerWidth: number = 1000
@@ -43,8 +55,6 @@
   // but it is meant to stay flat
   // it inits wasm and sets a lot of values
   // but there should not be a lot of logic in here
-  // the decision was made to optimize for minimal plumbing
-  // this component instantiates the wasm module and retrieves the initial UI values from it
   // the mantra is
   //   -> Svelte/JS is for layout + display logic
   //   -> Rust/Wasm is for handling data
@@ -371,7 +381,7 @@
     }
   }
 
-  const unsubscribe = prevSettingsStore.subscribe(val => prevSettings = val)
+  const unsubPrevSettings = prevSettingsStore.subscribe(val => prevSettings = val)
 
   onDestroy(() => {
     hasBeenDestroyed = true
@@ -380,7 +390,9 @@
       prevSettingsStore.update((_: StorageSettings) => storageSettings)
       window.localStorage.setItem("magic_square_settings", JSON.stringify(storageSettings))
     }
-    unsubscribe()
+    unsubLang()
+    unsubPrevSettings()
+    unsubTouchScreen()
     let app = document.getElementById(("app_main"))
     app.dispatchEvent(new Event("destroymswasm", {bubbles: true}))
   })
@@ -419,7 +431,7 @@
       rust_init_message("Magic Square Wasm!")
       
       // init wasm process and set initial values
-      const initialSettings = await MagicSquare.run(prevSettings, presets)
+      const initialSettings = await MagicSquare.run(prevSettings, presets, touchScreenVal)
       setAllSettings(initialSettings)
       renderDataReady = true
     }
@@ -437,6 +449,8 @@
      <!-- on:click={() => console.dir(deriveStorageSettings())} -->
   <div id="magic_square_canvas_container"
        class="magic_square_canvas_container flex flex-col justify-around display">
+    <!-- we use touchSceenVal here to ensure Svelte has it updated by the time it reaches RustWasm -->
+    <div style="display: none"> {touchScreenVal}  </div>
     <canvas id="magic_square_canvas"
             class="magic_square_canvas"
             height={sideLength}
