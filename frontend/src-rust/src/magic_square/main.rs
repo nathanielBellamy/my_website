@@ -142,7 +142,7 @@ impl MagicSquare {
 
                     mouse_pos_buffer.clone().borrow_mut()[1] = MagicSquare::clip_x(
                         // TODO: replace this magic 35
-                        event.target_touches().item(0).unwrap().client_y() - 35,
+                        event.target_touches().item(0).unwrap().client_y() - inner_canvas.clone().offset_top(),
                         height
                     );
                 });
