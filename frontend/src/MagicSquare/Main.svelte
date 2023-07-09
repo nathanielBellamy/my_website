@@ -441,7 +441,6 @@
      <!-- on:click={() => console.dir(deriveStorageSettings())} -->
   <div id="magic_square_canvas_container"
        class="magic_square_canvas_container flex flex-col justify-around display">
-    <div> touchscreen: {touchScreenVal} </div>
     <canvas id="magic_square_canvas"
             class="magic_square_canvas"
             height={sideLength}
