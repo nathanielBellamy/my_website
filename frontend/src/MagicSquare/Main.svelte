@@ -31,8 +31,16 @@
   import { lang } from '../stores/lang'
   import { touchScreen } from '../stores/touchScreen.js'
 
+  // TODO:
+  // this combination of touchSreen store and value updates works 
+  // to ensure that the touchScreen value is updated by the time it is passed to RustWasm
+  // this includes the hidden element using touchScreenVal in the html
+  // not sure why this magic combo gets it done
+  // but we won't worry about it right now
+  const id = (x: any): any => x
   let touchScreenVal: boolean
   const unsubTouchScreen = touchScreen.subscribe((val: boolean) => touchScreenVal = val)
+  $: isTouchScreen = id(touchScreenVal)
   
   const i18n = new I18n('magicSquare/main')
   let langVal: Lang
@@ -441,6 +449,8 @@
      <!-- on:click={() => console.dir(deriveStorageSettings())} -->
   <div id="magic_square_canvas_container"
        class="magic_square_canvas_container flex flex-col justify-around display">
+    <!-- we use touchSceenVal here to ensure Svelte has it updated by the time it reaches RustWasm -->
+    <div style="display: none"> {touchScreenVal}  </div>
     <canvas id="magic_square_canvas"
             class="magic_square_canvas"
             height={sideLength}
