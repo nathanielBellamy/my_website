@@ -1,3 +1,5 @@
+.DS_Store
+
 # Logs
 frontend/logs
 frontend/*.log
@@ -12,14 +14,13 @@ frontend/dist
 frontend/dist-ssr
 frontend/*.local
 
-frontend/src-rust/target/*
-
 # Editor directories and files
 frontend/.idea
-.DS_Store
 frontend/*.suo
 frontend/*.ntvs*
 frontend/*.njsproj
 frontend/*.sln
 frontend/*.sw?
 
+# rust build
+frontend/src-rust/target/
