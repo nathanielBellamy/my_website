@@ -136,12 +136,13 @@ impl MagicSquare {
                 let inner_canvas = canvas.clone();
                 let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::TouchEvent| {
                     mouse_pos_buffer.clone().borrow_mut()[0] = MagicSquare::clip_x(
-                        event.target_touches().item(0).unwrap().client_x() - inner_canvas.clone().client_left(),
+                        event.target_touches().item(0).unwrap().client_x() - inner_canvas.clone().offset_left(),
                         width
                     );
 
                     mouse_pos_buffer.clone().borrow_mut()[1] = MagicSquare::clip_x(
-                        event.target_touches().item(0).unwrap().client_y() - inner_canvas.clone().client_top(),
+                        // TODO: replace this magic 35
+                        event.target_touches().item(0).unwrap().client_y() - 35,
                         height
                     );
                 });
