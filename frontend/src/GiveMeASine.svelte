@@ -70,7 +70,7 @@
 </script>
 
 <body>
-  <div class="give_me_a_sine flex flex-col md:flex-row md:justify-stretch">
+  <div class="give_me_a_sine flex flex-col md:flex-row-reverse md:justify-stretch">
     <div id="give_me_a_sine_output"
          class="give_me_a_sine_output device_graph_font"/>
     <div id="give_me_a_sine_form"
