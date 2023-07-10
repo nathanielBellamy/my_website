@@ -7,7 +7,7 @@
   import giveMeASineExampleGif from './assets/give_me_a_sine_example.gif'
 
   import { intoUrl, siteSection, SiteSection } from "./stores/siteSection";
-    import AiMe from "./lib/AiMe.svelte";
+  import AiMe from "./lib/AiMe.svelte";
 
   let siteSectionVal: SiteSection
   siteSection.subscribe((val: SiteSection) => siteSectionVal = val)
@@ -21,7 +21,7 @@
   $: imgSideLength = deriveImgSideLength(innerHeight)
 
   function deriveImgSideLength(ih: number): string {
-    return Math.floor(ih / 3.5).toString() + "px"
+    return Math.floor(ih / 4).toString() + "px"
   }
 
   function handlePreviewClick(s: SiteSection) {
@@ -34,7 +34,7 @@
 
 <svelte:window bind:innerHeight />
 
-<body class="pl-5 pr-5 pb-5 flex flex-col justify-between items-stretch gap-2">
+<body class="pl-5 pr-5 pb-5 flex flex-col justify-between items-stretch gap-2 overflow-y-scroll">
   <div class="home_title_container flex flex-col justify-between items-stretch md:flex-row md:justify-start md:items-center">
     <h2 class="home_title text-left pl-5">
       {i18n.t("title", langVal)}
