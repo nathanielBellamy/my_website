@@ -70,20 +70,21 @@
       ☰
     </div>
   </DropdownButton>
-  <Dropdown placement="right">
-    <DropdownItem class="w-11/12 flex items-center"
+  <Dropdown placement="right"
+            ulClass="pt-2 pb-2 rounded-lg bg-zinc-800 text-blue-200">
+    <DropdownItem class="bg-sky-800 hover:bg-sky-700 w-11/12 flex items-center font-bold"
                   on:click={() => handleDropdownClick(SiteSection.home)}>
       {i18n.t("nav/home", langVal)} 
     </DropdownItem>
-    <DropdownItem class="w-11/12 flex items-center"
+    <DropdownItem class="bg-sky-800 hover:bg-sky-700 w-11/12 flex items-center font-bold"
                   on:click={() => handleDropdownClick(SiteSection.about)}>
       {i18n.t("nav/about", langVal)}
     </DropdownItem>
-    <DropdownItem class="w-11/12 flex items-center"
+    <DropdownItem class="bg-sky-800 hover:bg-sky-700 w-11/12 flex items-center font-bold"
                   on:click={() => handleDropdownClick(SiteSection.magicSquare)}>
       {i18n.t("nav/magicSquare", langVal)}
     </DropdownItem>
-    <DropdownItem class="w-11/12 flex items-center"
+    <DropdownItem class="bg-sky-800 hover:bg-sky-700 w-11/12 flex items-center font-bold"
                   on:click={() => handleDropdownClick(SiteSection.giveMeASine)}>
       {i18n.t("nav/giveMeASine", langVal)}
     </DropdownItem>
@@ -116,10 +117,22 @@
   @use "./styles/text"
 
   .dropdown
+    &_main
+      color: color.$blue-4
+      background-color: color.$black-4
+      font-size: text.$fs-m
+      font-weight: text.$fw-l
     &_icon
       font-size: text.$fs-ml
       font-weight: text.$fw-l
       color: color.$blue-4
+    &_item
+      font-size: text.$fs-ml
+      font-weight: text.$fw-l
+      color: color.$blue-4
+      background-color: color.$black-4
+
+      
   
   
 
