@@ -63,10 +63,14 @@
 <nav class="nav_bar flex items-center gap-2 pt-2 pb-2">
   <!-- <Dropdown> -->
     <!-- <DropdownHeader> -->
-  <DropdownButton defaultClass="dropdown_button">
-      Section
+
+  <DropdownButton color="none"
+                  size='xs'>
+    <div class="dropdown_icon flex justify-around items-center pb-1">
+      ☰
+    </div>
   </DropdownButton>
-  <Dropdown>
+  <Dropdown placement="right">
     <DropdownItem class="w-11/12 flex items-center"
                   on:click={() => handleDropdownClick(SiteSection.home)}>
       {i18n.t("nav/home", langVal)} 
@@ -84,17 +88,6 @@
       {i18n.t("nav/giveMeASine", langVal)}
     </DropdownItem>
   </Dropdown>
-    <!-- </DropdownHeader> -->
-  <!-- </Dropdown> -->
-  <!-- <div class="links flex justify-between items-stretch"> -->
-
-
-
-
-  <!-- </div> -->
-  <!-- <div class="curr_section hidden md:block"> -->
-  <!--   {i18n.t(`nav/${siteSectionVal}`, langVal)} -->
-  <!-- </div> -->
 </nav>
 
 <main class="rounded-md flex flex-col justify-start">
@@ -122,9 +115,14 @@
   @use "./styles/color"
   @use "./styles/text"
 
-  .dropdown_button
-    background-color: color.$black-4 !important
+  .dropdown
+    &_icon
+      font-size: text.$fs-ml
+      font-weight: text.$fw-l
+      color: color.$blue-4
   
+  
+
   .nav_bar
     width: 100%
   /* .curr_section */
