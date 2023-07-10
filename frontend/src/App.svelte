@@ -1,5 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
+  import { push } from "svelte-spa-router"
+  import { Button as DropdownButton, Dropdown, DropdownItem, DropdownHeader, Chevron } from 'flowbite-svelte'
   import Device from 'svelte-device-info'
   import Router from "svelte-spa-router"
   import {wrap} from 'svelte-spa-router/wrap'
@@ -7,8 +9,10 @@
   import Language from "./lib/Language.svelte"
   import { I18n, Lang } from "./I18n"
   import { lang } from "./stores/lang"
-  import { intoSiteSection, SiteSection, siteSection } from "./stores/siteSection"
+  import { intoSiteSection, intoUrl, SiteSection, siteSection } from "./stores/siteSection"
   import { touchScreen } from './stores/touchScreen'
+  	import { Alert } from 'flowbite-svelte';
+    import Home from './Home.svelte';
 
   let touchScreenVal: boolean
   const unsubTouchScreen = touchScreen.subscribe((val: boolean) => touchScreenVal = val)
@@ -51,18 +55,42 @@
     unsubTouchScreen()
   })
 
+  function handleDropdownClick(s: SiteSection) {
+    push(intoUrl(s))
+  }
 </script>
 
-<nav class="nav_bar flex items-center gap-2">
+<nav class="nav_bar flex items-center gap-2 pt-2 pb-2">
+  <!-- <Dropdown> -->
+    <!-- <DropdownHeader> -->
+  <DropdownButton defaultClass="dropdown_button">
+      Section
+  </DropdownButton>
+  <Dropdown>
+    <DropdownItem class="w-11/12 flex items-center"
+                  on:click={() => handleDropdownClick(SiteSection.home)}>
+      {i18n.t("nav/home", langVal)} 
+    </DropdownItem>
+    <DropdownItem class="w-11/12 flex items-center"
+                  on:click={() => handleDropdownClick(SiteSection.about)}>
+      {i18n.t("nav/about", langVal)}
+    </DropdownItem>
+    <DropdownItem class="w-11/12 flex items-center"
+                  on:click={() => handleDropdownClick(SiteSection.magicSquare)}>
+      {i18n.t("nav/magicSquare", langVal)}
+    </DropdownItem>
+    <DropdownItem class="w-11/12 flex items-center"
+                  on:click={() => handleDropdownClick(SiteSection.giveMeASine)}>
+      {i18n.t("nav/giveMeASine", langVal)}
+    </DropdownItem>
+  </Dropdown>
+    <!-- </DropdownHeader> -->
+  <!-- </Dropdown> -->
   <!-- <div class="links flex justify-between items-stretch"> -->
-    <Link href="/" 
-          title={i18n.t("nav/home", langVal)}/> 
-    <Link href="/about" 
-          title={i18n.t("nav/about", langVal)}/>
-    <Link href="/magic_square" 
-          title={i18n.t("nav/magicSquare", langVal)}/>
-    <Link href="/give_me_a_sine" 
-          title={i18n.t("nav/giveMeASine", langVal)}/>
+
+
+
+
   <!-- </div> -->
   <!-- <div class="curr_section hidden md:block"> -->
   <!--   {i18n.t(`nav/${siteSectionVal}`, langVal)} -->
@@ -93,14 +121,16 @@
 <style lang="sass">
   @use "./styles/color"
   @use "./styles/text"
+
+  .dropdown_button
+    background-color: color.$black-4 !important
   
   .nav_bar
     width: 100%
-    overflow-x: scroll
-  .curr_section
-    color: color.$blue-7
-    font-size: text.$fs-l
-    font-weight: text.$fw-l
+  /* .curr_section */
+  /*   color: color.$blue-7 */
+  /*   font-size: text.$fs-l */
+  /*   font-weight: text.$fw-l */
 
   .city
     font-weight: text.$fw-l
