@@ -40,3 +40,9 @@ pub fn worker_entry_point(addr: u32) {
     let closure = unsafe { Box::from_raw(addr as *mut Box<dyn FnOnce()>) };
     (*closure)();
 }
+
+impl Default for Worker {
+    fn default() -> Self {
+        Self::new()
+    }
+}

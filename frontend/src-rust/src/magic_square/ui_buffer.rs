@@ -57,8 +57,6 @@ impl UiBuffer {
     }
 
     pub fn from(settings: JsValue, presets: JsValue) -> UiBuffer {
-
-
         let presets_vec: Vec<Settings> = match serde_wasm_bindgen::from_value(presets) {
             Ok(res) => {
                 log("SUCCESSFUL PRESETS PARSE");
@@ -97,8 +95,8 @@ impl UiBuffer {
         if width > 0 && step < width as u8 {
             let t: f32 = step as f32 / width as f32;
 
-            for idx in 0..4 as usize {
-                result[idx] = (1.0 - t) * self.settings.colors[idx_a][idx]
+            for (idx, val) in result.iter_mut().enumerate() {
+                *val = (1.0 - t) * self.settings.colors[idx_a][idx]
                     + t * self.settings.colors[idx_b][idx];
             }
         }
