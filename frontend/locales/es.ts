@@ -8,9 +8,9 @@ export const localeEs: any = {
   app: {
     nav: {
       home: "Inicio",
-      about: "Sobre mi",
+      about: "Sobre mí",
       magicSquare: "Cuadro mágico",
-      giveMeASine: "Dame uno seno",
+      giveMeASine: "Dame un seno",
       none: ""
     }
   },
@@ -23,14 +23,14 @@ export const localeEs: any = {
   },
   home: {
     title: "El sitio nuevo de Nate",
-    about: "Sobre mi",
+    about: "Sobre mí",
     about_1: "Lo que hago por lo general con codigo",
     about_2: "Por favor, disfrute de estas imágenes generadas por inteligencia artificial de mí en \"luz natural\"",
     magicSquare: "Cuadro mágico",
     magicSquare_1: "3D interactivo con",
     magicSquare_2: "Explorando conceptos de",
     magicSquare_3: "síntesis modular",
-    giveMeASine: "Dame uno seno",
+    giveMeASine: "Dame un seno",
     giveMeASine_1: "Todos gráficos se pueden copiar y pegar",
     giveMeASine_2: "preparación para",
     intro: {
