@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
   import { push } from "svelte-spa-router"
-  import { Button as DropdownButton, Dropdown, DropdownItem, DropdownHeader, Chevron } from 'flowbite-svelte'
+  import { Button as DropdownButton, Dropdown, DropdownItem, Chevron } from 'flowbite-svelte'
   import Device from 'svelte-device-info'
   import Router from "svelte-spa-router"
   import {wrap} from 'svelte-spa-router/wrap'
@@ -11,7 +11,6 @@
   import { lang } from "./stores/lang"
   import { intoSiteSection, intoUrl, SiteSection, siteSection } from "./stores/siteSection"
   import { touchScreen } from './stores/touchScreen'
-  import real_me from './assets/real_me.jpg'
 
   let touchScreenVal: boolean
   const unsubTouchScreen = touchScreen.subscribe((val: boolean) => touchScreenVal = val)
@@ -67,12 +66,12 @@
                   class="border-transparent"
                   color="none"
                   size='xs'>
-    <div class="dropdown_icon flex justify-around items-center">
+    <div class="dropdown_icon pb-1 flex justify-around items-center">
       ☰
     </div>
   </DropdownButton>
   <Dropdown triggeredBy="#siteSectionDropdown"
-            placement="right"
+            placement={touchScreenVal ? "bottom" : "right"}
             ulClass="pt-2 pb-2 rounded-lg bg-zinc-800 text-blue-200">
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
                   on:click={() => handleDropdownClick(SiteSection.home)}>
@@ -96,8 +95,11 @@
                   class="border-transparent"
                   color="none"
                   size='xs'>
-    <div class="dropdown_icon flex justify-around items-center">
+    <div class="dropdown_personal flex justify-around items-center">
       Nate Schieber
+      <div class="pb-1">
+        <Chevron />
+      </div>
     </div>
   </DropdownButton>
   <Dropdown triggeredBy="#contactInfo"
@@ -152,20 +154,15 @@
   @use "./styles/text"
 
   .dropdown
-    &_main
+    &_icon
+      font-size: text.$fs-l
+      font-weight: text.$fw-l
       color: color.$blue-4
-      background-color: color.$black-4
+
+    &_personal
       font-size: text.$fs-m
       font-weight: text.$fw-l
-    &_icon
-      font-size: text.$fs-ml
-      font-weight: text.$fw-l
       color: color.$blue-4
-    &_item
-      font-size: text.$fs-ml
-      font-weight: text.$fw-l
-      color: color.$blue-4
-      background-color: color.$black-4
 
   .nav_bar
     width: 100%
