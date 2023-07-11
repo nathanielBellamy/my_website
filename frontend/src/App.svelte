@@ -11,8 +11,7 @@
   import { lang } from "./stores/lang"
   import { intoSiteSection, intoUrl, SiteSection, siteSection } from "./stores/siteSection"
   import { touchScreen } from './stores/touchScreen'
-  	import { Alert } from 'flowbite-svelte';
-    import Home from './Home.svelte';
+  import real_me from './assets/real_me.jpg'
 
   let touchScreenVal: boolean
   const unsubTouchScreen = touchScreen.subscribe((val: boolean) => touchScreenVal = val)
@@ -60,33 +59,69 @@
   }
 </script>
 
-<nav class="nav_bar flex items-center gap-2 pt-2 pb-2">
+<nav class="nav_bar flex justify-between items-center gap-2 pt-2 pb-2">
   <!-- <Dropdown> -->
     <!-- <DropdownHeader> -->
 
-  <DropdownButton color="none"
+  <DropdownButton id="siteSectionDropdown"
+                  class="border-transparent"
+                  color="none"
                   size='xs'>
-    <div class="dropdown_icon flex justify-around items-center pb-1">
+    <div class="dropdown_icon flex justify-around items-center">
       ☰
     </div>
   </DropdownButton>
-  <Dropdown placement="right"
+  <Dropdown triggeredBy="#siteSectionDropdown"
+            placement="right"
             ulClass="pt-2 pb-2 rounded-lg bg-zinc-800 text-blue-200">
-    <DropdownItem class="bg-sky-800 hover:bg-sky-700 w-11/12 flex items-center font-bold"
+    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
                   on:click={() => handleDropdownClick(SiteSection.home)}>
       {i18n.t("nav/home", langVal)} 
     </DropdownItem>
-    <DropdownItem class="bg-sky-800 hover:bg-sky-700 w-11/12 flex items-center font-bold"
+    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
                   on:click={() => handleDropdownClick(SiteSection.about)}>
       {i18n.t("nav/about", langVal)}
     </DropdownItem>
-    <DropdownItem class="bg-sky-800 hover:bg-sky-700 w-11/12 flex items-center font-bold"
+    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
                   on:click={() => handleDropdownClick(SiteSection.magicSquare)}>
       {i18n.t("nav/magicSquare", langVal)}
     </DropdownItem>
-    <DropdownItem class="bg-sky-800 hover:bg-sky-700 w-11/12 flex items-center font-bold"
+    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
                   on:click={() => handleDropdownClick(SiteSection.giveMeASine)}>
       {i18n.t("nav/giveMeASine", langVal)}
+    </DropdownItem>
+  </Dropdown>
+
+  <DropdownButton id="contactInfo"
+                  class="border-transparent"
+                  color="none"
+                  size='xs'>
+    <div class="dropdown_icon flex justify-around items-center">
+      Nate Schieber
+    </div>
+  </DropdownButton>
+  <Dropdown triggeredBy="#contactInfo"
+            placement="bottom"
+            ulClass="pt-3 pb-3 rounded-lg bg-zinc-800 text-blue-200">
+    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold">
+      <Link href="mailto:nbschieber@gmail.com"
+            title="nbschieber@gmail.com"
+            sameOrigin={false}/>
+    </DropdownItem>
+    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold">
+      <Link href="https://linkedin.com/in/nateschieber"
+            title="in/nateschieber"
+            sameOrigin={false}/>
+    </DropdownItem>
+    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold">
+      <Link href="https://github.com/nathanielBellamy"
+            title="github.com/nathanielBellamy"
+            sameOrigin={false}/>
+    </DropdownItem>
+    <DropdownItem class="text-blue-200 hover:bg-transparent w-11/12 flex items-center font-bold">
+      <Link href="https://www.travelportland.com"
+            title="PORTLAND, OR"
+            sameOrigin={false}/>
     </DropdownItem>
   </Dropdown>
 </nav>
@@ -131,10 +166,6 @@
       font-weight: text.$fw-l
       color: color.$blue-4
       background-color: color.$black-4
-
-      
-  
-  
 
   .nav_bar
     width: 100%
