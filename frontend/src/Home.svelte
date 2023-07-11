@@ -21,7 +21,7 @@
   $: imgSideLength = deriveImgSideLength(innerHeight)
 
   function deriveImgSideLength(ih: number): string {
-    return Math.floor(ih / 4).toString() + "px"
+    return Math.floor(ih / 4.2).toString() + "px"
   }
 
   function handlePreviewClick(s: SiteSection) {
@@ -29,7 +29,6 @@
     siteSection.update((_: SiteSection) => s)
     push(intoUrl(s))
   }
-
 </script>
 
 <svelte:window bind:innerHeight />
