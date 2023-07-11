@@ -13,6 +13,8 @@ use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use web_sys::{WebGl2RenderingContext, WebGlProgram};
 
+pub const X_MAX: f32 = 3.142;
+
 #[derive(Clone, Copy, Debug)]
 pub enum Axis {
     X,
@@ -100,7 +102,7 @@ impl MagicSquare {
                     ui_buffer.clone().borrow_mut().update(
                         id,
                         val,
-                        &mut *geometry_cache.clone().borrow_mut(),
+                        &mut geometry_cache.clone().borrow_mut(),
                     );
                 });
 
@@ -155,16 +157,13 @@ impl MagicSquare {
             
         }
 
-        // log("index out of bounds hunt 1");
-
         {
             // set up animation loop
             let ui_buffer = ui_buffer.clone();
             let mut animation = Animation::new();
             animation.set_from(&ui_buffer.clone().borrow().settings);
 
-            // let performance = MagicSquare::performance();
-            let mut x: f32 = -3.14159;
+            let mut x: f32 = -X_MAX;
 
             let destroy_flag = destroy_flag.clone();
 
@@ -237,7 +236,6 @@ impl MagicSquare {
                 if *destroy_flag.clone().borrow() {
                     // cleanup resource
                     let _ = f.borrow_mut().take();
-                    return;
                 } else {
                     // TODO: consider applying LFO per cache slot
                     // could allow for some cool snake-like movement
@@ -277,15 +275,11 @@ impl MagicSquare {
                         settings.lfo_4_shape,
                     );
 
-                    // let start: f64 = performance.now();
-                    // let val: f32 = lfo_1.eval(x);
-                    // log(&format!("{x}, {val}"));
-                    x = x + 0.001;
-                    if x == 3.142 {
-                        x = -3.142;
+                    x += 0.001;
+                    if x == X_MAX{
+                        x = -X_MAX;
                     }
 
-                    // harvest current ui_buffer for computation
                     lfo_1.modify(x, &mut settings);
                     lfo_2.modify(x, &mut settings);
                     lfo_3.modify(x, &mut settings);
@@ -302,7 +296,6 @@ impl MagicSquare {
                     let color_idx_offset: u8 = color_idx_offset_delay[0];
                     let color_idx_delay: u8 = color_idx_offset_delay[1];
 
-                    // log("index out of bounds hunt 3");
                     // 0 < color_speed < 21
                     if color_idx_delay == delay_reset {
                         color_idx_offset_delay[0] = match settings.color_direction {
@@ -313,7 +306,7 @@ impl MagicSquare {
                         color_idx_offset_delay[1] = 0;
                     }
 
-                    color_idx_offset_delay[1] = color_idx_offset_delay[1] + 1;
+                    color_idx_offset_delay[1] += 1;
 
                     // compute
                     uniforms.set_uniforms(&mouse_pos_buffer, &settings, color_idx_offset);
@@ -321,14 +314,14 @@ impl MagicSquare {
 
                     // draw
                     // log(&format!("{:?}", geometry_cache.clone().borrow().vertices));
-                    if let Err(_) = GlDraw::scene(
+                    if GlDraw::scene(
                         &gl,
                         &uniforms,
                         &uniform_locations,
                         &animation.curr_shapes(),
                         &settings.transform_order,
                         &x,
-                    ) {
+                    ).is_err() {
                         log("DRAW ERROR");
                     }
 
@@ -346,7 +339,6 @@ impl MagicSquare {
                         animation.inc();
                     }
                     frame_counter = (frame_counter + 1) % (frame_counter_limit as usize);
-                    // log("index out of bounds hunt 4");
                     MagicSquare::request_animation_frame(f.borrow().as_ref().unwrap());
                 }
             }));
@@ -354,7 +346,7 @@ impl MagicSquare {
             MagicSquare::request_animation_frame(g.borrow().as_ref().unwrap());
         }
 
-        let to_js = ui_buffer.clone().borrow().clone().settings;
+        let to_js = ui_buffer.clone().borrow().settings;
         serde_wasm_bindgen::to_value(&to_js).unwrap()
     }
 }
