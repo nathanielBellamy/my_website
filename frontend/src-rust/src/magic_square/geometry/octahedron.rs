@@ -7,9 +7,9 @@ use super::vertices::VERTEX_ARRAY_SIZE;
 
 pub const VERTEX_COUNT_OCTAHEDRON: i32 = 18;
 
-const R: f32 = 1.41421356237;// 2.0_f32.sqrt();
+const R: f32 = 1.41421356237; // 2.0_f32.sqrt();
 const THETA: [f32; 5] = [0.0, 1.57, 1.57, 1.57, PI]; //ARCCOS_NEG_ONE_THIRD, ARCCOS_NEG_ONE_THIRD, ARCCOS_NEG_ONE_THIRD];
-const PHI: [f32; 5] = [0.0, 0.0, 2.0*PI/3.0, 4.0*PI/3.0, PI];
+const PHI: [f32; 5] = [0.0, 0.0, 2.0 * PI / 3.0, 4.0 * PI / 3.0, PI];
 
 pub struct Octahedron {
     pub arr: [f32; 300], // # coordinates needed to define hexagon
@@ -68,11 +68,11 @@ impl Octahedron {
 
         octahedron.set_next(Octahedron::vertex(0));
         octahedron.set_next(Octahedron::vertex(1));
-        
-        octahedron.set_next(Octahedron::vertex(0));
-        octahedron.set_next(Octahedron::vertex(2));
 
         octahedron.set_next(Octahedron::vertex(0));
+        octahedron.set_next(Octahedron::vertex(2));
+
+        octahedron.set_next(Octahedron::vertex(0));
         octahedron.set_next(Octahedron::vertex(3));
 
         octahedron.set_next(Octahedron::vertex(1));
@@ -92,7 +92,7 @@ impl Octahedron {
 
         octahedron.set_next(Octahedron::vertex(4));
         octahedron.set_next(Octahedron::vertex(1));
- 
+
         octahedron.arr
     }
 }

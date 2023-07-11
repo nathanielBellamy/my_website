@@ -7,9 +7,9 @@ use super::vertices::VERTEX_ARRAY_SIZE;
 
 pub const VERTEX_COUNT_TETRAHEDRON: i32 = 12;
 
-const R: f32 = 1.41421356237;// 2.0_f32.sqrt();
+const R: f32 = 1.41421356237; // 2.0_f32.sqrt();
 const THETA: [f32; 4] = [0.0, 1.7, 1.7, 1.7]; //ARCCOS_NEG_ONE_THIRD, ARCCOS_NEG_ONE_THIRD, ARCCOS_NEG_ONE_THIRD];
-const PHI: [f32; 4] = [0.0, 0.0, 2.0*PI/3.0, 4.0*PI/3.0];
+const PHI: [f32; 4] = [0.0, 0.0, 2.0 * PI / 3.0, 4.0 * PI / 3.0];
 
 pub struct Tetrahedron {
     pub arr: [f32; 300], // # coordinates needed to define hexagon
@@ -68,7 +68,7 @@ impl Tetrahedron {
 
         tetrahedron.set_next(Tetrahedron::vertex(0));
         tetrahedron.set_next(Tetrahedron::vertex(1));
-        
+
         tetrahedron.set_next(Tetrahedron::vertex(0));
         tetrahedron.set_next(Tetrahedron::vertex(2));
 
@@ -83,7 +83,7 @@ impl Tetrahedron {
 
         tetrahedron.set_next(Tetrahedron::vertex(3));
         tetrahedron.set_next(Tetrahedron::vertex(1));
- 
+
         tetrahedron.arr
     }
 }

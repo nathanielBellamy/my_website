@@ -1,4 +1,3 @@
-
 use crate::magic_square::geometry::vertex_store::VertexStore;
 use crate::magic_square::geometry::vertices::Vertex;
 use std::ops::{Index, IndexMut};
@@ -9,7 +8,7 @@ pub const MISC_IDX_COOL_S: i32 = 1;
 
 pub const VERTEX_COUNT_COOL_S: i32 = 28;
 
-const R: f32 = 1.41421356237;// 2.0_f32.sqrt();
+const R: f32 = 1.41421356237; // 2.0_f32.sqrt();
 
 const Y0: f32 = R;
 const Y1: f32 = 0.66 * R;
@@ -17,7 +16,7 @@ const Y2: f32 = 0.25 * R;
 const Y3: f32 = 0.0 * R;
 const Y4: f32 = -0.25 * R;
 const Y5: f32 = -0.66 * R;
-const Y6: f32 = - R;
+const Y6: f32 = -R;
 
 const X0: f32 = -0.5;
 const X1: f32 = -0.25;
@@ -86,7 +85,7 @@ impl CoolS {
             13 => Vertex::new(X2, Y5, 0.0),
             14 => Vertex::new(X4, Y5, 0.0),
             15 => Vertex::new(X2, Y6, 0.0),
-            _ => Vertex::new(0.0, 0.0, 0.0)
+            _ => Vertex::new(0.0, 0.0, 0.0),
         }
     }
     // write to vertices
@@ -114,19 +113,18 @@ impl CoolS {
 
         cool_s.set_next(CoolS::vertex(5));
         cool_s.set_next(CoolS::vertex(11));
-        
+
         cool_s.set_next(CoolS::vertex(6));
         cool_s.set_next(CoolS::vertex(8));
- 
+
         cool_s.set_next(CoolS::vertex(7));
         cool_s.set_next(CoolS::vertex(9));
-        
+
         cool_s.set_next(CoolS::vertex(9));
         cool_s.set_next(CoolS::vertex(12));
 
         cool_s.set_next(CoolS::vertex(10));
         cool_s.set_next(CoolS::vertex(13));
-
 
         cool_s.set_next(CoolS::vertex(11));
         cool_s.set_next(CoolS::vertex(14));

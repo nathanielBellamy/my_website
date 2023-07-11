@@ -1,6 +1,7 @@
 use crate::magic_square::lfo::{LfoDestination, LfoShape};
 use crate::magic_square::main::Rgba;
 use serde::{Deserialize, Serialize};
+use std::fmt;
 use wasm_bindgen::JsValue;
 
 use super::geometry::cache::CACHE_CAPACITY;
@@ -290,12 +291,12 @@ pub struct IOShape {
 pub struct Validate;
 
 impl Validate {
-    pub fn try_into_draw_pattern_type(pt: String) -> Result<DrawPatternType, ()> {
+    pub fn try_into_draw_pattern_type(pt: String) -> Result<DrawPatternType, SettingParseError> {
         match pt.as_str() {
             "Fix" => Ok(DrawPatternType::Fix),
             "Out" => Ok(DrawPatternType::Out),
             "In" => Ok(DrawPatternType::In),
-            _ => Err(()),
+            _ => Err(SettingParseError),
         }
     }
 
@@ -309,7 +310,7 @@ impl Validate {
         let val = js_sys::JSON::parse(&val).unwrap();
         let mut res: IOColor = serde_wasm_bindgen::from_value(val)?;
         for i in 0..3 {
-            res.rgba[i] = res.rgba[i] / 255.0
+            res.rgba[i] /= 255.0
         }
         Ok(res)
     }
@@ -320,12 +321,12 @@ impl Validate {
         Ok(res)
     }
 
-    pub fn try_into_color_direction(cd: String) -> Result<ColorDirection, ()> {
+    pub fn try_into_color_direction(cd: String) -> Result<ColorDirection, SettingParseError> {
         match cd.as_str() {
             "In" => Ok(ColorDirection::In),
             "Fix" => Ok(ColorDirection::Fix),
             "Out" => Ok(ColorDirection::Out),
-            _ => Err(()),
+            _ => Err(SettingParseError),
         }
     }
 
@@ -335,7 +336,7 @@ impl Validate {
         Ok(res)
     }
 
-    pub fn try_into_lfo_destination(dest: String) -> Result<LfoDestination, ()> {
+    pub fn try_into_lfo_destination(dest: String) -> Result<LfoDestination, SettingParseError> {
         match dest.as_str() {
             // rotation
             "PitchBase" => Ok(LfoDestination::PitchBase),
@@ -361,45 +362,53 @@ impl Validate {
             "TranslationYBase" => Ok(LfoDestination::TranslationYBase),
             "TranslationYSpread" => Ok(LfoDestination::TranslationYSpread),
             "None" => Ok(LfoDestination::None),
-            _ => Err(()),
+            _ => Err(SettingParseError),
         }
     }
 
-    pub fn try_into_lfo_shape(shape: String) -> Result<LfoShape, ()> {
+    pub fn try_into_lfo_shape(shape: String) -> Result<LfoShape, SettingParseError> {
         match shape.as_str() {
             "Linear" => Ok(LfoShape::Linear),
             "Sine" => Ok(LfoShape::Sine),
-            _ => Err(()),
+            _ => Err(SettingParseError),
         }
     }
 
-    pub fn try_into_mouse_tracking(mt: String) -> Result<MouseTracking, ()> {
+    pub fn try_into_mouse_tracking(mt: String) -> Result<MouseTracking, SettingParseError> {
         match mt.as_str() {
             "On" => Ok(MouseTracking::On),
             "Off" => Ok(MouseTracking::Off),
             "Inv X" => Ok(MouseTracking::InvX),
             "Inv Y" => Ok(MouseTracking::InvY),
             "Inv XY" => Ok(MouseTracking::InvXY),
-            _ => Err(()),
+            _ => Err(SettingParseError),
         }
     }
 
-    pub fn try_into_transform_order(order: String) -> Result<TransformOrder, ()> {
+    pub fn try_into_transform_order(order: String) -> Result<TransformOrder, SettingParseError> {
         match order.as_str() {
             "RotateThenTranslate" => Ok(TransformOrder::RotateThenTranslate),
             "TranslateThenRotate" => Ok(TransformOrder::TranslateThenRotate),
-            _ => Err(()),
+            _ => Err(SettingParseError),
         }
     }
 
-    pub fn try_into_preset_idx(val: String) -> Result<usize, ()> {
-        let u: usize = match val.parse::<usize>() {
-            Ok(val) => val,
-            Err(_) => 0,
-        };
+    pub fn try_into_preset_idx(val: String) -> Result<usize, SettingParseError> {
+        let u = val.parse::<usize>().unwrap_or(0);
         match u < 64 {
             true => Ok(u),
             false => Ok(0),
         }
     }
 }
+
+#[derive(Debug)]
+pub struct SettingParseError;
+
+impl fmt::Display for SettingParseError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "SettingParseError")
+    }
+}
+
+impl std::error::Error for SettingParseError {}
