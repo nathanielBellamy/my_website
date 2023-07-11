@@ -9,8 +9,14 @@ pub const MISC_IDX_STAR_FIVE: i32 = 0;
 
 pub const VERTEX_COUNT_STAR_FIVE: i32 = 10;
 
-const R: f32 = 1.41421356237;// 2.0_f32.sqrt();
-const THETA: [f32; 5] = [PI/8.0, PI/2.0, 7.0*PI/8.0, 10.0*PI/8.0, 14.0*PI/8.0];
+const R: f32 = 1.41421356237; // 2.0_f32.sqrt();
+const THETA: [f32; 5] = [
+    PI / 8.0,
+    PI / 2.0,
+    7.0 * PI / 8.0,
+    10.0 * PI / 8.0,
+    14.0 * PI / 8.0,
+];
 
 pub struct StarFive {
     pub arr: [f32; 300], // # coordinates needed to define hexagon
@@ -56,11 +62,7 @@ impl StarFive {
     }
 
     fn vertex(id: usize) -> Vertex {
-        Vertex::new(
-            R * THETA[id].cos(),
-            R * THETA[id].sin(),
-            0.0,
-        )
+        Vertex::new(R * THETA[id].cos(), R * THETA[id].sin(), 0.0)
     }
     // write to vertices
     // return array to be cached
@@ -69,7 +71,7 @@ impl StarFive {
 
         star_five.set_next(StarFive::vertex(3));
         star_five.set_next(StarFive::vertex(1));
- 
+
         star_five.set_next(StarFive::vertex(1));
         star_five.set_next(StarFive::vertex(4));
 
@@ -81,7 +83,7 @@ impl StarFive {
 
         star_five.set_next(StarFive::vertex(0));
         star_five.set_next(StarFive::vertex(3));
- 
+
         star_five.arr
     }
 }

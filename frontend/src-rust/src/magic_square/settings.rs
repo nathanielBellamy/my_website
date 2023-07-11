@@ -1,7 +1,7 @@
-use std::fmt;
 use crate::magic_square::lfo::{LfoDestination, LfoShape};
 use crate::magic_square::main::Rgba;
 use serde::{Deserialize, Serialize};
+use std::fmt;
 use wasm_bindgen::JsValue;
 
 use super::geometry::cache::CACHE_CAPACITY;
@@ -411,4 +411,4 @@ impl fmt::Display for SettingParseError {
     }
 }
 
-impl std::error::Error for SettingParseError { }
+impl std::error::Error for SettingParseError {}

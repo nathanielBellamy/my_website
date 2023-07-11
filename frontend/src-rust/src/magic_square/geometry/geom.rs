@@ -3,8 +3,8 @@ use super::cube::VERTEX_COUNT_CUBE;
 use super::dodecahedron::{Dodecahedron, VERTEX_COUNT_DODECAHEDRON};
 use super::icosahedron::{Icosahedron, VERTEX_COUNT_ICOSAHEDRON};
 use super::ngon::Ngon;
-use super::octahedron::{VERTEX_COUNT_OCTAHEDRON, Octahedron};
-use super::star_five::{MISC_IDX_STAR_FIVE, VERTEX_COUNT_STAR_FIVE, StarFive};
+use super::octahedron::{Octahedron, VERTEX_COUNT_OCTAHEDRON};
+use super::star_five::{StarFive, MISC_IDX_STAR_FIVE, VERTEX_COUNT_STAR_FIVE};
 use super::tetrahedron::{Tetrahedron, VERTEX_COUNT_TETRAHEDRON};
 use super::vertices::VERTEX_ARRAY_SIZE;
 use super::Shape;
@@ -58,7 +58,7 @@ impl Geom {
             Dodecahedron::f32_array(),
             Icosahedron::f32_array(),
             StarFive::f32_array(),
-            CoolS::f32_array()
+            CoolS::f32_array(),
         ];
         for (idx_arr, array) in arrays.iter().enumerate() {
             for (idx_el, el) in array.iter().enumerate() {
@@ -73,7 +73,7 @@ impl Geom {
             Shape::Misc(idx) => match idx {
                 MISC_IDX_STAR_FIVE => (3300, VERTEX_COUNT_STAR_FIVE),
                 MISC_IDX_COOL_S => (3400, VERTEX_COUNT_COOL_S),
-                _ => (0,0)
+                _ => (0, 0),
             },
             Shape::Ngon(n) => (100 * (n - 3) as i32, 2 * n as i32),
             Shape::PlatoThree(n) => match n {

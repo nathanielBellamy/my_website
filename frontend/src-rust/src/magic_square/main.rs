@@ -4,10 +4,10 @@ use super::gl_draw::GlDraw;
 use super::gl_program::GlProgram;
 use super::gl_uniforms::{GlUniforms, UniformLocations};
 use super::settings::ColorDirection;
+use crate::log;
 use crate::magic_square::geometry::cache::{Cache as GeometryCache, CACHE_CAPACITY};
 use crate::magic_square::lfo::Lfo;
 use crate::magic_square::ui_buffer::UiBuffer;
-use crate::log;
 use std::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
@@ -122,8 +122,10 @@ impl MagicSquare {
             let canvas = canvas.clone();
             if !touch_screen {
                 let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::MouseEvent| {
-                    mouse_pos_buffer.clone().borrow_mut()[0] = MagicSquare::clip_x(event.offset_x(), width);
-                    mouse_pos_buffer.clone().borrow_mut()[1] = MagicSquare::clip_x(event.offset_y(), height);
+                    mouse_pos_buffer.clone().borrow_mut()[0] =
+                        MagicSquare::clip_x(event.offset_x(), width);
+                    mouse_pos_buffer.clone().borrow_mut()[1] =
+                        MagicSquare::clip_x(event.offset_y(), height);
                     magic_square
                         .dispatch_event(&web_sys::Event::new("render").unwrap())
                         .unwrap();
@@ -138,13 +140,15 @@ impl MagicSquare {
                 let inner_canvas = canvas.clone();
                 let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::TouchEvent| {
                     mouse_pos_buffer.clone().borrow_mut()[0] = MagicSquare::clip_x(
-                        event.target_touches().item(0).unwrap().client_x() - inner_canvas.clone().offset_left(),
-                        width
+                        event.target_touches().item(0).unwrap().client_x()
+                            - inner_canvas.clone().offset_left(),
+                        width,
                     );
 
                     mouse_pos_buffer.clone().borrow_mut()[1] = MagicSquare::clip_x(
-                        event.target_touches().item(0).unwrap().client_y() - inner_canvas.clone().offset_top(),
-                        height
+                        event.target_touches().item(0).unwrap().client_y()
+                            - inner_canvas.clone().offset_top(),
+                        height,
                     );
                 });
                 canvas
@@ -154,7 +158,6 @@ impl MagicSquare {
 
                 closure.forget();
             }
-            
         }
 
         {
@@ -276,7 +279,7 @@ impl MagicSquare {
                     );
 
                     x += 0.001;
-                    if x == X_MAX{
+                    if x == X_MAX {
                         x = -X_MAX;
                     }
 
@@ -321,7 +324,9 @@ impl MagicSquare {
                         &animation.curr_shapes(),
                         &settings.transform_order,
                         &x,
-                    ).is_err() {
+                    )
+                    .is_err()
+                    {
                         log("DRAW ERROR");
                     }
 

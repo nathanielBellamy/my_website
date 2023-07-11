@@ -57,8 +57,6 @@ impl UiBuffer {
     }
 
     pub fn from(settings: JsValue, presets: JsValue) -> UiBuffer {
-
-
         let presets_vec: Vec<Settings> = match serde_wasm_bindgen::from_value(presets) {
             Ok(res) => {
                 log("SUCCESSFUL PRESETS PARSE");

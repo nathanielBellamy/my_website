@@ -9,33 +9,72 @@ pub const VERTEX_COUNT_DODECAHEDRON: i32 = 60;
 const P: f32 = 1.61803398875; // 1/2 (1 + sqrt(5))
 
 // (±1, ±1, ±1)
-const V0: Vertex = Vertex { arr: [1.0, 1.0, 1.0] };
-const V1: Vertex = Vertex { arr: [-1.0, 1.0, 1.0] };
-const V2: Vertex = Vertex { arr: [1.0, -1.0, 1.0] };
-const V3: Vertex = Vertex { arr: [1.0, 1.0, -1.0] };
-const V4: Vertex = Vertex { arr: [-1.0, -1.0, 1.0] };
-const V5: Vertex = Vertex { arr: [1.0, -1.0, -1.0] };
-const V6: Vertex = Vertex { arr: [-1.0, 1.0, -1.0] };
-const V7: Vertex = Vertex { arr: [-1.0, -1.0, -1.0] };
+const V0: Vertex = Vertex {
+    arr: [1.0, 1.0, 1.0],
+};
+const V1: Vertex = Vertex {
+    arr: [-1.0, 1.0, 1.0],
+};
+const V2: Vertex = Vertex {
+    arr: [1.0, -1.0, 1.0],
+};
+const V3: Vertex = Vertex {
+    arr: [1.0, 1.0, -1.0],
+};
+const V4: Vertex = Vertex {
+    arr: [-1.0, -1.0, 1.0],
+};
+const V5: Vertex = Vertex {
+    arr: [1.0, -1.0, -1.0],
+};
+const V6: Vertex = Vertex {
+    arr: [-1.0, 1.0, -1.0],
+};
+const V7: Vertex = Vertex {
+    arr: [-1.0, -1.0, -1.0],
+};
 
 // (0, ±1/P, ±P }
-const V8: Vertex = Vertex { arr: [0.0, 1.0 / P, P] };
-const V9: Vertex = Vertex { arr: [0.0, -1.0 / P, P] };
-const V10: Vertex = Vertex { arr: [0.0, 1.0 / P, -P] };
-const V11: Vertex = Vertex { arr: [0.0, -1.0 / P, -P] };
+const V8: Vertex = Vertex {
+    arr: [0.0, 1.0 / P, P],
+};
+const V9: Vertex = Vertex {
+    arr: [0.0, -1.0 / P, P],
+};
+const V10: Vertex = Vertex {
+    arr: [0.0, 1.0 / P, -P],
+};
+const V11: Vertex = Vertex {
+    arr: [0.0, -1.0 / P, -P],
+};
 
 // (±1/P, ±P, 0 }
-const V12: Vertex = Vertex { arr: [1.0 / P, P, 0.0] };
-const V13: Vertex = Vertex { arr: [-1.0 / P, P, 0.0] };
-const V14: Vertex = Vertex { arr: [1.0 / P, -P, 0.0] };
-const V15: Vertex = Vertex { arr: [-1.0 / P, -P, 0.0] };
+const V12: Vertex = Vertex {
+    arr: [1.0 / P, P, 0.0],
+};
+const V13: Vertex = Vertex {
+    arr: [-1.0 / P, P, 0.0],
+};
+const V14: Vertex = Vertex {
+    arr: [1.0 / P, -P, 0.0],
+};
+const V15: Vertex = Vertex {
+    arr: [-1.0 / P, -P, 0.0],
+};
 
 // (±P, 0, ±1/P }
-const V16: Vertex = Vertex { arr: [P, 0.0, 1.0 / P] };
-const V17: Vertex = Vertex { arr: [-P, 0.0, 1.0 / P] };
-const V18: Vertex = Vertex { arr: [P, 0.0, -1.0 / P] };
-const V19: Vertex = Vertex { arr: [-P, 0.0, -1.0 / P] };
-
+const V16: Vertex = Vertex {
+    arr: [P, 0.0, 1.0 / P],
+};
+const V17: Vertex = Vertex {
+    arr: [-P, 0.0, 1.0 / P],
+};
+const V18: Vertex = Vertex {
+    arr: [P, 0.0, -1.0 / P],
+};
+const V19: Vertex = Vertex {
+    arr: [-P, 0.0, -1.0 / P],
+};
 
 pub struct Dodecahedron {
     pub arr: [f32; 300], // # coordinates needed to define hexagon
@@ -90,7 +129,7 @@ impl Dodecahedron {
 
         dodecahedron.set_next(V0);
         dodecahedron.set_next(V12);
-        
+
         dodecahedron.set_next(V0);
         dodecahedron.set_next(V16);
 
@@ -99,7 +138,7 @@ impl Dodecahedron {
 
         dodecahedron.set_next(V1);
         dodecahedron.set_next(V13);
-        
+
         dodecahedron.set_next(V1);
         dodecahedron.set_next(V17);
 
