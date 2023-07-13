@@ -1,0 +1,15 @@
+{
+  "name": "cypress",
+  "version": "1.0.0",
+  "description": "cypress specs for my_website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nate Schieber",
+  "license": "MIT",
+  "devDependencies": {
+    "cypress": "^12.17.1",
+    "typescript": "^5.1.6"
+  }
+}

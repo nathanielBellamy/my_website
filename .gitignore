@@ -24,3 +24,6 @@ frontend/*.sw?
 
 # rust build
 frontend/src-rust/target/
+
+# cypress deps
+spec_e2e/cypress/node_modules
