@@ -4,6 +4,7 @@
   "description": "cypress specs for my_website",
   "main": "index.js",
   "scripts": {
+    "cypress": "npx cypress open",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Nate Schieber",
