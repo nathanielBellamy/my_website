@@ -17,7 +17,7 @@
     - `npm run preview`
       - starts a Vite server at `/4173` meant to imitate a prod server pulling from the `/frontend/dist` directory
       - use this to ensure that Vite bundles all of your assets appropriately
-  - from within `/backend`
+  - from within `/backend/go`
     - `./main` starts the bare-bones Go server on `/8080`
 
 ### Made with: Rust, WebAssembly, Svelte, Typescript, WebGL, Vite
