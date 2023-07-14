@@ -39,6 +39,9 @@
     }),
     '/magic_square': wrap({
       asyncComponent: () => import('./MagicSquare/Container.svelte')
+    }),
+    '/public_square': wrap({
+      asyncComponent: () => import('./PublicSquare/Main.svelte')
     })
   }
 
