@@ -20,12 +20,16 @@ func handleWebSocket(w http.ResponseWriter, r *http.Request) {
         msg, op, err := wsutil.ReadClientData(conn)
         if err != nil {
           fmt.Printf("ReadClientData Error")
+          conn.Close()
+          return
         }
         centralMem = append(centralMem, []byte("+")...)
         msg = append(msg, centralMem...)
         err = wsutil.WriteServerMessage(conn, op, msg)
         if err != nil {
           fmt.Printf("WriteServerMessage Error")
+          conn.Close()
+          return
         }
       }
     }()
