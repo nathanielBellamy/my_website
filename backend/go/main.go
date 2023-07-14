@@ -5,7 +5,7 @@ import (
     "log"
     "net/http"
     "github.com/gobwas/ws"
-	  "github.com/gobwas/ws/wsutil"
+    "github.com/gobwas/ws/wsutil"
 )
 
 func handleWebSocket(w http.ResponseWriter, r *http.Request) {
@@ -15,14 +15,14 @@ func handleWebSocket(w http.ResponseWriter, r *http.Request) {
     }
     go func() {
       defer conn.Close()
-
+      centralMem := []byte("CENT MEM")
       for {
         msg, op, err := wsutil.ReadClientData(conn)
         if err != nil {
           fmt.Printf("ReadClientData Error")
         }
-        bv := []byte(" !GO! ")
-        msg = append(msg, bv...)
+        centralMem = append(centralMem, []byte("+")...)
+        msg = append(msg, centralMem...)
         err = wsutil.WriteServerMessage(conn, op, msg)
         if err != nil {
           fmt.Printf("WriteServerMessage Error")
