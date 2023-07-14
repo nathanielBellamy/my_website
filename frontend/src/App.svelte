@@ -40,7 +40,7 @@
     '/magic_square': wrap({
       asyncComponent: () => import('./MagicSquare/Container.svelte')
     }),
-    '/public_square': wrap({
+    '/public-square': wrap({
       asyncComponent: () => import('./PublicSquare/Main.svelte')
     })
   }
@@ -87,6 +87,10 @@
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
                   on:click={() => handleDropdownClick(SiteSection.magicSquare)}>
       {i18n.t("nav/magicSquare", langVal)}
+    </DropdownItem>
+    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
+                  on:click={() => handleDropdownClick(SiteSection.publicSquare)}>
+      Public square
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
                   on:click={() => handleDropdownClick(SiteSection.giveMeASine)}>

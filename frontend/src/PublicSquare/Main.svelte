@@ -1,24 +1,29 @@
 <script lang="ts">
-  import WebSocket from 'ws'
+  import { onDestroy } from 'svelte'
+  import { WebsocketBuilder } from 'websocket-ts'
 
-  const ws = new WebSocket('ws://localhost:8080/public-square')
+  let curr_mess: string = "!NOT YET!"
+  const ws = new WebsocketBuilder('ws://localhost:8080/ws')
+      .onOpen((i, ev) => { console.log("opened") })
+      .onClose((i, ev) => { console.log("closed") })
+      .onError((i, ev) => { console.log("error") })
+      .onMessage((i, ev) => { 
+        console.log("message")
+        console.dir(ev)
+        curr_mess = ev.data
+      })
+      .onRetry((i, ev) => { console.log("retry") })
+      .build()
 
-  ws.on('error', console.error)
-
-  ws.on('open', function open() {
-    ws.send('something');
-  })
-
-  let curr_mess: string
-
-  ws.on('message', function message(data: string) {
-    curr_mess = data
-    console.log('received: %s', data)
-  });
+  onDestroy(() => ws.close())
 </script>
 
-<div>
-  Curr Muss: {curr_mess}
+<div class="w-full h-full flex justify-around items-center">
+  Curr Mess: {curr_mess}
+  <input bind:value={curr_mess}/>
+  <button on:click={() => ws.send(curr_mess)}>
+    SEND IT
+  </button>
 </div>
 
 <style lang="sass">

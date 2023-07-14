@@ -6,7 +6,8 @@ export enum SiteSection {
   giveMeASine = "giveMeASine",
   home = "home",
   magicSquare = "magicSquare",
-  none = "none"
+  none = "none",
+  publicSquare = "publicSquare"
 }
 
 export function intoSiteSection(s: string | null | undefined): SiteSection {
@@ -19,6 +20,8 @@ export function intoSiteSection(s: string | null | undefined): SiteSection {
       return SiteSection.home
     case "magicSquare":
       return SiteSection.magicSquare
+    case "publicSquare":
+      return SiteSection.publicSquare
     default:
       return SiteSection.none
   }
@@ -34,6 +37,8 @@ export function intoUrl(s: SiteSection) {
       return '/give_me_a_sine'
     case SiteSection.magicSquare:
       return '/magic_square'
+    case SiteSection.publicSquare:
+      return '/public-square'
     case SiteSection.none:
     default:
       return '/'
