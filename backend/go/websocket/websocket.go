@@ -1,6 +1,9 @@
 package websocket
 
+// https://tutorialedge.net/projects/chat-system-in-go-and-react/part-4-handling-multiple-clients/
+
 import (
+    "encoding/json"
     "fmt"
     // "io"
     // "log"
@@ -33,6 +36,16 @@ func Reader(conn *net.Conn) ([]byte, error){
         msg = append(msg, []byte(" !GO! ")...)
         Writer(conn, msg)
     }
+}
+
+func WriteMessage(conn *net.Conn, msg Message) {
+    j, err := json.Marshal(msg)
+    if err != nil {
+      fmt.Printf("JSON MESSAGE ERROR")
+      return
+    }
+
+    Writer(conn, []byte(j))
 }
 
 func Writer(conn *net.Conn, msg []byte) {
