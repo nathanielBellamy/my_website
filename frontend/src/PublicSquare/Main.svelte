@@ -2,12 +2,21 @@
   import { onDestroy } from 'svelte'
   import { WebsocketBuilder } from 'websocket-ts'
 
-  let curr_mess: string
+  interface Message {
+    type: number,
+    body: string
+  }
+
+  let curr_message_body: string
+  $: curr_mess = {type: 1, body: curr_message_body}
   
-  let feed: string[] = []
+  let feed: Message[] = []
   $: _feed = [curr_mess, ...feed]
-  function pushToFeed(s: string) {
-    feed.push(s)
+
+  
+  function pushToFeed(m: Message) {
+    console.dir(m)
+    feed.push(m)
   }
 
   const ws = new WebsocketBuilder('ws://localhost:8080/ws')
@@ -16,8 +25,10 @@
       .onError((i, ev) => { console.log("error") })
       .onMessage((i, ev) => { 
         console.log("message")
-        pushToFeed(ev.data)
-        curr_mess = ev.data
+        const message: Message = JSON.parse(ev.data)
+        pushToFeed(message)
+        curr_message_body = message.body
+        curr_mess = {type: 1, body: message.body}
       })
       .onRetry((i, ev) => { console.log("retry") })
       .build()
@@ -27,17 +38,19 @@
 
 <div class="w-full h-full flex justify-between items-stretch">
   <div class="grow flex flex-col justify-between items-stretch">
-    Curr Mess: {curr_mess}
-    <input bind:value={curr_mess}/>
-    <button on:click={() => ws.send(curr_mess)}>
+    Curr Mess: {curr_message_body}
+    <input bind:value={curr_message_body}/>
+    <button on:click={() => ws.send(curr_mess.body)}>
       SEND IT
     </button>
   </div>
-  <div class="grow flex flex-col-reverse justify-between items-stretch">
+  <div class="grow flex flex-col items-stretch">
     {#each _feed as hist, i} 
-      <div class="grow">
-        {i}:::{hist}
-      </div>
+      {#if !!i}
+        <div class="grow">
+          {i}:::{hist.body}
+        </div>
+      {/if}
     {/each}
   </div>
 </div>
