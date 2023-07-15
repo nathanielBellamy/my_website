@@ -13,9 +13,11 @@
   let feed: Message[] = []
   $: _feed = [curr_mess, ...feed]
 
-  
+  const FEED_LENGTH: number = 926
   function pushToFeed(m: Message) {
-    console.dir(m)
+    if (feed.length > FEED_LENGTH) {
+      feed.shift()
+    }
     feed.push(m)
   }
 
