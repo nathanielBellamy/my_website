@@ -9,7 +9,6 @@
       .onError((i, ev) => { console.log("error") })
       .onMessage((i, ev) => { 
         console.log("message")
-        console.dir(ev)
         curr_mess = ev.data
       })
       .onRetry((i, ev) => { console.log("retry") })

@@ -4,34 +4,18 @@ import (
     "fmt"
     "log"
     "net/http"
-    "github.com/gobwas/ws"
-    "github.com/gobwas/ws/wsutil"
+    "github.com/nathanielBellamy/my_website/backend/go/websocket"
 )
 
 func handleWebSocket(w http.ResponseWriter, r *http.Request) {
-    conn, _, _, err := ws.UpgradeHTTP(r, w)
+    conn, err := websocket.Upgrade(w, r)
     if err != nil {
       fmt.Printf("UpgradeHTTP Error")
+      fmt.Println(err)
     }
     go func() {
       defer conn.Close()
-      centralMem := []byte("CENT MEM")
-      for {
-        msg, op, err := wsutil.ReadClientData(conn)
-        if err != nil {
-          fmt.Printf("ReadClientData Error")
-          conn.Close()
-          return
-        }
-        centralMem = append(centralMem, []byte("+")...)
-        msg = append(msg, centralMem...)
-        err = wsutil.WriteServerMessage(conn, op, msg)
-        if err != nil {
-          fmt.Printf("WriteServerMessage Error")
-          conn.Close()
-          return
-        }
-      }
+      websocket.Reader(&conn)
     }()
 }
 
