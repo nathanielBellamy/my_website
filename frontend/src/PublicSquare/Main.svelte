@@ -3,7 +3,7 @@
   import { WebsocketBuilder } from 'websocket-ts'
 
   interface Message {
-    type: number,
+    clientId: number,
     body: string
   }
 
@@ -30,7 +30,7 @@
         const message: Message = JSON.parse(ev.data)
         pushToFeed(message)
         curr_message_body = message.body
-        curr_mess = {type: 1, body: message.body}
+        curr_mess = {clientId: message.clientId, body: message.body}
       })
       .onRetry((i, ev) => { console.log("retry") })
       .build()
@@ -46,11 +46,19 @@
       SEND IT
     </button>
   </div>
-  <div class="grow flex flex-col items-stretch">
-    {#each _feed as hist, i} 
+  <div class="grow p-5 m-5 overflow-y-scroll flex flex-col items-stretch">
+    {#each _feed as { clientId, body }, i} 
       {#if !!i}
-        <div class="grow">
-          {i}:::{hist.body}
+        <div class="grow p-5 m-5 flex justify-between items-center">
+          <h4>
+            {i}
+          </h4>
+          <div>
+            {`User ${clientId}`}:
+          </div>
+          <div>
+            {body}
+          </div>
         </div>
       {/if}
     {/each}

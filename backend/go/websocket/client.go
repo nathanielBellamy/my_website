@@ -4,20 +4,25 @@ import (
 	"fmt"
 	"log"
 	"net"
-	// "sync"
-
-	// "github.com/gobwas/ws"
 	"github.com/gobwas/ws/wsutil"
 )
 
+type ClientName struct {
+    Alias string
+    First string
+    Second string
+}
+
 type Client struct {
-    ID   string
+    // ID = 0 indicates system
+    ID   uint
     Conn *net.Conn
     Pool *Pool
+    Name ClientName
 }
 
 type Message struct {
-    Type int    `json:"type"`
+    ClientId uint `json:"clientId"`
     Body string `json:"body"`
 }
 
@@ -33,8 +38,10 @@ func (c *Client) Read() {
             log.Println(err)
             return
         }
-        message := Message{Type: 1, Body: string(msg)}
+        message := Message{ClientId: c.ID, Body: string(msg)}
         c.Pool.Broadcast <- message
         fmt.Printf("Message Received: %+v\n", message)
     }
 }
+
+

@@ -15,6 +15,7 @@ func serveWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
       }
 
       client := &websocket.Client{
+        ID: pool.NewClientId(),
         Conn: &conn,
         Pool: pool,
       }
