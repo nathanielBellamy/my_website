@@ -7,11 +7,13 @@
     body: string
   }
 
-  let curr_message_body: string
-  $: curr_mess = {type: 1, body: curr_message_body}
+  let toSendBody: string = ""
+  $: toSend = {clientId: 1, body: toSendBody}
+
+  let toReceive: Message | null = null
   
   let feed: Message[] = []
-  $: _feed = [curr_mess, ...feed]
+  $: _feed = !toReceive ? [...feed] : [toReceive, ...feed]
   let feedWasScrolledToBottom: boolean = false
   
   function scrollFeedToBottom() {
@@ -25,7 +27,8 @@
     if (!feed) {
       res = false
     } else {
-      res = feed.scrollTop === feed.scrollHeight - feed.offsetHeight
+      // scroll is within 150px of bottom
+      res = Math.abs(feed.scrollTop - (feed.scrollHeight - feed.offsetHeight)) < 150
     }
 
     return res
@@ -57,8 +60,7 @@
         console.log("message")
         const message: Message = JSON.parse(ev.data)
         pushToFeed(message)
-        curr_message_body = message.body
-        curr_mess = {clientId: message.clientId, body: message.body}
+        toReceive = message
       })
       .onRetry((i, ev) => { console.log("retry") })
       .build()
@@ -79,9 +81,8 @@
 
 <div class="w-full h-full p-2 flex justify-between items-stretch">
   <div class="grow p-5 m-5 flex flex-col justify-between items-stretch">
-    Curr Mess: {curr_message_body}
-    <input bind:value={curr_message_body}/>
-    <button on:click={() => ws.send(curr_mess.body)}>
+    <input bind:value={toSendBody}/>
+    <button on:click={() => ws.send(toSend.body)}>
       SEND IT
     </button>
   </div>
