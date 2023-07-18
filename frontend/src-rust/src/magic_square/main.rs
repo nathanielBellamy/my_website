@@ -375,7 +375,7 @@ impl MagicSquare {
             .expect("should register `requestAnimationFrame` OK")
     }
 
-    fn window() -> web_sys::Window {
+    pub fn window() -> web_sys::Window {
         web_sys::window().expect("no global `window` exists")
     }
 
@@ -403,13 +403,13 @@ impl MagicSquare {
             .expect("unable to find magic_square element")
     }
 
-    fn canvas() -> web_sys::Element {
+    pub fn canvas() -> web_sys::Element {
         MagicSquare::document()
             .get_element_by_id("magic_square_canvas")
             .expect("unable to find canvas element")
     }
 
-    fn form() -> web_sys::Element {
+    pub fn form() -> web_sys::Element {
         MagicSquare::document()
             .get_element_by_id("magic_square_control_rack")
             .expect("unable to find control element")

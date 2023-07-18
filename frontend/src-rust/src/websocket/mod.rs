@@ -1,18 +1,20 @@
 use js_sys::ArrayBuffer;
-use wasm_bindgen::JsCast;
+use serde::{Deserialize, Serialize};
+use wasm_bindgen::{JsCast, JsValue};
 use web_sys::{BinaryType, MessageEvent};
 
 #[derive(Clone, Debug)]
 pub struct Websocket {
-    conn: web_sys::WebSocket
+    pub conn: web_sys::WebSocket
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
 pub struct WebsocketConnError;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
 pub struct WebsocketSendError;
 
+#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
 pub enum WebsocketError {
     WebsocketConnError,
     WebsocketSendError
@@ -39,22 +41,9 @@ impl Websocket {
             Err(_) => Err(WebsocketSendError)
         }
     }
-}
 
-unsafe fn any_as_u8_slice<T: Sized>(p: &T) -> &[u8] {
-    ::core::slice::from_raw_parts(
-        (p as *const T) as *const u8,
-        ::core::mem::size_of::<T>(),
-    )
-}
-
-fn main() {
-    struct MyStruct {
-        id: u8,
-        data: [u8; 1024],
+    pub fn close(&self) -> Result<(), JsValue> {
+        self.conn.close()
     }
-    let my_struct = MyStruct { id: 0, data: [1; 1024] };
-    let bytes: &[u8] = unsafe { any_as_u8_slice(&my_struct) };
-    // tcp_stream.write(bytes);
-    println!("{:?}", bytes);
 }
+
