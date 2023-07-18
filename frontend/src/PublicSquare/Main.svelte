@@ -57,7 +57,7 @@
   }
 
   // websocket
-  const ws = new WebsocketBuilder('ws://localhost:8080/ws')
+  const ws = new WebsocketBuilder('ws://localhost:8080/public-square-feed-ws')
       .onOpen(() => {
         triggerShowConnected()
         pushToast(toastConnected)

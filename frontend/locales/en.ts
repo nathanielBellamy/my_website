@@ -167,5 +167,11 @@ export const localeEn: any = {
       go_home: "Go To Home",
       accept_and_continue: "Accept & Continue",
     }
+  },
+  publicSquare: {
+    messaging: {
+      cool: "匚ㄖㄖㄥ!",
+      neat: "ᑎEᗩT!",
+    }
   }
 }
