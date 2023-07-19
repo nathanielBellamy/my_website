@@ -61,12 +61,20 @@ impl PublicSquare {
     pub fn close(&self) -> Result<(), JsValue> {
         self.websocket.conn.close()
     }
+}
 
-    pub async fn run(settings: JsValue, client_id: JsValue, touch_screen: JsValue) -> JsValue {
+#[wasm_bindgen]
+struct PubSq;
+
+#[wasm_bindgen]
+impl PubSq {
+    pub async fn run(client_id: JsValue, touch_screen: JsValue) -> JsValue {
         let client_id: u64 = serde_wasm_bindgen::from_value(client_id).unwrap();
         let touch_screen: bool = serde_wasm_bindgen::from_value(touch_screen).unwrap();
-        let settings: Settings = serde_wasm_bindgen::from_value(settings).unwrap();
 
+        // TODO: retrieve settings from websocket
+        // let settings: Settings = serde_wasm_bindgen::from_value(settings).unwrap();
+        let settings = Settings::default();
         let pub_sq: PublicSquare;
         match PublicSquare::new(client_id, settings){
             Ok(ps) => pub_sq = ps,

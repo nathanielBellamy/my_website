@@ -1,5 +1,4 @@
 use std::{rc::Rc, cell::RefCell};
-use serde::{Serialize, Deserialize};
 
 use crate::magic_square::geometry::cache::{Cache, CACHE_CAPACITY};
 use crate::magic_square::main::Rgba;
