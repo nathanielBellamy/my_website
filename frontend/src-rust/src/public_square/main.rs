@@ -19,6 +19,7 @@ use web_sys::{MessageEvent};
 use crate::{magic_square::{settings::Settings, main::MagicSquare, main::X_MAX}, websocket::{Websocket, WebsocketConnError}};
 
 use super::deser::Deser;
+use super::ui_buffer::JsValueBit;
 
 // TODO:
 //  run an instance of magic square that has access to the websocket
@@ -134,21 +135,11 @@ impl PublicSquare {
 
             let onmessage_callback = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
                 // pub_sq sends bin seriaiized settings
-                // her it receives and deserializes
-                let new_settings: Settings = unsafe { std::ptr::read(e.data()) };
-                // if let Ok(abuf) = serde {
-                //     console_log!("message event, received arraybuffer: {:?}", abuf);
-                //     let array = js_sys::Uint8Array::new(&abuf);
-                //     let len = array.byte_length() as usize;
-                //     console_log!("Arraybuffer received {}bytes: {:?}", len, array.to_vec());
-                //     // here you can for example use Serde Deserialize decode the message
-                //     // for demo purposes we switch back to Blob-type and send off another binary message
-                //     cloned_ws.set_binary_type(web_sys::BinaryType::Blob);
-                //     match cloned_ws.send_with_u8_array(&[5, 6, 7, 8]) {
-                //         Ok(_) => console_log!("binary message successfully sent"),
-                //         Err(err) => console_log!("error sending message: {:?}", err),
-                //     }
-                // }
+                // here it receives and deserializes
+                let raw_bin = JsValueBit(&e.data() as *const JsValue);
+                if let Ok(res) = bytemuck::try_cast::<JsValueBit, Settings>(raw_bin) {
+                    // TODO
+                }
             });
         }
 

@@ -55,6 +55,7 @@ pub struct ColorGradient {
     idx_b: i32,
 }
 
+#[repr(C)]
 #[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
 pub struct Settings {
     // COLOR

@@ -1,4 +1,6 @@
 use std::{rc::Rc, cell::RefCell};
+use serde::{Serialize, Deserialize};
+
 use crate::magic_square::geometry::cache::{Cache, CACHE_CAPACITY};
 use crate::magic_square::main::Rgba;
 use crate::magic_square::settings::{Colors, IOGradient};
@@ -24,6 +26,14 @@ use crate::JsValue;
 use super::main::PublicSquare;
 
 pub const EMPTY_COLORS: Colors = [[0.0; 4]; CACHE_CAPACITY];
+
+unsafe impl bytemuck::Zeroable for Settings {}
+unsafe impl bytemuck::Pod for Settings {}
+
+#[derive(Clone, Copy)]
+pub struct JsValueBit(pub *const JsValue);
+unsafe impl bytemuck::Zeroable for JsValueBit {}
+unsafe impl bytemuck::Pod for JsValueBit {}
 
 #[derive(Clone, Copy, Debug)]
 pub struct UiBuffer {
