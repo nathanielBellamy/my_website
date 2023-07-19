@@ -73,7 +73,7 @@ impl PubSq {
         let touch_screen: bool = serde_wasm_bindgen::from_value(touch_screen).unwrap();
 
         // TODO: retrieve settings from websocket
-        // let settings: Settings = serde_wasm_bindgen::from_value(settings).unwrap();
+
         let settings = Settings::default();
         let pub_sq: PublicSquare;
         match PublicSquare::new(client_id, settings){
@@ -147,6 +147,7 @@ impl PubSq {
                 // here it receives and deserializes
                 let raw_bin = JsValueBit(&e.data() as *const JsValue);
                 if let Ok(res) = bytemuck::try_cast::<JsValueBit, Settings>(raw_bin) {
+                    log(&format!("{:?}", res));
                     ui_buffer.clone().borrow_mut().settings = res;
                 }
             });
