@@ -132,15 +132,22 @@ impl PublicSquare {
 
         {
             let ui_buffer = ui_buffer.clone();
+            let pub_sq = pub_sq.clone();
 
             let onmessage_callback = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
                 // pub_sq sends bin seriaiized settings
                 // here it receives and deserializes
                 let raw_bin = JsValueBit(&e.data() as *const JsValue);
                 if let Ok(res) = bytemuck::try_cast::<JsValueBit, Settings>(raw_bin) {
-                    // TODO
+                    ui_buffer.clone().borrow_mut().settings = res;
                 }
             });
+
+            pub_sq.clone().borrow_mut()
+                .websocket
+                .conn
+                .set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
+            onmessage_callback.forget();
         }
 
         {
