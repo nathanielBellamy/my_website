@@ -344,13 +344,11 @@ export class PubSq {
         wasm.__wbg_pubsq_free(ptr);
     }
     /**
-    * @param {any} settings
-    * @param {any} client_id
     * @param {any} touch_screen
     * @returns {Promise<any>}
     */
-    static run(settings, client_id, touch_screen) {
-        const ret = wasm.pubsq_run(addHeapObject(settings), addHeapObject(client_id), addHeapObject(touch_screen));
+    static run(touch_screen) {
+        const ret = wasm.pubsq_run(addHeapObject(touch_screen));
         return takeObject(ret);
     }
 }
@@ -947,7 +945,7 @@ function __wbg_get_imports() {
         const ret = makeMutClosure(arg0, arg1, 121, __wbg_adapter_60);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper1998 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper1997 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 218, __wbg_adapter_63);
         return addHeapObject(ret);
     };

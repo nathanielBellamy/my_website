@@ -396,7 +396,7 @@ impl UiBuffer {
             _ => {}
         }
         
-        pub_sq.clone().borrow_mut().send(self.settings);
+        let _ = pub_sq.clone().borrow_mut().send(self.settings);
     }
 }
 

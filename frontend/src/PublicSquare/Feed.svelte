@@ -1,26 +1,17 @@
 <script lang="ts">
-  import { afterUpdate, beforeUpdate, onDestroy, onMount } from 'svelte'
-  import { Toast } from 'flowbite-svelte'
-  import { WebsocketBuilder } from 'websocket-ts'
-  import { ToastColor } from '../lib/Toaster'
+  import { afterUpdate, beforeUpdate, onMount } from 'svelte'
   import type { ToasterProps } from '../lib/Toaster'
   import Toaster from '../lib/Toaster.svelte'
-  // messaging
-  interface Message {
-    clientId: number,
-    body: string
-  }
+  import type { FeedMessage } from './FeedMessage'
 
-  let toSendBody: string = ""
-  $: toSend = {clientId: 1, body: toSendBody}
+  export let feed: FeedMessage[]
+  export let sendFeedMessage: (body: string) => void
+  export let showConnected: boolean
+  export let toasts: ToasterProps[]
+  export let toSendBody: string
 
-  let toReceive: Message | null = null
-
-  // feed
-  let feed: Message[] = []
-  $: _feed = !toReceive ? [...feed] : [toReceive, ...feed]
   let feedWasScrolledToBottom: boolean = false
-  
+
   function scrollFeedToBottom() {
     const feed = document.getElementById("public_square_feed")
     feed.scrollTop = feed.scrollHeight
@@ -39,15 +30,6 @@
     return res
   }
 
-  const FEED_LENGTH: number = 926
-  function pushToFeed(m: Message) {
-    if (feed.length > FEED_LENGTH) {
-      feed.shift()
-    }
-    feed.push(m)
-    feed = [...feed]
-  }
-
   function formatClientId(id: number): string {
     var res: string = ""
     if (!!id) {
@@ -57,60 +39,8 @@
     return res
   }
 
-  // websocket
-  const ws = new WebsocketBuilder('ws://localhost:8080/public-square-feed-ws')
-      .onOpen(() => {
-        triggerShowConnected()
-        pushToast(toastConnected)
-      })
-      .onClose(() => pushToast(toastDisconnected))
-      .onError(() => pushToast(toastError))
-      .onMessage((_i, ev) => { 
-        const message: Message = JSON.parse(ev.data)
-        pushToFeed(message)
-      })
-      .onRetry(() => {})
-      .build()
-
-  // alerts
-  let showConnected: boolean = false;
-  let counter: number = 6;
-
-  function triggerShowConnected() {
-    showConnected = true;
-    counter = 6;
-    timeout();
-  }
-
-  function timeout() {
-    if (--counter > 0)
-      return setTimeout(timeout, 1000);
-    showConnected = false;
-  }
-
-  const toastConnected: ToasterProps = {
-    color: ToastColor.green,
-    text: "Connected"
-  }
-
-  const toastDisconnected: ToasterProps = {
-    color: ToastColor.blue,
-    text: "Disconnected"
-  }
-
-  const toastError: ToasterProps = {
-    color: ToastColor.red,
-    text: "Connection error"
-  }
-  
-  let toasts: ToasterProps[] = []
-  function pushToast(t: ToasterProps) {
-    toasts = [t, ...toasts]
-  }
-
   // LIFECYCLE
   onMount(() => scrollFeedToBottom())
-  onDestroy(() => ws.close())
 
   beforeUpdate(() => {
     feedWasScrolledToBottom = feedIsScrolledToBottom()
@@ -135,13 +65,13 @@
 <div class="w-full h-full p-2 flex justify-between items-stretch">
   <div class="grow p-5 m-5 flex flex-col justify-between items-stretch">
     <input bind:value={toSendBody}/>
-    <button on:click={() => ws.send(toSend.body)}>
+    <button on:click={() => sendFeedMessage(toSendBody)}>
       SEND IT
     </button>
   </div>
   <div  id="public_square_feed"
         class="grow p-5 m-5 overflow-y-scroll flex flex-col items-stretch">
-    {#each _feed as { clientId, body }, i} 
+    {#each feed as { clientId, body }, i} 
       {#if !!i}
         <div class="grow p-5 m-5 flex items-center">
           <h4>

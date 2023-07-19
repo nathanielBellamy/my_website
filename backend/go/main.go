@@ -20,6 +20,8 @@ func serveFeedWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
         Pool: pool,
       }
 
+      websocket.WriteMessage(client.Conn, websocket.Message{ClientId: client.ID, Body: "connected"})
+
       pool.Register <- client
       client.Read()
 }
@@ -58,7 +60,7 @@ func setupRoutes() {
 }
 
 func main() {
-    fmt.Printf("Starting server on 8080")
+    fmt.Printf("Starting server on 8080 \n")
     
     setupRoutes()
 

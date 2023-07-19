@@ -13,8 +13,7 @@ use crate::public_square::ui_buffer::UiBuffer;
 use std::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
-use web_sys::{WebGl2RenderingContext, WebGlProgram};
-use web_sys::{MessageEvent};
+use web_sys::{MessageEvent, WebGl2RenderingContext, WebGlProgram};
 
 use crate::{magic_square::{settings::Settings, main::MagicSquare, main::X_MAX}, websocket::{Websocket, WebsocketConnError}};
 
@@ -68,15 +67,16 @@ struct PubSq;
 
 #[wasm_bindgen]
 impl PubSq {
-    pub async fn run(client_id: JsValue, touch_screen: JsValue) -> JsValue {
-        let client_id: u64 = serde_wasm_bindgen::from_value(client_id).unwrap();
+    #[allow(unused)]
+    // called from js
+    pub async fn run(touch_screen: JsValue) -> JsValue {
         let touch_screen: bool = serde_wasm_bindgen::from_value(touch_screen).unwrap();
 
         // TODO: retrieve settings from websocket
 
         let settings = Settings::default();
         let pub_sq: PublicSquare;
-        match PublicSquare::new(client_id, settings){
+        match PublicSquare::new(1, settings){
             Ok(ps) => pub_sq = ps,
             Err(e) => {
                 return serde_wasm_bindgen::to_value(&e).unwrap();
