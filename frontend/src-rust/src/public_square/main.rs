@@ -28,6 +28,7 @@ use super::ui_buffer::JsValueBit;
 const ARRAY_BUFFER_CAPACITY: u32 = 5000;
 const URL: &str = "ws://localhost:8080/public-square-wasm-ws";
 
+#[derive(Debug)]
 pub struct PublicSquare {
     ab: ArrayBuffer,
     pub client_id: u64,
@@ -82,6 +83,7 @@ impl PubSq {
                 return serde_wasm_bindgen::to_value(&e).unwrap();
             }
         }
+        log(&format!("{:?}", pub_sq));
         let pub_sq = Rc::new(RefCell::new(pub_sq));
         
         let canvas = MagicSquare::canvas()

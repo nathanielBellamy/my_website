@@ -9,7 +9,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "build-rust-wasm": "cd src-rust && wasm-pack build --target web --out-dir ../pkg && cd .."
+    "build-rust-wasm": "cd src-rust && wasm-pack build --target web --out-dir ../pkg && cd ..",
+    "build-frontend": "npm run build-rust-wasm && npm run build"
   },
   "devDependencies": {
     "@rollup/plugin-wasm": "^6.1.2",
