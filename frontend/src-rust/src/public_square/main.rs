@@ -33,19 +33,17 @@ pub struct PublicSquare {
     ab: ArrayBuffer,
     pub client_id: u64,
     pub dv: DataView,
-    pub settings: Settings,
     pub websocket: Websocket
 }
 
 impl PublicSquare {
-    pub fn new(client_id: u64, settings: Settings) -> Result<PublicSquare, WebsocketConnError> {
+    pub fn new(client_id: u64) -> Result<PublicSquare, WebsocketConnError> {
         let ab = ArrayBuffer::new(ARRAY_BUFFER_CAPACITY);
         let websocket = Websocket::new(URL.to_owned())?;
         Ok(PublicSquare {
             dv: DataView::new(&ab, 0, ARRAY_BUFFER_CAPACITY as usize),
             ab,
             client_id,
-            settings,
             websocket,
         })
     }
@@ -77,7 +75,7 @@ impl PubSq {
 
         let settings = Settings::default();
         let pub_sq: PublicSquare;
-        match PublicSquare::new(1, settings){
+        match PublicSquare::new(1){
             Ok(ps) => pub_sq = ps,
             Err(e) => {
                 return serde_wasm_bindgen::to_value(&e).unwrap();
@@ -86,6 +84,7 @@ impl PubSq {
         log(&format!("{:?}", pub_sq));
         let pub_sq = Rc::new(RefCell::new(pub_sq));
         
+        log("WOW ZOW 1");
         let canvas = MagicSquare::canvas()
             .dyn_into::<web_sys::HtmlCanvasElement>()
             .unwrap();
@@ -118,6 +117,7 @@ impl PubSq {
         let mouse_pos_buffer: [f32; 2] = [0.0, 0.0];
         let mouse_pos_buffer: Rc<RefCell<[f32; 2]>> = Rc::new(RefCell::new(mouse_pos_buffer));
 
+        log("wasm var init done");
         {
             // init destroy listener on app_main
             // onDestroy hook in Main.svelte dispatches destroymswasm event
@@ -147,6 +147,7 @@ impl PubSq {
             let onmessage_callback = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
                 // pub_sq sends bin seriaiized settings
                 // here it receives and deserializes
+                log(&format!("wasm websocket onmessage_callback: {:?}", e));
                 let raw_bin = JsValueBit(&e.data() as *const JsValue);
                 if let Ok(res) = bytemuck::try_cast::<JsValueBit, Settings>(raw_bin) {
                     log(&format!("{:?}", res));
@@ -159,6 +160,7 @@ impl PubSq {
                 .conn
                 .set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
             onmessage_callback.forget();
+            log("WOW ZOW NOW!");
         }
 
         {

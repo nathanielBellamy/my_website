@@ -1,12 +1,33 @@
 <script lang="ts">
   import init, { PubSq, rust_init_message } from '../../pkg/src_rust.js'
+  import { watchResize } from "svelte-watch-resize"
   import { onDestroy, onMount } from 'svelte'
   import { WebsocketBuilder } from 'websocket-ts'
   import Feed from './Feed.svelte'
-  import type { ToasterProps } from '../lib/Toaster.js'
-  import { ToastColor } from '../lib/Toaster.js'
-  import type { FeedMessage } from './FeedMessage.js'
-  import { touchScreen } from '../stores/touchScreen.js'
+  import type { ToasterProps } from '../lib/Toaster'
+  import { ToastColor } from '../lib/Toaster'
+  import type { FeedMessage } from './FeedMessage'
+  import { touchScreen } from '../stores/touchScreen'
+  import MagicSquarePub from './MagicSquarePub.svelte'
+  import { FEED_LENGTH, psFeed } from '../stores/psFeed'
+  import WarningModal from '../MagicSquare/WarningModal.svelte';
+
+  let psFeedVal: FeedMessage[]
+  const unsubPsFeed = psFeed.subscribe((val: FeedMessage[]) => psFeedVal = [...val])
+
+  let magicSquareInstance: number = 0
+  $: magicSquareInstance
+  let sideLength: number = 0
+
+  function incrementMagicSquareInstance() {
+    magicSquareInstance += 1
+  }
+
+  async function handleResize() {
+    incrementMagicSquareInstance()
+    let element = document.getElementById("magic_square_container")
+    sideLength = Math.floor(Math.min(element.offsetWidth, element.offsetHeight) / 1.3) - 25
+  }
 
   // TODO:
   // this combination of touchSreen store and value updates works 
@@ -82,26 +103,27 @@
   // messaging
   let toSendBody: string = ""
   $: toSend = {clientId: 1, body: toSendBody}
-  let toReceive: FeedMessage | null = null
-  // feed
-  let feed: FeedMessage[] = []
-  $: _feed = !toReceive ? [...feed] : [toReceive, ...feed]
-
-  const FEED_LENGTH: number = 926
+  
   function pushToFeed(m: FeedMessage) {
-    if (feed.length > FEED_LENGTH) {
-      feed.shift()
-    }
-    feed.push(m)
-    feed = [...feed]
+    psFeed.update((prevFeed: FeedMessage[]) => {
+      if (prevFeed.length > FEED_LENGTH) {
+        prevFeed.shift()
+      }
+      prevFeed.push(m)
+      return [...prevFeed]
+    })
   }
 
   // LIFECYCLE
   let renderDataReady: boolean = false
   let hasBeenDestroyed: boolean = false
-
+  let hasAcceptedWarning: boolean = false
+  onMount(() => {
+    hasAcceptedWarning = !!localStorage.getItem("magic_square_has_accepted_warning")
+  })
   onDestroy(() => {
     hasBeenDestroyed = true
+    unsubPsFeed()
     unsubTouchScreen()
     ws.close()
   })
@@ -131,11 +153,19 @@
 </script>
 
 
-<div>
+<div class="flex justify-around items-center"
+     use:watchResize={handleResize}>
   <div style="display: none"> {touchScreenVal}  </div>
+  {#if !hasAcceptedWarning}
+    <WarningModal bind:hasAccepted={hasAcceptedWarning}/>
+  {:else}
+    {#key magicSquareInstance}
+      <MagicSquarePub  settings={settings}
+                       sideLength={sideLength}/>
+    {/key}
+  {/if}
   {#if renderDataReady}
-    <Feed bind:feed={_feed}
-          sendFeedMessage={sendFeedMessage}
+    <Feed sendFeedMessage={sendFeedMessage}
           bind:showConnected={showConnected}
           bind:toasts={toasts}
           bind:toSendBody={toSendBody}/>
