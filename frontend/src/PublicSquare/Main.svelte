@@ -26,7 +26,9 @@
   async function handleResize() {
     incrementMagicSquareInstance()
     let element = document.getElementById("magic_square_container")
-    sideLength = Math.floor(Math.min(element.offsetWidth, element.offsetHeight) / 1.3) - 25
+    if (!!element){
+      sideLength = Math.floor(Math.min(element.offsetWidth, element.offsetHeight) / 1.3) - 25
+    }
   }
 
   // TODO:
@@ -158,17 +160,20 @@
   <div style="display: none"> {touchScreenVal}  </div>
   {#if !hasAcceptedWarning}
     <WarningModal bind:hasAccepted={hasAcceptedWarning}/>
-  {:else}
+  {:else if renderDataReady}
     {#key magicSquareInstance}
-      <MagicSquarePub  settings={settings}
-                       sideLength={sideLength}/>
+      <MagicSquarePub  bind:renderDataReady={renderDataReady}
+                       settings={settings}
+                       sideLength={sideLength}>
+        <div slot="psFeed"
+             class="h-full">
+          <Feed sendFeedMessage={sendFeedMessage}
+                bind:showConnected={showConnected}
+                bind:toasts={toasts}
+                bind:toSendBody={toSendBody}/>
+        </div>
+      </MagicSquarePub>
     {/key}
-  {/if}
-  {#if renderDataReady}
-    <Feed sendFeedMessage={sendFeedMessage}
-          bind:showConnected={showConnected}
-          bind:toasts={toasts}
-          bind:toSendBody={toSendBody}/>
   {/if}
 </div>
 

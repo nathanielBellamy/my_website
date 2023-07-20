@@ -55,6 +55,7 @@ export const localeEn: any = {
     controlRack: {
       color: "color",
       drawPattern: "pattern",
+      feed: "messages",
       geometry: 'geometry',
       lfo: "lfo",
       modules: "modules",

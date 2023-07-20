@@ -1,12 +1,11 @@
 <script lang="ts" type="module">
-  import init, { MagicSquare, rust_init_message } from '../../pkg/src_rust.js'
-  import { afterUpdate, onDestroy } from 'svelte'
+  import { onDestroy } from 'svelte'
   import Loading from '../lib/Loading.svelte'
+  import ControlRackPub from './ControlRackPub.svelte'
   import DrawPatternContainer from '../MagicSquare/ControlModules/DrawPattern.svelte'
   import { DrawPatternType } from '../MagicSquare/ControlModules/DrawPattern'
   import { intoDrawPatternType } from '../MagicSquare/ControlModules/DrawPattern'
   import Color from '../MagicSquare/ControlModules/Color.svelte'
-  import ControlRack from '../MagicSquare/ControlRack.svelte'
   import Geometry from '../MagicSquare/ControlModules/Geometry.svelte'
   import LfoContainer from '../MagicSquare/ControlModules/Lfo.svelte'
   import { Lfo } from '../MagicSquare/ControlModules/Lfo'
@@ -28,7 +27,6 @@
   import { I18n, Lang } from '../I18n'
   import { lang } from '../stores/lang'
   import { touchScreen } from '../stores/touchScreen.js'
-  import Feed from './Feed.svelte'
 
   export let settings: StorageSettings
 
@@ -273,8 +271,7 @@
     yawY = round2(settings.y_axis_z_rot_coeff)
   }
 
-  let renderDataReady = false
-  let hasBeenDestroyed = false
+  export let renderDataReady = false
 
   function setAllSettings(settings: StorageSettings) {
       setInitialDrawPatternVars(settings)
@@ -312,7 +309,7 @@
             height={sideLength}
             width={sideLength}/>
   </div>
-  <ControlRack bind:small={small}>
+  <ControlRackPub bind:small={small}>
     <!-- COLOR START -->
     <div slot="color"
          class="h-full">
@@ -428,7 +425,7 @@
       {#if !renderDataReady}
         <Loading />
       {:else}
-        <Feed />
+        <slot name="psFeed"/>
       {/if}
     </div>
     <!-- FEED ENDS -->
@@ -1048,7 +1045,7 @@
         </Rotation>
       {/if}
     </div>
-  </ControlRack>
+  </ControlRackPub>
 </div>
 
 <style lang="sass">
