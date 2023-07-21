@@ -1,5 +1,3 @@
-use std::{rc::Rc, cell::RefCell};
-
 use crate::magic_square::geometry::cache::{Cache, CACHE_CAPACITY};
 use crate::magic_square::main::Rgba;
 use crate::magic_square::settings::{Colors, IOGradient};
@@ -22,14 +20,13 @@ use crate::magic_square::ui_manifest::{
     INPUT_Z_ROT_SPREAD,
 };
 use crate::JsValue;
-use super::main::PublicSquare;
 
 pub const EMPTY_COLORS: Colors = [[0.0; 4]; CACHE_CAPACITY];
 
 unsafe impl bytemuck::Zeroable for Settings {}
 unsafe impl bytemuck::Pod for Settings {}
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct JsValueBit(pub *const JsValue);
 unsafe impl bytemuck::Zeroable for JsValueBit {}
 unsafe impl bytemuck::Pod for JsValueBit {}
@@ -105,8 +102,6 @@ impl UiBuffer {
         input_id: String,
         val: String,
         _geometry_cache: &mut Cache,
-        pub_sq: Rc<RefCell<PublicSquare>>,
-        // animation: &mut Animation,
     ) {
         // log(&input_id);
         // log(&val);
@@ -395,8 +390,6 @@ impl UiBuffer {
             }
             _ => {}
         }
-        
-        let _ = pub_sq.clone().borrow_mut().send(self.settings);
     }
 }
 

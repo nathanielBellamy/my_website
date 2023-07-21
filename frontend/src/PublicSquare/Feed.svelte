@@ -1,7 +1,5 @@
 <script lang="ts">
   import { afterUpdate, beforeUpdate, onDestroy, onMount } from 'svelte'
-  import type { ToasterProps } from '../lib/Toaster'
-  import Toaster from '../lib/Toaster.svelte'
   import type { FeedMessage } from './FeedMessage'
   import { psFeed } from '../stores/psFeed'
 
@@ -9,8 +7,6 @@
   const unsubPsFeed = psFeed.subscribe((val: FeedMessage[]) => psFeedVal = [...val])
 
   export let sendFeedMessage: (body: string) => void
-  export let showConnected: boolean
-  export let toasts: ToasterProps[]
   export let toSendBody: string
 
   let feedWasScrolledToBottom: boolean = false
@@ -53,18 +49,6 @@
     if (feedWasScrolledToBottom) scrollFeedToBottom()
   })
 </script>
-
-{#each toasts as { color, text }}
-  {#if text !== "Connected"}
-    <Toaster bind:open={showConnected}
-             color={color}
-             text={text}/>
-  {:else}
-    <Toaster open={null}
-             color={color}
-             text={text}/>
-  {/if}
-{/each}
 
 <div class="w-full h-full p-2 flex justify-between items-stretch">
   <div class="grow p-5 m-5 flex flex-col justify-between items-stretch">

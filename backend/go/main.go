@@ -11,6 +11,7 @@ func serveFeedWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
       fmt.Println("WebSocket FEED Endpoint Hit")
       conn, err := websocket.Upgrade(w, r)
       if err != nil {
+        fmt.Printf("FEED Upgrade ERROR \n")
         fmt.Fprintf(w, "%+v\n", err)
       }
 
@@ -23,13 +24,14 @@ func serveFeedWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
       websocket.WriteMessage(client.Conn, websocket.Message{ClientId: client.ID, Body: "connected"})
 
       pool.Register <- client
-      client.Read()
+      client.ReadFeed()
 }
 
 func serveWasmWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
       fmt.Println("WebSocket WASM Endpoint Hit")
       conn, err := websocket.Upgrade(w, r)
       if err != nil {
+        fmt.Printf("WASM Upgrade ERROR \n")
         fmt.Fprintf(w, "%+v\n", err)
       }
 
@@ -40,7 +42,7 @@ func serveWasmWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
       }
 
       pool.Register <- client
-      client.Read()
+      client.ReadWasm()
 }
 
 func setupRoutes() {
@@ -65,6 +67,7 @@ func main() {
     setupRoutes()
 
     if err := http.ListenAndServe(":8080", nil); err != nil {
+        fmt.Printf("UnableToServe")
         log.Fatal(err)
     }
 }

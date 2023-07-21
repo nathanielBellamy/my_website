@@ -273,7 +273,8 @@
 
   export let renderDataReady = false
 
-  function setAllSettings(settings: StorageSettings) {
+  function setAllSettings(settings: StorageSettings, dataReady: boolean) {
+    if (dataReady) {
       setInitialDrawPatternVars(settings)
       setInitialColorVars(settings)
       setInitialLfoVars(settings)
@@ -281,9 +282,10 @@
       setInitialMouseTracking(settings)
       setInitialRotationVars(settings)
       setInitialTranslationVars(settings)
+    }
   }
 
-  setAllSettings(settings)
+  $: sAS = setAllSettings(settings, renderDataReady)
 
   onDestroy(() => {
     unsubLang()
@@ -299,6 +301,9 @@
      class="magic_square"
      class:grid_col={small}
      class:grid_row={!small}>
+  <div style="display: none">
+    {sAS}
+  </div>
      <!-- on:click={() => console.dir(deriveStorageSettings())} -->
   <div id="magic_square_canvas_container"
        class="magic_square_canvas_container flex flex-col justify-around display">

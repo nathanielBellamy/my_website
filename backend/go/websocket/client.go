@@ -26,7 +26,7 @@ type Message struct {
     Body string `json:"body"`
 }
 
-func (c *Client) Read() {
+func (c *Client) ReadFeed() {
     defer func() {
         c.Pool.Unregister <- c
         (*c.Conn).Close()
@@ -35,6 +35,7 @@ func (c *Client) Read() {
     for {
         msg, _, err := wsutil.ReadClientData(*c.Conn)
         if err != nil {
+            fmt.Printf(" ReadClientData FEED Error ")
             log.Println(err)
             return
         }
@@ -43,5 +44,27 @@ func (c *Client) Read() {
         fmt.Printf("Message Received: %+v\n", message)
     }
 }
+
+func (c *Client) ReadWasm() {
+    defer func() {
+        c.Pool.Unregister <- c
+        (*c.Conn).Close()
+    }()
+
+    for {
+        msg, _, err := wsutil.ReadClientData(*c.Conn)
+
+        fmt.Printf(" ReadClientData WASM ")
+        if err != nil {
+            fmt.Printf(" ReadClientData WASM Error ")
+            log.Println(err)
+            return
+        }
+        message := Message{ClientId: c.ID, Body: string(msg)}
+        c.Pool.Broadcast <- message
+        fmt.Printf("Message Received: %+v\n", message)
+    }
+}
+
 
 

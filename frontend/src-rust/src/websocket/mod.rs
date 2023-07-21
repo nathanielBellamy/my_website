@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use wasm_bindgen::{JsCast, JsValue};
 use web_sys::{BinaryType, MessageEvent};
 
-#[derive(Clone, Debug)]
+#[derive(Debug)]
 pub struct Websocket {
     pub conn: web_sys::WebSocket
 }
@@ -25,11 +25,15 @@ impl Websocket {
     pub fn new(url: String) -> Result<Websocket, WebsocketConnError>  {
         match web_sys::WebSocket::new(&url) {
             Ok(conn) => {
-                conn.set_binary_type(BinaryType::Arraybuffer);
+                conn.set_binary_type(BinaryType::Blob);
                 Ok(Websocket { conn })
             },
             Err(_) => Err(WebsocketConnError)
         }
+    }
+
+    pub fn clone(&self) -> Websocket {
+        Websocket { conn: self.conn.clone() }
     }
 
     pub fn send(&self, message: String) -> Result<(), WebsocketSendError> {

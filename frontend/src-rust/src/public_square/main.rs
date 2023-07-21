@@ -13,7 +13,7 @@ use crate::public_square::ui_buffer::UiBuffer;
 use std::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
-use web_sys::{MessageEvent, WebGl2RenderingContext, WebGlProgram};
+use web_sys::{MessageEvent, WebGl2RenderingContext, WebGlProgram, WebSocket};
 
 use crate::{magic_square::{settings::Settings, main::MagicSquare, main::X_MAX}, websocket::{Websocket, WebsocketConnError}};
 
@@ -33,31 +33,28 @@ pub struct PublicSquare {
     ab: ArrayBuffer,
     pub client_id: u64,
     pub dv: DataView,
-    pub websocket: Websocket
 }
 
 impl PublicSquare {
     pub fn new(client_id: u64) -> Result<PublicSquare, WebsocketConnError> {
         let ab = ArrayBuffer::new(ARRAY_BUFFER_CAPACITY);
-        let websocket = Websocket::new(URL.to_owned())?;
         Ok(PublicSquare {
             dv: DataView::new(&ab, 0, ARRAY_BUFFER_CAPACITY as usize),
             ab,
             client_id,
-            websocket,
         })
     }
+}
 
-    pub fn send(&mut self, settings: Settings) -> Result<(), JsValue> {
+impl Websocket {
+    pub fn ps_send_settings(&self, settings: Settings, pub_sq: Rc<RefCell<PublicSquare>>) -> Result<(), JsValue> {
         let u8_slice: &[u8] = unsafe { Deser::any_as_u8_slice(&settings) };
         for (idx, val) in u8_slice.iter().enumerate() {
-            self.dv.set_uint8(idx, *val)
+            pub_sq.clone().borrow_mut().dv.set_uint8(idx, *val)
         }
-        self.websocket.conn.send_with_array_buffer(&self.ab)
-    }
-
-    pub fn close(&self) -> Result<(), JsValue> {
-        self.websocket.conn.close()
+        log(&format!("send: {:?}", pub_sq.clone().borrow().ab));
+        self.conn.send_with_array_buffer(&pub_sq.clone().borrow().ab)?;
+        Ok(())
     }
 }
 
@@ -66,15 +63,42 @@ struct PubSq;
 
 #[wasm_bindgen]
 impl PubSq {
-    #[allow(unused)]
-    // called from js
+    #[allow(unused)] // called from js
     pub async fn run(touch_screen: JsValue) -> JsValue {
         let touch_screen: bool = serde_wasm_bindgen::from_value(touch_screen).unwrap();
+        let ws: WebSocket;
+        match WebSocket::new(URL) {
+            Ok(socket) => ws = socket,
+            Err(_) => {
+                log("Unable to connect to WASM Websocket");
+                return JsValue::from_str("WASM websocket error");
+            }
+        }
+
+        // {
+            let ws_c = ws.clone();
+            let on_open_cb = Closure::<dyn FnMut()>::new(move || {
+                log("socket opened");
+                match ws_c.send_with_str("ping") {
+                    Ok(_) => log("message successfully sent"),
+                    Err(err) => log(&format!("error sending message: {:?}", err)),
+                }
+                // send off binary message
+                match ws_c.send_with_u8_array(&[0, 1, 2, 3]) {
+                    Ok(_) => log("binary message successfully sent"),
+                    Err(err) => log(&format!("error sending message: {:?}", err)),
+                }
+            });
+
+            ws.set_onopen(Some(on_open_cb.as_ref().unchecked_ref()));
+            on_open_cb.forget();
+        // }
 
         // TODO: retrieve settings from websocket
+        // ws.conn.send_with_str("__init__ps__").unwrap();
 
         let settings = Settings::default();
-        let pub_sq: PublicSquare;
+        let mut pub_sq: PublicSquare;
         match PublicSquare::new(1){
             Ok(ps) => pub_sq = ps,
             Err(e) => {
@@ -83,8 +107,7 @@ impl PubSq {
         }
         log(&format!("{:?}", pub_sq));
         let pub_sq = Rc::new(RefCell::new(pub_sq));
-        
-        log("WOW ZOW 1");
+
         let canvas = MagicSquare::canvas()
             .dyn_into::<web_sys::HtmlCanvasElement>()
             .unwrap();
@@ -127,10 +150,8 @@ impl PubSq {
             let destroy_flag = destroy_flag.clone();
             
             // close wasm websocket
-            let pub_sq = pub_sq.clone();
             let closure = Closure::<dyn FnMut(_)>::new(move |_event: web_sys::Event| {
                 *destroy_flag.clone().borrow_mut() = true;
-                pub_sq.clone().borrow().close();
             });
 
             app_main
@@ -140,28 +161,29 @@ impl PubSq {
             closure.forget();
         }
 
-        {
-            let ui_buffer = ui_buffer.clone();
-            let pub_sq = pub_sq.clone();
+        // {
+            let ui_buffer_c = ui_buffer.clone();
+            let ws_c = ws.clone();
 
             let onmessage_callback = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
                 // pub_sq sends bin seriaiized settings
                 // here it receives and deserializes
-                log(&format!("wasm websocket onmessage_callback: {:?}", e));
+                log(&format!("wasm websocket onmessage_callback: {:?}", e.data()));
                 let raw_bin = JsValueBit(&e.data() as *const JsValue);
-                if let Ok(res) = bytemuck::try_cast::<JsValueBit, Settings>(raw_bin) {
-                    log(&format!("{:?}", res));
-                    ui_buffer.clone().borrow_mut().settings = res;
+                log(&format!("raw_bin: {:?}", raw_bin));
+                match bytemuck::try_cast::<JsValueBit, Settings>(raw_bin) {
+                   Ok(res) => {
+                        log(&format!("WOOOOOO {:?}", 3));
+                        ui_buffer_c.clone().borrow_mut().settings = res;
+                    },
+                    Err(_) => log("Bytemuck Error")
                 }
             });
 
-            pub_sq.clone().borrow_mut()
-                .websocket
-                .conn
-                .set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
+            ws_c.set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
             onmessage_callback.forget();
             log("WOW ZOW NOW!");
-        }
+        // }
 
         {
             // init UI control settings listener
@@ -169,6 +191,7 @@ impl PubSq {
             let ui_buffer = ui_buffer.clone();
             let geometry_cache = geometry_cache.clone();
             let pub_sq = pub_sq.clone();
+            let ws_c = ws.clone();
 
             let closure_handle_input =
                 Closure::<dyn FnMut(_)>::new(move |event: web_sys::Event| {
@@ -184,9 +207,13 @@ impl PubSq {
                     ui_buffer.clone().borrow_mut().update(
                         id,
                         val,
-                        &mut geometry_cache.clone().borrow_mut(),
-                        pub_sq.clone(),
+                        &mut geometry_cache.clone().borrow_mut()
                     );
+                    log("DUUUUUUUUUUUDE");
+                    // ws.ps_send_settings(
+                    //     ui_buffer.clone().borrow().settings, 
+                    //     pub_sq.clone()
+                    // );
                 });
 
             form.add_event_listener_with_callback(

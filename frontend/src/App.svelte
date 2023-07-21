@@ -62,9 +62,6 @@
 </script>
 
 <nav class="nav_bar flex justify-between items-center gap-2 pt-2 pb-2">
-  <!-- <Dropdown> -->
-    <!-- <DropdownHeader> -->
-
   <DropdownButton id="siteSectionDropdown"
                   class="border-transparent"
                   color="none"

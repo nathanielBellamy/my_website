@@ -29,7 +29,7 @@ func NewPool() *Pool {
 
 func (pool *Pool) NewClientId() (uint) {
     newId := pool.NextClientId
-    pool.NextClientId += 1
+    pool.NextClientId += 123
   	return newId
 }
 
@@ -39,9 +39,9 @@ func (pool *Pool) Start() {
         case client := <-pool.Register:
             pool.Clients[client] = true
             id := client.ID
-            fmt.Println("Size of Connection Pool: ", len(pool.Clients))
+            fmt.Printf("Size of Connection Pool: %v \n", len(pool.Clients))
             for client, _ := range pool.Clients {
-                fmt.Println(client)
+                fmt.Printf("ClientId %v Connected \n", id)
                 messageBody := fmt.Sprintf("👋 User %v Joined 👋", id)
                 message := Message{ClientId: 0, Body: messageBody}
                 WriteMessage(client.Conn, message)
@@ -51,13 +51,14 @@ func (pool *Pool) Start() {
             id := client.ID
             messageBody := fmt.Sprintf("🫡 User %v Disconnected 🫡", id)
             delete(pool.Clients, client)
-            fmt.Println("Size of Connection Pool: ", len(pool.Clients))
+            fmt.Printf("Size of Connection Pool: %v \n", len(pool.Clients))
             for client, _ := range pool.Clients {
               WriteMessage(client.Conn, Message{ClientId: 0, Body: messageBody})
             }
             break
         case message := <-pool.Broadcast:
-            fmt.Println("Sending message to all clients in Pool")
+            fmt.Printf("Sending message to all clients in Pool \n")
+            fmt.Printf("%v", message)
             for client, _ := range pool.Clients {
                 WriteMessage(client.Conn, message)            
             }

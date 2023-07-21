@@ -11,6 +11,7 @@
   import MagicSquarePub from './MagicSquarePub.svelte'
   import { FEED_LENGTH, psFeed } from '../stores/psFeed'
   import WarningModal from '../MagicSquare/WarningModal.svelte';
+    import Toaster from '../lib/Toaster.svelte';
 
   let psFeedVal: FeedMessage[]
   const unsubPsFeed = psFeed.subscribe((val: FeedMessage[]) => psFeedVal = [...val])
@@ -130,7 +131,7 @@
     ws.close()
   })
 
-  let settings: any
+  let settings: any = {}
 
   async function run() {
     if (!hasBeenDestroyed) { 
@@ -149,32 +150,42 @@
     }
   }
 
-  onMount(async () => {
-    run()
-  })
+  run()
 </script>
 
 
 <div class="flex justify-around items-center"
      use:watchResize={handleResize}>
   <div style="display: none"> {touchScreenVal}  </div>
-  {#if !hasAcceptedWarning}
+  <!-- {#if !hasAcceptedWarning} -->
+  <div class:hidden={hasAcceptedWarning}>
     <WarningModal bind:hasAccepted={hasAcceptedWarning}/>
-  {:else if renderDataReady}
+  </div>
+  <!-- {:else if renderDataReady} -->
+  <div class:hidden={!hasAcceptedWarning}>
     {#key magicSquareInstance}
       <MagicSquarePub  bind:renderDataReady={renderDataReady}
-                       settings={settings}
+                       bind:settings={settings}
                        sideLength={sideLength}>
         <div slot="psFeed"
              class="h-full">
           <Feed sendFeedMessage={sendFeedMessage}
-                bind:showConnected={showConnected}
-                bind:toasts={toasts}
                 bind:toSendBody={toSendBody}/>
         </div>
       </MagicSquarePub>
     {/key}
-  {/if}
+  </div>
+  {#each toasts as { color, text }}
+    {#if text !== "Connected"}
+      <Toaster bind:open={showConnected}
+               color={color}
+               text={text}/>
+    {:else}
+      <Toaster open={null}
+               color={color}
+               text={text}/>
+    {/if}
+  {/each}
 </div>
 
 <style lang="sass">
