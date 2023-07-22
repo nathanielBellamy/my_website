@@ -22,7 +22,6 @@ use super::deser::Deser;
 //  UiBuffer sends serialized JSON (see deser.rs) to backend through socket on update
 //  UiBuffer is updated with new received Settings when message recevied
 
-const ARRAY_BUFFER_CAPACITY: u32 = 5000;
 const URL: &str = "ws://localhost:8080/public-square-wasm-ws";
 
 #[derive(Debug)]
@@ -36,6 +35,8 @@ impl PubSq {
     #[allow(unused)] // called from js
     pub async fn run(touch_screen: JsValue) -> JsValue {
         let touch_screen: bool = serde_wasm_bindgen::from_value(touch_screen).unwrap();
+
+        // setup websocket
         let ws: WebSocket;
         match WebSocket::new(URL) {
             Ok(socket) => ws = socket,
@@ -44,20 +45,18 @@ impl PubSq {
                 return JsValue::from_str("WASM websocket error");
             }
         }
+        ws.set_binary_type(web_sys::BinaryType::Blob);
+        let ws_c = ws.clone();
+        let on_open_cb = Closure::<dyn FnMut()>::new(move || {
+            log("socket opened");
+            match ws_c.send_with_u8_array(&[0, 1, 2, 3, 4]) {
+                Ok(_) => log("message successfully sent"),
+                Err(err) => log(&format!("error sending message: {:?}", err)),
+            }
+        });
 
-        // {
-            let ws_c = ws.clone();
-            let on_open_cb = Closure::<dyn FnMut()>::new(move || {
-                log("socket opened");
-                match ws_c.send_with_str("ping") {
-                    Ok(_) => log("message successfully sent"),
-                    Err(err) => log(&format!("error sending message: {:?}", err)),
-                }
-            });
-
-            ws.set_onopen(Some(on_open_cb.as_ref().unchecked_ref()));
-            on_open_cb.forget();
-        // }
+        ws.set_onopen(Some(on_open_cb.as_ref().unchecked_ref()));
+        on_open_cb.forget();
 
         // TODO: retrieve settings from websocket
         // ws.conn.send_with_str("__init__ps__").unwrap();
@@ -96,7 +95,7 @@ impl PubSq {
         let mouse_pos_buffer: [f32; 2] = [0.0, 0.0];
         let mouse_pos_buffer: Rc<RefCell<[f32; 2]>> = Rc::new(RefCell::new(mouse_pos_buffer));
 
-        log("wasm var init done");
+        // log("wasm var init done");
         {
             // init destroy listener on app_main
             // onDestroy hook in Main.svelte dispatches destroymswasm event
@@ -104,10 +103,12 @@ impl PubSq {
             // requestAnimationFrame checks value, cleans up resources
             let app_main = MagicSquare::app_main();
             let destroy_flag = destroy_flag.clone();
+            // let ws_c = ws.clone();
             
             // close wasm websocket
             let closure = Closure::<dyn FnMut(_)>::new(move |_event: web_sys::Event| {
                 *destroy_flag.clone().borrow_mut() = true;
+                // ws_c.close_with_code(1001);
             });
 
             app_main
@@ -119,7 +120,7 @@ impl PubSq {
 
         // {
             let ui_buffer_c = ui_buffer.clone();
-            let ws_c = ws.clone();
+            // let ws_c = ws.clone();
 
             let onmessage_callback = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
                 // here it receives and deserializes
@@ -142,7 +143,7 @@ impl PubSq {
                 }
             });
 
-            ws_c.set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
+            // ws_c.set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
             onmessage_callback.forget();
             log("WOW ZOW NOW!");
         // }
@@ -152,7 +153,7 @@ impl PubSq {
             let form = form.clone();
             let ui_buffer = ui_buffer.clone();
             let geometry_cache = geometry_cache.clone();
-            let ws_c = ws.clone();
+            // let ws_c = ws.clone();
 
             let closure_handle_input =
                 Closure::<dyn FnMut(_)>::new(move |event: web_sys::Event| {
@@ -420,7 +421,7 @@ impl PubSq {
 
             MagicSquare::request_animation_frame(g.borrow().as_ref().unwrap());
         }
-
+    
         let to_js = ui_buffer.clone().borrow().settings;
         serde_wasm_bindgen::to_value(&to_js).unwrap()
     }

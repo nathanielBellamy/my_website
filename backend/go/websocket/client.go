@@ -2,8 +2,10 @@ package websocket
 
 import (
 	"fmt"
-	"log"
+	// "log"
 	"net"
+
+	// "github.com/gobwas/ws"
 	"github.com/gobwas/ws/wsutil"
 )
 
@@ -35,8 +37,8 @@ func (c *Client) ReadFeed() {
     for {
         msg, _, err := wsutil.ReadClientData(*c.Conn)
         if err != nil {
-            fmt.Printf(" ReadClientData FEED Error ")
-            log.Println(err)
+            fmt.Printf(" ReadClientData FEED Error \n")
+            fmt.Printf(" err %v", err)
             return
         }
         message := Message{ClientId: c.ID, Body: string(msg)}
@@ -52,17 +54,20 @@ func (c *Client) ReadWasm() {
     }()
 
     for {
-        msg, _, err := wsutil.ReadClientData(*c.Conn)
+        msg, opCode, err := wsutil.ReadClientData(*c.Conn)
 
-        fmt.Printf(" ReadClientData WASM ")
+        fmt.Printf(" ReadClientData WASM \n")
+        fmt.Printf(" -----> %v \n", msg)
+        fmt.Printf(" -----> %v \n", opCode)
         if err != nil {
-            fmt.Printf(" ReadClientData WASM Error ")
-            log.Println(err)
+            fmt.Printf(" ReadClientData WASM Error \n")
+            fmt.Printf("err: %v", err)
             return
+        } else {
+          message := Message{ClientId: c.ID, Body: string(msg)}
+          c.Pool.Broadcast <- message
+          fmt.Printf("Message Received: %+v\n", message)
         }
-        message := Message{ClientId: c.ID, Body: string(msg)}
-        c.Pool.Broadcast <- message
-        fmt.Printf("Message Received: %+v\n", message)
     }
 }
 
