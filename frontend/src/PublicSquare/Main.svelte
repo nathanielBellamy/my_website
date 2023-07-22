@@ -13,7 +13,7 @@
   import WarningModal from '../MagicSquare/WarningModal.svelte';
   import Toaster from '../lib/Toaster.svelte';
 
-  export let sideLength: number
+  export let sideLength: number = 0
 
   // TODO:
   // this combination of touchSreen store and value updates works 
@@ -146,7 +146,7 @@
   <div class:hidden={!hasAcceptedWarning}>
     <MagicSquarePub  bind:renderDataReady={renderDataReady}
                      bind:settings={settings}
-                     bind:sideLength={sideLength}>
+                     sideLength={sideLength}>
       <div slot="psFeed"
            class="h-full">
         <Feed sendFeedMessage={sendFeedMessage}

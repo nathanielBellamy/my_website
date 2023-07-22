@@ -26,7 +26,7 @@
 
   onMount(() => {
     hasAcceptedWarning = !!localStorage.getItem("magic_square_has_accepted_warning")
-    incrementMagicSquareInstance()
+    handleResize()
     window.addEventListener('resize', handleResize)
   })
 
@@ -36,7 +36,7 @@
 </script>
 
 <div id="magic_square_pub_container"
-     class="grow w-full h-full flex justify-around items-center"
+     class="w-full h-full overflow-hidden"
      use:watchResize={handleResize}>
   {#if !hasAcceptedWarning}
     <WarningModal bind:hasAccepted={hasAcceptedWarning}/>

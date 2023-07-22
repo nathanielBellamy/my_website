@@ -41,7 +41,7 @@
       asyncComponent: () => import('./MagicSquare/Container.svelte')
     }),
     '/public-square': wrap({
-      asyncComponent: () => import('./PublicSquare/Main.svelte')
+      asyncComponent: () => import('./PublicSquare/Container.svelte')
     })
   }
 
