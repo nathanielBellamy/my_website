@@ -311,8 +311,8 @@
     <div style="display: none"> {touchScreenVal}  </div>
     <canvas id="magic_square_canvas"
             class="magic_square_canvas"
-            height={sideLength}
-            width={sideLength}/>
+            height={200}
+            width={200}/>
   </div>
   <ControlRackPub bind:small={small}>
     <!-- COLOR START -->

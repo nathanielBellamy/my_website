@@ -11,26 +11,9 @@
   import MagicSquarePub from './MagicSquarePub.svelte'
   import { FEED_LENGTH, psFeed } from '../stores/psFeed'
   import WarningModal from '../MagicSquare/WarningModal.svelte';
-    import Toaster from '../lib/Toaster.svelte';
+  import Toaster from '../lib/Toaster.svelte';
 
-  let psFeedVal: FeedMessage[]
-  const unsubPsFeed = psFeed.subscribe((val: FeedMessage[]) => psFeedVal = [...val])
-
-  let magicSquareInstance: number = 0
-  $: magicSquareInstance
-  let sideLength: number = 0
-
-  function incrementMagicSquareInstance() {
-    magicSquareInstance += 1
-  }
-
-  async function handleResize() {
-    incrementMagicSquareInstance()
-    let element = document.getElementById("magic_square_container")
-    if (!!element){
-      sideLength = Math.floor(Math.min(element.offsetWidth, element.offsetHeight) / 1.3) - 25
-    }
-  }
+  export let sideLength: number
 
   // TODO:
   // this combination of touchSreen store and value updates works 
@@ -126,7 +109,6 @@
   })
   onDestroy(() => {
     hasBeenDestroyed = true
-    unsubPsFeed()
     unsubTouchScreen()
     ws.close()
   })
@@ -154,8 +136,7 @@
 </script>
 
 
-<div class="flex justify-around items-center"
-     use:watchResize={handleResize}>
+<div>
   <div style="display: none"> {touchScreenVal}  </div>
   <!-- {#if !hasAcceptedWarning} -->
   <div class:hidden={hasAcceptedWarning}>
@@ -163,17 +144,15 @@
   </div>
   <!-- {:else if renderDataReady} -->
   <div class:hidden={!hasAcceptedWarning}>
-    {#key magicSquareInstance}
-      <MagicSquarePub  bind:renderDataReady={renderDataReady}
-                       bind:settings={settings}
-                       sideLength={sideLength}>
-        <div slot="psFeed"
-             class="h-full">
-          <Feed sendFeedMessage={sendFeedMessage}
-                bind:toSendBody={toSendBody}/>
-        </div>
-      </MagicSquarePub>
-    {/key}
+    <MagicSquarePub  bind:renderDataReady={renderDataReady}
+                     bind:settings={settings}
+                     bind:sideLength={sideLength}>
+      <div slot="psFeed"
+           class="h-full">
+        <Feed sendFeedMessage={sendFeedMessage}
+              bind:toSendBody={toSendBody}/>
+      </div>
+    </MagicSquarePub>
   </div>
   {#each toasts as { color, text }}
     {#if text !== "Connected"}
