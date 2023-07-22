@@ -17,7 +17,7 @@ import (
 func Upgrade(w http.ResponseWriter, r *http.Request) (net.Conn, error) {
     conn, _, _, err := ws.UpgradeHTTP(r, w)
     if err != nil {
-      fmt.Printf("UpgradeHTTP Error")
+      fmt.Printf("UpgradeHTTP Error \n")
       return conn, err
     }
     return conn, nil
@@ -27,7 +27,7 @@ func Reader(conn *net.Conn) ([]byte, error){
     for {
         msg, _, err := wsutil.ReadClientData(*conn)
         if err != nil {
-          fmt.Printf("ReadClientData Error")
+          fmt.Printf("ReadClientData Error \n")
           (*conn).Close()
           return []byte(""), err
         }
@@ -41,7 +41,7 @@ func Reader(conn *net.Conn) ([]byte, error){
 func WriteMessage(conn *net.Conn, msg Message) {
     j, err := json.Marshal(msg)
     if err != nil {
-      fmt.Printf("JSON MESSAGE ERROR")
+      fmt.Printf("JSON MESSAGE ERROR \n")
       return
     }
 
@@ -49,13 +49,19 @@ func WriteMessage(conn *net.Conn, msg Message) {
 }
 
 func WriteSlice(conn *net.Conn, slice []uint8) {
-  Writer(conn, slice)
+  err := wsutil.WriteServerBinary(*conn, []byte(slice))
+  if err != nil {
+    fmt.Printf("WriteServerSlice Error \n")
+    (*conn).Close()
+    return
+  }
 }
 
 func Writer(conn *net.Conn, msg []byte) {
+    // fmt.Printf("Writer with msg: %v", msg)
     err := wsutil.WriteServerMessage(*conn, ws.OpText, []byte(msg))
     if err != nil {
-      fmt.Printf("WriteServerMessage Error")
+      fmt.Printf("WriteServerMessage Error \n")
       (*conn).Close()
       return
     }

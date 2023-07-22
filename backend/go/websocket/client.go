@@ -64,9 +64,8 @@ func (c *Client) ReadWasm() {
             fmt.Printf("err: %v", err)
             return
         } else {
-          message := Message{ClientId: c.ID, Body: string(msg)}
-          c.Pool.Broadcast <- message
-          fmt.Printf("Message Received: %+v\n", message)
+          c.Pool.BroadcastSettings <- msg
+          fmt.Printf("Message Received: %+v\n", msg)
         }
     }
 }

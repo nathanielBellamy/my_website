@@ -120,14 +120,35 @@ impl PubSq {
 
         // {
             let ui_buffer_c = ui_buffer.clone();
-            // let ws_c = ws.clone();
+            let ws_c = ws.clone();
 
             let onmessage_callback = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
                 // here it receives and deserializes
                 log("wasm websocket onmessage_callback");
                 // let raw_bin = JsValueBit(&e.data() as *const JsValue);
-                unsafe { 
-                    // log(&format!("message data {:?}", e.data()));
+                unsafe {
+                    let blob = e.data().dyn_into::<web_sys::Blob>().expect("Error Parsing Blob from Server");
+                    
+                    let fr = web_sys::FileReader::new().unwrap();
+                    let fr_c = fr.clone();
+                    // create onLoadEnd callback
+                    let onloadend_cb = Closure::<dyn FnMut(_)>::new(move |_e: web_sys::ProgressEvent| {
+                        let array = js_sys::Uint8Array::new(&fr_c.result().unwrap());
+                        let len = array.byte_length() as usize;
+                        
+                        log(&format!("Blob received {}bytes: {:?}", len, array.to_vec()));
+                        // here you can for example use the received image/png data
+                    });
+                    fr.set_onloadend(Some(onloadend_cb.as_ref().unchecked_ref()));
+                    fr.read_as_array_buffer(&blob).expect("blob not readable");
+                    onloadend_cb.forget();
+
+                    log(&format!("THE BLOB: {:?}", blob));
+                    if let Ok(from_server) = e.data().dyn_into::<js_sys::Array>() {
+                        log(&format!("message event, received arraybuffer: {:?}", from_server));
+                        let array = js_sys::Uint8Array::new(&from_server);
+                        log(&format!("arr: {:?}", array));
+                    }
                     let settings = Settings::default();
                     let raw_bin = Deser::any_as_u8_slice(&settings); 
                     log(&format!("raw_bin: {:?}", raw_bin));
@@ -143,7 +164,7 @@ impl PubSq {
                 }
             });
 
-            // ws_c.set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
+            ws_c.set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
             onmessage_callback.forget();
             log("WOW ZOW NOW!");
         // }
