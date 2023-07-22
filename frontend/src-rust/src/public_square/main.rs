@@ -46,13 +46,8 @@ impl PubSq {
             }
         }
         ws.set_binary_type(web_sys::BinaryType::Blob);
-        let ws_c = ws.clone();
         let on_open_cb = Closure::<dyn FnMut()>::new(move || {
             log("socket opened");
-            match ws_c.send_with_u8_array(&[0, 1, 2, 3, 4]) {
-                Ok(_) => log("message successfully sent"),
-                Err(err) => log(&format!("error sending message: {:?}", err)),
-            }
         });
 
         ws.set_onopen(Some(on_open_cb.as_ref().unchecked_ref()));
@@ -118,63 +113,43 @@ impl PubSq {
             closure.forget();
         }
 
-        // {
-            let ui_buffer_c = ui_buffer.clone();
+        {
+            let ui_buffer = ui_buffer.clone();
             let ws_c = ws.clone();
 
             let onmessage_callback = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
+                let ui_buffer = ui_buffer.clone();
                 // here it receives and deserializes
-                log("wasm websocket onmessage_callback");
-                // let raw_bin = JsValueBit(&e.data() as *const JsValue);
-                unsafe {
+                // log("wasm websocket onmessage_callback");
+                unsafe { // it is the bytemuck-ing here that is unsafe
                     let blob = e.data().dyn_into::<web_sys::Blob>().expect("Error Parsing Blob from Server");
                     
                     let fr = web_sys::FileReader::new().unwrap();
                     let fr_c = fr.clone();
                     // create onLoadEnd callback
                     let onloadend_cb = Closure::<dyn FnMut(_)>::new(move |_e: web_sys::ProgressEvent| {
-                        let array = js_sys::Uint8Array::new(&fr_c.result().unwrap());
-                        let len = array.byte_length() as usize;
-                        
-                        log(&format!("Blob received {}bytes: {:?}", len, array.to_vec()));
-                        // here you can for example use the received image/png data
+                        let vec: Vec<u8> = js_sys::Uint8Array::new(&fr_c.result().unwrap()).to_vec();
+                        let new_settings: &Settings = bytemuck::from_bytes(&vec[..]);
+                        ui_buffer.clone().borrow_mut().settings = *new_settings;
+                        // log(&format!("New Settings: {:?}", new_settings));
                     });
                     fr.set_onloadend(Some(onloadend_cb.as_ref().unchecked_ref()));
                     fr.read_as_array_buffer(&blob).expect("blob not readable");
                     onloadend_cb.forget();
-
-                    log(&format!("THE BLOB: {:?}", blob));
-                    if let Ok(from_server) = e.data().dyn_into::<js_sys::Array>() {
-                        log(&format!("message event, received arraybuffer: {:?}", from_server));
-                        let array = js_sys::Uint8Array::new(&from_server);
-                        log(&format!("arr: {:?}", array));
-                    }
-                    let settings = Settings::default();
-                    let raw_bin = Deser::any_as_u8_slice(&settings); 
-                    log(&format!("raw_bin: {:?}", raw_bin));
-                    let res: &Settings = bytemuck::from_bytes(raw_bin);
-                    log(&format!("res: {:?}", res));
-                    // match bytemuck::cast::<Settings>(raw_bin) {
-                    //    Ok(res) => {
-                    //         log(&format!("WOOOOOO {:?}", 3));
-                    //         ui_buffer_c.clone().borrow_mut().settings = res;
-                    //     },
-                    //     Err(_) => log("Bytemuck Error")
-                    // }
                 }
             });
 
             ws_c.set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
             onmessage_callback.forget();
             log("WOW ZOW NOW!");
-        // }
+        }
 
         {
             // init UI control settings listener
             let form = form.clone();
             let ui_buffer = ui_buffer.clone();
             let geometry_cache = geometry_cache.clone();
-            // let ws_c = ws.clone();
+            let ws_c = ws.clone();
 
             let closure_handle_input =
                 Closure::<dyn FnMut(_)>::new(move |event: web_sys::Event| {
@@ -185,18 +160,20 @@ impl PubSq {
                         .unwrap();
                     let id = input.id();
                     let val = input.value();
-                    // log(&id);
-                    // log(&val);
                     ui_buffer.clone().borrow_mut().update(
                         id,
                         val,
                         &mut geometry_cache.clone().borrow_mut()
                     );
-                    log("DUUUUUUUUUUUDE");
-                    // ws.ps_send_settings(
-                    //     ui_buffer.clone().borrow().settings, 
-                    //     pub_sq.clone()
-                    // );
+                    // directly serializing Settings into its bytecode is the unsafe part here
+                    // however, Settings is repr(c) 
+                    // hence, we can rely on bytemuck for deserialization 
+                    unsafe {
+                        let settings = ui_buffer.clone().borrow().settings.clone();
+                        let settings_blob = Deser::any_as_u8_slice(&settings);
+                        log(&format!("settings blob: {:?}", settings_blob));
+                        ws_c.send_with_u8_array(settings_blob);
+                    }
                 });
 
             form.add_event_listener_with_callback(
