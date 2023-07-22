@@ -2,10 +2,10 @@
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
 export function magicsquare_run(a: number, b: number, c: number): number;
-export function pubsq_run(a: number): number;
 export function __wbg_magicsquare_free(a: number): void;
-export function __wbg_pubsq_free(a: number): void;
+export function pubsq_run(a: number): number;
 export function rust_init_message(a: number, b: number): void;
+export function __wbg_pubsq_free(a: number): void;
 export function worker_entry_point(a: number): void;
 export function gmaswasm_run(): number;
 export function __wbg_gmaswasm_free(a: number): void;

@@ -51,8 +51,8 @@ func setupRoutes() {
 
     feedPool := websocket.NewPool()
     wasmPool := websocket.NewPool()
-    go feedPool.Start()
-    go wasmPool.Start()
+    go feedPool.StartFeed()
+    go wasmPool.StartWasm()
     http.HandleFunc("/public-square-feed-ws", func(w http.ResponseWriter, r *http.Request) {
       serveFeedWs(feedPool, w, r)
     })

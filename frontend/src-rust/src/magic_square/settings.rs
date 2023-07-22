@@ -56,7 +56,7 @@ pub struct ColorGradient {
 }
 
 #[repr(C)]
-#[derive(Serialize, Deserialize, Clone, Copy, Default, Debug)]
+#[derive(Serialize, Deserialize, Clone, Copy, Debug)]
 pub struct Settings {
     // COLOR
     pub colors: Colors,
@@ -140,6 +140,186 @@ pub struct Settings {
     pub translation_z_base: f32,
     pub translation_z_spread: f32,
     pub mouse_tracking: MouseTracking,
+}
+
+impl Default for Settings {
+    fn default() -> Settings {
+        Settings {
+            colors: [
+              [
+                0.6700000166893005,
+                0.6200000047683716,
+                0.05000000074505806,
+                1.0
+              ],
+              [
+                0.6899999976158142,
+                0.6700000166893005,
+                0.03999999910593033,
+                1.0
+              ],
+              [
+                0.7099999785423279,
+                0.7099999785423279,
+                0.019999999552965164,
+                1.0
+              ],
+              [
+                0.7300000190734863,
+                0.7599999904632568,
+                0.009999999776482582,
+                1.0
+              ],
+              [
+                0.75,
+                0.8100000023841858,
+                0.0,
+                1.0
+              ],
+              [
+                0.6399999856948853,
+                0.8500000238418579,
+                0.23999999463558197,
+                1.0
+              ],
+              [
+                0.5299999713897705,
+                0.8999999761581421,
+                0.49000000953674316,
+                1.0
+              ],
+              [
+                0.41999998688697815,
+                0.949999988079071,
+                0.7400000095367432,
+                1.0
+              ],
+              [
+                0.0,
+                0.7799999713897705,
+                1.0,
+                1.0
+
+              ],
+              [
+                0.10000000149011612,
+                0.5799999833106995,
+                0.9100000262260437,
+                1.0
+              ],
+              [
+                0.20000000298023224,
+                0.38999998569488525,
+                0.8299999833106995,
+                1.0
+              ],
+              [
+                0.30000001192092896,
+                0.1899999976158142,
+                0.75,
+                1.0
+
+              ],
+              [
+                0.4000000059604645,
+                0.0,
+                0.6700000166893005,
+                1.0
+
+              ],
+              [
+                0.46000000834465027,
+                0.0,
+                0.46000000834465027,
+                1.0
+
+              ],
+              [
+                0.5199999809265137,
+                0.0,
+                0.25,
+                1.0
+              ],
+              [
+                0.5799999833106995,
+                0.0,
+                0.03999999910593033,
+                1.0
+              ]
+            ],
+            color_direction: ColorDirection::Out,
+            color_speed: 8,
+            draw_pattern_type: DrawPatternType::Out,
+            draw_pattern_count: 14,
+            draw_pattern_speed: 14,
+            draw_pattern_offset: 8,
+            radius_base: 0.8500000238418579,
+            radius_step: 0.009999999776482582,
+            shapes: [
+                Shape::Misc(1),
+                Shape::Misc(1),
+                Shape::Misc(1),
+                Shape::Misc(1),
+                Shape::Misc(1),
+                Shape::Misc(1),
+                Shape::Misc(1),
+                Shape::Misc(1),
+                Shape::Misc(1),
+                Shape::Misc(1),
+                Shape::Misc(1),
+                Shape::Misc(1),
+                Shape::Misc(1),
+                Shape::Misc(1),
+                Shape::Misc(1),
+                Shape::Misc(1),
+            ],
+            transform_order: TransformOrder::RotateThenTranslate,
+            lfo_1_active: true,
+            lfo_1_amp: 0.05000000074505806,
+            lfo_1_dest: LfoDestination::PitchBase,
+            lfo_1_freq: 35.0,
+            lfo_1_phase: 0.0,
+            lfo_1_shape: LfoShape::Sine,
+            lfo_2_active: true,
+            lfo_2_amp: 0.5,
+            lfo_2_dest: LfoDestination::RollBase,
+            lfo_2_freq: 15.0,
+            lfo_2_phase: 0.0,
+            lfo_2_shape: LfoShape::Sine,
+            lfo_3_active: true,
+            lfo_3_amp: 0.3700000047683716,
+            lfo_3_dest: LfoDestination::RadiusBase,
+            lfo_3_freq: 15.0,
+            lfo_3_phase: 0.0,
+            lfo_3_shape: LfoShape::Sine,
+            lfo_4_active: true,
+            lfo_4_amp: 0.25,
+            lfo_4_dest: LfoDestination::YawSpread,
+            lfo_4_freq: 35.0,
+            lfo_4_phase: 0.0,
+            lfo_4_shape: LfoShape::Sine,
+            preset: 18,
+            x_rot_base: 0.8899999856948853,
+            y_rot_base: 0.0,
+            z_rot_base: 1.6299999952316284,
+            x_rot_spread: 0.09000000357627869,
+            y_rot_spread: 0.0,
+            z_rot_spread: -0.03999999910593033,
+            x_axis_x_rot_coeff: 0.0,
+            x_axis_y_rot_coeff: 0.0,
+            x_axis_z_rot_coeff: 0.0,
+            y_axis_x_rot_coeff: 0.0,
+            y_axis_y_rot_coeff: 0.0,
+            y_axis_z_rot_coeff: 0.0,
+            translation_x_base: 0.0,
+            translation_x_spread: 0.0,
+            translation_y_base: 0.0,
+            translation_y_spread: 0.0,
+            translation_z_base: 0.0,
+            translation_z_spread: 0.0,
+            mouse_tracking: MouseTracking::Off
+      }
+    }
 }
 
 impl Settings {

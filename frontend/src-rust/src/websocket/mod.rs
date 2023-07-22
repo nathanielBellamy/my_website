@@ -8,7 +8,6 @@ pub struct Websocket {
     pub conn: web_sys::WebSocket
 }
 
-
 #[derive(Clone, Copy, Debug, Deserialize, Serialize)]
 pub struct WebsocketConnError;
 

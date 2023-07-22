@@ -48,6 +48,10 @@ func WriteMessage(conn *net.Conn, msg Message) {
     Writer(conn, []byte(j))
 }
 
+func WriteSlice(conn *net.Conn, slice []uint8) {
+  Writer(conn, slice)
+}
+
 func Writer(conn *net.Conn, msg []byte) {
     err := wsutil.WriteServerMessage(*conn, ws.OpText, []byte(msg))
     if err != nil {

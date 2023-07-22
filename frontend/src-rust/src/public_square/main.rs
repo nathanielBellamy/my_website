@@ -14,11 +14,8 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use web_sys::{MessageEvent, WebGl2RenderingContext, WebGlProgram, WebSocket};
-
 use crate::{magic_square::{settings::Settings, main::MagicSquare, main::X_MAX}, websocket::{Websocket, WebsocketConnError}};
-
 use super::deser::Deser;
-use super::ui_buffer::JsValueBit;
 
 // TODO:
 //  run an instance of magic square that has access to the websocket
@@ -29,34 +26,7 @@ const ARRAY_BUFFER_CAPACITY: u32 = 5000;
 const URL: &str = "ws://localhost:8080/public-square-wasm-ws";
 
 #[derive(Debug)]
-pub struct PublicSquare {
-    ab: ArrayBuffer,
-    pub client_id: u64,
-    pub dv: DataView,
-}
-
-impl PublicSquare {
-    pub fn new(client_id: u64) -> Result<PublicSquare, WebsocketConnError> {
-        let ab = ArrayBuffer::new(ARRAY_BUFFER_CAPACITY);
-        Ok(PublicSquare {
-            dv: DataView::new(&ab, 0, ARRAY_BUFFER_CAPACITY as usize),
-            ab,
-            client_id,
-        })
-    }
-}
-
-impl Websocket {
-    pub fn ps_send_settings(&self, settings: Settings, pub_sq: Rc<RefCell<PublicSquare>>) -> Result<(), JsValue> {
-        let u8_slice: &[u8] = unsafe { Deser::any_as_u8_slice(&settings) };
-        for (idx, val) in u8_slice.iter().enumerate() {
-            pub_sq.clone().borrow_mut().dv.set_uint8(idx, *val)
-        }
-        log(&format!("send: {:?}", pub_sq.clone().borrow().ab));
-        self.conn.send_with_array_buffer(&pub_sq.clone().borrow().ab)?;
-        Ok(())
-    }
-}
+pub struct PublicSquare;
 
 #[wasm_bindgen]
 struct PubSq;
@@ -83,11 +53,6 @@ impl PubSq {
                     Ok(_) => log("message successfully sent"),
                     Err(err) => log(&format!("error sending message: {:?}", err)),
                 }
-                // send off binary message
-                match ws_c.send_with_u8_array(&[0, 1, 2, 3]) {
-                    Ok(_) => log("binary message successfully sent"),
-                    Err(err) => log(&format!("error sending message: {:?}", err)),
-                }
             });
 
             ws.set_onopen(Some(on_open_cb.as_ref().unchecked_ref()));
@@ -98,15 +63,6 @@ impl PubSq {
         // ws.conn.send_with_str("__init__ps__").unwrap();
 
         let settings = Settings::default();
-        let mut pub_sq: PublicSquare;
-        match PublicSquare::new(1){
-            Ok(ps) => pub_sq = ps,
-            Err(e) => {
-                return serde_wasm_bindgen::to_value(&e).unwrap();
-            }
-        }
-        log(&format!("{:?}", pub_sq));
-        let pub_sq = Rc::new(RefCell::new(pub_sq));
 
         let canvas = MagicSquare::canvas()
             .dyn_into::<web_sys::HtmlCanvasElement>()
@@ -166,17 +122,23 @@ impl PubSq {
             let ws_c = ws.clone();
 
             let onmessage_callback = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
-                // pub_sq sends bin seriaiized settings
                 // here it receives and deserializes
-                log(&format!("wasm websocket onmessage_callback: {:?}", e.data()));
-                let raw_bin = JsValueBit(&e.data() as *const JsValue);
-                log(&format!("raw_bin: {:?}", raw_bin));
-                match bytemuck::try_cast::<JsValueBit, Settings>(raw_bin) {
-                   Ok(res) => {
-                        log(&format!("WOOOOOO {:?}", 3));
-                        ui_buffer_c.clone().borrow_mut().settings = res;
-                    },
-                    Err(_) => log("Bytemuck Error")
+                log("wasm websocket onmessage_callback");
+                // let raw_bin = JsValueBit(&e.data() as *const JsValue);
+                unsafe { 
+                    // log(&format!("message data {:?}", e.data()));
+                    let settings = Settings::default();
+                    let raw_bin = Deser::any_as_u8_slice(&settings); 
+                    log(&format!("raw_bin: {:?}", raw_bin));
+                    let res: &Settings = bytemuck::from_bytes(raw_bin);
+                    log(&format!("res: {:?}", res));
+                    // match bytemuck::cast::<Settings>(raw_bin) {
+                    //    Ok(res) => {
+                    //         log(&format!("WOOOOOO {:?}", 3));
+                    //         ui_buffer_c.clone().borrow_mut().settings = res;
+                    //     },
+                    //     Err(_) => log("Bytemuck Error")
+                    // }
                 }
             });
 
@@ -190,7 +152,6 @@ impl PubSq {
             let form = form.clone();
             let ui_buffer = ui_buffer.clone();
             let geometry_cache = geometry_cache.clone();
-            let pub_sq = pub_sq.clone();
             let ws_c = ws.clone();
 
             let closure_handle_input =
