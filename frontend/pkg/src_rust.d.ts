@@ -46,8 +46,8 @@ export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly magicsquare_run: (a: number, b: number, c: number) => number;
   readonly __wbg_magicsquare_free: (a: number) => void;
-  readonly rust_init_message: (a: number, b: number) => void;
   readonly pubsq_run: (a: number) => number;
+  readonly rust_init_message: (a: number, b: number) => void;
   readonly __wbg_pubsq_free: (a: number) => void;
   readonly worker_entry_point: (a: number) => void;
   readonly gmaswasm_run: () => number;

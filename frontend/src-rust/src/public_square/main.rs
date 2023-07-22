@@ -1,4 +1,3 @@
-use js_sys::{DataView, ArrayBuffer};
 use wasm_bindgen::JsValue;
 use crate::log;
 use crate::magic_square::animation::Animation;
@@ -14,7 +13,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use web_sys::{MessageEvent, WebGl2RenderingContext, WebGlProgram, WebSocket};
-use crate::{magic_square::{settings::Settings, main::MagicSquare, main::X_MAX}, websocket::{Websocket, WebsocketConnError}};
+use crate::magic_square::{settings::Settings, main::MagicSquare, main::X_MAX};
 use super::deser::Deser;
 
 // TODO:

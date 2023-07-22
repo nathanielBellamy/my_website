@@ -64,8 +64,5 @@
 <!-- </div> -->
 
 <style lang="sass">
-  .magic_square_container
-    height: 100%
-    width: 100%
-    overflow: hidden
+
 </style>

@@ -5,7 +5,6 @@ use wasm_bindgen::prelude::*; // ensure wasm-bindgen creates bindings for sub-mo
 #[macro_use]
 pub mod magic_square;
 pub mod public_square;
-pub mod websocket;
 
 #[wasm_bindgen]
 pub fn rust_init_message(message: String) {
