@@ -3,7 +3,6 @@
   import { watchResize } from "svelte-watch-resize"
   import Main from "./Main.svelte"
 
-  // INIT Prev Settings
   import WarningModal from "../MagicSquare/WarningModal.svelte"
 
   let magicSquareInstance: number = 0

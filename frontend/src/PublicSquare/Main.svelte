@@ -1,30 +1,16 @@
 <script lang="ts">
-  import init, { PubSq, rust_init_message } from '../../pkg/src_rust.js'
-  import { watchResize } from "svelte-watch-resize"
   import { onDestroy, onMount } from 'svelte'
   import { WebsocketBuilder } from 'websocket-ts'
   import Feed from './Feed.svelte'
   import type { ToasterProps } from '../lib/Toaster'
   import { ToastColor } from '../lib/Toaster'
   import type { FeedMessage } from './FeedMessage'
-  import { touchScreen } from '../stores/touchScreen'
   import MagicSquarePub from './MagicSquarePub.svelte'
   import { FEED_LENGTH, psFeed } from '../stores/psFeed'
   import WarningModal from '../MagicSquare/WarningModal.svelte';
   import Toaster from '../lib/Toaster.svelte';
 
   export let sideLength: number = 0
-
-  // TODO:
-  // this combination of touchSreen store and value updates works 
-  // to ensure that the touchScreen value is updated by the time it is passed to RustWasm
-  // this includes the hidden element using touchScreenVal in the html
-  // not sure why this magic combo gets it done
-  // but we won't worry about it right now
-  const id = (x: any): any => x
-  let touchScreenVal: boolean
-  const unsubTouchScreen = touchScreen.subscribe((val: boolean) => touchScreenVal = val)
-  $: isTouchScreen = id(touchScreenVal)
 
   let clientId: number
 
@@ -88,7 +74,6 @@
 
   // messaging
   let toSendBody: string = ""
-  $: toSend = {clientId: 1, body: toSendBody}
   
   function pushToFeed(m: FeedMessage) {
     psFeed.update((prevFeed: FeedMessage[]) => {
@@ -102,50 +87,23 @@
 
   // LIFECYCLE
   let renderDataReady: boolean = false
-  let hasBeenDestroyed: boolean = false
   let hasAcceptedWarning: boolean = false
   onMount(() => {
     hasAcceptedWarning = !!localStorage.getItem("magic_square_has_accepted_warning")
   })
   onDestroy(() => {
-    hasBeenDestroyed = true
-    unsubTouchScreen()
     ws.close()
   })
-
-  let settings: any = {}
-
-  async function run() {
-    if (!hasBeenDestroyed) { 
-      // resize + key block in Container.svelte may destroy component before wasm_bindgen can load
-      // without this check, it is possible to load two wasm instances
-      // since wasm retrieves the elements using .get_element_by_id
-      // and since a new instance of the component will havee been mounted by the time wasm_bindgen loads
-      // the result is two identical wasm instances listening to the same ui elements and drawing to the same context
-      await init()
-      rust_init_message("Public Square Wasm!")
-      
-      // init wasm process and set initial values
-      settings = await PubSq.run(touchScreenVal)
-      // setAllSettings(settings)
-      renderDataReady = true
-    }
-  }
-
-  run()
 </script>
 
 
 <div>
-  <div style="display: none"> {touchScreenVal}  </div>
-  <!-- {#if !hasAcceptedWarning} -->
   <div class:hidden={hasAcceptedWarning}>
     <WarningModal bind:hasAccepted={hasAcceptedWarning}/>
   </div>
   <!-- {:else if renderDataReady} -->
   <div class:hidden={!hasAcceptedWarning}>
     <MagicSquarePub  bind:renderDataReady={renderDataReady}
-                     bind:settings={settings}
                      sideLength={sideLength}>
       <div slot="psFeed"
            class="h-full">

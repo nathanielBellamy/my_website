@@ -32,7 +32,7 @@ struct PubSq;
 #[wasm_bindgen]
 impl PubSq {
     #[allow(unused)] // called from js
-    pub async fn run(touch_screen: JsValue) -> JsValue {
+    pub async fn run(set_all_settings: &js_sys::Function, touch_screen: JsValue) -> JsValue {
         let touch_screen: bool = serde_wasm_bindgen::from_value(touch_screen).unwrap();
 
         // setup websocket
@@ -112,12 +112,21 @@ impl PubSq {
             closure.forget();
         }
 
+        // let mut settings_js: JsValue = JsValue::null();
+        // let settings_js = Rc::new(RefCell::new(settings_js));
+
+        // take ownership of the referenced function
+        let set_all_settings = (*set_all_settings).clone();
+        let set_all_settings: Rc<RefCell<js_sys::Function>> = Rc::new(RefCell::new(set_all_settings));
+
         {
             let ui_buffer = ui_buffer.clone();
             let ws_c = ws.clone();
+            let set_all_settings = set_all_settings.clone();
 
             let onmessage_callback = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
                 let ui_buffer = ui_buffer.clone();
+                let set_all_settings = set_all_settings.clone();
                 // here it receives and deserializes
                 // log("wasm websocket onmessage_callback");
                 unsafe { // it is the bytemuck-ing here that is unsafe
@@ -129,7 +138,12 @@ impl PubSq {
                     let onloadend_cb = Closure::<dyn FnMut(_)>::new(move |_e: web_sys::ProgressEvent| {
                         let vec: Vec<u8> = js_sys::Uint8Array::new(&fr_c.result().unwrap()).to_vec();
                         let new_settings: &Settings = bytemuck::from_bytes(&vec[..]);
+                        // set new_ettings in Wasm
                         ui_buffer.clone().borrow_mut().settings = *new_settings;
+                        //
+                        let this: JsValue = JsValue::null();
+                        let settings_js = serde_wasm_bindgen::to_value(new_settings).expect("serde new_settings error");
+                        let _ = set_all_settings.clone().borrow().call1(&this.clone(), &(settings_js.clone()));
                         // log(&format!("New Settings: {:?}", new_settings));
                     });
                     fr.set_onloadend(Some(onloadend_cb.as_ref().unchecked_ref()));

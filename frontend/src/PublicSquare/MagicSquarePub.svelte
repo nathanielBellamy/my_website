@@ -1,4 +1,5 @@
 <script lang="ts" type="module">
+  import init, { PubSq, rust_init_message } from '../../pkg/src_rust.js'
   import { onDestroy } from 'svelte'
   import Loading from '../lib/Loading.svelte'
   import ControlRackPub from './ControlRackPub.svelte'
@@ -27,8 +28,6 @@
   import { I18n, Lang } from '../I18n'
   import { lang } from '../stores/lang'
   import { touchScreen } from '../stores/touchScreen.js'
-
-  export let settings: StorageSettings
 
   // TODO:
   // this combination of touchSreen store and value updates works 
@@ -287,12 +286,35 @@
 
   $: sAS = setAllSettings(settings, renderDataReady)
 
+  let hasBeenDestroyed: boolean = false
   onDestroy(() => {
+    hasBeenDestroyed = true
     unsubLang()
     unsubTouchScreen()
     let app = document.getElementById(("app_main"))
     app.dispatchEvent(new Event("destroymswasm", {bubbles: true}))
   })
+
+  let settings: StorageSettings
+
+  async function run() {
+    if (!hasBeenDestroyed) { 
+      // resize + key block in Container.svelte may destroy component before wasm_bindgen can load
+      // without this check, it is possible to load two wasm instances
+      // since wasm retrieves the elements using .get_element_by_id
+      // and since a new instance of the component will havee been mounted by the time wasm_bindgen loads
+      // the result is two identical wasm instances listening to the same ui elements and drawing to the same context
+      await init()
+      rust_init_message("Public Square Wasm!")
+      
+      // init wasm process and set initial values
+      settings = await PubSq.run((settings: StorageSettings) => setAllSettings(settings, true), touchScreenVal)
+      // setAllSettings(settings)
+      renderDataReady = true
+    }
+  }
+
+  run()
 </script>
 
 <svelte:window bind:innerWidth />
