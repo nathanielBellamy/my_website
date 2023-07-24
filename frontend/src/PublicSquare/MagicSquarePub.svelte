@@ -323,6 +323,7 @@
      class="magic_square"
      class:grid_col={small}
      class:grid_row={!small}>
+  <div style="display: none"> {touchScreenVal}  </div>
   <div style="display: none">
     {sAS}
   </div>
@@ -330,7 +331,6 @@
   <div id="magic_square_canvas_container"
        class="magic_square_canvas_container flex flex-col justify-around display">
     <!-- we use touchSceenVal here to ensure Svelte has it updated by the time it reaches RustWasm -->
-    <div style="display: none"> {touchScreenVal}  </div>
     <canvas id="magic_square_canvas"
             class="magic_square_canvas"
             height={sideLength}

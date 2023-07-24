@@ -45,12 +45,12 @@ impl PubSq {
             }
         }
         ws.set_binary_type(web_sys::BinaryType::Blob);
-        let on_open_cb = Closure::<dyn FnMut()>::new(move || {
-            log("socket opened");
-        });
+        // let on_open_cb = Closure::<dyn FnMut()>::new(move || {
+        //     log("socket opened");
+        // });
 
-        ws.set_onopen(Some(on_open_cb.as_ref().unchecked_ref()));
-        on_open_cb.forget();
+        // ws.set_onopen(Some(on_open_cb.as_ref().unchecked_ref()));
+        // on_open_cb.forget();
 
         // TODO: retrieve settings from websocket
         // ws.conn.send_with_str("__init__ps__").unwrap();
@@ -154,7 +154,7 @@ impl PubSq {
 
             ws_c.set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
             onmessage_callback.forget();
-            log("WOW ZOW NOW!");
+            // log("WOW ZOW NOW!");
         }
 
         {
@@ -184,7 +184,7 @@ impl PubSq {
                     unsafe {
                         let settings = ui_buffer.clone().borrow().settings.clone();
                         let settings_blob = Deser::any_as_u8_slice(&settings);
-                        log(&format!("settings blob: {:?}", settings_blob));
+                        // log(&format!("settings blob: {:?}", settings_blob));
                         ws_c.send_with_u8_array(settings_blob);
                     }
                 });

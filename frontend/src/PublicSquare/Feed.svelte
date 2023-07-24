@@ -32,7 +32,7 @@
   function formatClientId(id: number): string {
     var res: string = ""
     if (!!id) {
-      res = `:: User ${id} :: `
+      res = `u-${id}:`
     }
 
     return res
@@ -50,21 +50,12 @@
   })
 </script>
 
-<div class="w-full h-full p-2 flex justify-between items-stretch">
-  <div class="grow p-5 m-5 flex flex-col justify-between items-stretch">
-    <input bind:value={toSendBody}/>
-    <button on:click={() => sendFeedMessage(toSendBody)}>
-      SEND IT
-    </button>
-  </div>
+<div class="w-full h-full p-2 grid grid-cols-1 grid-rows-2">
   <div  id="public_square_feed"
-        class="grow p-5 m-5 overflow-y-scroll flex flex-col items-stretch">
+        class="grow p-2 overflow-y-scroll flex flex-col items-stretch">
     {#each psFeedVal as { clientId, body }, i} 
       {#if !!i}
-        <div class="grow p-5 m-5 flex items-center">
-          <h4>
-            {i}
-          </h4>
+        <div class="grow grid grid-cols-2 grid-rows-1 gap-2 overflow-y-scroll">
           <div>
             {formatClientId(clientId)}
           </div>
@@ -75,8 +66,14 @@
       {/if}
     {/each}
   </div>
+  <div class="grow p-2 grid grid-rows-2 grid-cols-1">
+    <input bind:value={toSendBody}/>
+    <button on:click={() => sendFeedMessage(toSendBody)}>
+      SEND IT
+    </button>
+  </div>
 </div>
 
 <style lang="sass">
-
+ /* TODO: template feed greed areas */
 </style>
