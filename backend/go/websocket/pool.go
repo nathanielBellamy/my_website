@@ -82,11 +82,11 @@ func (pool *Pool) StartWasm() {
             delete(pool.Clients, client)
             break
         case arr := <-pool.BroadcastSettings:
-            fmt.Printf("Sending message to all clients in Pool \n")
-            fmt.Printf("%v", arr)
+            // fmt.Printf("Sending message to all clients in Pool \n")
+            // fmt.Printf("%v", arr)
             // update public settingsBlob
             settingsBlob = arr
-            fmt.Printf("new_blob: %v \n", settingsBlob)
+            // fmt.Printf("new_blob: %v \n", settingsBlob)
             // send updated blob to everyone
             for client, _ := range pool.Clients {
                 WriteSlice(client.Conn, settingsBlob)
