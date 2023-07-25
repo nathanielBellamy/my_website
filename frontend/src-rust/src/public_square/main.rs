@@ -1,3 +1,4 @@
+// use bytemuck::{bytes_of, from_bytes}
 use wasm_bindgen::JsValue;
 use crate::log;
 use crate::magic_square::animation::Animation;
@@ -14,7 +15,6 @@ use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use web_sys::{MessageEvent, WebGl2RenderingContext, WebGlProgram, WebSocket};
 use crate::magic_square::{settings::Settings, main::MagicSquare, main::X_MAX};
-use super::deser::Deser;
 
 // TODO:
 //  run an instance of magic square that has access to the websocket
@@ -178,12 +178,12 @@ impl PubSq {
                         val,
                         &mut geometry_cache.clone().borrow_mut()
                     );
-                    // directly serializing Settings into its bytecode is the unsafe part here
+                    // bytemuck is the unsafe part here
                     // however, Settings is repr(c) 
-                    // hence, we can rely on bytemuck for deserialization 
+                    // hence, we can rely on bytemuck for de/serialization through transmutation
                     unsafe {
                         let settings = ui_buffer.clone().borrow().settings.clone();
-                        let settings_blob = Deser::any_as_u8_slice(&settings);
+                        let settings_blob = bytemuck::bytes_of(&settings);
                         // log(&format!("settings blob: {:?}", settings_blob));
                         ws_c.send_with_u8_array(settings_blob);
                     }

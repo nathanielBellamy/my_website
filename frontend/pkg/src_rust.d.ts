@@ -48,16 +48,16 @@ export interface InitOutput {
   readonly magicsquare_run: (a: number, b: number, c: number) => number;
   readonly __wbg_magicsquare_free: (a: number) => void;
   readonly pubsq_run: (a: number, b: number) => number;
-  readonly __wbg_pubsq_free: (a: number) => void;
   readonly rust_init_message: (a: number, b: number) => void;
+  readonly __wbg_pubsq_free: (a: number) => void;
   readonly worker_entry_point: (a: number) => void;
   readonly gmaswasm_run: () => number;
   readonly __wbg_gmaswasm_free: (a: number) => void;
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
-  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h0510ece70d75ebd8: (a: number, b: number, c: number) => void;
   readonly _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hcfc6ba39ac9dbdef: (a: number, b: number) => void;
+  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h0510ece70d75ebd8: (a: number, b: number, c: number) => void;
   readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h232fbe164ebb195a: (a: number, b: number, c: number) => void;
   readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hb3634acf3d2d040e: (a: number, b: number, c: number) => void;
   readonly __wbindgen_exn_store: (a: number) => void;
