@@ -32,7 +32,7 @@ struct PubSq;
 #[wasm_bindgen]
 impl PubSq {
     #[allow(unused)] // called from js
-    pub async fn run(set_all_settings: &js_sys::Function, touch_screen: JsValue) -> JsValue {
+    pub async fn run(set_all_settings: &js_sys::Function, set_side_length: &js_sys::Function, touch_screen: JsValue) -> JsValue {
         let touch_screen: bool = serde_wasm_bindgen::from_value(touch_screen).unwrap();
 
         // setup websocket
@@ -112,10 +112,22 @@ impl PubSq {
             closure.forget();
         }
 
-        // let mut settings_js: JsValue = JsValue::null();
-        // let settings_js = Rc::new(RefCell::new(settings_js));
+        // set up cavnas container ResizeObserver
+        // take ownership of the passed-in js closure
+        let set_side_length = (*set_side_length).clone();
+        let set_side_length: Rc<RefCell<js_sys::Function>> = Rc::new(RefCell::new(set_side_length));
 
-        // take ownership of the referenced function
+        {
+            let set_side_length = set_side_length.clone();
+            let handle_resize = Closure::<dyn FnMut(_)>::new(move |e: Vec<web_sys::ResizeObserverEntry>| {
+                // TODO
+            });
+        }
+
+
+    
+        // set up WebSocket onMessage
+        // take ownership of the passed-in js closure
         let set_all_settings = (*set_all_settings).clone();
         let set_all_settings: Rc<RefCell<js_sys::Function>> = Rc::new(RefCell::new(set_all_settings));
 
