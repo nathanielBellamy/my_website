@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte'
+  import { onDestroy } from 'svelte'
   import { WebsocketBuilder } from 'websocket-ts'
   import Feed from './Feed.svelte'
   import type { ToasterProps } from '../lib/Toaster'
@@ -7,10 +7,7 @@
   import type { FeedMessage } from './FeedMessage'
   import MagicSquarePub from './MagicSquarePub.svelte'
   import { FEED_LENGTH, psFeed } from '../stores/psFeed'
-  import WarningModal from '../MagicSquare/WarningModal.svelte';
   import Toaster from '../lib/Toaster.svelte';
-
-  export let sideLength: number = 0
 
   let clientId: number
 
@@ -85,33 +82,20 @@
     })
   }
 
-  // LIFECYCLE
-  let renderDataReady: boolean = false
-  let hasAcceptedWarning: boolean = false
-  onMount(() => {
-    hasAcceptedWarning = !!localStorage.getItem("magic_square_has_accepted_warning")
-  })
   onDestroy(() => {
     ws.close()
   })
 </script>
 
 
-<div>
-  <div class:hidden={hasAcceptedWarning}>
-    <WarningModal bind:hasAccepted={hasAcceptedWarning}/>
-  </div>
-  <!-- {:else if renderDataReady} -->
-  <div class:hidden={!hasAcceptedWarning}>
-    <MagicSquarePub  bind:renderDataReady={renderDataReady}
-                     sideLength={sideLength}>
-      <div slot="psFeed"
-           class="h-full">
-        <Feed sendFeedMessage={sendFeedMessage}
-              bind:toSendBody={toSendBody}/>
-      </div>
-    </MagicSquarePub>
-  </div>
+<div class="h-full w-full overflow-hidden">
+  <MagicSquarePub>
+    <div slot="psFeed"
+         class="h-full">
+      <Feed sendFeedMessage={sendFeedMessage}
+            bind:toSendBody={toSendBody}/>
+    </div>
+  </MagicSquarePub>
   {#each toasts as { color, text }}
     {#if text !== "Connected"}
       <Toaster bind:open={showConnected}

@@ -32,7 +32,7 @@ struct PubSq;
 #[wasm_bindgen]
 impl PubSq {
     #[allow(unused)] // called from js
-    pub async fn run(set_all_settings: &js_sys::Function, set_side_length: &js_sys::Function, touch_screen: JsValue) -> JsValue {
+    pub async fn run(set_all_settings: &js_sys::Function, touch_screen: JsValue) -> JsValue {
         let touch_screen: bool = serde_wasm_bindgen::from_value(touch_screen).unwrap();
 
         // setup websocket
@@ -61,6 +61,9 @@ impl PubSq {
             .dyn_into::<web_sys::HtmlCanvasElement>()
             .unwrap();
         let canvas = Rc::new(canvas);
+
+        let canvas_container = MagicSquare::canvas_container();
+        let canvas_container = Rc::new(canvas_container);
 
         let geometry_cache: GeometryCache = GeometryCache::new(&settings.shapes);
         let geometry_cache = Rc::new(RefCell::new(geometry_cache));
@@ -114,14 +117,26 @@ impl PubSq {
 
         // set up cavnas container ResizeObserver
         // take ownership of the passed-in js closure
-        let set_side_length = (*set_side_length).clone();
-        let set_side_length: Rc<RefCell<js_sys::Function>> = Rc::new(RefCell::new(set_side_length));
 
         {
-            let set_side_length = set_side_length.clone();
+            let canvas = canvas.clone();
+            let canvas_container = canvas_container.clone();
+            log(&format!("{:?}", *canvas_container));
             let handle_resize = Closure::<dyn FnMut(_)>::new(move |e: Vec<web_sys::ResizeObserverEntry>| {
                 // TODO
+                log("handlin resize");
+                log(&format!("{:?}", e));
+                let canvas = canvas.clone();
+                canvas.set_height(500);
+                canvas.set_width(500);
             });
+
+            log("wowy zowy");
+
+            if let Ok(resize_observer) = web_sys::ResizeObserver::new(handle_resize.as_ref().unchecked_ref()) {
+                resize_observer.observe(&canvas_container.clone());
+            }
+            handle_resize.forget();
         }
 
 
@@ -141,7 +156,7 @@ impl PubSq {
                 let set_all_settings = set_all_settings.clone();
                 // here it receives and deserializes
                 // log("wasm websocket onmessage_callback");
-                unsafe { // it is the bytemuck-ing here that is unsafe
+                unsafe { // it is the bytemuck-ing here tffhat is unsafe
                     let blob = e.data().dyn_into::<web_sys::Blob>().expect("Error Parsing Blob from Server");
                     
                     let fr = web_sys::FileReader::new().unwrap();
@@ -257,6 +272,7 @@ impl PubSq {
 
         {
             // set up animation loop
+            let canvas = canvas.clone();
             let ui_buffer = ui_buffer.clone();
             let mut animation = Animation::new();
             animation.set_from(&ui_buffer.clone().borrow().settings);
@@ -326,8 +342,9 @@ impl PubSq {
             gl.bind_vertex_array(Some(&vao));
 
             *g.borrow_mut() = Some(Closure::new(move || {
-                let mut settings = ui_buffer.clone().borrow().settings;
 
+                log("hi");
+                let mut settings = ui_buffer.clone().borrow().settings;
                 animation.set_from(&settings);
 
                 if *destroy_flag.clone().borrow() {

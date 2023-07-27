@@ -132,7 +132,7 @@
   </Dropdown>
 </nav>
 
-<main class="rounded-md flex flex-col justify-start">
+<main class="rounded-md flex flex-col justify-start overflow-hidden">
   <Router {routes}/>
 </main>
 

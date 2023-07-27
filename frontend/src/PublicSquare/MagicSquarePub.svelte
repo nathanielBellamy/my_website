@@ -1,6 +1,6 @@
 <script lang="ts" type="module">
   import init, { PubSq, rust_init_message } from '../../pkg/src_rust.js'
-  import { onDestroy } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
   import Loading from '../lib/Loading.svelte'
   import ControlRackPub from './ControlRackPub.svelte'
   import DrawPatternContainer from '../MagicSquare/ControlModules/DrawPattern.svelte'
@@ -57,8 +57,6 @@
   //   -> Svelte/JS is for layout + display logic
   //   -> Rust/Wasm is for handling data
   
-  export let sideLength: number = 0.0
-
   // DRAW PATTERN
   let drawPatternType: DrawPatternType
   let drawPatternCount: number
@@ -308,13 +306,18 @@
       rust_init_message("Public Square Wasm!")
       
       // init wasm process and set initial values
-      settings = await PubSq.run((settings: StorageSettings) => setAllSettings(settings, true), touchScreenVal)
+      settings = await PubSq.run(
+        (settings: StorageSettings) => setAllSettings(settings, true),
+        touchScreenVal
+      )
       // setAllSettings(settings)
       renderDataReady = true
     }
   }
 
-  run()
+  onMount(async () => {
+    await run()
+  })
 </script>
 
 <svelte:window bind:innerWidth />
@@ -323,6 +326,7 @@
      class="magic_square"
      class:grid_col={small}
      class:grid_row={!small}>
+  <!-- we use touchSceenVal here to ensure Svelte has it updated by the time it reaches RustWasm -->
   <div style="display: none"> {touchScreenVal}  </div>
   <div style="display: none">
     {sAS}
@@ -330,11 +334,10 @@
      <!-- on:click={() => console.dir(deriveStorageSettings())} -->
   <div id="magic_square_canvas_container"
        class="magic_square_canvas_container flex flex-col justify-around display">
-    <!-- we use touchSceenVal here to ensure Svelte has it updated by the time it reaches RustWasm -->
     <canvas id="magic_square_canvas"
             class="magic_square_canvas"
-            height={sideLength}
-            width={sideLength}/>
+            height={500}
+            width={500}/>
   </div>
   <ControlRackPub bind:small={small}>
     <!-- COLOR START -->
