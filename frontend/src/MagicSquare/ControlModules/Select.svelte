@@ -61,6 +61,7 @@
       </button>
     </div>
   {/if}
+  <!-- TODO: filter out presets -->
   {#each Object.values(Module) as mod}
     <button class="module_option"
             class:selected_left="{curr_mod_left === mod}"

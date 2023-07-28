@@ -55,6 +55,7 @@ export const localeEs: any = {
     controlRack: {
       color: "color",
       drawPattern: "dispersión",
+      feed: "mensajes",
       geometry: 'geometría',
       lfo: "lfo",
       modules: "módulos",

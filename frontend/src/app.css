@@ -83,14 +83,18 @@ button:disabled:hover {
 }
 
 select {
-  color: #395A6D;
+  color: #629BBC;
+  background-color: #1A2831;
   border-radius: 5px;
   padding: 2px 10px 2px 10px;
   font-weight: 800;
+  cursor: pointer;
 }
 
+
 select optgroup {
-  color: #395A6D;
+  color: #629BBC;
+  background-color: #1A2831;
 }
 
 /***** Chrome, Safari, Opera and Edge Chromium styles *****/

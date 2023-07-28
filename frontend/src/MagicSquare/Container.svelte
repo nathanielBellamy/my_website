@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte"
-  import { watchResize } from "svelte-watch-resize"
   import type { StorageSettings } from './StorageSettings'
   import Main from "./Main.svelte"
 
@@ -11,21 +10,6 @@
   let prevSettingsStoreVal: StorageSettings
   $: prevSettingsStoreVal
   const unsubscribe = prevSettingsStore.subscribe(val => prevSettingsStoreVal = val)
-  
-  let magicSquareInstance: number = 0
-  $: magicSquareInstance
-  let sideLength: number = 0
-
-  async function handleResize() {
-    incrementMagicSquareInstance()
-    prevSettingsStoreVal = prevSettingsStoreVal
-    let element = document.getElementById("magic_square_container")
-    sideLength = Math.floor(Math.min(element.offsetWidth, element.offsetHeight) / 1.3) - 25
-  }
-
-  onDestroy(() => {
-    window.removeEventListener('resize', handleResize)
-  })
 
   let dataReady: boolean = false
   let hasAcceptedWarning: boolean = false
@@ -39,30 +23,21 @@
       prevSettingsStore.update((_: StorageSettings): StorageSettings => {
         return res
       })
-      incrementMagicSquareInstance()
     }
-    window.addEventListener('resize', handleResize)
     dataReady = true
   })
 
   onDestroy(unsubscribe)
-
-  function incrementMagicSquareInstance() {
-    magicSquareInstance += 1
-  }
 </script>
 
 <div id="magic_square_container"
-     class="magic_square_container"
-     use:watchResize={handleResize}>
+     class="magic_square_container">
   {#if !hasAcceptedWarning}
     <WarningModal bind:hasAccepted={hasAcceptedWarning}/>
   {:else}
-    {#key magicSquareInstance}
       {#if dataReady}
-        <Main sideLength={sideLength}/>
+        <Main />
       {/if}
-    {/key}
   {/if}
 </div>
 

@@ -39,6 +39,9 @@
     }),
     '/magic_square': wrap({
       asyncComponent: () => import('./MagicSquare/Container.svelte')
+    }),
+    '/public-square': wrap({
+      asyncComponent: () => import('./PublicSquare/Container.svelte')
     })
   }
 
@@ -59,9 +62,6 @@
 </script>
 
 <nav class="nav_bar flex justify-between items-center gap-2 pt-2 pb-2">
-  <!-- <Dropdown> -->
-    <!-- <DropdownHeader> -->
-
   <DropdownButton id="siteSectionDropdown"
                   class="border-transparent"
                   color="none"
@@ -84,6 +84,10 @@
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
                   on:click={() => handleDropdownClick(SiteSection.magicSquare)}>
       {i18n.t("nav/magicSquare", langVal)}
+    </DropdownItem>
+    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
+                  on:click={() => handleDropdownClick(SiteSection.publicSquare)}>
+      Public square
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
                   on:click={() => handleDropdownClick(SiteSection.giveMeASine)}>
@@ -128,7 +132,7 @@
   </Dropdown>
 </nav>
 
-<main class="rounded-md flex flex-col justify-start">
+<main class="rounded-md flex flex-col justify-start overflow-hidden">
   <Router {routes}/>
 </main>
 

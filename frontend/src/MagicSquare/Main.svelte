@@ -1,6 +1,6 @@
 <script lang="ts" type="module">
   import init, { MagicSquare, rust_init_message } from '../../pkg/src_rust.js'
-  import { afterUpdate, onDestroy } from 'svelte'
+  import { afterUpdate, onDestroy, onMount } from 'svelte'
   import Loading from '../lib/Loading.svelte'
   import DrawPatternContainer from './ControlModules/DrawPattern.svelte'
   import { DrawPatternType } from './ControlModules/DrawPattern'
@@ -59,8 +59,6 @@
   //   -> Svelte/JS is for layout + display logic
   //   -> Rust/Wasm is for handling data
   
-  export let sideLength: number = 0.0
-
   // DRAW PATTERN
   let drawPatternType: DrawPatternType
   let drawPatternCount: number
@@ -407,7 +405,6 @@
     }
   })
 
-  // effectively onMount
   async function run() {
     let ses = localStorage.getItem("magic_square_settings")
     if (ses) {
@@ -437,7 +434,9 @@
     }
   }
 
-  run()
+  onMount(async () => {
+    await run()
+  })
 </script>
 
 <svelte:window bind:innerWidth />
@@ -452,9 +451,7 @@
     <!-- we use touchSceenVal here to ensure Svelte has it updated by the time it reaches RustWasm -->
     <div style="display: none"> {touchScreenVal}  </div>
     <canvas id="magic_square_canvas"
-            class="magic_square_canvas"
-            height={sideLength}
-            width={sideLength}/>
+            class="magic_square_canvas"/>
   </div>
   <ControlRack bind:small={small}>
     <div slot="color"

@@ -1,6 +1,7 @@
 export enum Module {
   color = 'color',
   drawPattern = 'drawPattern',
+  feed = 'feed',
   geometry = 'geometry',
   lfo = 'lfo',
   presets = 'presets',
@@ -14,6 +15,8 @@ export function into_module(s: string): Module {
       return Module.color
     case "drawPattern":
       return Module.drawPattern
+    case "feed":
+      return Module.feed
     case "geometry":
       return Module.geometry
     case "lfo":

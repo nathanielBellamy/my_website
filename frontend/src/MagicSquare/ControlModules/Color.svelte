@@ -51,7 +51,7 @@
     if (!!width) {
       var input = document.getElementById(WasmInputId.colors)
       let step: number = 0
-      while (idxLeft + step < idxRight) {
+      while (idxLeft + step < idxRight + 1) {
         const newColor = colorGradientAtStep(step, width)
         colors[idxLeft + step] = newColor
         colorPickers[idxLeft + step].color.rgba = {r: newColor[0], g: newColor[1], b: newColor[2], a: newColor[3]}

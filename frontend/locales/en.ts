@@ -55,6 +55,7 @@ export const localeEn: any = {
     controlRack: {
       color: "color",
       drawPattern: "pattern",
+      feed: "messages",
       geometry: 'geometry',
       lfo: "lfo",
       modules: "modules",
@@ -166,6 +167,12 @@ export const localeEn: any = {
       body_3: "Please ensure you enjoy Magic Square in a well-lit environment and take frequent breaks. Your safety is important to us.",
       go_home: "Go To Home",
       accept_and_continue: "Accept & Continue",
+    }
+  },
+  publicSquare: {
+    messaging: {
+      cool: "匚ㄖㄖㄥ!",
+      neat: "ᑎEᗩT!",
     }
   }
 }
