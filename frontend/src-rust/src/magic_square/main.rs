@@ -37,6 +37,11 @@ impl MagicSquare {
             .dyn_into::<web_sys::HtmlCanvasElement>()
             .unwrap();
         let canvas = Rc::new(canvas);
+        let canvas_container = MagicSquare::canvas_container();
+        let canvas_container = Rc::new(canvas_container);
+
+        let side_length: u32 = 0;
+        let side_length = Rc::new(RefCell::new(side_length));
 
         let geometry_cache: GeometryCache = GeometryCache::new(&ui_buffer.settings.shapes);
         let geometry_cache = Rc::new(RefCell::new(geometry_cache));
@@ -51,8 +56,6 @@ impl MagicSquare {
         let destroy_flag: bool = false;
         let destroy_flag: Rc<RefCell<bool>> = Rc::new(RefCell::new(destroy_flag));
 
-        let height: i32 = canvas.client_height();
-        let width: i32 = canvas.client_width();
         // incriment idx_delay each render
         // when idx_delay reaches a desired delay value
         // incriment idx_offset
@@ -80,6 +83,37 @@ impl MagicSquare {
                 .unwrap();
 
             closure.forget();
+        }
+
+        // set up cavnas container ResizeObserver
+        {
+            let canvas = canvas.clone();
+            let canvas_container = canvas_container.clone();
+            let side_length = side_length.clone();
+            let handle_resize = Closure::<dyn FnMut(_)>::new(move |_: Vec<web_sys::ResizeObserverEntry>| {
+                let canvas = canvas.clone();
+                let side_length = side_length.clone();
+                
+                let container = canvas.parent_element().unwrap();
+                let width: i32 = container.client_width();
+                let height = container.client_height();
+                let new_sl: u32 = ((i32::min(width, height) as f32) / 1.3) as u32;
+                
+                // update canvas
+                canvas.set_height(new_sl);
+                canvas.set_width(new_sl);
+                *side_length.clone().borrow_mut() = new_sl;
+
+                // update context
+                let gl = MagicSquare::context(&canvas).unwrap();
+                let new_sl_i32 = new_sl as i32;
+                gl.viewport(0, 0, new_sl_i32, new_sl_i32);
+            });
+
+            if let Ok(resize_observer) = web_sys::ResizeObserver::new(handle_resize.as_ref().unchecked_ref()) {
+                resize_observer.observe(&canvas_container.clone());
+            }
+            handle_resize.forget();
         }
 
         {
@@ -120,12 +154,14 @@ impl MagicSquare {
             let magic_square = magic_square.clone();
             let mouse_pos_buffer = mouse_pos_buffer.clone();
             let canvas = canvas.clone();
+            let side_length = side_length.clone();
             if !touch_screen {
                 let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::MouseEvent| {
+                    let side_length = *side_length.clone().borrow() as i32;
                     mouse_pos_buffer.clone().borrow_mut()[0] =
-                        MagicSquare::clip_x(event.offset_x(), width);
+                        MagicSquare::clip_x(event.offset_x(), side_length);
                     mouse_pos_buffer.clone().borrow_mut()[1] =
-                        MagicSquare::clip_x(event.offset_y(), height);
+                        MagicSquare::clip_x(event.offset_y(), side_length);
                     magic_square
                         .dispatch_event(&web_sys::Event::new("render").unwrap())
                         .unwrap();
@@ -139,16 +175,17 @@ impl MagicSquare {
             } else {
                 let inner_canvas = canvas.clone();
                 let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::TouchEvent| {
+                    let side_length = *side_length.clone().borrow() as i32;
                     mouse_pos_buffer.clone().borrow_mut()[0] = MagicSquare::clip_x(
                         event.target_touches().item(0).unwrap().client_x()
                             - inner_canvas.clone().offset_left(),
-                        width,
+                        side_length,
                     );
 
                     mouse_pos_buffer.clone().borrow_mut()[1] = MagicSquare::clip_x(
                         event.target_touches().item(0).unwrap().client_y()
                             - inner_canvas.clone().offset_top(),
-                        height,
+                        side_length,
                     );
                 });
                 canvas
