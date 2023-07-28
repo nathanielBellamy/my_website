@@ -1,5 +1,5 @@
 
-const emojis = {
+export const emojis: any = {
   grinning: "😄",
   smile: "😊",
   wink: "😉",
