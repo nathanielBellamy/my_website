@@ -24,6 +24,7 @@ features = [
   'BinaryType',
   'Blob',
   'CanvasRenderingContext2d',
+  'CssStyleDeclaration',
   'Document',
   'DomRectReadOnly',
   'Element',

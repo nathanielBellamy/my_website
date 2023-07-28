@@ -79,8 +79,8 @@ impl PubSq {
         let destroy_flag: bool = false;
         let destroy_flag: Rc<RefCell<bool>> = Rc::new(RefCell::new(destroy_flag));
 
-        let height: i32 = canvas.client_height();
-        let width: i32 = canvas.client_width();
+        let side_length: u32 = 0;
+        let side_length = Rc::new(RefCell::new(side_length));
         // incriment idx_delay each render
         // when idx_delay reaches a desired delay value
         // incriment idx_offset
@@ -121,17 +121,21 @@ impl PubSq {
         {
             let canvas = canvas.clone();
             let canvas_container = canvas_container.clone();
-            log(&format!("{:?}", *canvas_container));
+            let side_length = side_length.clone();
             let handle_resize = Closure::<dyn FnMut(_)>::new(move |e: Vec<web_sys::ResizeObserverEntry>| {
-                // TODO
-                log("handlin resize");
-                log(&format!("{:?}", e));
+                let side_length = side_length.clone();
+                let rect = e[0].content_rect();
+                let width = rect.width();
+                let height = rect.height();
+                // Math.floor(Math.min(element.offsetWidth, element.offsetHeight) / 1.3) - 25
+                //
+                let new_sl: u32 = (f64::min(rect.width(), rect.height()) / 1.3).floor() as u32 - 25;
+                
+                *side_length.clone().borrow_mut() = new_sl;
                 let canvas = canvas.clone();
-                canvas.set_height(500);
-                canvas.set_width(500);
+                canvas.set_height(new_sl);
+                canvas.set_width(new_sl);
             });
-
-            log("wowy zowy");
 
             if let Ok(resize_observer) = web_sys::ResizeObserver::new(handle_resize.as_ref().unchecked_ref()) {
                 resize_observer.observe(&canvas_container.clone());
@@ -230,12 +234,15 @@ impl PubSq {
             let magic_square = magic_square.clone();
             let mouse_pos_buffer = mouse_pos_buffer.clone();
             let canvas = canvas.clone();
+            let side_length = side_length.clone();
+
             if !touch_screen {
                 let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::MouseEvent| {
+                    let side_length = *side_length.clone().borrow() as i32;
                     mouse_pos_buffer.clone().borrow_mut()[0] =
-                        MagicSquare::clip_x(event.offset_x(), width);
+                        MagicSquare::clip_x(event.offset_x(), side_length);
                     mouse_pos_buffer.clone().borrow_mut()[1] =
-                        MagicSquare::clip_x(event.offset_y(), height);
+                        MagicSquare::clip_x(event.offset_y(), side_length);
                     magic_square
                         .dispatch_event(&web_sys::Event::new("render").unwrap())
                         .unwrap();
@@ -249,16 +256,17 @@ impl PubSq {
             } else {
                 let inner_canvas = canvas.clone();
                 let closure = Closure::<dyn FnMut(_)>::new(move |event: web_sys::TouchEvent| {
+                    let side_length = *side_length.clone().borrow() as i32;
                     mouse_pos_buffer.clone().borrow_mut()[0] = MagicSquare::clip_x(
                         event.target_touches().item(0).unwrap().client_x()
                             - inner_canvas.clone().offset_left(),
-                        width,
+                        side_length
                     );
 
                     mouse_pos_buffer.clone().borrow_mut()[1] = MagicSquare::clip_x(
                         event.target_touches().item(0).unwrap().client_y()
                             - inner_canvas.clone().offset_top(),
-                        height,
+                        side_length
                     );
                 });
                 canvas
@@ -341,9 +349,8 @@ impl PubSq {
             gl.enable_vertex_attrib_array(position_attribute_location as u32);
             gl.bind_vertex_array(Some(&vao));
 
+            // animation callback
             *g.borrow_mut() = Some(Closure::new(move || {
-
-                log("hi");
                 let mut settings = ui_buffer.clone().borrow().settings;
                 animation.set_from(&settings);
 
@@ -465,4 +472,58 @@ impl PubSq {
         let to_js = ui_buffer.clone().borrow().settings;
         serde_wasm_bindgen::to_value(&to_js).unwrap()
     }
+}
+
+pub fn setup_gl(canvas: &web_sys::HtmlCanvasElement) -> web_sys::WebGl2RenderingContext {
+    // set up WebGL
+    let gl: web_sys::WebGl2RenderingContext = MagicSquare::context(&canvas).unwrap();
+    gl.clear_color(0.0, 0.0, 0.0, 0.0);
+    gl.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
+
+    let program: WebGlProgram = GlProgram::new(&gl).expect(&format!("ISSUE INIT GL_PROGRAM"));
+    gl.use_program(Some(&program));
+
+    let gl_buffer = gl.create_buffer().ok_or("Failed to create buffer").unwrap();
+    gl.bind_buffer(WebGl2RenderingContext::ARRAY_BUFFER, Some(&gl_buffer));
+
+    // set gl to read vertex data from geometry_cache.vertices
+
+    // Note that `Float32Array::view` is somewhat dangerous (hence the
+    // `unsafe`!). This is creating a raw view into our module's
+    // `WebAssembly.Memory` buffer, but if we allocate more pages for ourself
+    // (aka do a memory allocation in Rust) it'll cause the buffer to change,
+    // causing the `Float32Array` to be invalid.
+    //
+    // As a result, after `Float32Array::view` we have to be very careful not to
+    // do any memory allocations before it's dropped.
+    let vertices = Geom::f32_array();
+    unsafe {
+        let positions_array_buf_view = js_sys::Float32Array::view(&vertices);
+
+        gl.buffer_data_with_array_buffer_view(
+            WebGl2RenderingContext::ARRAY_BUFFER,
+            &positions_array_buf_view,
+            WebGl2RenderingContext::STATIC_DRAW,
+        );
+    }
+
+    let vao = gl
+        .create_vertex_array()
+        .ok_or("Could not create vertex array object")
+        .unwrap();
+    gl.bind_vertex_array(Some(&vao));
+
+    let position_attribute_location = gl.get_attrib_location(&program, "position");
+    gl.vertex_attrib_pointer_with_i32(
+        position_attribute_location as u32,
+        3,
+        WebGl2RenderingContext::FLOAT,
+        false,
+        0,
+        0,
+    );
+    gl.enable_vertex_attrib_array(position_attribute_location as u32);
+    gl.bind_vertex_array(Some(&vao));
+
+    gl
 }
