@@ -335,9 +335,7 @@
   <div id="magic_square_canvas_container"
        class="magic_square_canvas_container flex flex-col justify-around display">
     <canvas id="magic_square_canvas"
-            class="magic_square_canvas"
-            height={500}
-            width={500}/>
+            class="magic_square_canvas"/>
   </div>
   <ControlRackPub bind:small={small}>
     <!-- COLOR START -->

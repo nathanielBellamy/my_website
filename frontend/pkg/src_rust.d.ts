@@ -46,10 +46,10 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly magicsquare_run: (a: number, b: number, c: number) => number;
-  readonly __wbg_magicsquare_free: (a: number) => void;
   readonly pubsq_run: (a: number, b: number) => number;
-  readonly rust_init_message: (a: number, b: number) => void;
+  readonly __wbg_magicsquare_free: (a: number) => void;
   readonly __wbg_pubsq_free: (a: number) => void;
+  readonly rust_init_message: (a: number, b: number) => void;
   readonly worker_entry_point: (a: number) => void;
   readonly gmaswasm_run: () => number;
   readonly __wbg_gmaswasm_free: (a: number) => void;
@@ -57,8 +57,8 @@ export interface InitOutput {
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
   readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h17c74ca79ab69648: (a: number, b: number, c: number) => void;
-  readonly _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h649787c87ac70633: (a: number, b: number) => void;
   readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h3d8a698922213782: (a: number, b: number, c: number, d: number) => void;
+  readonly _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h649787c87ac70633: (a: number, b: number) => void;
   readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h9917f84f5e50eb0c: (a: number, b: number, c: number) => void;
   readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h6210c12073ae7c08: (a: number, b: number, c: number) => void;
   readonly __wbindgen_exn_store: (a: number) => void;

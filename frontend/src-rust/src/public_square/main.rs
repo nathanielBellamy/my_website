@@ -54,7 +54,6 @@ impl PubSq {
 
         // TODO: retrieve settings from websocket
         // ws.conn.send_with_str("__init__ps__").unwrap();
-
         let settings = Settings::default();
 
         let canvas = MagicSquare::canvas()
@@ -116,25 +115,28 @@ impl PubSq {
         }
 
         // set up cavnas container ResizeObserver
-        // take ownership of the passed-in js closure
-
         {
             let canvas = canvas.clone();
             let canvas_container = canvas_container.clone();
             let side_length = side_length.clone();
-            let handle_resize = Closure::<dyn FnMut(_)>::new(move |e: Vec<web_sys::ResizeObserverEntry>| {
-                let side_length = side_length.clone();
-                let rect = e[0].content_rect();
-                let width = rect.width();
-                let height = rect.height();
-                // Math.floor(Math.min(element.offsetWidth, element.offsetHeight) / 1.3) - 25
-                //
-                let new_sl: u32 = (f64::min(rect.width(), rect.height()) / 1.3).floor() as u32 - 25;
-                
-                *side_length.clone().borrow_mut() = new_sl;
+            let handle_resize = Closure::<dyn FnMut(_)>::new(move |_: Vec<web_sys::ResizeObserverEntry>| {
                 let canvas = canvas.clone();
+                let side_length = side_length.clone();
+                
+                let container = canvas.parent_element().unwrap();
+                let width: i32 = container.client_width();
+                let height = container.client_height();
+                let new_sl: u32 = ((i32::min(width, height) as f32) / 1.3) as u32;
+                
+                // update canvas
                 canvas.set_height(new_sl);
                 canvas.set_width(new_sl);
+                *side_length.clone().borrow_mut() = new_sl;
+
+                // update context
+                let gl = MagicSquare::context(&canvas).unwrap();
+                let new_sl_i32 = new_sl as i32;
+                gl.viewport(0, 0, new_sl_i32, new_sl_i32);
             });
 
             if let Ok(resize_observer) = web_sys::ResizeObserver::new(handle_resize.as_ref().unchecked_ref()) {
@@ -143,8 +145,6 @@ impl PubSq {
             handle_resize.forget();
         }
 
-
-    
         // set up WebSocket onMessage
         // take ownership of the passed-in js closure
         let set_all_settings = (*set_all_settings).clone();
