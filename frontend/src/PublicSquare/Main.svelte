@@ -20,7 +20,7 @@
       .onError(() => pushToast(toastError))
       .onMessage((_i, ev) => {
         const message: FeedMessage = JSON.parse(ev.data)
-        if (message.body === "connected") {
+        if (message.body === "__init__connected__") {
           clientId = message.clientId
         } else {
           pushToFeed(message)
@@ -84,10 +84,12 @@
 
 
 <div class="h-full w-full overflow-hidden">
+  <h1> {clientId} </h1>
   <MagicSquarePub>
     <div slot="psFeed"
          class="h-full">
       <Feed sendFeedMessage={sendFeedMessage}
+            bind:clientIdSelf={clientId}
             bind:toSendBody={toSendBody}/>
     </div>
   </MagicSquarePub>

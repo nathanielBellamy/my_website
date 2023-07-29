@@ -42,10 +42,14 @@ func (pool *Pool) StartFeed() {
             pool.Clients[client] = true
             id := client.ID
             fmt.Printf("Size of Connection Pool: %v \n", len(pool.Clients))
+            //send clientId back to client 
+            message := Message{ClientId: id, Body: "__init__connected__"}
+            WriteMessage(client.Conn, message)
+
+            // announce to pool
+            messageBody := fmt.Sprintf("u-%v 👋", id)
+            message = Message{ClientId: 0, Body: messageBody}
             for client, _ := range pool.Clients {
-                fmt.Printf("ClientId %v Connected \n", id)
-                messageBody := fmt.Sprintf("u-%v 👋", id)
-                message := Message{ClientId: 0, Body: messageBody}
                 WriteMessage(client.Conn, message)
             }
             break

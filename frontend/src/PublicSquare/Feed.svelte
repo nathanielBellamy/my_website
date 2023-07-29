@@ -8,6 +8,7 @@
   const unsubPsFeed = psFeed.subscribe((val: FeedMessage[]) => psFeedVal = [...val])
 
   export let sendFeedMessage: (body: string) => void
+  export let clientIdSelf: number | null
 
   let feedWasScrolledToBottom: boolean = false
 
@@ -25,7 +26,6 @@
       // scroll is within 150px of bottom
       res = Math.abs(feed.scrollTop - (feed.scrollHeight - feed.offsetHeight)) < 150
     }
-
     return res
   }
 
@@ -87,18 +87,25 @@
         class="public_square_feed_messages_container h-full rounded-md overflow-y-scroll">
     <div  id="public_square_feed_messages"
           class="public_square_feed_messages h-fit p-2 flex flex-col items-center gap-2">
-      {#each psFeedVal as { clientId, body }, i} 
-        {#if !!i}
-          <div class="feed_message p-2 w-full h-fit rounded-md grid grid-cols-2 grid-rows-1 gap-2">
-            <div class="feed_message_user text-sm h-full flex justify-around items-center">
-              {formatClientId(clientId)}
+      {#if !psFeedVal.length}
+        <h1> No New Messages </h1>
+      {:else}
+        {#each psFeedVal as { clientId, body }, i} 
+          {#if !!i}
+            <div class="feed_message p-2 w-full h-fit rounded-md grid grid-cols-2 grid-rows-1 gap-2"
+                 class:feed_message_self={clientIdSelf === clientId}
+                 class:feed_message_system={clientId === 0}
+                 class:feed_message_other={clientIdSelf !== clientId}>
+              <div class="feed_message_user text-sm h-full flex justify-around items-center">
+                {formatClientId(clientId)}
+              </div>
+              <div class="feed_message_body font-bold text-lg mr-2 rounded-md">
+                {body}
+              </div>
             </div>
-            <div class="feed_message_body font-bold text-lg mr-2 rounded-md">
-              {body}
-            </div>
-          </div>
-        {/if}
-      {/each}
+          {/if}
+        {/each}
+      {/if}
     </div>
   </div>
   <div class="public_square_feed_input p-2 h-full grid grid-rows-3 grid-cols-1 gap-4">
@@ -159,4 +166,10 @@
     &_body
       grid-area: "body"
       background-color: color.$black-7
+    &_self
+      background-color: color.$yellow-4
+    &_other
+      background-color: color.$green-4
+    &_system
+      background-color: color.$blue-7
 </style>
