@@ -29,10 +29,14 @@
     return res
   }
 
-  function formatClientId(id: number): string {
+  function formatClientId(id: number, clientIsSelf: boolean): string {
     var res: string = ""
     if (!!id) {
-      res = `u-${id}:`
+      if (!clientIsSelf){
+        res = `u-${id}`
+      } else {
+        res = `u-${id}`
+      }
     }
 
     return res
@@ -100,19 +104,34 @@
                  class:feed_message_self={clientIdSelf === clientId}
                  class:feed_message_system={clientId === 0}
                  class:feed_message_other={clientIdSelf !== clientId}>
-              {#if clientIdSelf !== clientId}
-                <div class="feed_message_user rounded-md text-sm font-semibold h-full flex justify-around items-center">
-                  {formatClientId(clientId)}
-                </div>
-                <div class="feed_message_body font-bold text-lg p-2 mr-2 rounded-md">
+              {#if clientId === 0}
+                <div class="feed_message_body font-bold text-lg p-2 mr-2 rounded-md w-full break-all">
                   {body}
+                </div>
+              {:else if clientIdSelf !== clientId}
+                <div class="feed_message_body font-bold text-lg p-2 mr-2 rounded-md w-full break-all">
+                  {body}
+                </div>
+                <div class="h-full w-full flex flex-col justify-around items-center">
+                  <div class="feed_message_user pl-2 pr-2 pt-4 pb-4 rounded-md text-sm font-semibold h-full flex justify-around items-center">
+                    {formatClientId(clientId, false)}
+                  </div>
                 </div>
               {:else}
-                <div class="feed_message_body font-bold text-lg p-2 mr-2 rounded-md">
-                  {body}
+                <div class="h-full w-full flex flex-col justify-around items-center">
+                  <div class="feed_message_user pl-2 pr-2 pt-4 pb-4 rounded-md text-sm font-semibold h-full flex justify-around items-center">
+                    <div class="flex flex-col justify-between items-stretch">
+                      <div class="w-full flex justify-around items-center"> 
+                        me 
+                      </div>
+                      <div class="w-full flex justify-around items-center text-xs"> 
+                        {formatClientId(clientId, true)}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="feed_message_user rounded-md text-sm font-semibold h-full flex justify-around items-center">
-                  {formatClientId(clientId)}
+                <div class="feed_message_body font-bold text-lg p-2 mr-2 rounded-md w-full break-all">
+                  {body}
                 </div>
               {/if}
             </div>
@@ -153,7 +172,7 @@
 
   .public_square_feed
     grid-template-areas: "messages" "input"
-    grid-template-rows: 70% 30%
+    grid-template-rows: 60% 40%
     &_messages
       grid-area: "messages"
       &_container
@@ -161,20 +180,20 @@
     &_input
       grid-area: "input"
       grid-template-areas: "keyboard" "body" "buttons"
-      grid-template-rows: 50% 2em 1fr
+      grid-template-rows: 60% 2em 1fr
       &_emoji_keyboard
         grid-area: "keyboard"
-        border: color.$blue-7 2px solid
+        border: 3px color.$yellow-3 double
       &_body
         grid-area: "body"
-        border: color.$blue-4 2px solid
+        border: 3px color.$yellow-3 double
       &_buttons
         grid-area: "buttons"
         grid-template-columns: 70% 30%
         &_send
-          border: 3px solid color.$green-4
+          border: 3px color.$green-4 double
         &_clr
-          border: 3px solid color.$red-4
+          border: 3px color.$red-4 double
       
   .feed_message
     background-color: color.$blue-7
@@ -183,6 +202,7 @@
     &_user
       grid-area: "user"
       background-color: color.$purple-7
+      height: fit-content
     &_body
       grid-area: "body"
       background-color: color.$black-7
@@ -191,16 +211,17 @@
       display: grid
       grid-template-columns: 50% 50%
       grid-template-rows: 1fr
-      gap: 2px
+      gap: 4px
     &_other
       background-color: color.$green-4
       display: grid
       grid-template-columns: 50% 50%
       grid-template-rows: 1fr
-      gap: 2px
+      gap: 4px
     &_system
       background-color: color.$blue-7
       display: flex
+      flex-direction: column
       justify-content: space-around
-      align-items: center
+      align-items: stretch
 </style>
