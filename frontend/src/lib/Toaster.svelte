@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Toast } from 'flowbite-svelte'
   import { fly } from 'svelte/transition'
-  import type { ToastColor } from './Toaster'
+  import type { ToastColor } from './Toasty'
 
   export let color: ToastColor
   export let text: string

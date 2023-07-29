@@ -33,14 +33,9 @@
 
 <div  id="emoji_keyboard"
       class="w-full h-full text-xs grid grid-cols-3 auto-rows-min">
-  {#each Object.keys(emojis) as emojiName, idx }
+  {#each Object.keys(emojis) as emojiName }
     <button class="p-2"
-            on:click={() => setVal(emojis[emojiName])}
-            on:keydown={(e) => {
-              if (e.key === `${idx}`) {
-                setVal(emojis[emojiName])
-              }
-            }}>
+            on:click={() => setVal(emojis[emojiName])}>
       {emojis[emojiName]}
     </button>
   {/each}

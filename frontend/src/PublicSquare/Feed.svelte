@@ -2,7 +2,7 @@
   import { afterUpdate, beforeUpdate, onDestroy, onMount } from 'svelte'
   import type { FeedMessage } from './FeedMessage'
   import { psFeed } from '../stores/psFeed'
-  import EmojiKeyboard from '../lib/EmojiKeyboard.svelte';
+  import EmojiKeyboard from '../lib/EmojiKeyboard.svelte'
 
   let psFeedVal: FeedMessage[]
   const unsubPsFeed = psFeed.subscribe((val: FeedMessage[]) => psFeedVal = [...val])
@@ -57,6 +57,7 @@
     nextEmoji = ""
     toSendBody = ""
   }
+
   // LIFECYCLE
   onMount(() => scrollFeedToBottom())
   onDestroy(() => unsubPsFeed())
@@ -71,7 +72,7 @@
 
 <div class="public_square_feed w-full h-full pt-2 pl-2 pr-2 pb-8 grid grid-cols-1 grid-rows-2">
   <div  id="public_square_feed_messages_container"
-        class="h-full overflow-y-scroll">
+        class="public_square_feed_messages_container h-full rounded-md overflow-y-scroll">
     <div  id="public_square_feed_messages"
           class="public_square_feed_messages h-fit p-2 flex flex-col items-center gap-2">
       {#each psFeedVal as { clientId, body }, i} 
@@ -118,6 +119,8 @@
     grid-template-rows: 70% 30%
     &_messages
       grid-area: "messages"
+      &_container
+        background-color: color.$grey-transp
     &_input
       grid-area: "input"
       grid-template-areas: "keyboard" "body" "buttons"
@@ -136,7 +139,7 @@
       
 
   .feed_message
-    background-color: color.$blue-transp
+    background-color: color.$blue-7
     grid-template-areas: "user body"
     grid-template-columns: 40% 60%
     &_user

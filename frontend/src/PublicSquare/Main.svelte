@@ -2,8 +2,8 @@
   import { onDestroy } from 'svelte'
   import { WebsocketBuilder } from 'websocket-ts'
   import Feed from './Feed.svelte'
-  import type { ToasterProps } from '../lib/Toaster'
-  import { ToastColor } from '../lib/Toaster'
+  import type { ToasterProps } from '../lib/Toasty'
+  import { ToastColor } from '../lib/Toasty'
   import type { FeedMessage } from './FeedMessage'
   import MagicSquarePub from './MagicSquarePub.svelte'
   import { FEED_LENGTH, psFeed } from '../stores/psFeed'
@@ -40,13 +40,14 @@
     text: "Connected"
   }
 
+  let showConnected: boolean = false;
+  let counter: number = 6;
+
   function triggerShowConnected() {
     showConnected = true;
     counter = 6;
     timeout();
   }
-  let showConnected: boolean = false;
-  let counter: number = 6;
 
   function timeout() {
     if (--counter > 0)
