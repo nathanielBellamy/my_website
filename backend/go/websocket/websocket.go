@@ -1,15 +1,10 @@
 package websocket
-
 // https://tutorialedge.net/projects/chat-system-in-go-and-react/part-4-handling-multiple-clients/
-
 import (
     "encoding/json"
     "fmt"
-    // "io"
-    // "log"
     "net"
     "net/http"
-
     "github.com/gobwas/ws"
     "github.com/gobwas/ws/wsutil"
 )
@@ -21,21 +16,6 @@ func Upgrade(w http.ResponseWriter, r *http.Request) (net.Conn, error) {
       return conn, err
     }
     return conn, nil
-}
-
-func Reader(conn *net.Conn) ([]byte, error){
-    for {
-        msg, _, err := wsutil.ReadClientData(*conn)
-        if err != nil {
-          fmt.Printf("ReadClientData Error \n")
-          (*conn).Close()
-          return []byte(""), err
-        }
-        
-        fmt.Printf(string(msg))
-        msg = append(msg, []byte(" !GO! ")...)
-        Writer(conn, msg)
-    }
 }
 
 func WriteMessage(conn *net.Conn, msg Message) {

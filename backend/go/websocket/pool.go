@@ -44,14 +44,14 @@ func (pool *Pool) StartFeed() {
             fmt.Printf("Size of Connection Pool: %v \n", len(pool.Clients))
             for client, _ := range pool.Clients {
                 fmt.Printf("ClientId %v Connected \n", id)
-                messageBody := fmt.Sprintf("👋 User %v Joined 👋", id)
+                messageBody := fmt.Sprintf("u-%v 👋", id)
                 message := Message{ClientId: 0, Body: messageBody}
                 WriteMessage(client.Conn, message)
             }
             break
         case client := <-pool.Unregister:
             id := client.ID
-            messageBody := fmt.Sprintf("🫡 User %v Disconnected 🫡", id)
+            messageBody := fmt.Sprintf("u-%v 🫡", id)
             delete(pool.Clients, client)
             fmt.Printf("Size of Connection Pool: %v \n", len(pool.Clients))
             for client, _ := range pool.Clients {
@@ -59,8 +59,6 @@ func (pool *Pool) StartFeed() {
             }
             break
         case message := <-pool.Broadcast:
-            fmt.Printf("Sending message to all clients in Pool \n")
-            fmt.Printf("%v", message)
             for client, _ := range pool.Clients {
                 WriteMessage(client.Conn, message)            
             }

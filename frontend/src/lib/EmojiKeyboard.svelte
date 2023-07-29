@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { emojis } from '../../locales/emojis'
+  import { onDestroy, onMount } from 'svelte'
+  import { emojis, emojiKeymap } from '../../locales/emojis'
   export let value: string = "😎"
   export let valueSetIndicator: boolean = false
   
@@ -7,11 +8,34 @@
     valueSetIndicator = !valueSetIndicator
     value = x
   }
+
+  function keyToEmoji(e: any) {
+    const emoji = emojiKeymap[e.key]
+    if (!!emoji) {
+      e.preventDefault()
+      setVal(emojis[emoji])
+    }
+  }
+
+  function keyboardListener(e: any) {
+    const ek_elem = document.getElementById("emoji_keyboard")
+    if (!!ek_elem) keyToEmoji(e)
+  }
+
+  onMount(() => {
+    window.addEventListener("keydown", keyboardListener)
+  })
+
+  onDestroy(() => {
+    window.removeEventListener("keydown", keyboardListener)
+  })
 </script>
 
-<div class="w-full h-full flex flex-wrap justify-evenly">
+<div  id="emoji_keyboard"
+      class="w-full h-full text-xs grid grid-cols-3 auto-rows-min">
   {#each Object.keys(emojis) as emojiName, idx }
-    <button on:click={() => setVal(emojis[emojiName])}
+    <button class="p-2"
+            on:click={() => setVal(emojis[emojiName])}
             on:keydown={(e) => {
               if (e.key === `${idx}`) {
                 setVal(emojis[emojiName])
