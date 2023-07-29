@@ -58,9 +58,21 @@
     toSendBody = ""
   }
 
+  // setup backspace
+  function keyboardListener(e: any) {
+    if (e.key === 'Backspace') clr()
+    if (e.key === 'Enter') sendFeedMessage(toSendBody)
+  }
+
   // LIFECYCLE
-  onMount(() => scrollFeedToBottom())
-  onDestroy(() => unsubPsFeed())
+  onMount(() => {
+    scrollFeedToBottom()
+    window.addEventListener('keydown', keyboardListener)
+  })
+  onDestroy(() => {
+    unsubPsFeed()
+    window.removeEventListener('keydown', keyboardListener)
+  })
 
   beforeUpdate(() => {
     feedWasScrolledToBottom = feedIsScrolledToBottom()
