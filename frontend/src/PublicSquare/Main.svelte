@@ -84,7 +84,6 @@
 
 
 <div class="h-full w-full overflow-hidden">
-  <h1> {clientId} </h1>
   <MagicSquarePub>
     <div slot="psFeed"
          class="h-full">

@@ -61,7 +61,11 @@
   // setup backspace
   function keyboardListener(e: any) {
     if (e.key === 'Backspace') clr()
-    if (e.key === 'Enter') sendFeedMessage(toSendBody)
+    if (e.key === 'Enter' && !!toSendBody.length) {
+      e.preventDefault()
+      sendFeedMessage(toSendBody)
+      clr()
+    }
   }
 
   // LIFECYCLE
@@ -92,16 +96,25 @@
       {:else}
         {#each psFeedVal as { clientId, body }, i} 
           {#if !!i}
-            <div class="feed_message p-2 w-full h-fit rounded-md grid grid-cols-2 grid-rows-1 gap-2"
+            <div class="feed_message p-2 w-full h-fit rounded-md"
                  class:feed_message_self={clientIdSelf === clientId}
                  class:feed_message_system={clientId === 0}
                  class:feed_message_other={clientIdSelf !== clientId}>
-              <div class="feed_message_user text-sm h-full flex justify-around items-center">
-                {formatClientId(clientId)}
-              </div>
-              <div class="feed_message_body font-bold text-lg mr-2 rounded-md">
-                {body}
-              </div>
+              {#if clientIdSelf !== clientId}
+                <div class="feed_message_user rounded-md text-sm font-semibold h-full flex justify-around items-center">
+                  {formatClientId(clientId)}
+                </div>
+                <div class="feed_message_body font-bold text-lg p-2 mr-2 rounded-md">
+                  {body}
+                </div>
+              {:else}
+                <div class="feed_message_body font-bold text-lg p-2 mr-2 rounded-md">
+                  {body}
+                </div>
+                <div class="feed_message_user rounded-md text-sm font-semibold h-full flex justify-around items-center">
+                  {formatClientId(clientId)}
+                </div>
+              {/if}
             </div>
           {/if}
         {/each}
@@ -118,7 +131,12 @@
     </div>
     <div class="public_square_feed_input_buttons w-full grid grid-cols-2 grid-rows-1 gap-2">
       <button class="public_square_feed_input_buttons_send"
-              on:click={() => sendFeedMessage(toSendBody)}>
+              on:click={() => {
+                if (toSendBody.length) {
+                  sendFeedMessage(toSendBody)
+                  clr()
+                }
+              }}>
         SEND IT
       </button>
       <button class="public_square_feed_input_buttons_clr flex justify-around items-center"
@@ -153,23 +171,36 @@
       &_buttons
         grid-area: "buttons"
         grid-template-columns: 70% 30%
-        /* &_send */
-        /* &_clear */
+        &_send
+          border: 3px solid color.$green-4
+        &_clr
+          border: 3px solid color.$red-4
       
-
   .feed_message
     background-color: color.$blue-7
     grid-template-areas: "user body"
     grid-template-columns: 40% 60%
     &_user
       grid-area: "user"
+      background-color: color.$purple-7
     &_body
       grid-area: "body"
       background-color: color.$black-7
     &_self
-      background-color: color.$yellow-4
+      background-color: color.$yellow-3
+      display: grid
+      grid-template-columns: 50% 50%
+      grid-template-rows: 1fr
+      gap: 2px
     &_other
       background-color: color.$green-4
+      display: grid
+      grid-template-columns: 50% 50%
+      grid-template-rows: 1fr
+      gap: 2px
     &_system
       background-color: color.$blue-7
+      display: flex
+      justify-content: space-around
+      align-items: center
 </style>

@@ -47,7 +47,7 @@ func (pool *Pool) StartFeed() {
             WriteMessage(client.Conn, message)
 
             // announce to pool
-            messageBody := fmt.Sprintf("u-%v 👋", id)
+            messageBody := fmt.Sprintf("👋 u-%v 👋", id)
             message = Message{ClientId: 0, Body: messageBody}
             for client, _ := range pool.Clients {
                 WriteMessage(client.Conn, message)
@@ -55,7 +55,7 @@ func (pool *Pool) StartFeed() {
             break
         case client := <-pool.Unregister:
             id := client.ID
-            messageBody := fmt.Sprintf("u-%v 🫡", id)
+            messageBody := fmt.Sprintf("🫡 u-%v 🫡", id)
             delete(pool.Clients, client)
             fmt.Printf("Size of Connection Pool: %v \n", len(pool.Clients))
             for client, _ := range pool.Clients {
