@@ -15,7 +15,6 @@
   const ws = new WebsocketBuilder('ws://localhost:8080/public-square-feed-ws')
       .onOpen(() => {
         triggerShowConnected()
-        pushToast(toastConnected)
       })
       .onClose(() => pushToast(toastDisconnected))
       .onError(() => pushToast(toastError))
@@ -35,18 +34,13 @@
   }
 
   // alerts
-  const toastConnected: ToasterProps = {
-    color: ToastColor.green,
-    text: "Connected"
-  }
-
   let showConnected: boolean = false;
-  let counter: number = 6;
+  let counter: number = 0;
 
   function triggerShowConnected() {
-    showConnected = true;
-    counter = 6;
-    timeout();
+    showConnected = true
+    counter = 6
+    timeout()
   }
 
   function timeout() {
@@ -97,16 +91,13 @@
             bind:toSendBody={toSendBody}/>
     </div>
   </MagicSquarePub>
+  <Toaster bind:open={showConnected}
+           color={ToastColor.green}
+           text={"Connected"}/>
   {#each toasts as { color, text }}
-    {#if text !== "Connected"}
-      <Toaster bind:open={showConnected}
-               color={color}
-               text={text}/>
-    {:else}
       <Toaster open={null}
                color={color}
                text={text}/>
-    {/if}
   {/each}
 </div>
 

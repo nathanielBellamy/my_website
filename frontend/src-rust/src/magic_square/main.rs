@@ -447,7 +447,6 @@ impl MagicSquare {
     }
 
     pub fn canvas_container() -> web_sys::Element {
-        log("fooooooooooo");
         MagicSquare::document()
             .get_element_by_id("magic_square_canvas_container")
             .expect("unable to find canvas element")
