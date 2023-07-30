@@ -48,8 +48,10 @@ export const emojis: any = {
   orange: "🟠",
   yellow: "🟡",
   white: "⚪️",
-  black: "⚫️"
-};
+  black: "⚫️",
+  robot: "🤖",
+  tent: "⛺",
+}
 
 export const emojiKeymap: any = {
   a: "grinning",
@@ -88,8 +90,6 @@ export const emojiKeymap: any = {
   "8": "paintbrush",
   "9": "palette",
   "0": "paint",
-  // "-": "red_triangle",
-  // "=": "square",
   "[": "circle",
   "]": "right_triangle",
   "\\": "colorful",
@@ -100,5 +100,9 @@ export const emojiKeymap: any = {
   "/": "orange",
   "~": "yellow",
   "!": "white",
-  "@": "black"
-};
+  "@": "black",
+  "#": "red_triangle",
+  "$": "square",
+  "%": "robot",
+  "^": "tent"
+}
