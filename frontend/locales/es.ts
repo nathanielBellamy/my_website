@@ -152,6 +152,7 @@ export const localeEs: any = {
       right: "derecha",
       color: "color",
       drawPattern: "dispersión",
+      feed: "mensajes",
       geometry: 'geometría',
       lfo: "lfo",
       presets: "preajustes",

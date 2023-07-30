@@ -141,12 +141,12 @@
     </div>
   </div>
   <div class="public_square_feed_input p-2 h-full grid grid-rows-3 grid-cols-1 gap-4">
+    <div class="public_square_feed_input_body rounded-md flex justify-around items-center">
+      {toSendBody}
+    </div>
     <div class="public_square_feed_input_emoji_keyboard rounded-md overflow-y-scroll p-2">
       <EmojiKeyboard bind:value={nextEmoji}
                      bind:valueSetIndicator={emojiSetIndicator}/>
-    </div>
-    <div class="public_square_feed_input_body rounded-md flex justify-around items-center">
-      {toSendBody}
     </div>
     <div class="public_square_feed_input_buttons w-full grid grid-cols-2 grid-rows-1 gap-2">
       <button class="public_square_feed_input_buttons_send"
@@ -179,8 +179,8 @@
         background-color: color.$grey-transp
     &_input
       grid-area: "input"
-      grid-template-areas: "keyboard" "body" "buttons"
-      grid-template-rows: 60% 2em 1fr
+      grid-template-areas: "body" "keyboard" "buttons"
+      grid-template-rows: 2em 60% 1fr
       &_emoji_keyboard
         grid-area: "keyboard"
         border: 3px color.$yellow-3 double
