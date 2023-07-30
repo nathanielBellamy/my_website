@@ -1,8 +1,8 @@
 <script lang="ts">
   import { afterUpdate, beforeUpdate, onDestroy, onMount } from 'svelte'
   import type { FeedMessage } from './FeedMessage'
-  import { psFeed } from '../stores/psFeed'
-  import EmojiKeyboard from '../lib/EmojiKeyboard.svelte'
+  import { psFeed } from '../../stores/psFeed'
+  import EmojiKeyboard from '../../lib/EmojiKeyboard.svelte'
 
   let psFeedVal: FeedMessage[]
   const unsubPsFeed = psFeed.subscribe((val: FeedMessage[]) => psFeedVal = [...val])
@@ -33,9 +33,9 @@
     var res: string = ""
     if (!!id) {
       if (!clientIsSelf){
-        res = `u-${id}`
+        res = `sq-${id}`
       } else {
-        res = `u-${id}`
+        res = `sq-${id}`
       }
     }
 
@@ -167,8 +167,8 @@
 </div>
 
 <style lang="sass">
-  @use "./../styles/color"
-  @use "./../styles/text"
+  @use "./../../styles/color"
+  @use "./../../styles/text"
 
   .public_square_feed
     grid-template-areas: "messages" "input"

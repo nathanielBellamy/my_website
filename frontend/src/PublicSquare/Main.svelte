@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
   import { WebsocketBuilder } from 'websocket-ts'
-  import Feed from './Feed.svelte'
+  import Feed from '../MagicSquare/ControlModules/Feed.svelte'
   import type { ToasterProps } from '../lib/Toasty'
   import { ToastColor } from '../lib/Toasty'
-  import type { FeedMessage } from './FeedMessage'
+  import type { FeedMessage } from './../MagicSquare/ControlModules/FeedMessage'
   import MagicSquarePub from './MagicSquarePub.svelte'
   import { FEED_LENGTH, psFeed } from '../stores/psFeed'
   import Toaster from '../lib/Toaster.svelte';

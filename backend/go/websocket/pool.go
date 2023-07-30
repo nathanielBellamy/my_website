@@ -20,7 +20,7 @@ type Pool struct {
 
 func NewPool() *Pool {
     return &Pool{
-        NextClientId: uint(randInRange(48593, 915740)),
+        NextClientId: uint(randInRange(1021, 2150)),
         Register:   make(chan *Client),
         Unregister: make(chan *Client),
         Clients:    make(map[*Client]bool),
@@ -31,7 +31,7 @@ func NewPool() *Pool {
 
 func (pool *Pool) NewClientId() (uint) {
     newId := pool.NextClientId
-    pool.NextClientId += 123
+    pool.NextClientId += uint(randInRange(13, 389))
   	return newId
 }
 
@@ -47,7 +47,7 @@ func (pool *Pool) StartFeed() {
             WriteMessage(client.Conn, message)
 
             // announce to pool
-            messageBody := fmt.Sprintf("👋 u-%v 👋", id)
+            messageBody := fmt.Sprintf("👋 sq-%v 👋", id)
             message = Message{ClientId: 0, Body: messageBody}
             for client, _ := range pool.Clients {
                 WriteMessage(client.Conn, message)
@@ -55,7 +55,7 @@ func (pool *Pool) StartFeed() {
             break
         case client := <-pool.Unregister:
             id := client.ID
-            messageBody := fmt.Sprintf("🫡 u-%v 🫡", id)
+            messageBody := fmt.Sprintf("🫡 sq-%v 🫡", id)
             delete(pool.Clients, client)
             fmt.Printf("Size of Connection Pool: %v \n", len(pool.Clients))
             for client, _ := range pool.Clients {
