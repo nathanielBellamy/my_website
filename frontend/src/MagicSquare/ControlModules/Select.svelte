@@ -7,6 +7,7 @@
   lang.subscribe(val => langVal = val)
   let i18n = new I18n("magicSquare/select")
 
+  export let pub: boolean = false
   export let curr_mod_left: Module = Module.color
   export let curr_mod_right: Module = Module.rotation
   export let small = false
@@ -42,6 +43,18 @@
     curr_mod_left = curr_mod_right
     curr_mod_right = old_left
   }
+
+  let modules = Object.values(Module).filter(x => {
+    // feed for public
+    // presets for private
+    var res: boolean
+    if (pub) {
+      res = x !== "presets"
+    } else {
+      res = x !== "feed"
+    }
+    return res
+  })
 </script>
 
 <div class="module_selector h-full flex flex-col justify-around items-stretch">
@@ -61,8 +74,7 @@
       </button>
     </div>
   {/if}
-  <!-- TODO: filter out presets -->
-  {#each Object.values(Module) as mod}
+  {#each modules as mod}
     <button class="module_option"
             class:selected_left="{curr_mod_left === mod}"
             class:selected_right="{curr_mod_right === mod && !small}"
