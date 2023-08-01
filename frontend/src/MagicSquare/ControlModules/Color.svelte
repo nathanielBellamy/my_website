@@ -179,9 +179,9 @@
         </button>
       {/each}
   </div>
-  <div class="color_gradient p-2 flex justify-around items-stretch gap-2">
+  <div class="color_gradient h-fit rounded-md pt-4 p-2 m-2 grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-1">
     <select bind:value={idx_a}
-            class="grow flex justify-around items-center"
+            class="h-fit"
             on:input={(e) => e.stopPropagation()}
             on:change={(e) => handleGradientIndexChange(e, 'a')}>
       {#each {length: 16} as _, idx}
@@ -191,11 +191,8 @@
         </option>
       {/each}
     </select>
-    <button class="grow color_mode_option"
-            style:background="{gradient}"
-            on:click={setColorGradient}/>
     <select bind:value={idx_b}
-            class="grow flex justify-around items-center"
+            class="h-fit"
             on:input={(e) => e.stopPropagation()}
             on:change={(e) => handleGradientIndexChange(e, 'b')}>
       {#each {length: 16} as _, idx}
@@ -205,7 +202,9 @@
         </option>
       {/each}
     </select>
-
+    <button class="h-6 col-span-2"
+            style:background="{gradient}"
+            on:click={setColorGradient}/>
   </div>
   <slot name="hiddenInputs"/>
 </div>
@@ -223,7 +222,7 @@
     background-color: color.$blue-4
 
   .color_gradient
-    min-height: 75px
+    border: 3px solid $blue-7
 
   .color_mode
     &s

@@ -153,6 +153,7 @@ export const localeEn: any = {
       right: "right",
       color: "color",
       drawPattern: "pattern",
+      feed: "messages",
       geometry: 'geometry',
       lfo: "lfo",
       presets: "presets",

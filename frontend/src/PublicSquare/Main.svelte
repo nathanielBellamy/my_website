@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
   import { WebsocketBuilder } from 'websocket-ts'
-  import Feed from './Feed.svelte'
-  import type { ToasterProps } from '../lib/Toaster'
-  import { ToastColor } from '../lib/Toaster'
-  import type { FeedMessage } from './FeedMessage'
+  import Feed from '../MagicSquare/ControlModules/Feed.svelte'
+  import type { ToasterProps } from '../lib/Toasty'
+  import { ToastColor } from '../lib/Toasty'
+  import type { FeedMessage } from './../MagicSquare/ControlModules/FeedMessage'
   import MagicSquarePub from './MagicSquarePub.svelte'
   import { FEED_LENGTH, psFeed } from '../stores/psFeed'
   import Toaster from '../lib/Toaster.svelte';
@@ -15,13 +15,12 @@
   const ws = new WebsocketBuilder('ws://localhost:8080/public-square-feed-ws')
       .onOpen(() => {
         triggerShowConnected()
-        pushToast(toastConnected)
       })
       .onClose(() => pushToast(toastDisconnected))
       .onError(() => pushToast(toastError))
       .onMessage((_i, ev) => {
         const message: FeedMessage = JSON.parse(ev.data)
-        if (message.body === "connected") {
+        if (message.body === "__init__connected__") {
           clientId = message.clientId
         } else {
           pushToFeed(message)
@@ -35,18 +34,14 @@
   }
 
   // alerts
-  const toastConnected: ToasterProps = {
-    color: ToastColor.green,
-    text: "Connected"
-  }
+  let showConnected: boolean = false;
+  let counter: number = 0;
 
   function triggerShowConnected() {
-    showConnected = true;
-    counter = 6;
-    timeout();
+    showConnected = true
+    counter = 6
+    timeout()
   }
-  let showConnected: boolean = false;
-  let counter: number = 6;
 
   function timeout() {
     if (--counter > 0)
@@ -93,19 +88,17 @@
     <div slot="psFeed"
          class="h-full">
       <Feed sendFeedMessage={sendFeedMessage}
+            bind:clientIdSelf={clientId}
             bind:toSendBody={toSendBody}/>
     </div>
   </MagicSquarePub>
+  <Toaster bind:open={showConnected}
+           color={ToastColor.green}
+           text={"Connected"}/>
   {#each toasts as { color, text }}
-    {#if text !== "Connected"}
-      <Toaster bind:open={showConnected}
-               color={color}
-               text={text}/>
-    {:else}
       <Toaster open={null}
                color={color}
                text={text}/>
-    {/if}
   {/each}
 </div>
 

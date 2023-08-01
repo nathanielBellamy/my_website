@@ -143,6 +143,7 @@
     <ControlModule title={i18n.t("modules", langVal)}>
       <Select bind:curr_mod_left={curr_mod_left}
               bind:curr_mod_right={curr_mod_right}
+              pub={true}
               small={small}/>
     </ControlModule>
   </div>

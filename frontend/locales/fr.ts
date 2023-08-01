@@ -152,6 +152,7 @@ export const localeFr: any = {
       right: "droite",
       color: "couleur",
       drawPattern: "dispersion",
+      feed: "messages",
       geometry: 'géométrie',
       lfo: "lfo",
       presets: "préréglages",

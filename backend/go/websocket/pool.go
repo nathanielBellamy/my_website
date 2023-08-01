@@ -20,7 +20,7 @@ type Pool struct {
 
 func NewPool() *Pool {
     return &Pool{
-        NextClientId: uint(randInRange(48593, 915740)),
+        NextClientId: uint(randInRange(1021, 2150)),
         Register:   make(chan *Client),
         Unregister: make(chan *Client),
         Clients:    make(map[*Client]bool),
@@ -31,7 +31,7 @@ func NewPool() *Pool {
 
 func (pool *Pool) NewClientId() (uint) {
     newId := pool.NextClientId
-    pool.NextClientId += 123
+    pool.NextClientId += uint(randInRange(13, 389))
   	return newId
 }
 
@@ -42,16 +42,20 @@ func (pool *Pool) StartFeed() {
             pool.Clients[client] = true
             id := client.ID
             fmt.Printf("Size of Connection Pool: %v \n", len(pool.Clients))
+            //send clientId back to client 
+            message := Message{ClientId: id, Body: "__init__connected__"}
+            WriteMessage(client.Conn, message)
+
+            // announce to pool
+            messageBody := fmt.Sprintf("👋 sq-%v 👋", id)
+            message = Message{ClientId: 0, Body: messageBody}
             for client, _ := range pool.Clients {
-                fmt.Printf("ClientId %v Connected \n", id)
-                messageBody := fmt.Sprintf("👋 User %v Joined 👋", id)
-                message := Message{ClientId: 0, Body: messageBody}
                 WriteMessage(client.Conn, message)
             }
             break
         case client := <-pool.Unregister:
             id := client.ID
-            messageBody := fmt.Sprintf("🫡 User %v Disconnected 🫡", id)
+            messageBody := fmt.Sprintf("🫡 sq-%v 🫡", id)
             delete(pool.Clients, client)
             fmt.Printf("Size of Connection Pool: %v \n", len(pool.Clients))
             for client, _ := range pool.Clients {
@@ -59,8 +63,6 @@ func (pool *Pool) StartFeed() {
             }
             break
         case message := <-pool.Broadcast:
-            fmt.Printf("Sending message to all clients in Pool \n")
-            fmt.Printf("%v", message)
             for client, _ := range pool.Clients {
                 WriteMessage(client.Conn, message)            
             }
