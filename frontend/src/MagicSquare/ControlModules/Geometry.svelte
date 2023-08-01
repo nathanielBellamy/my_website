@@ -149,11 +149,7 @@
              max={30}
              step={1}/>
     </div>
-    <div class="pt-5 pr-5 pl-5 grid grid-cols-4 grid-rows-1 gap-2">
-      <button class="col-span-2 flex justify-around items-center"
-              on:click={setRange}>
-       {i18n.t("range", langVal)}
-      </button>
+    <div class="geometry_range rounded-md p-2 m-2 grid grid-cols-2 grid-rows-2 gap-2">
       <select bind:value={idx_a}
               class="flex justify-around items-center"
               on:input={(e) => e.stopPropagation()}
@@ -176,6 +172,10 @@
           </option>
         {/each}
       </select>
+      <button class="col-span-2 flex justify-around items-center"
+              on:click={setRange}>
+       {i18n.t("range", langVal)}
+      </button>
     </div>
   </div>
   <div class="title flex items-stretch pl-5 underline">
@@ -210,4 +210,7 @@
     font-weight: text.$fw-l
     font-size: text.$fs-m
     padding-right: 5%
+
+  .geometry_range
+    border: 2px solid color.$blue-7
 </style>

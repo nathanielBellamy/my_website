@@ -99,12 +99,12 @@ impl PubSq {
             // requestAnimationFrame checks value, cleans up resources
             let app_main = MagicSquare::app_main();
             let destroy_flag = destroy_flag.clone();
-            // let ws_c = ws.clone();
+            let ws_c = ws.clone();
             
             // close wasm websocket
             let closure = Closure::<dyn FnMut(_)>::new(move |_event: web_sys::Event| {
                 *destroy_flag.clone().borrow_mut() = true;
-                // ws_c.close_with_code(1001);
+                ws_c.close_with_code(1001);
             });
 
             app_main
