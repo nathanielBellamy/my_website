@@ -55,7 +55,7 @@
 </script>
 
 <div id="magic_square_control_rack"
-     class="magic_square_control_rack"
+     class="magic_square_control_rack h-full w-full min-w-max"
      class:grid_col={smallScreenVal}
      class:grid_row={!smallScreenVal}
     >
@@ -190,7 +190,6 @@
     gap: 5px
 
   .magic_square_control_rack
-    flex-grow: 1
     padding: 5px 40px 5px 40px
     border-radius: 5px
     background: color.$black-blue-grad
