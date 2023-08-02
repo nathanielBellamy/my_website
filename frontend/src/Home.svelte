@@ -1,25 +1,21 @@
 <script lang="ts">
+  import { onDestroy } from "svelte"
   import { push } from "svelte-spa-router"
   import Link from "./lib/Link.svelte"
   import { I18n, Lang } from "./I18n"
   import { lang } from './stores/lang'
   import magicSquareExampleGif from './assets/magic_square_example.gif'
   import giveMeASineExampleGif from './assets/give_me_a_sine_example.gif'
-
-  import { intoUrl, siteSection, SiteSection } from "./stores/siteSection";
   import AiMe from "./lib/AiMe.svelte";
-  
-  import { smallScreen } from './stores/smallScreen'
+  import { intoUrl, siteSection, SiteSection } from "./stores/siteSection";
 
   let siteSectionVal: SiteSection
-  siteSection.subscribe((val: SiteSection) => siteSectionVal = val)
-
-
+  const unsubSiteSection = siteSection.subscribe((val: SiteSection) => siteSectionVal = val)
 
   // INIT LANG BOILER PLATE
   const i18n = new I18n("home")
   let langVal: Lang
-  lang.subscribe(val => langVal = val)
+  const unsubLang = lang.subscribe(val => langVal = val)
 
   let innerHeight: number
   $: imgSideLength = deriveImgSideLength(innerHeight)
@@ -33,6 +29,11 @@
     siteSection.update((_: SiteSection) => s)
     push(intoUrl(s))
   }
+
+  onDestroy(() => {
+    unsubLang()
+    unsubSiteSection()
+  })
 </script>
 
 <svelte:window bind:innerHeight />

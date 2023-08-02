@@ -1,4 +1,5 @@
 <script lang='ts' type="module">
+  import { onDestroy } from 'svelte'
   import init, { GmasWasm, rust_init_message  } from '../pkg/src_rust.js'
   import { I18n, Lang } from "./I18n"
   import { lang } from './stores/lang'
@@ -6,7 +7,7 @@
   // INIT LANG BOILER PLATE
   const i18n = new I18n("gmas")
   let langVal: Lang
-  lang.subscribe(val => langVal = val)
+  const unsubLang = lang.subscribe(val => langVal = val)
 
   let a: number
   let b: number
@@ -67,6 +68,10 @@
   }
 
   run()
+
+  onDestroy(() => {
+    unsubLang()
+  })
 </script>
 
 <body>

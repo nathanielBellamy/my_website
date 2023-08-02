@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
   import iro from '@jaames/iro'
   import { ColorDirection } from './Color'
   import { WasmInputId } from '../WasmInputId'
@@ -7,7 +7,8 @@
   import { lang } from '../../stores/lang'
 
   let langVal: Lang 
-  lang.subscribe(val => langVal = val)
+  const unsubLang = lang.subscribe(val => langVal = val)
+  onDestroy(unsubLang)
   let i18n = new I18n("magicSquare/color")
 
   function rgbaToString(rgba: number[]): string {

@@ -1,11 +1,12 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte'
   import { lang } from "./stores/lang"
   import { I18n, Lang } from "./I18n"
   import Link from "./lib/Link.svelte"
 
   let i18n = new I18n("about")
   let langVal: Lang
-  lang.subscribe( val => langVal = val)
+  const unsubLang = lang.subscribe( val => langVal = val)
 
   enum EmbeddedProgram {
     giveMeASign,
@@ -127,6 +128,9 @@
     window.open(href, '_blank');
   }
 
+  onDestroy(() => {
+    unsubLang()
+  })
 </script>
 
 <div class="about_me flex flex-col justify-start items-stretch gap-2">

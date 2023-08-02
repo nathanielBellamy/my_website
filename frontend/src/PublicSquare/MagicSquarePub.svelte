@@ -27,6 +27,7 @@
   // INIT LANG BOILER PLATE
   import { I18n, Lang } from '../I18n'
   import { lang } from '../stores/lang'
+  import { smallScreen } from '../stores/smallScreen'
   import { touchScreen } from '../stores/touchScreen.js'
 
   // TODO:
@@ -39,15 +40,13 @@
   let touchScreenVal: boolean
   const unsubTouchScreen = touchScreen.subscribe((val: boolean) => touchScreenVal = val)
   $: isTouchScreen = id(touchScreenVal)
+
+  let smallScreenVal: boolean
+  const unsubSmallScreen = smallScreen.subscribe((val: boolean) => smallScreenVal = val)
   
   const i18n = new I18n('magicSquare/main')
   let langVal: Lang
   const unsubLang = lang.subscribe(val => langVal = val)
-
-  let innerWidth: number = window.innerWidth
-  const minInnerWidth: number = 1000
-
-  $: small = innerWidth < minInnerWidth
 
   // this component will be large
   // but it is meant to stay flat
@@ -288,6 +287,7 @@
   onDestroy(() => {
     hasBeenDestroyed = true
     unsubLang()
+    unsubSmallScreen()
     unsubTouchScreen()
     let app = document.getElementById(("app_main"))
     app.dispatchEvent(new Event("destroymswasm", {bubbles: true}))
@@ -320,12 +320,10 @@
   })
 </script>
 
-<svelte:window bind:innerWidth />
-
 <div id="magic_square"
      class="magic_square"
-     class:grid_col={small}
-     class:grid_row={!small}>
+     class:grid_col={smallScreenVal}
+     class:grid_row={!smallScreenVal}>
   <!-- we use touchSceenVal here to ensure Svelte has it updated by the time it reaches RustWasm -->
   <div style="display: none"> {touchScreenVal}  </div>
   <div style="display: none">
@@ -337,7 +335,7 @@
     <canvas id="magic_square_canvas"
             class="magic_square_canvas"/>
   </div>
-  <ControlRackPub bind:small={small}>
+  <ControlRackPub>
     <!-- COLOR START -->
     <div slot="color"
          class="h-full">

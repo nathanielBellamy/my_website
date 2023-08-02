@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
   import { into_module, Module } from '../MagicSquare/ControlModules/Module'
   import ControlModule from '../MagicSquare/ControlModule.svelte'
   import Select from '../MagicSquare/ControlModules/Select.svelte'
@@ -10,11 +10,14 @@
 
   const i18n = new I18n('magicSquare/controlRack')
   let langVal: Lang
-  lang.subscribe(val => langVal = val)
+  const unsubLang = lang.subscribe(val => langVal = val)
+
+  import { smallScreen } from '../stores/smallScreen'
+
+  let smallScreenVal: boolean
+  const unsubSmallScreen = smallScreen.subscribe((val: boolean) => smallScreenVal = val)
 
   $: translationTitle = i18n.t(Module.translation, langVal)
-
-  export let small: boolean = false
 
   enum Side {
     left = 'left',
@@ -44,18 +47,23 @@
       curr_mod_right = Module.feed
     }
   })
+
+  onDestroy(() => {
+    unsubLang()
+    unsubSmallScreen()
+  })
 </script>
 
 <div id="magic_square_control_rack"
      class="magic_square_control_rack"
-     class:grid_col={small}
-     class:grid_row={!small}
+     class:grid_col={smallScreenVal}
+     class:grid_row={!smallScreenVal}
     >
   <div class="hidden">
     {storage_mods}
   </div>
-  <div class:slot_grid_1={small}
-       class:slot_grid_2={!small}>
+  <div class:slot_grid_1={smallScreenVal}
+       class:slot_grid_2={!smallScreenVal}>
     <div class="left_slot">
       {#if curr_mod_left === Module.color}
         <ControlModule title={i18n.t(Module.color, langVal)}
@@ -96,7 +104,7 @@
         <ControlModule side="left"/>
       {/if}
     </div>
-    {#if !small}
+    {#if !smallScreenVal}
       <div class="right_slot">
         {#if curr_mod_right === Module.color}
           <ControlModule  title={i18n.t(Module.color, langVal)}
@@ -143,8 +151,7 @@
     <ControlModule title={i18n.t("modules", langVal)}>
       <Select bind:curr_mod_left={curr_mod_left}
               bind:curr_mod_right={curr_mod_right}
-              pub={true}
-              small={small}/>
+              pub={true}/>
     </ControlModule>
   </div>
 </div>

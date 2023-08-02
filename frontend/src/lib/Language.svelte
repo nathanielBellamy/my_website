@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
   import { Lang } from "../I18n"
   import { lang } from '../stores/lang'
   
   let langVal: Lang 
-  lang.subscribe(val => langVal = val)
+  const unsubLang = lang.subscribe(val => langVal = val)
   function setLang(newLangKey:string) {
     localStorage.setItem('lang', Lang[newLangKey])
     lang.update((_: Lang) => {
@@ -19,6 +19,10 @@
     } else {
       setLang(Lang.en)
     }
+  })
+
+  onDestroy(() => {
+    unsubLang()
   })
 </script>
 

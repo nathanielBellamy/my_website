@@ -1,16 +1,20 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte'
   import { Module } from './Module'
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
+  import { smallScreen } from '../../stores/smallScreen'
 
   let langVal: Lang 
-  lang.subscribe(val => langVal = val)
+  const unsubLang = lang.subscribe(val => langVal = val)
   let i18n = new I18n("magicSquare/select")
+
+  let smallScreenVal: boolean
+  const unsubSmallScreen = smallScreen.subscribe((val: boolean) => smallScreenVal = val)
 
   export let pub: boolean = false
   export let curr_mod_left: Module = Module.color
   export let curr_mod_right: Module = Module.rotation
-  export let small = false
 
   enum Side {
     left = 'left',
@@ -26,7 +30,7 @@
   }
 
   function setMod(mod: Module) {
-    if (small) { // only one module is displayed at a time
+    if (smallScreenVal) { // only one module is displayed at a time
       curr_mod_left = mod 
       return
     }
@@ -55,10 +59,15 @@
     }
     return res
   })
+
+  onDestroy(() => {
+    unsubLang()
+    unsubSmallScreen()
+  })
 </script>
 
 <div class="module_selector h-full flex flex-col justify-around items-stretch">
-  {#if !small}
+  {#if !smallScreenVal}
     <div class="module_selector_side_set flex">
       <button class="side_set side_set_left"
               class:side_set_left_selected="{sideToSet === Side.left}"
@@ -76,8 +85,8 @@
   {/if}
   {#each modules as mod}
     <button class="module_option"
-            class:selected_left="{curr_mod_left === mod}"
-            class:selected_right="{curr_mod_right === mod && !small}"
+            class:selected_left={curr_mod_left === mod}
+            class:selected_right={curr_mod_right === mod && !smallScreenVal}
             on:click={() => setMod(mod)}
             on:keydown={(e) => handleModKeydown(e, mod)}>
         {i18n.t(mod, langVal)}

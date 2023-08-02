@@ -29,7 +29,8 @@
   // INIT LANG BOILER PLATE
   import { I18n, Lang } from '../I18n'
   import { lang } from '../stores/lang'
-  import { touchScreen } from '../stores/touchScreen.js'
+  import { touchScreen } from '../stores/touchScreen'
+  import { smallScreen } from '../stores/smallScreen'
 
   // TODO:
   // this combination of touchSreen store and value updates works 
@@ -41,6 +42,9 @@
   let touchScreenVal: boolean
   const unsubTouchScreen = touchScreen.subscribe((val: boolean) => touchScreenVal = val)
   $: isTouchScreen = id(touchScreenVal)
+
+  let smallScreenVal: boolean
+  const unsubSmallScreen = smallScreen.subscribe((val: boolean) => smallScreenVal = val)
   
   const i18n = new I18n('magicSquare/main')
   let langVal: Lang
@@ -48,8 +52,6 @@
 
   let innerWidth: number = window.innerWidth
   const minInnerWidth: number = 1000
-
-  $: small = innerWidth < minInnerWidth
 
   // this component will be large
   // but it is meant to stay flat
@@ -390,6 +392,7 @@
     }
     unsubLang()
     unsubPrevSettings()
+    unsubSmallScreen()
     unsubTouchScreen()
     let app = document.getElementById(("app_main"))
     app.dispatchEvent(new Event("destroymswasm", {bubbles: true}))
@@ -443,8 +446,8 @@
 
 <div id="magic_square"
      class="magic_square"
-     class:grid_col={small}
-     class:grid_row={!small}>
+     class:grid_col={smallScreenVal}
+     class:grid_row={!smallScreenVal}>
      <!-- on:click={() => console.dir(deriveStorageSettings())} -->
   <div id="magic_square_canvas_container"
        class="magic_square_canvas_container flex flex-col justify-around display">
@@ -453,7 +456,7 @@
     <canvas id="magic_square_canvas"
             class="magic_square_canvas"/>
   </div>
-  <ControlRack bind:small={small}>
+  <ControlRack>
     <div slot="color"
          class="h-full">
       {#if !renderDataReady}

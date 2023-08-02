@@ -10,14 +10,26 @@
   import { I18n, Lang } from "./I18n"
   import { lang } from "./stores/lang"
   import { intoSiteSection, intoUrl, SiteSection, siteSection } from "./stores/siteSection"
-  import { touchScreen } from './stores/touchScreen'
 
+  import { smallScreen } from './stores/smallScreen'
+  let smallScreenVal: boolean
+  const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
+
+  import { touchScreen } from './stores/touchScreen'
   let touchScreenVal: boolean
   const unsubTouchScreen = touchScreen.subscribe((val: boolean) => touchScreenVal = val)
   touchScreen.update((_: boolean) => isTouchScreen())
 
   function isTouchScreen(): boolean {
     return Device.isPhone || Device.isTablet || Device.isLegacyTouchDevice
+  }
+
+  let innerWidth: number
+  $: if (innerWidth < 1000) {
+    smallScreen.update((_: boolean | null) => true)
+  }
+  $: if (innerWidth > 1000) {
+    smallScreen.update((_: boolean | null) => false)
   }
 
   let siteSectionVal: SiteSection
@@ -53,6 +65,7 @@
   onDestroy(() => {
     unsubLang()
     unsubSiteSection()
+    unsubSmallScreen()
     unsubTouchScreen()
   })
 
@@ -60,6 +73,8 @@
     push(intoUrl(s))
   }
 </script>
+
+<svelte:window bind:innerWidth />
 
 <nav class="nav_bar flex justify-between items-center gap-2 pt-2 pb-2">
   <DropdownButton id="siteSectionDropdown"
