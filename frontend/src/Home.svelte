@@ -8,9 +8,13 @@
 
   import { intoUrl, siteSection, SiteSection } from "./stores/siteSection";
   import AiMe from "./lib/AiMe.svelte";
+  
+  import { smallScreen } from './stores/smallScreen'
 
   let siteSectionVal: SiteSection
   siteSection.subscribe((val: SiteSection) => siteSectionVal = val)
+
+
 
   // INIT LANG BOILER PLATE
   const i18n = new I18n("home")
