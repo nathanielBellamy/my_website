@@ -59,9 +59,7 @@
      class:grid_col={smallScreenVal}
      class:grid_row={!smallScreenVal}
     >
-  <div class="hidden">
-    {storage_mods}
-  </div>
+  <div class="hidden">{storage_mods}</div>
   <div class:slot_grid_1={smallScreenVal}
        class:slot_grid_2={!smallScreenVal}>
     <div class="left_slot">
@@ -148,11 +146,17 @@
     {/if}
   </div>
   <div class="mod_select">
-    <ControlModule title={i18n.t("modules", langVal)}>
+    {#if !smallScreenVal}
+      <ControlModule title={i18n.t("modules", langVal)}>
+        <Select bind:curr_mod_left={curr_mod_left}
+                bind:curr_mod_right={curr_mod_right}
+                pub={true}/>
+      </ControlModule>
+    {:else}
       <Select bind:curr_mod_left={curr_mod_left}
               bind:curr_mod_right={curr_mod_right}
               pub={true}/>
-    </ControlModule>
+    {/if}
   </div>
 </div>
 
@@ -163,7 +167,7 @@
   .grid_col
     display: grid
     grid-template-columns: 1fr
-    grid-template-rows: 1fr 1fr
+    grid-template-rows: 90% 10%
     gap: 5px
 
   .grid_row

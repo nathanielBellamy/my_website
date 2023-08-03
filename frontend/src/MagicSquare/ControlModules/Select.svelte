@@ -66,7 +66,10 @@
   })
 </script>
 
-<div class="module_selector h-full flex flex-col justify-around items-stretch">
+<div class="module_selector h-full"
+     class:text-xs={smallScreenVal}
+     class:select_vert={!smallScreenVal}
+     class:select_horiz={smallScreenVal}>
   {#if !smallScreenVal}
     <div class="module_selector_side_set flex">
       <button class="side_set side_set_left"
@@ -130,6 +133,17 @@
     flex-grow: 1
     cursor: pointer
 
+  .select
+    &_vert
+      display: flex
+      flex-direction: column
+      justify-content: space-around
+      align-items: stretch
+
+    &_horiz
+      display: flex
+      justify-content: space-between
+      align-items: center
 
   .selected_left
     background-color: color.$green-4

@@ -344,7 +344,7 @@
     <canvas id="magic_square_canvas"
             class="magic_square_canvas"/>
   </div>
-  <div class="grow h-full overflow-y-scroll"
+  <div class="grow h-full overflow-y-hidden"
        class:hidden={smallScreenVal && magicSquareView !== MagicSquareView.controls}>
     <ControlRackPub>
       <!-- COLOR START -->
@@ -1086,10 +1086,14 @@
   </div>
   {#if smallScreenVal}
      <div class="text-sm grid grid-cols-2 grid-rows-1">
-        <button on:click={() => setMagicSquareView(MagicSquareView.square)}>
+        <button on:click={() => setMagicSquareView(MagicSquareView.square)}
+                class="view_select_button flex justify-around items-center"
+                class:selected={magicSquareView === MagicSquareView.square}>
           SQUARE
         </button>
-        <button on:click={() => setMagicSquareView(MagicSquareView.controls)}>
+        <button on:click={() => setMagicSquareView(MagicSquareView.controls)}
+                class="view_select_button flex justify-around items-center"
+                class:selected={magicSquareView === MagicSquareView.controls}>
           CONTROLS
         </button>
      </div>
@@ -1146,4 +1150,11 @@
 
   .active
     background-color: color.$red-5
+
+  .view_select_button
+    border: 3px solid color.$blue-7
+    box-shadow: none
+
+  .selected
+    background-color: color.$green-4
 </style>
