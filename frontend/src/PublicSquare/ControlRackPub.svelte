@@ -55,14 +55,12 @@
 </script>
 
 <div id="magic_square_control_rack"
-     class="magic_square_control_rack h-full w-full min-w-max"
-     class:grid_col={smallScreenVal}
-     class:grid_row={!smallScreenVal}
-    >
+     class="magic_square_control_rack grid_col h-full">
   <div class="hidden">{storage_mods}</div>
-  <div class:slot_grid_1={smallScreenVal}
-       class:slot_grid_2={!smallScreenVal}>
-    <div class="left_slot">
+  <div class="h-full w-full"
+       class:slot_grid={!smallScreenVal}
+       class:slot_flex={smallScreenVal}>
+    <div class="left_slot h-full">
       {#if curr_mod_left === Module.color}
         <ControlModule title={i18n.t(Module.color, langVal)}
                        side={Side.left}>
@@ -103,7 +101,7 @@
       {/if}
     </div>
     {#if !smallScreenVal}
-      <div class="right_slot">
+      <div class="right_slot h-full">
         {#if curr_mod_right === Module.color}
           <ControlModule  title={i18n.t(Module.color, langVal)}
                           side={Side.right}>
@@ -145,19 +143,9 @@
       </div>
     {/if}
   </div>
-  <div class="mod_select">
-    {#if !smallScreenVal}
-      <ControlModule title={i18n.t("modules", langVal)}>
-        <Select bind:curr_mod_left={curr_mod_left}
-                bind:curr_mod_right={curr_mod_right}
-                pub={true}/>
-      </ControlModule>
-    {:else}
-      <Select bind:curr_mod_left={curr_mod_left}
-              bind:curr_mod_right={curr_mod_right}
-              pub={true}/>
-    {/if}
-  </div>
+  <Select bind:curr_mod_left={curr_mod_left}
+          bind:curr_mod_right={curr_mod_right}
+          pub={true}/>
 </div>
 
 <style lang="sass">
@@ -170,28 +158,19 @@
     grid-template-rows: 90% 10%
     gap: 5px
 
-  .grid_row
-    display: grid
-    grid-template-columns: 1fr 0.5fr
-    grid-template-rows: 100%
-    gap: 5px
-
   .mod_select
     height: 100%
-
-  .slot_grid_1
-    height: 100%
-    display: grid
-    grid-template-columns: 1fr
-    grid-template-rows: 1fr
-    gap: 5px
-
-  .slot_grid_2
-    height: 100%
-    display: grid
-    grid-template-columns: 1fr 1fr
-    grid-template-rows: 1fr
-    gap: 5px
+  
+  .slot
+    &_flex
+      display: flex
+      justify-content: space-around
+      align-items: center
+    &_grid
+      display: grid
+      grid-template-columns: 1fr 1fr
+      grid-template-rows: 1fr
+      gap: 5px
 
   .magic_square_control_rack
     padding: 5px 40px 5px 40px
@@ -199,11 +178,11 @@
     background: color.$black-blue-grad
     
   .left_slot
-    min-width: 226px
+    /* min-width: 226px */
     overflow: hidden
   
   .right_slot
-    min-width: 226px
+    /* min-width: 226px */
     overflow: hidden
 
   .hidden

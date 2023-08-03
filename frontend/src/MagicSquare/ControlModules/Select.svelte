@@ -66,19 +66,19 @@
   })
 </script>
 
-<div class="module_selector h-full"
-     class:text-xs={smallScreenVal}
-     class:select_vert={!smallScreenVal}
-     class:select_horiz={smallScreenVal}>
+<div class="select_container rounded-md h-full pl-10 pr-10 overflow-x-scroll"
+     class:module_selector_grid={!smallScreenVal}
+     class:module_selector_flex={smallScreenVal}
+     class:text-xs={smallScreenVal}>
   {#if !smallScreenVal}
-    <div class="module_selector_side_set flex">
-      <button class="side_set side_set_left"
+    <div class="left_right_buttons pr-4 h-full w-fit flex justify-between items-center">
+      <button class="flex justify-around items-center pt-2 pb-2 pl-4 pr-4"
               class:side_set_left_selected="{sideToSet === Side.left}"
               on:dblclick={() => swap()}
               on:click={() => sideToSet = Side.left}>
         {i18n.t("left", langVal)}
       </button>
-      <button class="side_set side_set_right"
+      <button class="flex justify-around items-center pt-2 pb-2 pl-4 pr-4"
               class:side_set_right_selected="{sideToSet === Side.right}"
               on:dblclick={() => swap()}
               on:click={() => sideToSet = Side.right}>
@@ -86,31 +86,36 @@
       </button>
     </div>
   {/if}
-  {#each modules as mod}
-    <button class="module_option"
-            class:selected_left={curr_mod_left === mod}
-            class:selected_right={curr_mod_right === mod && !smallScreenVal}
-            on:click={() => setMod(mod)}
-            on:keydown={(e) => handleModKeydown(e, mod)}>
-        {i18n.t(mod, langVal)}
+  <div class="h-full w-full pl-4 flex justify-between items-center overflow-x-scroll">
+    {#each modules as mod}
+      <button class="module_option w-fit pr-2 pl-2 text-ellipsis"
+              class:selected_left={curr_mod_left === mod}
+              class:selected_right={curr_mod_right === mod && !smallScreenVal}
+              on:click={() => setMod(mod)}
+              on:keydown={(e) => handleModKeydown(e, mod)}>
+          {i18n.t(mod, langVal)}
+      </button>
       <input id={`mod_radio_${mod}`}
              value={mod}
              type="radio"
-             name="wow"
              checked={curr_mod_left === mod}
              class="hidden_input"/>
-    </button>
-  {/each}
+    {/each}
+  </div>
 </div>
 
 <style lang="sass">
   @use "../../styles/color"
   @use "../../styles/text"
 
+  .left_right_buttons
+    border-right: 5px double color.$blue-7
+
+  .select_container
+    border: 5px double color.$blue-7
+
   .side_set
     flex-grow: 1
-    margin: 5px
-    padding: 5px
     border-radius: 5px
     font-size: text.$fs-m
     font-weight: text.$fw-l
@@ -133,26 +138,22 @@
     flex-grow: 1
     cursor: pointer
 
-  .select
-    &_vert
-      display: flex
-      flex-direction: column
-      justify-content: space-around
-      align-items: stretch
-
-    &_horiz
-      display: flex
-      justify-content: space-between
-      align-items: center
-
   .selected_left
     background-color: color.$green-4
   .selected_right
     background-color: color.$purple-7
 
   .module_selector
-    justify-content: space-between
-    border-radius: 5px
+    &_grid
+      display: grid
+      grid-template-columns: .1fr 1fr
+      grid-template-rows: 100%
+      gap: 10px
+    &_flex
+      display: flex
+      justify-content: space-between
+      align-items: center
+      padding: 0 10px 0 10px
 
   .hidden_input
     display: none

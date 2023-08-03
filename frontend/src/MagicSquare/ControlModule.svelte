@@ -40,8 +40,7 @@
     align-items: stretch 
     border-radius: 5px
     height: 98%
-    min-width: 226px
-    max-width: 250px
+    /* min-width: 226px */
     &_slot
       height: 98%
       

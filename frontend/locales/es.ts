@@ -148,8 +148,8 @@ export const localeEs: any = {
       yaw: "guiñada"
     },
     select: {
-      left: "izquierda",
-      right: "derecha",
+      left: "⬅️ ",
+      right: "➡️ ",
       color: "color",
       drawPattern: "dispersión",
       feed: "mensajes",

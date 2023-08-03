@@ -148,8 +148,8 @@ export const localeFr: any = {
       yaw: "lacet"
     },
     select: {
-      left: "gauche",
-      right: "droite",
+      left: "⬅️ ",
+      right: "➡️ ",
       color: "couleur",
       drawPattern: "dispersion",
       feed: "messages",

@@ -149,8 +149,8 @@ export const localeEn: any = {
       yaw: "yaw"
     },
     select: {
-      left: "left",
-      right: "right",
+      left: "⬅️ ",
+      right: "➡️ ",
       color: "color",
       drawPattern: "pattern",
       feed: "messages",

@@ -344,7 +344,7 @@
     <canvas id="magic_square_canvas"
             class="magic_square_canvas"/>
   </div>
-  <div class="grow h-full overflow-y-hidden"
+  <div class="h-full w-full overflow-hidden"
        class:hidden={smallScreenVal && magicSquareView !== MagicSquareView.controls}>
     <ControlRackPub>
       <!-- COLOR START -->
