@@ -1210,14 +1210,14 @@
   {#if smallScreenVal}
      <div class="text-sm grid grid-cols-2 grid-rows-1">
         <button on:click={() => setMagicSquareView(MagicSquareView.square)}
-                class="view_select_button flex justify-around items-center"
+                class="view_select_button pt-2 pb-2 flex justify-around items-center"
                 class:selected={magicSquareView === MagicSquareView.square}>
-          SQUARE
+          ▫️
         </button>
         <button on:click={() => setMagicSquareView(MagicSquareView.controls)}
-                class="view_select_button flex justify-around items-center"
+                class="view_select_button text-sm flex justify-around items-center"
                 class:selected={magicSquareView === MagicSquareView.controls}>
-          CONTROLS
+          🛠️
         </button>
      </div>
   {/if}
@@ -1268,9 +1268,16 @@
       font-size: text.$fs-m
       padding-right: 5%
 
+  .view_select_button
+    border: 3px solid color.$blue-7
+    box-shadow: none
+
   .hidden_input
     display: none
 
   .active
     background-color: color.$red-5
+
+  .selected
+    background-color: color.$green-4
 </style>
