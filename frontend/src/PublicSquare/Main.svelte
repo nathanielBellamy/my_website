@@ -82,7 +82,6 @@
   })
 </script>
 
-
 <div class="h-full w-full overflow-hidden">
   <MagicSquarePub>
     <div slot="psFeed"

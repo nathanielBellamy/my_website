@@ -159,10 +159,7 @@
     grid-template-columns: 1fr
     grid-template-rows: 85% 15%
     gap: 5px
-
-  .mod_select
-    height: 100%
-  
+ 
   .slot
     &_flex
       display: flex

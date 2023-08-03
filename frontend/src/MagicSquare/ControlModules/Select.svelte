@@ -82,14 +82,14 @@
      class:text-xs={smallScreenVal}>
   {#if !smallScreenVal}
     <div class="left_right_buttons pr-2 h-full w-fit flex justify-between items-center">
-      <button class="flex justify-around items-center pl-2 pr-2"
-              class:side_set_left_selected="{sideToSet === Side.left}"
+      <button class="side_set flex justify-around items-center pl-2 pr-2"
+              class:side_set_left_selected={sideToSet === Side.left}
               on:dblclick={() => swap()}
               on:click={() => sideToSet = Side.left}>
         {i18n.t("left", langVal)}
       </button>
-      <button class="flex justify-around items-center pl-2 pr-2"
-              class:side_set_right_selected="{sideToSet === Side.right}"
+      <button class="side_set flex justify-around items-center pl-2 pr-2"
+              class:side_set_right_selected={sideToSet === Side.right}
               on:dblclick={() => swap()}
               on:click={() => sideToSet = Side.right}>
         {i18n.t("right", langVal)}
@@ -126,11 +126,8 @@
     border: 5px double color.$blue-7
 
   .side_set
-    flex-grow: 1
-    border-radius: 5px
-    font-size: text.$fs-m
-    font-weight: text.$fw-l
-    color: color.$cream
+    box-shadow: none
+
     &_left
       &_selected
         background-color: color.$green-4
