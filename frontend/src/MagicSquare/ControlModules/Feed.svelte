@@ -172,7 +172,7 @@
 
   .public_square_feed
     grid-template-areas: "messages" "input"
-    grid-template-rows: 60% 40%
+    grid-template-rows: max(250px, 60%) 40%
     &_messages
       grid-area: "messages"
       &_container
@@ -180,7 +180,7 @@
     &_input
       grid-area: "input"
       grid-template-areas: "body" "keyboard" "buttons"
-      grid-template-rows: 2em 60% 1fr
+      grid-template-rows: 2em max(60%, 155px) 1fr
       &_emoji_keyboard
         grid-area: "keyboard"
         border: 3px color.$yellow-3 double
