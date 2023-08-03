@@ -32,13 +32,13 @@
   function set_curr_mods(left: Module, right: Module): {[key: string]: Module} {
     const res: {[key: string]: Module} = {curr_mod_left: left, curr_mod_right: right}
     if (!!left && !!right){
-      localStorage.setItem('magic_square_curr_mods', JSON.stringify(res))
+      localStorage.setItem('public_square_curr_mods', JSON.stringify(res))
     }
     return res
   }
 
   onMount(() => {
-    const curr_mods: any = JSON.parse(localStorage.getItem('magic_square_curr_mods'))
+    const curr_mods: any = JSON.parse(localStorage.getItem('public_square_curr_mods'))
     if (curr_mods){
       curr_mod_left = into_module(curr_mods.curr_mod_left)
       curr_mod_right = into_module(curr_mods.curr_mod_right)
