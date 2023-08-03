@@ -143,9 +143,11 @@
       </div>
     {/if}
   </div>
-  <Select bind:curr_mod_left={curr_mod_left}
-          bind:curr_mod_right={curr_mod_right}
-          pub={true}/>
+  <div class="h-full w-full flex justify-around items-center">
+    <Select bind:curr_mod_left={curr_mod_left}
+            bind:curr_mod_right={curr_mod_right}
+            pub={true}/>
+  </div>
 </div>
 
 <style lang="sass">
@@ -155,7 +157,7 @@
   .grid_col
     display: grid
     grid-template-columns: 1fr
-    grid-template-rows: 90% 10%
+    grid-template-rows: 85% 15%
     gap: 5px
 
   .mod_select

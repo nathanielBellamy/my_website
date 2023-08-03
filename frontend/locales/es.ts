@@ -151,14 +151,21 @@ export const localeEs: any = {
       left: "⬅️ ",
       right: "➡️ ",
       color: "color",
+      color_emoji: "🖍️",
       drawPattern: "dispersión",
+      drawPattern_emoji: "🎦",
       feed: "mensajes",
+      feed_emoji: "✉️",
       geometry: 'geometría',
+      geometry_emoji: '📐',
       lfo: "lfo",
+      lfo_emoji: "🌊",
       presets: "preajustes",
-      radius: "radio",
+      presets_emoji: "🧰",
       rotation: "rotación",
-      translation: "traslado"
+      rotation_emoji: "🔄",
+      translation: "traslado",
+      translation_emoji: "🚌"
     },
     warning: {
       title: "Advertencia de Epilepsia ",

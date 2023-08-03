@@ -30,6 +30,16 @@
   }
 
   function setMod(mod: Module) {
+    // this condition prevents a visual bug that occurs
+    // when two instances of the Color module are loaded simultaneously
+    // the issue results from element confusion in document.getElementById
+    if (smallScreenVal && curr_mod_right === Module.color && mod === Module.color) {
+      // destroy color instance in curr_mod_right
+      curr_mod_right = Module.feed
+      curr_mod_left = mod 
+      return
+    }
+
     if (smallScreenVal) { // only one module is displayed at a time
       curr_mod_left = mod 
       return
@@ -66,19 +76,19 @@
   })
 </script>
 
-<div class="select_container rounded-md h-full pl-10 pr-10 overflow-x-scroll"
+<div class="select_container rounded-md h-fit w-11/12 pl-2 pr-2 overflow-x-scroll"
      class:module_selector_grid={!smallScreenVal}
      class:module_selector_flex={smallScreenVal}
      class:text-xs={smallScreenVal}>
   {#if !smallScreenVal}
-    <div class="left_right_buttons pr-4 h-full w-fit flex justify-between items-center">
-      <button class="flex justify-around items-center pt-2 pb-2 pl-4 pr-4"
+    <div class="left_right_buttons pr-2 h-full w-fit flex justify-between items-center">
+      <button class="flex justify-around items-center pl-2 pr-2"
               class:side_set_left_selected="{sideToSet === Side.left}"
               on:dblclick={() => swap()}
               on:click={() => sideToSet = Side.left}>
         {i18n.t("left", langVal)}
       </button>
-      <button class="flex justify-around items-center pt-2 pb-2 pl-4 pr-4"
+      <button class="flex justify-around items-center pl-2 pr-2"
               class:side_set_right_selected="{sideToSet === Side.right}"
               on:dblclick={() => swap()}
               on:click={() => sideToSet = Side.right}>
@@ -86,14 +96,15 @@
       </button>
     </div>
   {/if}
-  <div class="h-full w-full pl-4 flex justify-between items-center overflow-x-scroll">
+  <div class="h-full w-full pl-2 pr-2 flex justify-between items-center overflow-x-scroll">
     {#each modules as mod}
       <button class="module_option w-fit pr-2 pl-2 text-ellipsis"
+              title={i18n.t(mod, langVal)}
               class:selected_left={curr_mod_left === mod}
               class:selected_right={curr_mod_right === mod && !smallScreenVal}
               on:click={() => setMod(mod)}
               on:keydown={(e) => handleModKeydown(e, mod)}>
-          {i18n.t(mod, langVal)}
+          {i18n.t(mod + "_emoji", langVal)}
       </button>
       <input id={`mod_radio_${mod}`}
              value={mod}
@@ -137,6 +148,8 @@
     font-weight: text.$fw-xl
     flex-grow: 1
     cursor: pointer
+    box-shadow: none
+    min-width: 30px
 
   .selected_left
     background-color: color.$green-4
