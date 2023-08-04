@@ -3,7 +3,9 @@
   import Main from "./Main.svelte"
 
   import WarningModal from "../MagicSquare/WarningModal.svelte"
+    import InfoGate from "./InfoGate.svelte";
  
+  let hasPassedGate: boolean = false
   let hasAcceptedWarning: boolean = false
 
   onMount(() => {
@@ -13,7 +15,9 @@
 
 <div id="magic_square_pub_container"
      class="w-full h-full overflow-hidden">
-  {#if !hasAcceptedWarning}
+  {#if !hasPassedGate}
+    <InfoGate bind:hasPassedGate={hasPassedGate}/>
+  {:else if !hasAcceptedWarning}
     <WarningModal bind:hasAccepted={hasAcceptedWarning}/>
   {:else}
     <Main />

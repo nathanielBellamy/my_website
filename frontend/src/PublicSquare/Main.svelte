@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
+  import { Modal } from 'flowbite-svelte'
   import { WebsocketBuilder } from 'websocket-ts'
   import Feed from '../MagicSquare/ControlModules/Feed.svelte'
   import type { ToasterProps } from '../lib/Toasty'
@@ -7,7 +8,8 @@
   import type { FeedMessage } from './../MagicSquare/ControlModules/FeedMessage'
   import MagicSquarePub from './MagicSquarePub.svelte'
   import { FEED_LENGTH, psFeed } from '../stores/psFeed'
-  import Toaster from '../lib/Toaster.svelte';
+  import Toaster from '../lib/Toaster.svelte'
+  import InfoGate from './InfoGate.svelte'
 
   let clientId: number
 
