@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { Popover } from 'flowbite-svelte'
+  import { slide } from 'svelte/transition';
   import Recaptcha from "../lib/Recaptcha.svelte"
   import { ViteMode } from "../ViteMode"
+  import megaphone from '../assets/megaphone.png'
 
   export let hasPassedGate: boolean
   let showRecaptcha = false
@@ -16,40 +19,49 @@
 
 <div class="info_gate w-full h-full">
   <div class="w-full flex flex-col justify-between items-stretch">
-    <h1 class="info_gate_title">
-      Welcome to The Public Square
-    </h1>
+    <div class="w-full flex justify-around items-center">
+      <div class="info_gate_title flex justify-around items-center">
+        <img class="info_gate_megaphone mr-5 h-24 w-24"
+             src={megaphone}
+             alt={"Megaphone"}/>
+        <Popover class="bg-slate-800 text-2xl"
+                 transition={slide}>
+          <p>
+            Come one! Come all,
+          </p>
+          <p>
+            to The Public Square!
+          </p>
+        </Popover>
+        <div class="text-7xl">
+          <p>
+            ===============
+          </p>
+          <p>
+            == Welcome to ==
+          </p>
+          <p>
+            The Public Square
+          </p>
+          <p>
+            ===============
+          </p>
+        </div>
+        <img class="info_gate_megaphone ml-5 h-24 w-24"
+             src={megaphone}
+             alt={"Megaphone"}/>
+        <Popover class="bg-slate-800 text-2xl"
+                 transition={slide}>
+          <p>
+            Mysteries abound in
+          </p>
+          <p>
+            The Public Square!
+          </p>
+        </Popover>
+      </div>
+    </div>
     <div class="w-full pl-4 pr-4 flex flex-col justify-between items-streth">
-      <p class="text-slate-400 font-bold text-lg text-left m-2 p-2">
-        Step right up, step right up, ladies and gentlemen, boys and girls of all ages! 
-      </p>
-      <p class="text-slate-400 font-bold text-lg text-left m-2 p-2">
-        Gather 'round and feast your eyes upon the spectacle that has dazzled kings and confounded philosophers, a mystery wrapped in an enigma, known only as the MAGIC SQUARE!
-      </p>
-      <p class="text-slate-400 font-bold text-lg text-left m-2 p-2">
-        Presenting, for the first time in this town and perhaps in the whole world, the ineffable, the inexplicable, the utterly miraculous MAGIC SQUARE! 
-      </p>
-      <p class="text-slate-400 font-bold text-lg text-left m-2 p-2">
-        Yes, you heard it right, a geometric wonder that defies explanation and transcends comprehension!
-      </p>
-      <p class="text-slate-400 font-bold text-lg text-left m-2 p-2">
-        Is it a mere illusion or a reality-shattering phenomenon? 
-      </p>
-      <p class="text-slate-400 font-bold text-lg text-left m-2 p-2">
-        A trick of the eye or a gateway to a world unknown? Why, only the bravest of souls dare to look upon it and discern its secrets!
-      </p>
-      <p class="text-slate-400 font-bold text-lg text-left m-2 p-2">
-        This, dear folks, is no ordinary square! Within its four equal sides lies an enigma so profound, it has puzzled the greatest minds and confounded the most learned scholars. 
-      </p>
-      <p class="text-slate-400 font-bold text-lg text-left m-2 p-2">
-        Legends tell of ancient civilizations brought to their knees in trying to understand its arcane properties!
-      </p>
-      <p class="text-slate-400 font-bold text-lg text-left m-2 p-2">
-        Come, come, don't be shy! Step forward and be a part of history! 
-      </p>
-      <p class="text-slate-400 font-bold text-lg text-left m-2 p-2">
-        Experience a marvel that will be talked about for generations to come!
-      </p>
     </div>
     <div class="grow w-full bg-slate-800 flex justify-around items-center">
       <button on:click={onEnterSquareClick}>
@@ -68,8 +80,11 @@
   @use "./../styles/font"
 
   .info_gate
-    background-color: color.$blue-7
+    background-color: color.$blue-9
     &_title 
       font-family: 'Abelone', 'Impact'
+      width: 60%
+    &_megaphone
+      filter: hue-rotate(90deg) drop-shadow(2px 2px color.$blue-7)
 </style>
 

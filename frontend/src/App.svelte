@@ -109,7 +109,6 @@
       {i18n.t("nav/giveMeASine", langVal)}
     </DropdownItem>
   </Dropdown>
-
   <DropdownButton id="contactInfo"
                   class="border-transparent"
                   color="none"
@@ -171,6 +170,7 @@
 <style lang="sass">
   @use "./styles/color"
   @use "./styles/text"
+  @use "./styles/font"
 
   .dropdown
     &_icon
