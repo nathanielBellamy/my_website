@@ -93,20 +93,20 @@
       {i18n.t("nav/home", langVal)} 
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
-                  on:click={() => handleDropdownClick(SiteSection.about)}>
-      {i18n.t("nav/about", langVal)}
+                  on:click={() => handleDropdownClick(SiteSection.publicSquare)}>
+      Public square
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
                   on:click={() => handleDropdownClick(SiteSection.magicSquare)}>
       {i18n.t("nav/magicSquare", langVal)}
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
-                  on:click={() => handleDropdownClick(SiteSection.publicSquare)}>
-      Public square
-    </DropdownItem>
-    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
                   on:click={() => handleDropdownClick(SiteSection.giveMeASine)}>
       {i18n.t("nav/giveMeASine", langVal)}
+    </DropdownItem>
+    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
+                  on:click={() => handleDropdownClick(SiteSection.about)}>
+      {i18n.t("nav/about", langVal)}
     </DropdownItem>
   </Dropdown>
   <DropdownButton id="contactInfo"
