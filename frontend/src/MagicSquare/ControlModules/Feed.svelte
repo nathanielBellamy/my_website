@@ -96,7 +96,9 @@
     <div  id="public_square_feed_messages"
           class="public_square_feed_messages h-fit p-2 flex flex-col items-center gap-2">
       {#if !psFeedVal.length}
-        <h1> No New Messages </h1>
+        <div class="font-bold text-lg"> 
+          No New Messages
+        </div>
       {:else}
         {#each psFeedVal as { clientId, body }, i} 
           {#if !!i}

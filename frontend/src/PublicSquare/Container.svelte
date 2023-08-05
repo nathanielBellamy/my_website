@@ -1,9 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte"
   import Main from "./Main.svelte"
-
   import WarningModal from "../MagicSquare/WarningModal.svelte"
-    import InfoGate from "./InfoGate.svelte";
+  import InfoGate from "./InfoGate.svelte"
  
   let hasPassedGate: boolean = false
   let hasAcceptedWarning: boolean = false

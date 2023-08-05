@@ -1,12 +1,22 @@
 <script lang="ts">
-  import Recaptcha from "../lib/Recaptcha.svelte";
+  import Recaptcha from "../lib/Recaptcha.svelte"
+  import { ViteMode } from "../ViteMode"
 
   export let hasPassedGate: boolean
+  let showRecaptcha = false
+
+  function onEnterSquareClick() {
+    if (import.meta.env.MODE !== ViteMode.localhost) {
+      showRecaptcha = true
+    } else {
+      hasPassedGate = true
+    }
+  }
 </script>
 
-<div class="w-full h-full bg-slate-800">
+<div class="info_gate w-full h-full">
   <div class="w-full flex flex-col justify-between items-stretch">
-    <h1 class="text-gray-400">
+    <h1 class="info_gate_title">
       Welcome to The Public Square
     </h1>
     <div class="w-full pl-4 pr-4 flex flex-col justify-between items-streth">
@@ -42,15 +52,24 @@
       </p>
     </div>
     <div class="grow w-full bg-slate-800 flex justify-around items-center">
-      <button on:click={() => hasPassedGate = true}>
+      <button on:click={onEnterSquareClick}>
         Enter The Public Square
       </button>
     </div>
-    <Recaptcha />
+    {#if showRecaptcha && import.meta.env.MODE !== ViteMode.localhost}
+      <Recaptcha bind:hasPassed={hasPassedGate}/>
+    {/if}
   </div>
 </div>
 
 <style lang="sass">
+  @use "./../styles/color"
+  @use "./../styles/text"
+  @use "./../styles/font"
 
+  .info_gate
+    background-color: color.$blue-7
+    &_title 
+      font-family: 'Abelone', 'Impact'
 </style>
 
