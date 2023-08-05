@@ -9,12 +9,14 @@
   import MagicSquarePub from './MagicSquarePub.svelte'
   import { FEED_LENGTH, psFeed } from '../stores/psFeed'
   import Toaster from '../lib/Toaster.svelte'
-  import InfoGate from './InfoGate.svelte'
 
   let clientId: number
 
+  const baseUrl: string = import.meta.env.VITE_BASE_URL
+  const fullUrl: string = `ws://${baseUrl}/public-square-feed-ws`
+
   // websocket
-  const ws = new WebsocketBuilder('ws://localhost:8080/public-square-feed-ws')
+  const ws = new WebsocketBuilder(fullUrl)
       .onOpen(() => {
         triggerShowConnected()
       })

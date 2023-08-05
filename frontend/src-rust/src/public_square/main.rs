@@ -17,10 +17,7 @@ use web_sys::{MessageEvent, WebGl2RenderingContext, WebGlProgram, WebSocket};
 use crate::magic_square::{settings::Settings, main::MagicSquare, main::X_MAX};
 
 // TODO:
-//  run an instance of magic square that has access to the websocket
-//  UiBuffer sends serialized JSON (see deser.rs) to backend through socket on update
-//  UiBuffer is updated with new received Settings when message recevied
-
+//  - read the base url from the env
 const URL: &str = "ws://localhost:8080/public-square-wasm-ws";
 
 #[derive(Debug)]

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Recaptcha from "../lib/Recaptcha.svelte";
+
   export let hasPassedGate: boolean
 </script>
 
@@ -44,6 +46,7 @@
         Enter The Public Square
       </button>
     </div>
+    <Recaptcha />
   </div>
 </div>
 
