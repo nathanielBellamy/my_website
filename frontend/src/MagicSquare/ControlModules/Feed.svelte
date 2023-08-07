@@ -207,7 +207,7 @@
       height: fit-content
     &_body
       grid-area: "body"
-      background-color: color.$black-7
+      background-color: color.$black
     &_self
       background-color: color.$yellow-3
       display: grid

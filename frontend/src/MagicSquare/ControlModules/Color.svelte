@@ -272,7 +272,7 @@
       z-index: 100
       font-weight: text.$fw-m
       font-size: text.$fs-xl
-      color: color.$black-7
+      color: color.$black
       pointer-events: none
 </style>
 

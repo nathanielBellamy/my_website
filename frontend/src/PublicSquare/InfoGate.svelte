@@ -1,10 +1,14 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte'
   import { Popover } from 'flowbite-svelte'
-  import { slide } from 'svelte/transition';
+  import { slide } from 'svelte/transition'
   import Recaptcha from "../lib/Recaptcha.svelte"
   import { ViteMode } from "../ViteMode"
   import megaphone from '../assets/megaphone.png'
-    import Link from '../lib/Link.svelte';
+  import Link from '../lib/Link.svelte'
+  import { smallScreen } from '../stores/smallScreen'
+  let smallScreenVal: boolean
+  const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
 
   export let hasPassedGate: boolean
   let showRecaptcha = false
@@ -16,10 +20,12 @@
       hasPassedGate = true
     }
   }
+
+  onDestroy(unsubSmallScreen)
 </script>
 
-<div class="info_gate w-full h-full">
-  <div class="h-full w-full flex flex-col justify-between items-stretch">
+<div class="info_gate w-full h-full overflow-y-scroll pb-4">
+  <div class="h-full w-full flex flex-col justify-between items-stretch gap-4">
     <div class="w-full flex justify-around items-center">
       <div class="info_gate_title flex justify-around items-center">
         <img class="info_gate_megaphone flip mr-5 h-24 w-24"
@@ -34,7 +40,8 @@
             to The Public Square!
           </p>
         </Popover>
-        <div class="text-7xl">
+        <div class:text-6xl={!smallScreenVal}
+             class:text-2xl={smallScreenVal}>
           <p>
             ===============
           </p>
@@ -68,10 +75,10 @@
           <span class="abelone">
             The Public Square 
           </span>
-          is FREE & COLLABORATIVE ART
+          is a free, anonymously collaborative art project
         </li>
         <li>
-          A digital wall for geometric graffiti
+          A digital wall for geometric graffiti animations
         </li>
         <li>
           Make colorful shapes and send emojis

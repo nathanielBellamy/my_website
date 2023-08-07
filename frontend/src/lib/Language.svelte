@@ -26,10 +26,10 @@
   })
 </script>
 
-<section>
-  <div class="lang_select grow">
+<section class="w-fit">
+  <div class="lang_select flex justify-between items-center">
     {#each Object.keys(Lang) as langKey }
-      <button class="lang_select_opt mt-0"
+      <button class="lang_select_opt mt-0 flex justify-around items-center"
               class:selected="{Lang[langKey] === langVal}"
               on:click={() => setLang(langKey)}>
         {langKey}
