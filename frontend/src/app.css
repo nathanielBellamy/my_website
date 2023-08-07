@@ -138,7 +138,6 @@ nav {
   display: flex;
   align-items: center;
   border-bottom: 5px double #395A6D;
-  overflow: show;
   z-index: 1000;
 }
 
