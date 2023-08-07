@@ -6,6 +6,7 @@
   // INIT Prev Settings
   import { prevSettingsStore } from './PrevSettingsStore'
   import WarningModal from "./WarningModal.svelte"
+  import { Spinner } from "flowbite-svelte"
 
   let prevSettingsStoreVal: StorageSettings
   $: prevSettingsStoreVal
@@ -28,20 +29,47 @@
   })
 
   onDestroy(unsubscribe)
+
+  let counter: number = 2
+
+  function waitOnLoad() {
+    timeout()
+  }
+
+  function timeout() {
+    if (--counter > 0)
+      return setTimeout(timeout, 1000)
+  }
+
+  waitOnLoad()
 </script>
 
 <div id="magic_square_container"
      class="magic_square_container">
-  {#if !hasAcceptedWarning}
-    <WarningModal bind:hasAccepted={hasAcceptedWarning}/>
+  {#if counter > 0}
+    <div class="h-full w-full flex justify-center items-center gap-4">
+      <div class="info_gate_loading text-6xl w-fit flex justify-around items-center"> 
+        Loading...
+      </div>
+      <Spinner color="purple" />
+    </div>
   {:else}
-      {#if dataReady}
-        <Main />
-      {/if}
+    {#if !hasAcceptedWarning}
+      <WarningModal bind:hasAccepted={hasAcceptedWarning}/>
+    {:else}
+        {#if dataReady}
+          <Main />
+        {/if}
+    {/if}
   {/if}
 </div>
 
 <style lang="sass">
+  @use "./../styles/font"
+
+  .info_gate_loading
+    font-family: 'Abelone'
+
   .magic_square_container
     height: 100%
     width: 100%
