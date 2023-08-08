@@ -29,6 +29,7 @@
     <div class="w-full flex justify-around items-center">
       <div class="info_gate_title flex justify-around items-center">
         <img class="info_gate_megaphone flip mr-5 h-24 w-24"
+             class:hidden={smallScreenVal}
              src={megaphone}
              alt={"Megaphone"}/>
         <Popover class="bg-slate-800 text-2xl"
@@ -40,8 +41,7 @@
             to The Public Square!
           </p>
         </Popover>
-        <div class:text-6xl={!smallScreenVal}
-             class:text-2xl={smallScreenVal}>
+        <div class="text-3xl md:text-6xl">
           <p>
             ===============
           </p>
@@ -56,6 +56,7 @@
           </p>
         </div>
         <img class="info_gate_megaphone ml-5 h-24 w-24"
+             class:hidden={smallScreenVal}
              src={megaphone}
              alt={"Megaphone"}/>
         <Popover class="bg-slate-800 text-2xl"
@@ -85,7 +86,7 @@
         </li>
         <li>
           Everyone has equal voice to change the art in
-          <span class="abelone">
+          <span class="w-fit abelone">
             THE PUBLIC SQUARE
           </span>
         </li>

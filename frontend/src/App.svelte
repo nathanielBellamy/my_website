@@ -65,8 +65,6 @@
     unsubSmallScreen()
     unsubTouchScreen()
   })
-
-
 </script>
 
 <svelte:window bind:innerWidth />

@@ -453,7 +453,7 @@
 <div style="display: none"> {touchScreenVal}  </div>
 
 <div id="magic_square"
-     class="magic_square"
+     class="magic_square overscroll-none"
      class:grid_col={smallScreenVal}
      class:grid_row={!smallScreenVal}>
      <!-- on:click={() => console.dir(deriveStorageSettings())} -->

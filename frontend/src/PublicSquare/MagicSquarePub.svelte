@@ -335,7 +335,7 @@
 <div style="display: none"> {sAS} </div>
 
 <div id="magic_square"
-     class="magic_square"
+     class="magic_square overscroll-none"
      class:grid_col={smallScreenVal}
      class:grid_row={!smallScreenVal}>
   <div id="magic_square_canvas_container"

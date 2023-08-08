@@ -44,11 +44,11 @@
   waitOnLoad()
 </script>
 
-<div id="magic_square_container"
-     class="magic_square_container">
+<body id="magic_square_container"
+     class="magic_square_container overscroll-none">
   {#if counter > 0}
     <div class="h-full w-full flex justify-center items-center gap-4">
-      <div class="info_gate_loading text-6xl w-fit flex justify-around items-center"> 
+      <div class="info_gate_loading text-4xl md:text-6xl w-fit flex justify-around items-center"> 
         Loading...
       </div>
       <Spinner color="purple" />
@@ -62,7 +62,7 @@
         {/if}
     {/if}
   {/if}
-</div>
+</body>
 
 <style lang="sass">
   @use "./../styles/font"
