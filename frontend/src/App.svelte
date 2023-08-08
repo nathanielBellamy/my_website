@@ -44,10 +44,10 @@
     '/about': wrap({
       asyncComponent: () => import('./About.svelte')
     }),
-    '/give_me_a_sine': wrap({
+    '/give-me-a-sine': wrap({
       asyncComponent: () => import('./GiveMeASine.svelte')
     }),
-    '/magic_square': wrap({
+    '/magic-square': wrap({
       asyncComponent: () => import('./MagicSquare/Container.svelte')
     }),
     '/public-square': wrap({

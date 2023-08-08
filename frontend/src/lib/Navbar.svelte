@@ -15,6 +15,8 @@
   let touchScreenVal: boolean
   const unsubTouchScreen = touchScreen.subscribe((val: boolean) => touchScreenVal = val)
 
+  let dropdownOpen: boolean = false;
+
   function handleDropdownClick(s: SiteSection) {
     push(intoUrl(s))
   }
@@ -33,26 +35,33 @@
     </div>
   </button>
   <Dropdown triggeredBy="#siteSectionDropdown"
+            bind:open={dropdownOpen}
             placement={touchScreenVal ? "bottom" : "right"}
+            classUl="w-40"
             ulClass="pt-2 pb-2 rounded-lg bg-black text-blue-200">
-    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
-                  on:click={() => handleDropdownClick(SiteSection.home)}>
+    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+                  on:click={() => dropdownOpen = false}
+                  href="/#/">
       {i18n.t("nav/home", langVal)} 
     </DropdownItem>
-    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
-                  on:click={() => handleDropdownClick(SiteSection.publicSquare)}>
+    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+                  on:click={() => dropdownOpen = false}
+                  href="/#/public-square">
       Public square
     </DropdownItem>
-    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
-                  on:click={() => handleDropdownClick(SiteSection.magicSquare)}>
+    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+                  on:click={() => dropdownOpen = false}
+                  href="/#/magic-square">
       {i18n.t("nav/magicSquare", langVal)}
     </DropdownItem>
-    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
-                  on:click={() => handleDropdownClick(SiteSection.giveMeASine)}>
+    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+                  on:click={() => dropdownOpen = false}
+                  href="/#/give-me-a-sine">
       {i18n.t("nav/giveMeASine", langVal)}
     </DropdownItem>
-    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold"
-                  on:click={() => handleDropdownClick(SiteSection.about)}>
+    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+                  on:click={() => dropdownOpen = false}
+                  href="/#/about">
       {i18n.t("nav/about", langVal)}
     </DropdownItem>
   </Dropdown>
