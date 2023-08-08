@@ -1085,18 +1085,18 @@
     </ControlRackPub>
   </div>
   {#if smallScreenVal}
-     <div class="text-sm grid grid-cols-2 grid-rows-1">
-        <button on:click={() => setMagicSquareView(MagicSquareView.square)}
-                class="view_select_button pt-2 pb-2 flex justify-around items-center"
-                class:selected={magicSquareView === MagicSquareView.square}>
-          ▫️
-        </button>
-        <button on:click={() => setMagicSquareView(MagicSquareView.controls)}
-                class="view_select_button text-sm flex justify-around items-center"
-                class:selected={magicSquareView === MagicSquareView.controls}>
-          🛠️
-        </button>
-     </div>
+   <div class="text-sm grid grid-cols-2 grid-rows-1">
+      <button on:click={() => setMagicSquareView(MagicSquareView.square)}
+              class="view_select_button pt-2 pb-2 flex justify-around items-center"
+              class:selected={magicSquareView === MagicSquareView.square}>
+        ▫️
+      </button>
+      <button on:click={() => setMagicSquareView(MagicSquareView.controls)}
+              class="view_select_button text-sm flex justify-around items-center"
+              class:selected={magicSquareView === MagicSquareView.controls}>
+        🛠️
+      </button>
+   </div>
   {/if}
 </div>
 
