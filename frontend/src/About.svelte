@@ -1,11 +1,12 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte'
   import { lang } from "./stores/lang"
   import { I18n, Lang } from "./I18n"
   import Link from "./lib/Link.svelte"
 
   let i18n = new I18n("about")
   let langVal: Lang
-  lang.subscribe( val => langVal = val)
+  const unsubLang = lang.subscribe( val => langVal = val)
 
   enum EmbeddedProgram {
     giveMeASign,
@@ -127,6 +128,9 @@
     window.open(href, '_blank');
   }
 
+  onDestroy(() => {
+    unsubLang()
+  })
 </script>
 
 <div class="about_me flex flex-col justify-start items-stretch gap-2">
@@ -200,7 +204,7 @@
       flex-direction: column
       justify-content: flex-start
       align-items: stretch
-      color: color.$black-7
+      color: color.$black
       flex-grow: .9
       padding: 5px 0 5px 0
    
@@ -209,7 +213,7 @@
     /* justify-content: flex-start */
     align-items: stretch
     flex-grow: 1
-    border-bottom: 2px solid color.$black-7
+    border-bottom: 2px solid color.$black
     
     &_title
       flex-grow: .1

@@ -1,11 +1,14 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte'
   import { WasmInputId } from "../WasmInputId"
   import { PresetAction } from "./Preset"
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
 
   let langVal: Lang 
-  lang.subscribe(val => langVal = val)
+  const unsubLang = lang.subscribe(val => langVal = val)
+  onDestroy(unsubLang)
+
   let i18n = new I18n("magicSquare/presets")
 
   // TODO: CSS prevent top cutoff on small screen

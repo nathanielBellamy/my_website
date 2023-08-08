@@ -149,17 +149,24 @@ export const localeEn: any = {
       yaw: "yaw"
     },
     select: {
-      left: "left",
-      right: "right",
+      left: "⬅️ ",
+      right: "➡️ ",
       color: "color",
+      color_emoji: "🖍️",
       drawPattern: "pattern",
+      drawPattern_emoji: "🎦",
       feed: "messages",
+      feed_emoji: "✉️",
       geometry: 'geometry',
+      geometry_emoji: '📐',
       lfo: "lfo",
+      lfo_emoji: "🌊",
       presets: "presets",
-      radius: "radius",
+      presets_emoji: "🧰",
       rotation: "rotation",
-      translation: "translation"
+      rotation_emoji: "🔄",
+      translation: "translation",
+      translation_emoji: "🚌"
     },
     warning: {
       title: "Epilepsy Warning",

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
   import iro from '@jaames/iro'
   import { ColorDirection } from './Color'
   import { WasmInputId } from '../WasmInputId'
@@ -7,7 +7,8 @@
   import { lang } from '../../stores/lang'
 
   let langVal: Lang 
-  lang.subscribe(val => langVal = val)
+  const unsubLang = lang.subscribe(val => langVal = val)
+  onDestroy(unsubLang)
   let i18n = new I18n("magicSquare/color")
 
   function rgbaToString(rgba: number[]): string {
@@ -103,10 +104,19 @@
     return `ms_color_picker_picker_${idx}`
   }
 
+  function colorPickerWidth(): number {
+    const colorPickerDiv: any = document.getElementById('color_mode_and_curr')
+    return Math.floor(colorPickerDiv.offsetWidth / 1.7);
+  }
+
+  function handlePickerResize() {
+    const width: number = colorPickerWidth()
+    colorPickers.forEach((p: any) => p.resize(width))
+  }
+
   onMount(async () => {
     // get height/width for picker
-    var colorPickerDiv: any = document.getElementById('color_mode_and_curr')
-    const width: number = Math.floor(colorPickerDiv.offsetWidth / 1.7);
+    const width: number = colorPickerWidth()
     var input = document.getElementById(WasmInputId.colors)
 
     colors.forEach((color: number[], idx: number) => {
@@ -126,6 +136,12 @@
       })
       colorPickers[idx] = picker
     })
+
+    window.addEventListener('resize', handlePickerResize)
+  })
+
+  onDestroy(() => {
+    window.removeEventListener('resize', handlePickerResize)
   })
 </script>
 
@@ -256,7 +272,7 @@
       z-index: 100
       font-weight: text.$fw-m
       font-size: text.$fs-xl
-      color: color.$black-7
+      color: color.$black
       pointer-events: none
 </style>
 

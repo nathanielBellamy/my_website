@@ -9,6 +9,10 @@ frontend/yarn-error.log*
 frontend/pnpm-debug.log*
 frontend/lerna-debug.log*
 
+# env
+frontend/.env.prod
+frontend/.env.remotedev
+
 frontend/node_modules
 frontend/dist
 frontend/dist-ssr

@@ -96,7 +96,9 @@
     <div  id="public_square_feed_messages"
           class="public_square_feed_messages h-fit p-2 flex flex-col items-center gap-2">
       {#if !psFeedVal.length}
-        <h1> No New Messages </h1>
+        <div class="font-bold text-lg"> 
+          No New Messages
+        </div>
       {:else}
         {#each psFeedVal as { clientId, body }, i} 
           {#if !!i}
@@ -172,7 +174,7 @@
 
   .public_square_feed
     grid-template-areas: "messages" "input"
-    grid-template-rows: 60% 40%
+    grid-template-rows: max(250px, 60%) 40%
     &_messages
       grid-area: "messages"
       &_container
@@ -180,7 +182,7 @@
     &_input
       grid-area: "input"
       grid-template-areas: "body" "keyboard" "buttons"
-      grid-template-rows: 2em 60% 1fr
+      grid-template-rows: 2em max(60%, 155px) 1fr
       &_emoji_keyboard
         grid-area: "keyboard"
         border: 3px color.$yellow-3 double
@@ -205,7 +207,7 @@
       height: fit-content
     &_body
       grid-area: "body"
-      background-color: color.$black-7
+      background-color: color.$black
     &_self
       background-color: color.$yellow-3
       display: grid

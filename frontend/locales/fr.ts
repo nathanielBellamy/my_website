@@ -148,17 +148,24 @@ export const localeFr: any = {
       yaw: "lacet"
     },
     select: {
-      left: "gauche",
-      right: "droite",
+      left: "⬅️ ",
+      right: "➡️ ",
       color: "couleur",
+      color_emoji: "🖍️",
       drawPattern: "dispersion",
+      drawPattern_emoji: "🎦",
       feed: "messages",
+      feed_emoji: "✉️",
       geometry: 'géométrie',
+      geometry_emoji: '📐',
       lfo: "lfo",
+      lfo_emoji: "🌊",
       presets: "préréglages",
-      radius: "rayon",
+      presets_emoji: "🧰",
       rotation: "rotation",
-      translation: "translation"
+      rotation_emoji: "🔄",
+      translation: "translation",
+      translation_emoji: "🚌"
     },
     warning: {
       title: "Avertissement sur l'Épilepsie",

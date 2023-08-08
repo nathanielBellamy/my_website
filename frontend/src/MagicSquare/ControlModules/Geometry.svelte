@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from "svelte"
   import { WasmInputId } from "../WasmInputId"
   import { ShapeTag } from "./Shape"
   import type { Shape } from "./Shape"
@@ -6,7 +7,7 @@
   import { lang } from '../../stores/lang'
 
   let langVal: Lang 
-  lang.subscribe(val => langVal = val)
+  const unsubLang = lang.subscribe(val => langVal = val)
   let i18n = new I18n("magicSquare/geometry")
 
   export let shapes: Shape[]
@@ -77,6 +78,10 @@
    input.value = JSON.stringify({shape: shapes[shapeIndex], index: shapeIndex})
    input.dispatchEvent(new Event('input', {bubbles: true}))
  }
+
+  onDestroy(() => {
+    unsubLang()
+  })
 </script>
 
 <div class="h-full flex flex-col justify-between items-stretch gap-2">

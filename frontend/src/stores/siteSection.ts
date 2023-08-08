@@ -34,9 +34,9 @@ export function intoUrl(s: SiteSection) {
     case SiteSection.home:
       return '/'
     case SiteSection.giveMeASine:
-      return '/give_me_a_sine'
+      return '/give-me-a-sine'
     case SiteSection.magicSquare:
-      return '/magic_square'
+      return '/magic-square'
     case SiteSection.publicSquare:
       return '/public-square'
     case SiteSection.none:

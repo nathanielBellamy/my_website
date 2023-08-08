@@ -9,7 +9,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: rgba(0,0,0,1);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -138,7 +138,6 @@ nav {
   display: flex;
   align-items: center;
   border-bottom: 5px double #395A6D;
-  overflow: show;
   z-index: 1000;
 }
 
@@ -181,23 +180,10 @@ footer { /*global*/
   left: 0;
   bottom: 0;
   width: 100%;
-  color: #395A6D;
   height: 45px;
-  overflow-x: scroll;
   margin-top: 5px;
   padding: 0 10px 0 10px;
   border-top: 5px double #395A6D;
-  gap: 10px;
-  background-color: #232323;
-}
-
-footer div {
-  flex-grow: 1;
-  padding: 0 10px 0 10px;
-}
-
-footer div:not(:last-child) {
-  border-right: 5px double #395A6D;
 }
 
 header {  /*impl per component*/

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte'
   import { push } from "svelte-spa-router"
   import { siteSection, SiteSection } from "../stores/siteSection"
 
@@ -8,7 +9,8 @@
   // INIT LANG BOILER PLATE
   const i18n = new I18n("magicSquare/warning")
   let langVal: Lang
-  lang.subscribe(val => langVal = val)
+  const unsubLang = lang.subscribe(val => langVal = val)
+  onDestroy(unsubLang)
 
   export let hasAccepted: boolean = false
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte'
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
   import { Lfo } from './Lfo'
@@ -7,7 +8,9 @@
   import { WasmInputId } from '../WasmInputId';
 
   let langVal: Lang 
-  lang.subscribe(val => langVal = val)
+  const unsubLang = lang.subscribe(val => langVal = val)
+  onDestroy(unsubLang)
+
   let i18n = new I18n("magicSquare/lfo")
 
   export let lfo1Active: boolean = false
