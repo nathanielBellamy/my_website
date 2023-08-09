@@ -10,14 +10,15 @@
   import { I18n, Lang } from "./I18n"
   import { lang } from "./stores/lang"
   import { intoSiteSection, intoUrl, SiteSection, siteSection } from "./stores/siteSection"
-  import Navbar from './lib/Navbar.svelte';
+  import Navbar from './lib/Navbar.svelte'
+  import SocialLinks from './lib/SocialLinks.svelte'
+  import { ViteMode } from './ViteMode'
 
   import { smallScreen } from './stores/smallScreen'
   let smallScreenVal: boolean
   const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
 
   import { touchScreen } from './stores/touchScreen'
-    import SocialLinks from './lib/SocialLinks.svelte';
   let touchScreenVal: boolean
   const unsubTouchScreen = touchScreen.subscribe((val: boolean) => touchScreenVal = val)
   touchScreen.update((_: boolean) => isTouchScreen())
