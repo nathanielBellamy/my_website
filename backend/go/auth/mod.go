@@ -27,6 +27,7 @@ func HandleDev (w http.ResponseWriter, r *http.Request) {
   res = h.Compare(correctPassword, clientSentPassword)
 
   if res {
+    // TODO: set token in client
     http.ServeFile(w, r, "./../../frontend/dist")
   }
 }

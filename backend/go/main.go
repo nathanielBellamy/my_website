@@ -48,17 +48,18 @@ func serveWasmWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
 }
 
 func setupRoutes() {
-    fs := http.FileServer(http.Dir("./../../frontend/dist"))
-    http.Handle("/", fs)
-
     if os.Getenv("MODE") == "remotedev" {
       http.HandleFunc("/dev-auth", auth.HandleDev)
     }
+
+    fs := http.FileServer(http.Dir("./../../frontend/dist"))
+    http.Handle("/", fs)
 
     feedPool := websocket.NewPool()
     wasmPool := websocket.NewPool()
     go feedPool.StartFeed()
     go wasmPool.StartWasm()
+    // TODO: verify client token before serving in remotedev MODE
     http.HandleFunc("/public-square-feed-ws", func(w http.ResponseWriter, r *http.Request) {
       serveFeedWs(feedPool, w, r)
     })
