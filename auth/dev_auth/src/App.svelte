@@ -4,6 +4,7 @@
   async function authorize() {
     // TODO:
     //  POST password
+    
   }
 </script>
 

@@ -4,7 +4,9 @@ import (
     "fmt"
     "log"
     "net/http"
+    "os"
     "github.com/nathanielBellamy/my_website/backend/go/websocket"
+    "github.com/nathanielBellamy/my_website/backend/go/auth/dev_auth"
 )
 
 func serveFeedWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
@@ -48,6 +50,10 @@ func serveWasmWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
 func setupRoutes() {
     fs := http.FileServer(http.Dir("./../../frontend/dist"))
     http.Handle("/", fs)
+
+    if os.Getenv("MODE") == "remotedev" {
+      http.HandleFunc("/dev-auth", handleDevAuth)
+    }
 
     feedPool := websocket.NewPool()
     wasmPool := websocket.NewPool()
