@@ -1,4 +1,4 @@
-package dev_auth
+package auth
 
 import (
     // "fmt"
@@ -8,15 +8,7 @@ import (
     "os"
 )
 
-type devAuth struct {}
-
-func (c *devAuth) handleDevAuth (w http.ResponseWriter, r *http.Request) {
-
-  // TODO: read headers
-  // if request is not from dev-site return
-
-  var passwordCompareResult bool
-
+func HandleDev (w http.ResponseWriter, r *http.Request) {
   var clientSentPassword string
   err := json.NewDecoder(r.Body).Decode(&clientSentPassword)
   if err != nil {
@@ -31,9 +23,10 @@ func (c *devAuth) handleDevAuth (w http.ResponseWriter, r *http.Request) {
 
   var h Hash
 
-  passwordsMatch := h.Compare(correctPassword, clientSentPassword)
+  var res bool
+  res = h.Compare(correctPassword, clientSentPassword)
 
-  if res == nil {
-    // serve the SPA
+  if res {
+    http.ServeFile(w, r, "./../../frontend/dist")
   }
 }

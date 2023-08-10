@@ -1,4 +1,4 @@
-package dev_auth
+package auth
 
 import (
 	// "errors"

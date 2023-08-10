@@ -6,7 +6,7 @@ import (
     "net/http"
     "os"
     "github.com/nathanielBellamy/my_website/backend/go/websocket"
-    "github.com/nathanielBellamy/my_website/backend/go/auth/dev_auth"
+    "github.com/nathanielBellamy/my_website/backend/go/auth"
 )
 
 func serveFeedWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
@@ -52,7 +52,7 @@ func setupRoutes() {
     http.Handle("/", fs)
 
     if os.Getenv("MODE") == "remotedev" {
-      http.HandleFunc("/dev-auth", handleDevAuth)
+      http.HandleFunc("/dev-auth", auth.HandleDev)
     }
 
     feedPool := websocket.NewPool()
