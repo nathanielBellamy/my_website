@@ -59,7 +59,7 @@ func setupRoutes() {
     wasmPool := websocket.NewPool()
     go feedPool.StartFeed()
     go wasmPool.StartWasm()
-    // TODO: verify client token before serving in remotedev MODE
+    // TODO: verify client cookie before serving in remotedev MODE
     http.HandleFunc("/public-square-feed-ws", func(w http.ResponseWriter, r *http.Request) {
       serveFeedWs(feedPool, w, r)
     })
