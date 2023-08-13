@@ -28,3 +28,7 @@ frontend/*.sw?
 
 # rust build
 frontend/src-rust/target/
+
+# dev password
+backend/go/dev_passwd.txt
+
