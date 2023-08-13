@@ -22,21 +22,17 @@ func (cj *CookieJar) ValidateSessionCookie(r *http.Request) (bool) {
     return false
   }
 
-  _, ok := cj.cookies.Get(incoming_cookie.Value)
-  if !ok {
+  active, present := cj.cookies.Get(incoming_cookie.Value)
+  if !present {
+    return false 
+  } else {
     valid_err := incoming_cookie.Valid()
     if valid_err != nil {
+      // deactivate
       cj.cookies.Set(incoming_cookie.Value, false)
+      return false
     }
-    return false
+    return active 
   }
-
-  // valid_err := cookie.Valid()
-  // if valid_err != nil {
-  //   delete(cj.cookies, incoming_cookie.Value);
-  //   return false
-  // }
-
-  return true
 }
 

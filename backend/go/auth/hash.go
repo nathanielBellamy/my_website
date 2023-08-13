@@ -1,10 +1,8 @@
 package auth
 
 import (
-	// "errors"
-	// "strings"
-
 	"golang.org/x/crypto/bcrypt"
+  "os"
 )
 
 type Hash struct{}
@@ -22,8 +20,13 @@ func (h *Hash) Generate(s string) (string, error) {
 }
 
 //Compare string to generated hash
-func (h *Hash) Compare(existingHash []byte, incoming string) bool {
+func (h *Hash) Compare(incoming string) bool {
   incomingPw := []byte(incoming)
-  res := bcrypt.CompareHashAndPassword(existingHash, incomingPw)
+  pw := os.Getenv("PW")
+  existingHash, err := h.Generate(pw)
+  if err != nil {
+    return false
+  }
+  res := bcrypt.CompareHashAndPassword([]byte(existingHash), incomingPw)
   return res == nil
 }

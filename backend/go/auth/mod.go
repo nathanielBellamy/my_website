@@ -3,9 +3,7 @@ package auth
 import (
     "fmt"
     "encoding/json"
-    // "log"
     "net/http"
-    "os"
     "strings"
     "time"
 )
@@ -34,7 +32,6 @@ func HandleDev (w http.ResponseWriter, r *http.Request, cookieJar *CookieJar) {
 
   fmt.Printf("Wow Zow \n")
 
-  correctPassword, err := os.ReadFile("/dev_pw")
   if err != nil {
     return
   }
@@ -42,7 +39,7 @@ func HandleDev (w http.ResponseWriter, r *http.Request, cookieJar *CookieJar) {
   var h Hash
 
   var res bool
-  res = h.Compare(correctPassword, clientSentPassword)
+  res = h.Compare(clientSentPassword)
 
   if res {
     var h Hash
