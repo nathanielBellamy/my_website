@@ -22,13 +22,27 @@
       - starts a Vite server at `:4173` meant to imitate a prod server pulling from the `/frontend/dist` directory
       - use this to ensure that Vite bundles all of your assets appropriately
   - from within `/backend/go`
+    - `MODE=<runtime_env> ./main` to start the Go server on `/8080`
+      - `MODE=localhost ./main` 
+        - will serve `auth/dev_auth/dist`
+        - require login to access `frontend/dist`
+      - `MODE=production ./main`
+        - servers `frontend/dist`
+      - `MODE=remotedev ./main`
+        - will serve `auth/dev_auth/dist`
+        - require login to access `frontend/dist`
+      - TODO: script these
     - `./main` starts the Go server on `/8080`
     - will serve latest result of `npm run build-frontend` w/o needing to restart
     - refresh the browser, though
     
   - thus far we have found it easiest to develop while:
     - always running the Go server on :8080 
-      - `./main` from within `/backend/go`
+      - `MODE=<runtime_env> ./main` from within `/backend/go`
+        - `MODE=localhost ./main`
+        - `MODE=production ./main`
+        - `MODE=remotedev ./main`
+
       - rebuild as necessary with `go build main.go`
     - rebuild the whole front-end after any changes
       - `npm run build-frontend` from `/frontend/`

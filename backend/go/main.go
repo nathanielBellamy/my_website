@@ -5,8 +5,9 @@ import (
     "log"
     "net/http"
     "os"
-    "github.com/nathanielBellamy/my_website/backend/go/websocket"
     "github.com/nathanielBellamy/my_website/backend/go/auth"
+    "github.com/nathanielBellamy/my_website/backend/go/env"
+    "github.com/nathanielBellamy/my_website/backend/go/websocket"
 )
 
 func serveFeedWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
@@ -47,31 +48,112 @@ func serveWasmWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
       client.ReadWasm()
 }
 
-func setupRoutes() {
-    if os.Getenv("MODE") == "remotedev" {
-      http.HandleFunc("/dev-auth", auth.HandleDev)
-    }
+func setupDevAuth(cookieJar *auth.CookieJar) {
+  fs := http.FileServer(http.Dir("./../../auth/dev_auth/dist"))
+  http.Handle("/", fs)
 
+  http.HandleFunc("/dev-auth", func(w http.ResponseWriter, r *http.Request) {
+    auth.HandleDev(w, r, cookieJar)
+  })
+}
+
+func setupRemotedevRoutes() {
+  var cookieJar auth.CookieJar
+  setupDevAuth(&cookieJar)
+
+}
+
+func setupLocalhostRoutes() {
+  var cookieJar auth.CookieJar
+  setupDevAuth(&cookieJar)
+}
+
+func setupProdRoutes() {
+  // TODO: maybe set cookie when user goes through ep warning
+}
+
+func redirectToDevAuth(w http.ResponseWriter, r *http.Request) {
+  http.Redirect(w,r,"/dev-auth", 301)
+}
+
+func setupBaseRoutes(runtime_env env.Env, cookieJar *auth.CookieJar) {
+  if runtime_env.IsProd() {
     fs := http.FileServer(http.Dir("./../../frontend/dist"))
     http.Handle("/", fs)
+  }
 
-    feedPool := websocket.NewPool()
-    wasmPool := websocket.NewPool()
-    go feedPool.StartFeed()
-    go wasmPool.StartWasm()
-    // TODO: verify client cookie before serving in remotedev MODE
-    http.HandleFunc("/public-square-feed-ws", func(w http.ResponseWriter, r *http.Request) {
+  feedPool := websocket.NewPool()
+  wasmPool := websocket.NewPool()
+  go feedPool.StartFeed()
+  go wasmPool.StartWasm()
+  // TODO: verify client cookie before serving in remotedev MODE
+  http.HandleFunc("/public-square-feed-ws", func(w http.ResponseWriter, r *http.Request) {
+    if !runtime_env.IsProd() {
+      // localhost and remote dev require basic login
+      res := (*cookieJar).ValidateSessionCookie(r)
+      if res {
+        serveFeedWs(feedPool, w, r)
+      } else {
+        redirectToDevAuth(w,r)
+      }
+    } else {
+      // prod is public
       serveFeedWs(feedPool, w, r)
-    })
-    http.HandleFunc("/public-square-wasm-ws", func(w http.ResponseWriter, r *http.Request) {
+    }
+  })
+  http.HandleFunc("/public-square-wasm-ws", func(w http.ResponseWriter, r *http.Request) {
+    if !runtime_env.IsProd() {
+      // localhost and remote dev require basic login
+      res := (*cookieJar).ValidateSessionCookie(r)
+      if res {
+        serveWasmWs(wasmPool, w, r)
+      } else {
+        redirectToDevAuth(w,r)
+      }
+    } else {
+      // prod is public
       serveWasmWs(wasmPool, w, r)
-    })
+    }
+  })
+}
+
+func setupRoutes(runtime_env env.Env, cookieJar *auth.CookieJar) {
+    switch runtime_env.Mode {
+    case "localhost":
+      setupLocalhostRoutes()
+    case "prod":
+      setupProdRoutes()
+    case "remotedev":
+      setupRemotedevRoutes()
+    }
+
+    setupBaseRoutes(runtime_env, cookieJar)
+
+    // fs := http.FileServer(http.Dir("./../../frontend/dist"))
+    // http.Handle("/", fs)
+
+    // feedPool := websocket.NewPool()
+    // wasmPool := websocket.NewPool()
+    // go feedPool.StartFeed()
+    // go wasmPool.StartWasm()
+    // // TODO: verify client cookie before serving in remotedev MODE
+    // http.HandleFunc("/public-square-feed-ws", func(w http.ResponseWriter, r *http.Request) {
+    //   serveFeedWs(feedPool, w, r)
+    // })
+    // http.HandleFunc("/public-square-wasm-ws", func(w http.ResponseWriter, r *http.Request) {
+    //   serveWasmWs(wasmPool, w, r)
+    // })
 }
 
 func main() {
     fmt.Printf("Starting server on 8080 \n")
     
-    setupRoutes()
+    mode := os.Getenv("MODE")
+    runtime_env := env.Env {
+      Mode: string(mode),
+    }
+    var cookieJar auth.CookieJar
+    setupRoutes(runtime_env, &cookieJar)
 
     if err := http.ListenAndServe(":8080", nil); err != nil {
         fmt.Printf("UnableToServe")

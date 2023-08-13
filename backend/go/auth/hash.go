@@ -7,7 +7,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-//Hash implements root.Hash
 type Hash struct{}
 
 //Generate a salted hash for the input string

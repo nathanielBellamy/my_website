@@ -1,20 +1,38 @@
 package auth
 
 import (
-    // "fmt"
+    "fmt"
     "encoding/json"
     // "log"
     "net/http"
     "os"
+    "strings"
+    "time"
 )
 
-func HandleDev (w http.ResponseWriter, r *http.Request) {
+func getClientIpAddr(r *http.Request) (string, error) {
+  var res string
+	if forwardedFor := r.Header.Get("X-Forwarded-For"); forwardedFor != "" {
+		// The header can contain multiple IPs, comma-separated.
+		// The client's IP is typically the first one.
+		ips := strings.Split(forwardedFor, ",")
+		if len(ips) > 0 {
+			res = strings.TrimSpace(ips[0])
+		}
+	}
+  return res, nil
+}
+
+func HandleDev (w http.ResponseWriter, r *http.Request, cookieJar *CookieJar) {
   var clientSentPassword string
   err := json.NewDecoder(r.Body).Decode(&clientSentPassword)
   if err != nil {
     http.Error(w, err.Error(), http.StatusBadRequest)
     return
   }
+
+
+  fmt.Printf("Wow Zow \n")
 
   correctPassword, err := os.ReadFile("/dev_pw")
   if err != nil {
@@ -27,27 +45,27 @@ func HandleDev (w http.ResponseWriter, r *http.Request) {
   res = h.Compare(correctPassword, clientSentPassword)
 
   if res {
-    // TODO: set cookie in client
-    // type Cookie struct {
-    //   Name  string
-    //   Value string
+    var h Hash
+    sessionToken, err := h.Generate(time.Now().String())
+    if err != nil {
+      return
+    }
 
-    //   Path       string    // optional
-    //   Domain     string    // optional
-    //   Expires    time.Time // optional
-    //   RawExpires string    // for reading cookies only
+    // save cookie on server
+    
+    // set cookie on client
+    c := http.Cookie {
+      Name: "devdev-nbs-dev",
+      Value: sessionToken,
+      Domain: "devdev-nbs-dev.dev",
+      MaxAge: 60 * 60 * 48, // two days
+      Secure: true, // https only
+      HttpOnly: true, // don't let JS touch it
+    }
 
-    //   // MaxAge=0 means no 'Max-Age' attribute specified.
-    //   // MaxAge<0 means delete cookie now, equivalently 'Max-Age: 0'
-    //   // MaxAge>0 means Max-Age attribute present and given in seconds
-    //   MaxAge   int
-    //   Secure   bool
-    //   HttpOnly bool
-    //   SameSite SameSite
-    //   Raw      string
-    //   Unparsed []string // Raw text of unparsed attribute-value pairs
-    // }
-    // http.SetCookie(w, cookie)
+    (*cookieJar).cookies.Set(sessionToken, true)
+
+    http.SetCookie(w, &c)
     http.ServeFile(w, r, "./../../frontend/dist")
   }
 }
