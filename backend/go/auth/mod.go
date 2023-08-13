@@ -2,7 +2,7 @@ package auth
 
 import (
     "fmt"
-    "encoding/json"
+    // "encoding/json"
     "net/http"
     "strings"
     "time"
@@ -21,28 +21,26 @@ func getClientIpAddr(r *http.Request) (string, error) {
   return res, nil
 }
 
+type IoPassword struct {
+  Password string
+}
+
 func HandleDev (w http.ResponseWriter, r *http.Request, cookieJar *CookieJar) {
-  var clientSentPassword string
-  err := json.NewDecoder(r.Body).Decode(&clientSentPassword)
+  fmt.Printf("Wow Zow \n")
+  
+  err := r.ParseForm()
   if err != nil {
     http.Error(w, err.Error(), http.StatusBadRequest)
     return
   }
-
-
-  fmt.Printf("Wow Zow \n")
-
-  if err != nil {
-    return
-  }
+  
+  clientSentPassword := r.Form.Get("pw")
 
   var h Hash
-
   var res bool
   res = h.Compare(clientSentPassword)
 
   if res {
-    var h Hash
     sessionToken, err := h.Generate(time.Now().String())
     if err != nil {
       return

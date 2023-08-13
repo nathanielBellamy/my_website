@@ -1,10 +1,15 @@
 <script lang="ts">
+  let url: string
   let password: string
 
-  async function authorize() {
-    // TODO:
-    //  POST password
-    
+  async function authorize(password: string): any {
+    fetch('dev-auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `pw=${password}`
+    })
   }
 </script>
 
@@ -24,7 +29,7 @@
   <div>
     - MF DOOM
   </div>
-  <form>
+    <form on:submit={async () => authorize(password)}>
     <input bind:value={password}>
   </form>
 </main>

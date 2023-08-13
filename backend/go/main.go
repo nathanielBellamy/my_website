@@ -53,6 +53,8 @@ func setupDevAuth(cookieJar *auth.CookieJar) {
   http.Handle("/", fs)
 
   http.HandleFunc("/dev-auth", func(w http.ResponseWriter, r *http.Request) {
+    fmt.Printf("dev-auth here here")
+    fmt.Printf("%v", r.Method)
     auth.HandleDev(w, r, cookieJar)
   })
 }
