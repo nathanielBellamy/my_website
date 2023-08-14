@@ -25,12 +25,10 @@ type IoPassword struct {
   Password string
 }
 
-func HandleDev (w http.ResponseWriter, r *http.Request, cookieJar *CookieJar) {
-  fmt.Printf("Wow Zow \n")
-  
+func HandleDev (w *http.ResponseWriter, r *http.Request, cookieJar *CookieJar) {
   err := r.ParseForm()
   if err != nil {
-    http.Error(w, err.Error(), http.StatusBadRequest)
+    http.Error(*w, err.Error(), http.StatusBadRequest)
     return
   }
   
@@ -46,21 +44,25 @@ func HandleDev (w http.ResponseWriter, r *http.Request, cookieJar *CookieJar) {
       return
     }
 
+    fmt.Printf("session token: %v \n ", sessionToken)
+
     // save cookie on server
     
     // set cookie on client
     c := http.Cookie {
-      Name: "devdev-nbs-dev",
+      Name: "__Secure-nbs-dev",
       Value: sessionToken,
-      Domain: "devdev-nbs-dev.dev",
       MaxAge: 60 * 60 * 48, // two days
       Secure: true, // https only
       HttpOnly: true, // don't let JS touch it
     }
 
-    (*cookieJar).cookies.Set(sessionToken, true)
+    fmt.Printf("cookie: %v \n \n \n", c)
 
-    http.SetCookie(w, &c)
-    http.ServeFile(w, r, "./../../frontend/dist")
+    http.SetCookie(*w, &c)
+    fmt.Printf("writer: %v \n \n \n", *w)
+    // cookieJar.cookies.Set(sessionToken, true)
+
+    fmt.Printf(" \n End Handle Dev \n \n ")
   }
 }

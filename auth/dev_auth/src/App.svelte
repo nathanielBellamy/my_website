@@ -3,7 +3,7 @@
   let password: string
 
   async function authorize(password: string): any {
-    fetch('dev-auth', {
+    await fetch('dev-auth', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -29,7 +29,10 @@
   <div>
     - MF DOOM
   </div>
-    <form on:submit={async () => authorize(password)}>
+    <form on:submit={(e) => {
+      e.preventDefault()
+      authorize(password)
+    }}>
     <input bind:value={password}>
   </form>
 </main>

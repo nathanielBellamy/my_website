@@ -49,25 +49,30 @@ func serveWasmWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
 }
 
 func setupDevAuth(cookieJar *auth.CookieJar) {
-  fs := http.FileServer(http.Dir("./../../auth/dev_auth/dist"))
-  http.Handle("/", fs)
-
+  fs_auth := http.FileServer(http.Dir("./../../auth/dev_auth/dist"))
+  http.Handle("/", fs_auth)
+  
   http.HandleFunc("/dev-auth", func(w http.ResponseWriter, r *http.Request) {
-    fmt.Printf("dev-auth here here")
-    fmt.Printf("%v", r.Method)
-    auth.HandleDev(w, r, cookieJar)
+    fmt.Printf("\n dev-auth %v \n", r.Method)
+    auth.HandleDev(&w, r, cookieJar)
+    http.Redirect(w, r, "/foo", 301)
+  })
+
+  http.HandleFunc("/foo", func(w http.ResponseWriter, r *http.Request) {
+    fmt.Printf("\n foo %v \n", r.Method)
+    if (*cookieJar).ValidateSessionCookie(r) {
+      fmt.Printf("\n valid foo cookie \n")
+    }
   })
 }
 
-func setupRemotedevRoutes() {
-  var cookieJar auth.CookieJar
-  setupDevAuth(&cookieJar)
+func setupRemotedevRoutes(cookieJar *auth.CookieJar) {
+  setupDevAuth(cookieJar)
 
 }
 
-func setupLocalhostRoutes() {
-  var cookieJar auth.CookieJar
-  setupDevAuth(&cookieJar)
+func setupLocalhostRoutes(cookieJar *auth.CookieJar) {
+  setupDevAuth(cookieJar)
 }
 
 func setupProdRoutes() {
@@ -122,11 +127,11 @@ func setupBaseRoutes(runtime_env env.Env, cookieJar *auth.CookieJar) {
 func setupRoutes(runtime_env env.Env, cookieJar *auth.CookieJar) {
     switch runtime_env.Mode {
     case "localhost":
-      setupLocalhostRoutes()
+      setupLocalhostRoutes(cookieJar)
     case "prod":
       setupProdRoutes()
     case "remotedev":
-      setupRemotedevRoutes()
+      setupRemotedevRoutes(cookieJar)
     }
 
     setupBaseRoutes(runtime_env, cookieJar)
