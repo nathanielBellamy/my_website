@@ -11,12 +11,12 @@ import (
 )
 
 
-type CookieJar struct {
-  cookies cmap.ConcurrentMap[string, bool]
-}
+// type CookieJar struct {
+//   cookies cmap.ConcurrentMap[string, bool]
+// }
 
 
-func (cj *CookieJar) ValidateSessionCookie(r *http.Request) (bool) {
+func ValidateSessionCookie(r *http.Request, cookieJar *cmap.ConcurrentMap[string, bool]) (bool) {
   incoming_cookie, err := r.Cookie("__Secure-nbs-dev")
   fmt.Printf(" \n \n incoming req: %v \n \n ", *r)
   fmt.Printf(" \n \n incoming cooking: %v \n \n ", incoming_cookie.Value)
@@ -27,16 +27,16 @@ func (cj *CookieJar) ValidateSessionCookie(r *http.Request) (bool) {
   }
 
 
-  fmt.Printf(" \n \n cookiejar: %v \n \n ", cj)
-  active, present := cj.cookies.Get(incoming_cookie.Value)
+  fmt.Printf(" \n \n cookiejar: %v \n \n ", cookieJar)
+  active, present := cookieJar.Get(incoming_cookie.Value)
   if !present {
-    fmt.Printf(" here here 123 ")
+    fmt.Printf(" cookie not found ")
     return false 
   } else {
     valid_err := incoming_cookie.Valid()
     if valid_err != nil {
       // deactivate
-      cj.cookies.Set(incoming_cookie.Value, false)
+      cookieJar.Set(incoming_cookie.Value, false)
       return false
     }
     return active 

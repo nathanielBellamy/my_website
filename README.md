@@ -29,7 +29,7 @@ $2a$10$eoka2klp4SoOA4mXyiHkQuctdKkXXJfalLotfvX7hbuiryu5fQA.G
       - use this to ensure that Vite bundles all of your assets appropriately
   - from within `/backend/go`
     - `MODE=<runtime_env> ./main` to start the Go server on `/8080`
-      - `MODE=localhost PW_HASH=$2a$10$eoka2klp4SoOA4mXyiHkQuctdKkXXJfalLotfvX7hbuiryu5fQA.G ./main` 
+      - `MODE=localhost PW_HASH="$2a$10$eoka2klp4SoOA4mXyiHkQuctdKkXXJfalLotfvX7hbuiryu5fQA.G" ./main` 
         - will serve `auth/dev_auth/dist`
         - require login to access `frontend/dist`
       - `MODE=production ./main`

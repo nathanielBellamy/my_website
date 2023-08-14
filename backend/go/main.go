@@ -1,13 +1,15 @@
 package main
 
 import (
-    "fmt"
-    "log"
-    "net/http"
-    "os"
-    "github.com/nathanielBellamy/my_website/backend/go/auth"
-    "github.com/nathanielBellamy/my_website/backend/go/env"
-    "github.com/nathanielBellamy/my_website/backend/go/websocket"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/nathanielBellamy/my_website/backend/go/auth"
+	"github.com/nathanielBellamy/my_website/backend/go/env"
+	"github.com/nathanielBellamy/my_website/backend/go/websocket"
+	cmap "github.com/orcaman/concurrent-map/v2"
 )
 
 func serveFeedWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
@@ -48,7 +50,7 @@ func serveWasmWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
       client.ReadWasm()
 }
 
-func setupDevAuth(cookieJar *auth.CookieJar) {
+func setupDevAuth(cookieJar *cmap.ConcurrentMap[string, bool]) {
   fs_auth := http.FileServer(http.Dir("./../../auth/dev_auth/dist"))
   http.Handle("/", fs_auth)
   
@@ -60,18 +62,18 @@ func setupDevAuth(cookieJar *auth.CookieJar) {
 
   http.HandleFunc("/dev", func(w http.ResponseWriter, r *http.Request) {
     fmt.Printf("\n dev %v \n", r.Method)
-    if (*cookieJar).ValidateSessionCookie(r) {
+    if auth.ValidateSessionCookie(r, cookieJar) {
       fmt.Printf("\n valid foo cookie \n")
     }
   })
 }
 
-func setupRemotedevRoutes(cookieJar *auth.CookieJar) {
+func setupRemotedevRoutes(cookieJar *cmap.ConcurrentMap[string, bool]) {
   setupDevAuth(cookieJar)
 
 }
 
-func setupLocalhostRoutes(cookieJar *auth.CookieJar) {
+func setupLocalhostRoutes(cookieJar *cmap.ConcurrentMap[string, bool]) {
   setupDevAuth(cookieJar)
 }
 
@@ -83,7 +85,7 @@ func redirectToDevAuth(w http.ResponseWriter, r *http.Request) {
   http.Redirect(w,r,"/dev-auth", 301)
 }
 
-func setupBaseRoutes(runtime_env env.Env, cookieJar *auth.CookieJar) {
+func setupBaseRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool]) {
   if runtime_env.IsProd() {
     fs := http.FileServer(http.Dir("./../../frontend/dist"))
     http.Handle("/", fs)
@@ -93,11 +95,10 @@ func setupBaseRoutes(runtime_env env.Env, cookieJar *auth.CookieJar) {
   wasmPool := websocket.NewPool()
   go feedPool.StartFeed()
   go wasmPool.StartWasm()
-  // TODO: verify client cookie before serving in remotedev MODE
   http.HandleFunc("/public-square-feed-ws", func(w http.ResponseWriter, r *http.Request) {
     if !runtime_env.IsProd() {
       // localhost and remote dev require basic login
-      res := (*cookieJar).ValidateSessionCookie(r)
+      res := auth.ValidateSessionCookie(r, cookieJar)
       if res {
         serveFeedWs(feedPool, w, r)
       } else {
@@ -111,7 +112,7 @@ func setupBaseRoutes(runtime_env env.Env, cookieJar *auth.CookieJar) {
   http.HandleFunc("/public-square-wasm-ws", func(w http.ResponseWriter, r *http.Request) {
     if !runtime_env.IsProd() {
       // localhost and remote dev require basic login
-      res := (*cookieJar).ValidateSessionCookie(r)
+      res := auth.ValidateSessionCookie(r, cookieJar)
       if res {
         serveWasmWs(wasmPool, w, r)
       } else {
@@ -124,7 +125,7 @@ func setupBaseRoutes(runtime_env env.Env, cookieJar *auth.CookieJar) {
   })
 }
 
-func setupRoutes(runtime_env env.Env, cookieJar *auth.CookieJar) {
+func setupRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool]) {
     switch runtime_env.Mode {
     case "localhost":
       setupLocalhostRoutes(cookieJar)
@@ -159,7 +160,7 @@ func main() {
     runtime_env := env.Env {
       Mode: string(mode),
     }
-    var cookieJar auth.CookieJar
+    cookieJar := cmap.New[bool]()
     setupRoutes(runtime_env, &cookieJar)
 
     if err := http.ListenAndServe(":8080", nil); err != nil {

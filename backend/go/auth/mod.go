@@ -1,11 +1,13 @@
 package auth
 
 import (
-    "fmt"
-    // "encoding/json"
-    "net/http"
-    "strings"
-    "time"
+	"fmt"
+	// "encoding/json"
+	"net/http"
+	"strings"
+	"time"
+
+	cmap "github.com/orcaman/concurrent-map/v2"
 )
 
 func getClientIpAddr(r *http.Request) (string, error) {
@@ -25,7 +27,7 @@ type IoPassword struct {
   Password string
 }
 
-func HandleDev (w *http.ResponseWriter, r *http.Request, cookieJar *CookieJar) {
+func HandleDev (w *http.ResponseWriter, r *http.Request, cookieJar *cmap.ConcurrentMap[string, bool]) {
   err := r.ParseForm()
   if err != nil {
     fmt.Printf("\n 1 Big Oh No This Time 1 \n")
@@ -64,7 +66,15 @@ func HandleDev (w *http.ResponseWriter, r *http.Request, cookieJar *CookieJar) {
     http.SetCookie(*w, &c)
     fmt.Printf("writer: %v \n \n \n", *w)
 
-    (*cookieJar).cookies.SetIfAbset(sessionToken, true)
+    cookieJar.SetIfAbsent(sessionToken, true)
+
+    active, present := cookieJar.Get(sessionToken)
+    if !present {
+      fmt.Printf(" \n sessionToken not saved \n")
+    } else {
+      fmt.Printf(" \n token in cookieJar: %v \n \n ", active)
+    }
+    
 
     fmt.Printf(" \n End Handle Dev \n \n ")
   }
