@@ -1,6 +1,12 @@
 # Nate's Website
 
 ### Running locally:
+- default password is `guest`
+- which bcrypt hashes to:
+```
+$2a$10$eoka2klp4SoOA4mXyiHkQuctdKkXXJfalLotfvX7hbuiryu5fQA.G
+
+```
 - compiling + building
   - `npm run build-rust-wasm` from `/frontend` after updating `/frontend/src-rust` to build the wasm modules + RustWasm bindings using [wasm-pack](https://rustwasm.github.io/wasm-pack/)
     - result put in `/frontend/pkg`
@@ -23,12 +29,12 @@
       - use this to ensure that Vite bundles all of your assets appropriately
   - from within `/backend/go`
     - `MODE=<runtime_env> ./main` to start the Go server on `/8080`
-      - `MODE=localhost ./main` 
+      - `MODE=localhost PW_HASH=$2a$10$eoka2klp4SoOA4mXyiHkQuctdKkXXJfalLotfvX7hbuiryu5fQA.G ./main` 
         - will serve `auth/dev_auth/dist`
         - require login to access `frontend/dist`
       - `MODE=production ./main`
         - servers `frontend/dist`
-      - `MODE=remotedev ./main`
+      - `MODE=remotedev PW_HASH=$2a$10$eoka2klp4SoOA4mXyiHkQuctdKkXXJfalLotfvX7hbuiryu5fQA.G ./main`
         - will serve `auth/dev_auth/dist`
         - require login to access `frontend/dist`
       - TODO: script these

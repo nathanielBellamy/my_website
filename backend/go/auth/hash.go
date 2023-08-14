@@ -22,11 +22,7 @@ func (h *Hash) Generate(s string) (string, error) {
 //Compare string to generated hash
 func (h *Hash) Compare(incoming string) bool {
   incomingPw := []byte(incoming)
-  pw := os.Getenv("PW")
-  existingHash, err := h.Generate(pw)
-  if err != nil {
-    return false
-  }
-  res := bcrypt.CompareHashAndPassword([]byte(existingHash), incomingPw)
+  pw_hash := os.Getenv("PW_HASH")
+  res := bcrypt.CompareHashAndPassword([]byte(pw_hash), incomingPw)
   return res == nil
 }

@@ -28,6 +28,7 @@ type IoPassword struct {
 func HandleDev (w *http.ResponseWriter, r *http.Request, cookieJar *CookieJar) {
   err := r.ParseForm()
   if err != nil {
+    fmt.Printf("\n 1 Big Oh No This Time 1 \n")
     http.Error(*w, err.Error(), http.StatusBadRequest)
     return
   }
@@ -41,6 +42,7 @@ func HandleDev (w *http.ResponseWriter, r *http.Request, cookieJar *CookieJar) {
   if res {
     sessionToken, err := h.Generate(time.Now().String())
     if err != nil {
+      fmt.Printf("\n 2 Big Oh No This Time 2 \n")
       return
     }
 
@@ -61,7 +63,8 @@ func HandleDev (w *http.ResponseWriter, r *http.Request, cookieJar *CookieJar) {
 
     http.SetCookie(*w, &c)
     fmt.Printf("writer: %v \n \n \n", *w)
-    // cookieJar.cookies.Set(sessionToken, true)
+
+    (*cookieJar).cookies.SetIfAbset(sessionToken, true)
 
     fmt.Printf(" \n End Handle Dev \n \n ")
   }

@@ -55,11 +55,11 @@ func setupDevAuth(cookieJar *auth.CookieJar) {
   http.HandleFunc("/dev-auth", func(w http.ResponseWriter, r *http.Request) {
     fmt.Printf("\n dev-auth %v \n", r.Method)
     auth.HandleDev(&w, r, cookieJar)
-    http.Redirect(w, r, "/foo", 301)
+    http.Redirect(w, r, "/dev", 301)
   })
 
-  http.HandleFunc("/foo", func(w http.ResponseWriter, r *http.Request) {
-    fmt.Printf("\n foo %v \n", r.Method)
+  http.HandleFunc("/dev", func(w http.ResponseWriter, r *http.Request) {
+    fmt.Printf("\n dev %v \n", r.Method)
     if (*cookieJar).ValidateSessionCookie(r) {
       fmt.Printf("\n valid foo cookie \n")
     }
