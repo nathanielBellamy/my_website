@@ -27,12 +27,12 @@ type IoPassword struct {
   Password string
 }
 
-func HandleDev (w *http.ResponseWriter, r *http.Request, cookieJar *cmap.ConcurrentMap[string, bool]) {
+func ValidateDev (w *http.ResponseWriter, r *http.Request, cookieJar *cmap.ConcurrentMap[string, bool]) bool {
   err := r.ParseForm()
   if err != nil {
     fmt.Printf("\n 1 Big Oh No This Time 1 \n")
     http.Error(*w, err.Error(), http.StatusBadRequest)
-    return
+    return false
   }
   
   clientSentPassword := r.Form.Get("pw")
@@ -41,41 +41,41 @@ func HandleDev (w *http.ResponseWriter, r *http.Request, cookieJar *cmap.Concurr
   var res bool
   res = h.Compare(clientSentPassword)
 
-  if res {
-    sessionToken, err := h.Generate(time.Now().String())
-    if err != nil {
-      fmt.Printf("\n 2 Big Oh No This Time 2 \n")
-      return
-    }
-
-    fmt.Printf("session token: %v \n ", sessionToken)
-
-    // save cookie on server
-    
-    // set cookie on client
-    c := http.Cookie {
-      Name: "__Secure-nbs-dev",
-      Value: sessionToken,
-      MaxAge: 60 * 60 * 48, // two days
-      Secure: true, // https only
-      HttpOnly: true, // don't let JS touch it
-    }
-
-    fmt.Printf("cookie: %v \n \n \n", c)
-
-    http.SetCookie(*w, &c)
-    fmt.Printf("writer: %v \n \n \n", *w)
-
-    cookieJar.SetIfAbsent(sessionToken, true)
-
-    active, present := cookieJar.Get(sessionToken)
-    if !present {
-      fmt.Printf(" \n sessionToken not saved \n")
-    } else {
-      fmt.Printf(" \n token in cookieJar: %v \n \n ", active)
-    }
-    
-
-    fmt.Printf(" \n End Handle Dev \n \n ")
+  if !res {
+    return false
   }
+
+  sessionToken, err := h.Generate(time.Now().String())
+  if err != nil {
+    fmt.Printf("\n 2 Big Oh No This Time 2 \n")
+    return false
+  }
+
+  fmt.Printf("session token: %v \n ", sessionToken)
+  
+  // set cookie on client
+  c := http.Cookie {
+    Name: "__Secure-nbs-dev",
+    Value: sessionToken,
+    MaxAge: 60 * 60 * 48, // two days
+    Secure: true, // https only
+    HttpOnly: true, // don't let JS touch it
+  }
+
+  fmt.Printf("cookie: %v \n \n \n", c)
+
+  http.SetCookie(*w, &c)
+  fmt.Printf("writer: %v \n \n \n", *w)
+
+  cookieJar.SetIfAbsent(sessionToken, true)
+
+  active, present := cookieJar.Get(sessionToken)
+  if !present {
+    fmt.Printf(" \n sessionToken not saved \n")
+  } else {
+    fmt.Printf(" \n token in cookieJar: %v \n \n ", active)
+  }
+  
+  fmt.Printf(" \n End Handle Dev \n \n ")
+  return true
 }

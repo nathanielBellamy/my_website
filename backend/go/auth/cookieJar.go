@@ -10,22 +10,13 @@ import (
 	"github.com/orcaman/concurrent-map/v2"
 )
 
-
-// type CookieJar struct {
-//   cookies cmap.ConcurrentMap[string, bool]
-// }
-
-
 func ValidateSessionCookie(r *http.Request, cookieJar *cmap.ConcurrentMap[string, bool]) (bool) {
   incoming_cookie, err := r.Cookie("__Secure-nbs-dev")
-  fmt.Printf(" \n \n incoming req: %v \n \n ", *r)
-  fmt.Printf(" \n \n incoming cooking: %v \n \n ", incoming_cookie.Value)
+  fmt.Printf(" \n \n incoming cookie: %v \n \n ", incoming_cookie.Value)
   if err != nil {
     fmt.Printf(" \n \n incoming cooking: UH OH! \n \n ")
-    // Handle error (e.g., no cookie found, or expired session)
     return false
   }
-
 
   fmt.Printf(" \n \n cookiejar: %v \n \n ", cookieJar)
   active, present := cookieJar.Get(incoming_cookie.Value)

@@ -56,15 +56,16 @@ func setupDevAuth(cookieJar *cmap.ConcurrentMap[string, bool]) {
   
   http.HandleFunc("/dev-auth", func(w http.ResponseWriter, r *http.Request) {
     fmt.Printf("\n dev-auth %v \n", r.Method)
-    auth.HandleDev(&w, r, cookieJar)
-    http.Redirect(w, r, "/dev", 301)
+    if auth.ValidateDev(&w, r, cookieJar) {
+      http.Redirect(w, r, "/dev", 301)
+    }
   })
 
   http.HandleFunc("/dev", func(w http.ResponseWriter, r *http.Request) {
     fmt.Printf("\n dev %v \n", r.Method)
-    if auth.ValidateSessionCookie(r, cookieJar) {
-      fmt.Printf("\n valid foo cookie \n")
-    }
+    // if auth.ValidateSessionCookie(r, cookieJar) {
+    //   fmt.Printf("\n valid foo cookie \n")
+    // }
   })
 }
 
