@@ -52,21 +52,31 @@ func serveWasmWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
 
 func setupDevAuth(cookieJar *cmap.ConcurrentMap[string, bool]) {
   fs_auth := http.FileServer(http.Dir("./../../auth/dev_auth/dist"))
+  // fs_frontend := http.FileServer(http.Dir("./../../frontend/dist"))
   http.Handle("/", fs_auth)
   
   http.HandleFunc("/dev-auth", func(w http.ResponseWriter, r *http.Request) {
     fmt.Printf("\n dev-auth %v \n", r.Method)
-    if auth.ValidateDev(&w, r, cookieJar) {
+    if auth.ValidateDev(w, r, cookieJar) {
       http.Redirect(w, r, "/dev", 301)
+    } else {
+      http.Error(w, "Invalid Password", 503)
     }
+    // http.ServeFile(w, r, "./../../frontend/dist/index.hml")
+    // fs_frontend(w,r)
   })
 
-  http.HandleFunc("/dev", func(w http.ResponseWriter, r *http.Request) {
-    fmt.Printf("\n dev %v \n", r.Method)
-    // if auth.ValidateSessionCookie(r, cookieJar) {
-    //   fmt.Printf("\n valid foo cookie \n")
-    // }
-  })
+  http.Handle("/dev", requireDevAuth(cookieJar, http.FileServer(http.Dir("./../../frontend/dist/"))))
+}
+
+func requireDevAuth(cookieJar *cmap.ConcurrentMap[string, bool], handler http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        if auth.ValidateDev(w, r, cookieJar){
+          handler.ServeHTTP(w, r)
+        } else {
+          http.Error(w, "Dev Not Validated", 503)
+        }
+    })
 }
 
 func setupRemotedevRoutes(cookieJar *cmap.ConcurrentMap[string, bool]) {
@@ -137,21 +147,6 @@ func setupRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool
     }
 
     setupBaseRoutes(runtime_env, cookieJar)
-
-    // fs := http.FileServer(http.Dir("./../../frontend/dist"))
-    // http.Handle("/", fs)
-
-    // feedPool := websocket.NewPool()
-    // wasmPool := websocket.NewPool()
-    // go feedPool.StartFeed()
-    // go wasmPool.StartWasm()
-    // // TODO: verify client cookie before serving in remotedev MODE
-    // http.HandleFunc("/public-square-feed-ws", func(w http.ResponseWriter, r *http.Request) {
-    //   serveFeedWs(feedPool, w, r)
-    // })
-    // http.HandleFunc("/public-square-wasm-ws", func(w http.ResponseWriter, r *http.Request) {
-    //   serveWasmWs(wasmPool, w, r)
-    // })
 }
 
 func main() {

@@ -27,11 +27,11 @@ type IoPassword struct {
   Password string
 }
 
-func ValidateDev (w *http.ResponseWriter, r *http.Request, cookieJar *cmap.ConcurrentMap[string, bool]) bool {
+func ValidateDev (w http.ResponseWriter, r *http.Request, cookieJar *cmap.ConcurrentMap[string, bool]) bool {
   err := r.ParseForm()
   if err != nil {
     fmt.Printf("\n 1 Big Oh No This Time 1 \n")
-    http.Error(*w, err.Error(), http.StatusBadRequest)
+    http.Error(w, err.Error(), http.StatusBadRequest)
     return false
   }
   
@@ -64,8 +64,8 @@ func ValidateDev (w *http.ResponseWriter, r *http.Request, cookieJar *cmap.Concu
 
   fmt.Printf("cookie: %v \n \n \n", c)
 
-  http.SetCookie(*w, &c)
-  fmt.Printf("writer: %v \n \n \n", *w)
+  http.SetCookie(w, &c)
+  fmt.Printf("writer: %v \n \n \n", w)
 
   cookieJar.SetIfAbsent(sessionToken, true)
 
