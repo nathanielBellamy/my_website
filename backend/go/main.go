@@ -51,30 +51,32 @@ func serveWasmWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
 }
 
 func setupDevAuth(cookieJar *cmap.ConcurrentMap[string, bool]) {
-  fs_auth := http.FileServer(http.Dir("./../../auth/dev_auth/dist"))
-  // fs_frontend := http.FileServer(http.Dir("./../../frontend/dist"))
-  http.Handle("/", fs_auth)
+  fs_auth := http.StripPrefix("/dev/auth/", http.FileServer(http.Dir("./../../auth/dev_auth/dist/")))
+  http.Handle("/dev/auth/", fs_auth)
   
+  fs_frontend := http.FileServer(http.Dir("./../../frontend/dist/"))
+  http.Handle("/", requireDevAuth(cookieJar, fs_frontend))
+  
+
   http.HandleFunc("/dev-auth", func(w http.ResponseWriter, r *http.Request) {
     fmt.Printf("\n dev-auth %v \n", r.Method)
     if auth.ValidateDev(w, r, cookieJar) {
-      http.Redirect(w, r, "/dev", 301)
+      http.Redirect(w, r, "/", 301)
     } else {
       http.Error(w, "Invalid Password", 503)
     }
-    // http.ServeFile(w, r, "./../../frontend/dist/index.hml")
-    // fs_frontend(w,r)
   })
-
-  http.Handle("/dev", requireDevAuth(cookieJar, http.FileServer(http.Dir("./../../frontend/dist/"))))
 }
 
 func requireDevAuth(cookieJar *cmap.ConcurrentMap[string, bool], handler http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        if auth.ValidateDev(w, r, cookieJar){
+        if false {//auth.ValidateDev(w, r, cookieJar){
           handler.ServeHTTP(w, r)
         } else {
-          http.Error(w, "Dev Not Validated", 503)
+          // http.Error(w, "Dev Not Validated", 503)
+          // fmt.Printf("fooooo")
+          redirectToDevAuth(w, r)
+          return
         }
     })
 }
@@ -93,7 +95,8 @@ func setupProdRoutes() {
 }
 
 func redirectToDevAuth(w http.ResponseWriter, r *http.Request) {
-  http.Redirect(w,r,"/dev-auth", 301)
+  fmt.Printf("\n redirectToDevAuth \n")
+  http.Redirect(w,r,"/dev/auth", 301)
 }
 
 func setupBaseRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool]) {
