@@ -51,11 +51,11 @@ func serveWasmWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
 }
 
 func setupDevAuth(cookieJar *cmap.ConcurrentMap[string, bool]) {
-  fs_auth := http.StripPrefix("/dev/auth/", http.FileServer(http.Dir("./../../auth/dev_auth/dist/")))
-  http.Handle("/dev/auth/", fs_auth)
+  fs_auth := http.StripPrefix("/dev/auth/", http.FileServer(http.Dir("./../../auth/dev_auth/dist")))
+  http.Handle("/dev/auth/", setHeaders(fs_auth))
   
   fs_frontend := http.FileServer(http.Dir("./../../frontend/dist/"))
-  http.Handle("/", requireDevAuth(cookieJar, fs_frontend))
+  http.Handle("/", requireDevAuth(cookieJar, setHeaders(fs_frontend)))
   
 
   http.HandleFunc("/dev-auth", func(w http.ResponseWriter, r *http.Request) {
@@ -65,6 +65,17 @@ func setupDevAuth(cookieJar *cmap.ConcurrentMap[string, bool]) {
     } else {
       http.Error(w, "Invalid Password", 503)
     }
+  })
+}
+
+func setHeaders(handler http.Handler) http.Handler {
+  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    // this method wound up being superfluous for what we needed at the time of writing
+    // but it's nice to have the infrastructure established
+    // 
+    // w.Header().Set("Content-Type", "text/javascript")
+    // w.Header().Set("Content-Type", "text/html, text/css")
+    handler.ServeHTTP(w,r)
   })
 }
 
