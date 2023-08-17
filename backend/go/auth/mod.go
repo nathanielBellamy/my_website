@@ -42,6 +42,7 @@ func ValidateDev (w http.ResponseWriter, r *http.Request, cookieJar *cmap.Concur
   res = h.Compare(clientSentPassword)
 
   if !res {
+    fmt.Printf(" \n :: Incorrect Password :: \n")
     return false
   }
 
@@ -72,10 +73,9 @@ func ValidateDev (w http.ResponseWriter, r *http.Request, cookieJar *cmap.Concur
   active, present := cookieJar.Get(sessionToken)
   if !present {
     fmt.Printf(" \n sessionToken not saved \n")
+    return false
   } else {
     fmt.Printf(" \n token in cookieJar: %v \n \n ", active)
+    return true
   }
-  
-  fmt.Printf(" \n End Handle Dev \n \n ")
-  return true
 }

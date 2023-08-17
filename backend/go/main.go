@@ -58,10 +58,11 @@ func setupDevAuth(cookieJar *cmap.ConcurrentMap[string, bool]) {
   http.Handle("/", requireDevAuth(cookieJar, setHeaders(fs_frontend)))
   
 
-  http.HandleFunc("/dev-auth", func(w http.ResponseWriter, r *http.Request) {
+  http.HandleFunc("/dev/auth/dev-auth", func(w http.ResponseWriter, r *http.Request) {
     fmt.Printf("\n dev-auth %v \n", r.Method)
     if auth.ValidateDev(w, r, cookieJar) {
-      http.Redirect(w, r, "/", 301)
+      fmt.Printf("yoooo")
+      http.Redirect(w, r, "./../../", 301)
     } else {
       http.Error(w, "Invalid Password", 503)
     }
@@ -81,7 +82,7 @@ func setHeaders(handler http.Handler) http.Handler {
 
 func requireDevAuth(cookieJar *cmap.ConcurrentMap[string, bool], handler http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        if false {//auth.ValidateDev(w, r, cookieJar){
+        if true {// auth.ValidateDev(w, r, cookieJar){
           handler.ServeHTTP(w, r)
         } else {
           // http.Error(w, "Dev Not Validated", 503)

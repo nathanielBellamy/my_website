@@ -7,6 +7,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build-localhost": "vite build --mode=localhost --emptyOutDir",
+    "build-prod": "vite build --mode=prod --emptyOutDir",
+    "build-remotedev": "vite build --mode=remotedev --emptyOutDir",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
