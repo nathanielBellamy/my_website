@@ -6,15 +6,15 @@
   "scripts": {
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "preview": "vite preview",
-    "dev-env-localhost": "vite --mode localhost",
-    "dev-env-remotedev": "vite --mode remotedev",
-    "build-localhost": "vite build --mode localhost",
-    "build-prod": "vite build --mode prod",
-    "build-remotedev": "vite build --mode remotedev",
+    "dev-env-localhost": "vite --mode localhost --emptyOutDir",
+    "dev-env-remotedev": "vite --mode remotedev --emptyOutDir",
+    "build-localhost": "vite build --mode localhost --emptyOutDir",
+    "build-prod": "vite build --mode prod --emptyOutDir",
+    "build-remotedev": "vite build --mode remotedev --emptyOutDir",
     "build-rust-wasm": "cd src-rust && wasm-pack build --target web --out-dir ../pkg && cd ..",
-    "build-frontend-localhost": "npm run build-rust-wasm && npm run build-localhost",
-    "build-frontend-prod": "npm run build-rust-wasm && npm run build-prod",
-    "build-frontend-remotedev": "npm run build-rust-wasm && npm run build-remotedev"
+    "build-frontend-localhost": "npm run build-rust-wasm && npm run build-localhost --emptyOutDir",
+    "build-frontend-prod": "npm run build-rust-wasm && npm run build-prod --emptyOutDir",
+    "build-frontend-remotedev": "npm run build-rust-wasm && npm run build-remotedev --emptyOutDir"
   },
   "devDependencies": {
     "@rollup/plugin-wasm": "^6.1.2",

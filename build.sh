@@ -18,7 +18,7 @@ build_go_server() {
 build_auth_dev_spa() {
   echo "Building Auth SPA..."
   SPA_ENV=$1
-  cd auth && cd dev_auth && npm run build-$SPA_ENV 
+  cd auth && cd dev && npm run build-$SPA_ENV 
   cd .. && cd ..
   echo "Auth SPA built successfully."
 }
