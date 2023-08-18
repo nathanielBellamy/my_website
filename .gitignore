@@ -18,6 +18,9 @@ frontend/dist
 frontend/dist-ssr
 frontend/*.local
 
+# keep builds out of git
+build/*
+
 # Editor directories and files
 frontend/.idea
 frontend/*.suo

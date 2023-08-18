@@ -9,7 +9,7 @@ fi
 # Function for Go server build
 build_go_server() {
   echo "Building Go server..."
-  cd backend && cd go && go build main.go
+  cd backend && cd go && go build -o "./../../build" main.go
   cd .. && cd ..
   echo "Go server built successfully."
 }
