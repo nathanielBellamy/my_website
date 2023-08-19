@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
 	"github.com/nathanielBellamy/my_website/backend/go/env"
@@ -53,7 +52,7 @@ func serveWasmWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
 
 func setupDevAuth(cookieJar *cmap.ConcurrentMap[string, bool]) {
   fs_auth := http.FileServer(http.Dir("auth/dev"))
-  http.Handle("/auth/dev",  http.StripPrefix("/auth/dev", fs_auth))
+  http.Handle("/auth/dev/",  http.StripPrefix("/auth/dev/", fs_auth))
   
   fs_frontend := http.FileServer(http.Dir("frontend"))
   http.Handle("/", requireDevAuth(cookieJar, fs_frontend))

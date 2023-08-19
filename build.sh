@@ -32,6 +32,12 @@ build_main_spa() {
   echo "Main SPA built successfully."
 }
 
+# Check if we only want to build the Go server
+if [ "$1" == "--server-only" ]; then
+  build_go_server $MODE
+  exit 0
+fi
+
 # Handle different modes
 case $MODE in
   localhost)
