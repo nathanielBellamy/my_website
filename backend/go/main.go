@@ -51,12 +51,11 @@ func serveWasmWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
 }
 
 func setupDevAuth(cookieJar *cmap.ConcurrentMap[string, bool]) {
-  fs_auth := http.FileServer(http.Dir("auth/dev"))
-  http.Handle("/auth/dev/",  http.StripPrefix("/auth/dev/", fs_auth))
-  
   fs_frontend := http.FileServer(http.Dir("frontend"))
   http.Handle("/", http.StripPrefix("/", requireDevAuth(cookieJar, fs_frontend)))
   
+  fs_auth := http.FileServer(http.Dir("auth/dev"))
+  http.Handle("/auth/dev/",  http.StripPrefix("/auth/dev/", fs_auth))
 
   http.HandleFunc("/auth/dev/dev-auth", func(w http.ResponseWriter, r *http.Request) {
     fmt.Printf("\n dev-auth %v \n", r.Method)
