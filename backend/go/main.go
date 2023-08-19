@@ -60,10 +60,9 @@ func setupDevAuth(cookieJar *cmap.ConcurrentMap[string, bool]) {
   http.HandleFunc("/auth/dev/dev-auth", func(w http.ResponseWriter, r *http.Request) {
     fmt.Printf("\n dev-auth %v \n", r.Method)
     if auth.ValidateDev(w, r, cookieJar) {
-      fmt.Printf("yoooo")
-      http.Redirect(w, r, "./../../", 301)
+      http.Redirect(w, r, "/", http.StatusSeeOther)
     } else {
-      http.Error(w, "Invalid Password", 503)
+      http.Error(w, "Invalid Password", http.StatusServiceUnavailable)
     }
   })
 }

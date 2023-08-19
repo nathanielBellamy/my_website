@@ -1,8 +1,17 @@
 <script lang="ts">
-  let url: string
+  import { Drawer, Button, CloseButton } from 'flowbite-svelte'
+  import { sineIn } from 'svelte/easing'
+
+  let nopeHidden: boolean = true
+  let transitionParams: any = {
+    x: -320,
+    duration: 200,
+    easing: sineIn
+  }
+
   let password: string
 
-  async function authorize(password: string): any {
+  async function authorize(password: string) {
     await fetch('dev-auth', {
       method: 'POST',
       headers: {
@@ -10,6 +19,17 @@
       },
       body: `pw=${password}`
     })
+    .then((res) => {
+      if (res.ok) {
+        window.location.href = "/"
+      } else {
+        nopeHidden = false
+      }
+    })
+  }
+
+  function onInput() {
+    nopeHidden = true
   }
 </script>
 
@@ -33,8 +53,19 @@
       e.preventDefault()
       authorize(password)
     }}>
-    <input bind:value={password}>
+    <input bind:value={password}
+           on:input={onInput}>
   </form>
+  <Drawer transitionType="fly" {transitionParams} 
+          bind:hidden={nopeHidden} 
+          placement="bottom"
+          id="nope">
+    <div class="h-32 w-full">
+        <h3 class="nope text-amber-800">
+          Nice Try
+        </h3>
+    </div>
+  </Drawer>
 </main>
 
 <style>

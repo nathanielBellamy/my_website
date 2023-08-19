@@ -9,7 +9,7 @@ frontend/yarn-error.log*
 frontend/pnpm-debug.log*
 frontend/lerna-debug.log*
 
-# env
+# frontend
 frontend/.env.prod
 frontend/.env.remotedev
 
@@ -17,6 +17,9 @@ frontend/node_modules
 frontend/dist
 frontend/dist-ssr
 frontend/*.local
+
+# auth
+auth/dev/node_modules
 
 # keep builds out of git
 build/*
