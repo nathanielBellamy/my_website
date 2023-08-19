@@ -55,7 +55,7 @@ func setupDevAuth(cookieJar *cmap.ConcurrentMap[string, bool]) {
   http.Handle("/auth/dev/",  http.StripPrefix("/auth/dev/", fs_auth))
   
   fs_frontend := http.FileServer(http.Dir("frontend"))
-  http.Handle("/", requireDevAuth(cookieJar, fs_frontend))
+  http.Handle("/", http.StripPrefix("/", requireDevAuth(cookieJar, fs_frontend)))
   
 
   http.HandleFunc("/auth/dev/dev-auth", func(w http.ResponseWriter, r *http.Request) {

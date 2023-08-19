@@ -9,21 +9,24 @@ fi
 # Function to start the Go server
 serve() {
   echo "🚀🚀🚀 Now serving $MODE on :8080 🚀🚀🚀"
-  ENV=$1
-  cd build && MODE=ENV ./main && cd ..
-  echo "🫡 Serve Is Out. Process completed.🫡"
+  cd build 
+  export MODE=$MODE 
+  ./main
+  cd ..
+  echo "🫡 Server Is Out. Process completed.🫡"
 }
 
 # Handle different modes
+# safeguard against erroneous mode var
 case $MODE in
   localhost)
-    serve "localhost"
+    serve
     ;;
   remotedev)
-    serve "remotedev"
+    serve
     ;;
   prod)
-    serve "prod"
+    serve
     ;;
   *)
     echo "Invalid MODE. Choose between localhost, remotedev, or prod."
