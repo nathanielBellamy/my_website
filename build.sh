@@ -21,6 +21,10 @@ build_auth_dev_spa() {
   cd auth && cd dev && npm run build-$SPA_ENV 
   cd .. && cd ..
   echo "Auth SPA built successfully."
+
+  # Perform the regex string replacement
+  sed -i '' 's/\/assets/\.\/assets/g' build/auth/dev/index.html
+  echo "Updated asset paths in Auth SPA's index.html."
 }
 
 # Function for main SPA build

@@ -17,7 +17,7 @@
   <div class="h-full w-full">
     <div class="w-full flex flex-col justify-between items-stretch text-left">
       <div class="text-left">
-        Answer me these questions three to get across
+        Answer me these questions three to get across --
       </div>
       <div>
         Who's the boss? What size is them shoes of yours?
