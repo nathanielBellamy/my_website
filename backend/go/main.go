@@ -104,7 +104,6 @@ func setHeaders(handler http.Handler) http.Handler {
 
 func requireDevAuth(cookieJar *cmap.ConcurrentMap[string, bool], handler http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        fmt.Printf("\n :: Require Dev Auth :: \n")
         if auth.HasValidCookie(r, cookieJar){
           handler.ServeHTTP(w, r)
           return

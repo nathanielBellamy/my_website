@@ -1,7 +1,7 @@
 use super::geometry::cache::{Cache, CACHE_CAPACITY};
 use super::main::Rgba;
 use super::settings::{Colors, IOGradient, IOPresetAction};
-use crate::log;
+// use crate::log;
 use crate::magic_square::settings::{Settings, Validate};
 use crate::magic_square::ui_manifest::{
     INPUT_COLORS, INPUT_COLOR_DIRECTION, INPUT_COLOR_SPEED, INPUT_DRAW_PATTERN_COUNT,
@@ -59,11 +59,11 @@ impl UiBuffer {
     pub fn from(settings: JsValue, presets: JsValue) -> UiBuffer {
         let presets_vec: Vec<Settings> = match serde_wasm_bindgen::from_value(presets) {
             Ok(res) => {
-                log("SUCCESSFUL PRESETS PARSE");
+                // log("SUCCESSFUL PRESETS PARSE");
                 res
             }
-            Err(e) => {
-                log(&format!("{:?}", e));
+            Err(_e) => {
+                // log(&format!("{:?}", e));
                 Settings::default_presets().to_vec()
             }
         };
@@ -76,12 +76,12 @@ impl UiBuffer {
         // log(&format!("{:?}", prev_settings));
         let settings: Settings = match serde_wasm_bindgen::from_value(settings) {
             Ok(res) => {
-                log("SUCCESSFUL SETTINGS PARSE");
+                // log("SUCCESSFUL SETTINGS PARSE");
                 // log(&format!("{:?}", res));
                 res
             }
-            Err(e) => {
-                log(&format!("{:?}", e));
+            Err(_e) => {
+                // log(&format!("{:?}", e));
                 presets[0]
             }
         };

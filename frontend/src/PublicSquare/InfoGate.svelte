@@ -33,12 +33,10 @@
              src={megaphone}
              alt={"Megaphone"}/>
         <Popover class="bg-slate-800 text-2xl"
+                 offset={-40}
                  transition={slide}>
           <p>
-            Come one! Come all,
-          </p>
-          <p>
-            to The Public Square!
+            It's The Public Square!
           </p>
         </Popover>
         <div class="text-3xl md:text-6xl">
@@ -60,12 +58,10 @@
              src={megaphone}
              alt={"Megaphone"}/>
         <Popover class="bg-slate-800 text-2xl"
+                 offset={-40}
                  transition={slide}>
           <p>
-            Mysteries abound in
-          </p>
-          <p>
-            The Public Square!
+            This Way To The Public Square!
           </p>
         </Popover>
       </div>

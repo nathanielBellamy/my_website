@@ -1,6 +1,6 @@
 // use bytemuck::{bytes_of, from_bytes}
 use wasm_bindgen::JsValue;
-use crate::log;
+// use crate::log;
 use crate::magic_square::animation::Animation;
 use crate::magic_square::geometry::geom::Geom;
 use crate::magic_square::gl_draw::GlDraw;
@@ -37,7 +37,7 @@ impl PubSq {
         match WebSocket::new(URL) {
             Ok(socket) => ws = socket,
             Err(_) => {
-                log("Unable to connect to WASM Websocket");
+                // log("Unable to connect to WASM Websocket");
                 return JsValue::from_str("WASM websocket error");
             }
         }
@@ -442,7 +442,7 @@ impl PubSq {
                     )
                     .is_err()
                     {
-                        log("DRAW ERROR");
+                        // log("DRAW ERROR");
                     }
 
                     let frame_counter_limit: i32 = if settings.draw_pattern_speed > 19 {

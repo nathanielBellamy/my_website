@@ -11,6 +11,10 @@ import (
 
 func getClientIpAddr(r *http.Request) (string, error) {
   var res string
+  // TODO: 
+  //  this will have to be conditional on runtime_env
+  //  are we behind Nginx or not?
+
 	if forwardedFor := r.Header.Get("X-Forwarded-For"); forwardedFor != "" {
 		// The header can contain multiple IPs, comma-separated.
 		// The client's IP is typically the first one.
@@ -64,8 +68,7 @@ func ValidateDev (w http.ResponseWriter, r *http.Request) (string, bool) {
   clientSentPassword := r.Form.Get("pw")
 
   var h Hash
-  var res bool
-  res = h.Compare(clientSentPassword)
+  res := h.Compare(clientSentPassword)
 
   if !res {
     fmt.Printf(" \n :: Incorrect Password :: \n")

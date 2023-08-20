@@ -6,6 +6,7 @@
   "scripts": {
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "preview": "vite preview",
+    "dev": "vite --mode localhost",
     "dev-env-localhost": "vite --mode localhost --emptyOutDir",
     "dev-env-remotedev": "vite --mode remotedev --emptyOutDir",
     "build-localhost": "vite build --mode localhost --emptyOutDir",
