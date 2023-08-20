@@ -34,11 +34,12 @@ export class MagicSquare {
 export class PubSq {
   free(): void;
 /**
+* @param {any} base_url
 * @param {Function} set_all_settings
 * @param {any} touch_screen
 * @returns {Promise<any>}
 */
-  static run(set_all_settings: Function, touch_screen: any): Promise<any>;
+  static run(base_url: any, set_all_settings: Function, touch_screen: any): Promise<any>;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -46,7 +47,7 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly magicsquare_run: (a: number, b: number, c: number) => number;
-  readonly pubsq_run: (a: number, b: number) => number;
+  readonly pubsq_run: (a: number, b: number, c: number) => number;
   readonly __wbg_magicsquare_free: (a: number) => void;
   readonly __wbg_pubsq_free: (a: number) => void;
   readonly rust_init_message: (a: number, b: number) => void;

@@ -317,6 +317,7 @@
       
       // init wasm process and set initial values
       settings = await PubSq.run(
+        import.meta.env.VITE_BASE_URL,
         (settings: StorageSettings) => setAllSettings(settings, true),
         touchScreenVal
       )
