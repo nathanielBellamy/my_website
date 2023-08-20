@@ -53,7 +53,8 @@
       e.preventDefault()
       authorize(password)
     }}>
-    <input bind:value={password}
+    <input type="password"
+           bind:value={password}
            on:input={onInput}>
   </form>
   <Drawer transitionType="fly" {transitionParams} 
