@@ -80,11 +80,12 @@ func setHeaders(handler http.Handler) http.Handler {
 
 func requireDevAuth(cookieJar *cmap.ConcurrentMap[string, bool], handler http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        if true {// auth.ValidateDev(w, r, cookieJar){
+        fmt.Printf("fooooooo")
+        if auth.HasValidCookie(w, r, cookieJar){
           handler.ServeHTTP(w, r)
         } else {
           // http.Error(w, "Dev Not Validated", 503)
-          // fmt.Printf("fooooo")
+          fmt.Printf("\n fooooo REDIRECT \n")
           redirectToDevAuth(w, r)
           return
         }
@@ -106,7 +107,7 @@ func setupProdRoutes() {
 
 func redirectToDevAuth(w http.ResponseWriter, r *http.Request) {
   fmt.Printf("\n redirectToDevAuth \n")
-  http.Redirect(w,r,"/dev/auth", 301)
+  http.Redirect(w,r,"/auth/dev/", http.StatusSeeOther)
 }
 
 func setupBaseRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool]) {

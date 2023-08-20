@@ -27,6 +27,41 @@ type IoPassword struct {
   Password string
 }
 
+func HasValidCookie(w http.ResponseWriter, r *http.Request, cookieJar *cmap.ConcurrentMap[string, bool]) bool {
+  fmt.Printf("\n wow zow \n")
+  res := true  
+
+  fmt.Printf("\n %v \n ", r)
+  // Try to get the cookie
+  cookie, err := r.Cookie("__Secure-nbs-dev")
+  // Check if there was an error (e.g., cookie not found)
+  if err != nil {
+      // Handle the error
+      fmt.Printf("\n Error getting the cookie:: ::%v", err)
+      return false
+  }
+
+
+  fmt.Printf("\n wow zow 2222\n")
+
+  fmt.Printf("\n coooookie::::: %v \n", cookie.Value)
+
+  return res
+
+  if cookieJar.Has(cookie.Value) {
+    val, err := cookieJar.Get(cookie.Value)
+    if err {
+      res = false
+    }
+    res = val
+  } else {
+    cookieJar.SetIfAbsent(cookie.Value, false)
+    res = false
+  }
+
+  return res
+}
+
 func ValidateDev (w http.ResponseWriter, r *http.Request, cookieJar *cmap.ConcurrentMap[string, bool]) bool {
   err := r.ParseForm()
   if err != nil {

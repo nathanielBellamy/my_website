@@ -33,7 +33,7 @@
   }
 </script>
 
-<main class="h-full w-full">
+<main class="h-full w-full grid grid-cols-1 grid-rows-2">
   <div class="h-full w-full">
     <div class="w-full flex flex-col justify-between items-stretch text-left">
       <div class="text-left">
