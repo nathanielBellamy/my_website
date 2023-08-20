@@ -7,7 +7,7 @@
 `MODE=mode ./build.sh --server-only`
 
 ### serve
-`MODE=mode ./serve.sh`
+`MODE=mode PW=my_password ./serve.sh`
 
 ### mode
 - `localhost`

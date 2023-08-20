@@ -24,10 +24,11 @@ func (h *Hash) Generate(s string) (string, error) {
 //Compare string to generated hash
 func (h *Hash) Compare(incoming string) bool {
   incomingPw := []byte(incoming)
-  pw_hash := os.Getenv("PW_HASH")
-  fmt.Printf("\n pw_hash from os: %v \n", pw_hash)
-  pw_hash_manual := "$2a$10$eoka2klp4SoOA4mXyiHkQuctdKkXXJfalLotfvX7hbuiryu5fQA.G"
-  fmt.Printf("\n pw_hash manual: %v \n", pw_hash_manual)
-  res := bcrypt.CompareHashAndPassword([]byte(pw_hash_manual), incomingPw)
+  pw := os.Getenv("PW")
+  pw_hash, err := h.Generate(pw)
+  if err != nil {
+    return false
+  }
+  res := bcrypt.CompareHashAndPassword([]byte(pw_hash), incomingPw)
   return res == nil
 }

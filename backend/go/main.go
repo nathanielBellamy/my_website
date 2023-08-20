@@ -16,7 +16,7 @@ func serveFeedWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
       fmt.Println("WebSocket FEED Endpoint Hit")
       conn, err := websocket.Upgrade(w, r)
       if err != nil {
-        fmt.Printf("FEED Upgrade ERROR \n")
+        fmt.Printf("\n :: FEED Upgrade ERROR :: \n")
         fmt.Fprintf(w, "%+v\n", err)
       }
 
@@ -36,7 +36,7 @@ func serveWasmWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
       fmt.Println("WebSocket WASM Endpoint Hit")
       conn, err := websocket.Upgrade(w, r)
       if err != nil {
-        fmt.Printf("WASM Upgrade ERROR \n")
+        fmt.Printf("\n :: WASM Upgrade ERROR :: \n")
         fmt.Fprintf(w, "%+v\n", err)
       }
 
@@ -50,7 +50,7 @@ func serveWasmWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
       client.ReadWasm()
 }
 
-func setupDevAuth(cookieJar *cmap.ConcurrentMap[string, bool]) {
+func setupDevAuth(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool]) {
   fs_frontend := http.FileServer(http.Dir("frontend"))
   http.Handle("/", http.StripPrefix("/", requireDevAuth(cookieJar, fs_frontend)))
   
@@ -58,11 +58,35 @@ func setupDevAuth(cookieJar *cmap.ConcurrentMap[string, bool]) {
   http.Handle("/auth/dev/",  http.StripPrefix("/auth/dev/", fs_auth))
 
   http.HandleFunc("/auth/dev/dev-auth", func(w http.ResponseWriter, r *http.Request) {
-    fmt.Printf("\n dev-auth %v \n", r.Method)
-    if auth.ValidateDev(w, r, cookieJar) {
-      http.Redirect(w, r, "/", http.StatusSeeOther)
+    fmt.Printf("\n :: dev-auth :: %v \n")
+    sessionToken, success := auth.ValidateDev(w, r)
+    if success {
+      isLocalhost := runtime_env.IsLocalhost()
+      var name string 
+      if isLocalhost {
+        name = "nbs-dev"
+      } else {
+        name = "__Secure-nbs-dev"
+      }
+      // set cookie on client
+      c := http.Cookie {
+        Name: name,
+        Value: sessionToken,
+        Path: "/",
+        MaxAge: 60 * 60 * 48, // two days or whenever the server restarts as cookieJar is in-memory
+        Secure: !isLocalhost, // https only
+        HttpOnly: true, // don't let JS touch it
+        SameSite: http.SameSiteLaxMode,
+      }
+
+      cookieJar.SetIfAbsent(sessionToken, true)
+      http.SetCookie(w, &c)
+
+      http.Redirect(w, r, "/", http.StatusFound)
+      return
     } else {
       http.Error(w, "Invalid Password", http.StatusServiceUnavailable)
+      return
     }
   })
 }
@@ -80,25 +104,26 @@ func setHeaders(handler http.Handler) http.Handler {
 
 func requireDevAuth(cookieJar *cmap.ConcurrentMap[string, bool], handler http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        fmt.Printf("fooooooo")
-        if auth.HasValidCookie(w, r, cookieJar){
+        fmt.Printf("\n :: Require Dev Auth :: \n")
+        if auth.HasValidCookie(r, cookieJar){
           handler.ServeHTTP(w, r)
+          return
         } else {
           // http.Error(w, "Dev Not Validated", 503)
-          fmt.Printf("\n fooooo REDIRECT \n")
+          fmt.Printf("\n :: REDIRECT To Dev Auth :: \n")
           redirectToDevAuth(w, r)
           return
         }
     })
 }
 
-func setupRemotedevRoutes(cookieJar *cmap.ConcurrentMap[string, bool]) {
-  setupDevAuth(cookieJar)
+func setupRemotedevRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool]) {
+  setupDevAuth(runtime_env, cookieJar)
 
 }
 
-func setupLocalhostRoutes(cookieJar *cmap.ConcurrentMap[string, bool]) {
-  setupDevAuth(cookieJar)
+func setupLocalhostRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool]) {
+  setupDevAuth(runtime_env, cookieJar)
 }
 
 func setupProdRoutes() {
@@ -112,7 +137,7 @@ func redirectToDevAuth(w http.ResponseWriter, r *http.Request) {
 
 func setupBaseRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool]) {
   if runtime_env.IsProd() {
-    fs := http.FileServer(http.Dir("./../../frontend/dist"))
+    fs := http.FileServer(http.Dir("frontend"))
     http.Handle("/", fs)
   }
 
@@ -123,7 +148,7 @@ func setupBaseRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, 
   http.HandleFunc("/public-square-feed-ws", func(w http.ResponseWriter, r *http.Request) {
     if !runtime_env.IsProd() {
       // localhost and remote dev require basic login
-      res := auth.ValidateSessionCookie(r, cookieJar)
+      res := auth.HasValidCookie(r, cookieJar)
       if res {
         serveFeedWs(feedPool, w, r)
       } else {
@@ -137,7 +162,7 @@ func setupBaseRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, 
   http.HandleFunc("/public-square-wasm-ws", func(w http.ResponseWriter, r *http.Request) {
     if !runtime_env.IsProd() {
       // localhost and remote dev require basic login
-      res := auth.ValidateSessionCookie(r, cookieJar)
+      res := auth.HasValidCookie(r, cookieJar)
       if res {
         serveWasmWs(wasmPool, w, r)
       } else {
@@ -153,11 +178,11 @@ func setupBaseRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, 
 func setupRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool]) {
     switch runtime_env.Mode {
     case "localhost":
-      setupLocalhostRoutes(cookieJar)
+      setupLocalhostRoutes(runtime_env, cookieJar)
     case "prod":
       setupProdRoutes()
     case "remotedev":
-      setupRemotedevRoutes(cookieJar)
+      setupRemotedevRoutes(runtime_env, cookieJar)
     }
 
     setupBaseRoutes(runtime_env, cookieJar)
