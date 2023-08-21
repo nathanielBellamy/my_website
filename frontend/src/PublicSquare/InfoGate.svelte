@@ -33,7 +33,7 @@
              src={megaphone}
              alt={"Megaphone"}/>
         <Popover class="bg-slate-800 text-2xl"
-                 offset={-40}
+                 offset={-10}
                  transition={slide}>
           <p>
             It's The Public Square!
@@ -58,7 +58,7 @@
              src={megaphone}
              alt={"Megaphone"}/>
         <Popover class="bg-slate-800 text-2xl"
-                 offset={-40}
+                 offset={-10}
                  transition={slide}>
           <p>
             This Way To The Public Square!
@@ -72,7 +72,7 @@
           <span class="abelone">
             The Public Square 
           </span>
-          is a free, anonymously collaborative art project
+          is a free art project made for anonymous collaboration
         </li>
         <li>
           A digital wall for geometric graffiti animations
@@ -89,9 +89,7 @@
         <li>
           For a solo version where you can save presets, nagivate to
           <span class="abelone">
-            <Link href="/magic_square"
-                  title="The Magic Square"
-                  sameOrigin={true}/>
+            The Magic Square
           </span>
         </li>
       </ul>
