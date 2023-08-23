@@ -1,18 +1,26 @@
 # Nate's Website
 
 ### build -- Go server, frontend SPA, auth SPA
-`MODE=mode ./build.sh`
+`./build.sh`
 
 ### build only Go server (fast)
-`MODE=mode ./build.sh --server-only`
+`./build.sh --server-only`
 
 ### serve
-`MODE=mode PW=my_password ./serve.sh`
+`./serve.sh`
 
-### mode
+### config.env
+- `MODE=mode`
+- `PW=my_password`
+
+#### mode
 - `localhost`
 - `prod`
 - `remotdev`
+
+#### my_password
+- password for site
+- `localhost` and `remotedev` only
 
 
 ### Made with: RustWasm, Go, Svelte, Typescript, WebGL, Vite, Tailwind, Flowbite

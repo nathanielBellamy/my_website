@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Load environment variables from config.env
+if [ -f "config.env" ]; then
+    export $(cat config.env | xargs)
+else
+    echo "config.env not found!"
+    exit 1
+fi
+
 # Check if MODE is set
 if [ -z "$MODE" ]; then
   echo "Please set the MODE environment variable. (localhost, remotedev, or prod)"

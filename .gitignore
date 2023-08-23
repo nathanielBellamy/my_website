@@ -1,5 +1,8 @@
 .DS_Store
 
+# env
+config.env
+
 # Logs
 frontend/logs
 frontend/*.log
@@ -21,6 +24,8 @@ frontend/*.local
 # auth
 auth/dev/node_modules
 
+# keep dist out of git
+dist/*
 # keep builds out of git
 build/*
 
