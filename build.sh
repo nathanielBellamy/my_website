@@ -17,7 +17,14 @@ fi
 # Function for Go server build
 build_go_server() {
   echo "Building Go server..."
-  cd backend && cd go && go build -o "./../../build" main.go
+  cd backend && cd go
+  if [ "$MODE" != "localhost" ]; then
+    echo "Building For Linux"
+    GOOS=linux GOARCH=amd64 go build -o "./../../build" main.go
+  else
+    echo "Building For Host Architecture"
+    go build -o "./../../build" main.go
+  fi
   cd .. && cd ..
   echo "Go server built successfully."
 }

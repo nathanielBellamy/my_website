@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/nathanielBellamy/my_website/backend/go/env"
 	cmap "github.com/orcaman/concurrent-map/v2"
 )
 
@@ -30,11 +31,17 @@ type IoPassword struct {
   Password string
 }
 
-func HasValidCookie(r *http.Request, cookieJar *cmap.ConcurrentMap[string, bool]) bool {
+func HasValidCookie(runtime_env env.Env, r *http.Request, cookieJar *cmap.ConcurrentMap[string, bool]) bool {
   res := true  
 
+  var cookieName string
+  if runtime_env.IsLocalhost() {
+    cookieName = "nbs-dev"
+  } else {
+    cookieName = "__Secure-nbs-dev"
+  }
   // Try to get the cookie
-  cookie, err := r.Cookie("nbs-dev")
+  cookie, err := r.Cookie(cookieName)
   // Check if there was an error (e.g., cookie not found)
   if err != nil {
       // Handle the error

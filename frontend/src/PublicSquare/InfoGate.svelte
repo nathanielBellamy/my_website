@@ -14,7 +14,8 @@
   let showRecaptcha = false
 
   function onEnterSquareClick() {
-    if (import.meta.env.MODE !== ViteMode.localhost) {
+    // TODO: set up recaptcha on dev-site
+    if (false) {// (import.meta.env.MODE !== ViteMode.localhost) {
       showRecaptcha = true
     } else {
       hasPassedGate = true

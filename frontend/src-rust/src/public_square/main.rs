@@ -29,7 +29,13 @@ impl PubSq {
         let touch_screen: bool = serde_wasm_bindgen::from_value(touch_screen).unwrap();
         
         let base_url: String = serde_wasm_bindgen::from_value(base_url).unwrap();
-        let url: String = format!("ws://{base_url}/public-square-wasm-ws");
+        let mut protocol: String;
+        if base_url == "localhost:8080".to_string() {
+            protocol = "ws".to_string();
+        } else {
+            protocol = "wss".to_string();
+        }
+        let url: String = format!("{protocol}://{base_url}/public-square-wasm-ws");
         // setup websocket
         let ws: WebSocket;
         match WebSocket::new(url.as_str()) {

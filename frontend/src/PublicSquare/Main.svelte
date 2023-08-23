@@ -9,11 +9,15 @@
   import MagicSquarePub from './MagicSquarePub.svelte'
   import { FEED_LENGTH, psFeed } from '../stores/psFeed'
   import Toaster from '../lib/Toaster.svelte'
+  import { ViteMode } from '../ViteMode'
 
   let clientId: number
 
   const baseUrl: string = import.meta.env.VITE_BASE_URL
-  const fullUrl: string = `ws://${baseUrl}/public-square-feed-ws`
+  const protocol: string = import.meta.env.VITE_MODE == ViteMode.localhost
+    ? "ws"
+    : "wss"
+  const fullUrl: string = `${protocol}://${baseUrl}/public-square-feed-ws`
 
   // websocket
   const ws = new WebsocketBuilder(fullUrl)
