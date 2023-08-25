@@ -150,22 +150,28 @@ impl PubSq {
         // take ownership of the passed-in js closure
         let set_all_settings = (*set_all_settings).clone();
         let set_all_settings: Rc<RefCell<js_sys::Function>> = Rc::new(RefCell::new(set_all_settings));
-
+        let initial_data_ready = false;
+        let initial_data_ready: Rc<RefCell<bool>> = Rc::new(RefCell::new(initial_data_ready));
+        
         {
             let ui_buffer = ui_buffer.clone();
             let ws_c = ws.clone();
             let set_all_settings = set_all_settings.clone();
+            let initial_data_ready = initial_data_ready.clone();
+
 
             let onmessage_callback = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
                 let ui_buffer = ui_buffer.clone();
                 let set_all_settings = set_all_settings.clone();
+                let initial_data_ready = initial_data_ready.clone();
                 // here it receives and deserializes
                 // log("wasm websocket onmessage_callback");
-                unsafe { // it is the bytemuck-ing here tffhat is unsafe
+                unsafe { // it is the bytemuck-ing here that is unsafe
                     let blob = e.data().dyn_into::<web_sys::Blob>().expect("Error Parsing Blob from Server");
                     
                     let fr = web_sys::FileReader::new().unwrap();
                     let fr_c = fr.clone();
+
                     // create onLoadEnd callback
                     let onloadend_cb = Closure::<dyn FnMut(_)>::new(move |_e: web_sys::ProgressEvent| {
                         let vec: Vec<u8> = js_sys::Uint8Array::new(&fr_c.result().unwrap()).to_vec();
@@ -177,6 +183,8 @@ impl PubSq {
                         let settings_js = serde_wasm_bindgen::to_value(new_settings).expect("serde new_settings error");
                         let _ = set_all_settings.clone().borrow().call1(&this.clone(), &(settings_js.clone()));
                         // log(&format!("New Settings: {:?}", new_settings));
+                        *initial_data_ready.clone().borrow_mut() = true;
+                        
                     });
                     fr.set_onloadend(Some(onloadend_cb.as_ref().unchecked_ref()));
                     fr.read_as_array_buffer(&blob).expect("blob not readable");
@@ -283,6 +291,7 @@ impl PubSq {
             // set up animation loop
             let canvas = canvas.clone();
             let ui_buffer = ui_buffer.clone();
+            let initial_data_ready = initial_data_ready.clone();
             let mut animation = Animation::new();
             animation.set_from(&ui_buffer.clone().borrow().settings);
 
@@ -436,17 +445,24 @@ impl PubSq {
 
                     // draw
                     // log(&format!("{:?}", geometry_cache.clone().borrow().vertices));
-                    if GlDraw::scene(
-                        &gl,
-                        &uniforms,
-                        &uniform_locations,
-                        &animation.curr_shapes(),
-                        &settings.transform_order,
-                        &x,
-                    )
-                    .is_err()
-                    {
-                        // log("DRAW ERROR");
+                    //
+                    // TODO: could probably gain some performance by using a raw pointer here
+                    // and avoiding unwraping an Rc<RefCell< on every render
+                    // this value should be initialized, mutated once (meaningfully)
+                    // and then left static
+                    if *initial_data_ready.clone().borrow() {
+                        if GlDraw::scene(
+                            &gl,
+                            &uniforms,
+                            &uniform_locations,
+                            &animation.curr_shapes(),
+                            &settings.transform_order,
+                            &x,
+                        )
+                        .is_err()
+                        {
+                            // log("DRAW ERROR");
+                        }
                     }
 
                     let frame_counter_limit: i32 = if settings.draw_pattern_speed > 19 {
