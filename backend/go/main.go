@@ -10,12 +10,19 @@ import (
 	"github.com/nathanielBellamy/my_website/backend/go/env"
 	"github.com/nathanielBellamy/my_website/backend/go/websocket"
 	cmap "github.com/orcaman/concurrent-map/v2"
-  // "github.com/rs/zerolog"
+  "github.com/rs/zerolog"
   // "github.com/rs/zerolog/log"
 )
 
 func main() {
-    fmt.Printf("Starting server on 8080 \n")
+    // setup logging
+  	file, err := os.Create("log.txt")
+    if err != nil {
+      fmt.Printf("Failed creating file: %s", err)
+    }
+    zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+    log := zerolog.New(file)
+    log.Info().Msg("Starting server on 8080 \n")
     
     mode := os.Getenv("MODE")
     runtime_env := env.Env {
