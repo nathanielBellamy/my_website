@@ -1,6 +1,6 @@
 // use bytemuck::{bytes_of, from_bytes}
 use wasm_bindgen::JsValue;
-use crate::log;
+// use crate::log;
 use crate::magic_square::animation::Animation;
 use crate::magic_square::geometry::geom::Geom;
 use crate::magic_square::gl_draw::GlDraw;
@@ -16,10 +16,6 @@ use wasm_bindgen::prelude::*;
 use web_sys::{MessageEvent, WebGl2RenderingContext, WebGlProgram, WebSocket};
 use crate::magic_square::{settings::Settings, main::MagicSquare, main::X_MAX};
 
-// TODO:
-//  - read the base url from the env
-const URL: &str = "ws://localhost:8080/public-square-wasm-ws";
-
 #[derive(Debug)]
 pub struct PublicSquare;
 
@@ -29,15 +25,23 @@ struct PubSq;
 #[wasm_bindgen]
 impl PubSq {
     #[allow(unused)] // called from js
-    pub async fn run(set_all_settings: &js_sys::Function, touch_screen: JsValue) -> JsValue {
+    pub async fn run(base_url: JsValue, set_all_settings: &js_sys::Function, touch_screen: JsValue) -> JsValue {
         let touch_screen: bool = serde_wasm_bindgen::from_value(touch_screen).unwrap();
-
+        
+        let base_url: String = serde_wasm_bindgen::from_value(base_url).unwrap();
+        let mut protocol: String;
+        if base_url == "localhost:8080".to_string() {
+            protocol = "ws".to_string();
+        } else {
+            protocol = "wss".to_string();
+        }
+        let url: String = format!("{protocol}://{base_url}/public-square-wasm-ws");
         // setup websocket
         let ws: WebSocket;
-        match WebSocket::new(URL) {
+        match WebSocket::new(url.as_str()) {
             Ok(socket) => ws = socket,
             Err(_) => {
-                log("Unable to connect to WASM Websocket");
+                // log("Unable to connect to WASM Websocket");
                 return JsValue::from_str("WASM websocket error");
             }
         }
@@ -442,7 +446,7 @@ impl PubSq {
                     )
                     .is_err()
                     {
-                        log("DRAW ERROR");
+                        // log("DRAW ERROR");
                     }
 
                     let frame_counter_limit: i32 = if settings.draw_pattern_speed > 19 {

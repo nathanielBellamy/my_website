@@ -14,7 +14,8 @@
   let showRecaptcha = false
 
   function onEnterSquareClick() {
-    if (import.meta.env.MODE !== ViteMode.localhost) {
+    // TODO: set up recaptcha on dev-site
+    if (false) {// (import.meta.env.MODE !== ViteMode.localhost) {
       showRecaptcha = true
     } else {
       hasPassedGate = true
@@ -33,12 +34,10 @@
              src={megaphone}
              alt={"Megaphone"}/>
         <Popover class="bg-slate-800 text-2xl"
+                 offset={-10}
                  transition={slide}>
           <p>
-            Come one! Come all,
-          </p>
-          <p>
-            to The Public Square!
+            It's The Public Square!
           </p>
         </Popover>
         <div class="text-3xl md:text-6xl">
@@ -60,12 +59,10 @@
              src={megaphone}
              alt={"Megaphone"}/>
         <Popover class="bg-slate-800 text-2xl"
+                 offset={-10}
                  transition={slide}>
           <p>
-            Mysteries abound in
-          </p>
-          <p>
-            The Public Square!
+            This Way To The Public Square!
           </p>
         </Popover>
       </div>
@@ -76,7 +73,7 @@
           <span class="abelone">
             The Public Square 
           </span>
-          is a free, anonymously collaborative art project
+          is a free art project made for anonymous collaboration
         </li>
         <li>
           A digital wall for geometric graffiti animations
@@ -93,9 +90,7 @@
         <li>
           For a solo version where you can save presets, nagivate to
           <span class="abelone">
-            <Link href="/magic_square"
-                  title="The Magic Square"
-                  sameOrigin={true}/>
+            The Magic Square
           </span>
         </li>
       </ul>

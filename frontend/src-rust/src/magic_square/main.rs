@@ -4,7 +4,7 @@ use super::gl_draw::GlDraw;
 use super::gl_program::GlProgram;
 use super::gl_uniforms::{GlUniforms, UniformLocations};
 use super::settings::ColorDirection;
-use crate::log;
+// use crate::log;
 use crate::magic_square::geometry::cache::{Cache as GeometryCache, CACHE_CAPACITY};
 use crate::magic_square::lfo::Lfo;
 use crate::magic_square::ui_buffer::UiBuffer;
@@ -364,7 +364,7 @@ impl MagicSquare {
                     )
                     .is_err()
                     {
-                        log("DRAW ERROR");
+                        // log("DRAW ERROR");
                     }
 
                     let frame_counter_limit: i32 = if settings.draw_pattern_speed > 19 {

@@ -1,5 +1,8 @@
 .DS_Store
 
+# env
+config.env
+
 # Logs
 frontend/logs
 frontend/*.log
@@ -9,7 +12,7 @@ frontend/yarn-error.log*
 frontend/pnpm-debug.log*
 frontend/lerna-debug.log*
 
-# env
+# frontend
 frontend/.env.prod
 frontend/.env.remotedev
 
@@ -17,6 +20,14 @@ frontend/node_modules
 frontend/dist
 frontend/dist-ssr
 frontend/*.local
+
+# auth
+auth/dev/node_modules
+
+# keep dist out of git
+dist/*
+# keep builds out of git
+build/*
 
 # Editor directories and files
 frontend/.idea
@@ -28,3 +39,4 @@ frontend/*.sw?
 
 # rust build
 frontend/src-rust/target/
+
