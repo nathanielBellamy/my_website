@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/nathanielBellamy/my_website/backend/go/env"
 	cmap "github.com/orcaman/concurrent-map/v2"
@@ -64,29 +63,4 @@ func HasValidCookie(runtime_env env.Env, r *http.Request, cookieJar *cmap.Concur
   return res
 }
 
-func ValidateDev (w http.ResponseWriter, r *http.Request) (string, bool) {
-  err := r.ParseForm()
-  if err != nil {
-    fmt.Printf(" \n :: Error Parsing POST :: \n")
-    http.Error(w, err.Error(), http.StatusBadRequest)
-    return "", false
-  }
-  
-  clientSentPassword := r.Form.Get("pw")
 
-  var h Hash
-  res := h.Compare(clientSentPassword)
-
-  if !res {
-    fmt.Printf(" \n :: Incorrect Password :: \n")
-    return "", false
-  }
-
-  sessionToken, err := h.Generate(time.Now().String())
-  if err != nil {
-    fmt.Printf(" \n :: Error Generating Session Token :: \n")
-    return "", false
-  }
-  
-  return sessionToken, true
-}
