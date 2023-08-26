@@ -1,8 +1,11 @@
 package websocket
 
-import "fmt"
-import "math/rand"
-import "time"
+import (
+  "fmt"
+  "math/rand"
+  "time"
+  "github.com/rs/zerolog"
+)
 
 func randInRange(min int, max int) (int){
     rand.Seed(time.Now().UnixNano())
@@ -16,9 +19,10 @@ type Pool struct {
     Clients    map[*Client]bool
     Broadcast  chan Message
     BroadcastSettings chan []uint8
+    Log *zerolog.Logger
 }
 
-func NewPool() *Pool {
+func NewPool(log *zerolog.Logger) *Pool {
     return &Pool{
         NextClientId: uint(randInRange(1021, 2150)),
         Register:   make(chan *Client),
@@ -26,6 +30,7 @@ func NewPool() *Pool {
         Clients:    make(map[*Client]bool),
         Broadcast:  make(chan Message),
         BroadcastSettings:  make(chan []uint8),
+        Log: log,
     }
 }
 
@@ -41,30 +46,40 @@ func (pool *Pool) StartFeed() {
         case client := <-pool.Register:
             pool.Clients[client] = true
             id := client.ID
-            fmt.Printf("Size of Connection Pool: %v \n", len(pool.Clients))
+            pool.Log.Info().
+                     Uint("uint", id).
+                     Msg("Client NEW Id")
+            pool.Log.Info().
+                     Int("int", len(pool.Clients)).
+                     Msg("Size of Feed Connection Pool")
             //send clientId back to client 
             message := Message{ClientId: id, Body: "__init__connected__"}
-            WriteMessage(client.Conn, message)
+            WriteMessage(client.Conn, message, pool.Log)
 
             // announce to pool
             messageBody := fmt.Sprintf("👋 sq-%v 👋", id)
             message = Message{ClientId: 0, Body: messageBody}
             for client, _ := range pool.Clients {
-                WriteMessage(client.Conn, message)
+                WriteMessage(client.Conn, message, pool.Log)
             }
             break
         case client := <-pool.Unregister:
             id := client.ID
             messageBody := fmt.Sprintf("🫡 sq-%v 🫡", id)
             delete(pool.Clients, client)
-            fmt.Printf("Size of Connection Pool: %v \n", len(pool.Clients))
+            pool.Log.Info().
+                     Uint("uint", id).
+                     Msg("Client SIGN OFF Id")
+            pool.Log.Info().
+                     Int("int", len(pool.Clients)).
+                     Msg("Size of Feed Connection Pool")
             for client, _ := range pool.Clients {
-              WriteMessage(client.Conn, Message{ClientId: 0, Body: messageBody})
+              WriteMessage(client.Conn, Message{ClientId: 0, Body: messageBody}, pool.Log)
             }
             break
         case message := <-pool.Broadcast:
             for client, _ := range pool.Clients {
-                WriteMessage(client.Conn, message)            
+                WriteMessage(client.Conn, message, pool.Log)           
             }
       }
     }
@@ -76,22 +91,21 @@ func (pool *Pool) StartWasm() {
       select {
         case client := <-pool.Register:
             pool.Clients[client] = true
-            fmt.Printf("Size of Connection Pool: %v \n", len(pool.Clients))
+            pool.Log.Info().
+                     Int("int", len(pool.Clients)).
+                     Msg("Size of Wasm Connection Pool")
             // send the current settingsBlob to the new client
-            WriteSlice (client.Conn, settingsBlob)
+            WriteSlice (client.Conn, settingsBlob, pool.Log)
             break
         case client := <-pool.Unregister:
             delete(pool.Clients, client)
             break
         case arr := <-pool.BroadcastSettings:
-            // fmt.Printf("Sending message to all clients in Pool \n")
-            // fmt.Printf("%v", arr)
             // update public settingsBlob
             settingsBlob = arr
-            // fmt.Printf("new_blob: %v \n", settingsBlob)
             // send updated blob to everyone
             for client, _ := range pool.Clients {
-                WriteSlice(client.Conn, settingsBlob)
+                WriteSlice(client.Conn, settingsBlob, pool.Log)
             }
       }
     }

@@ -1,16 +1,18 @@
 package websocket
 
 import (
-  "fmt"
 	"net/http"
+
+	"github.com/nathanielBellamy/my_website/backend/go/auth"
+	"github.com/rs/zerolog"
 )
 
-func ServeFeedWs(pool *Pool, w http.ResponseWriter, r *http.Request) {
-      fmt.Println("FEED Endpoint Hit")
-      conn, err := Upgrade(w, r)
+func ServeFeedWs(pool *Pool, w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
+      conn, err := Upgrade(w, r, log)
       if err != nil {
-        fmt.Printf("\n :: FEED Upgrade ERROR :: \n")
-        fmt.Fprintf(w, "%+v\n", err)
+        log.Error().
+            Err(err).
+            Msg("FEED Upgrade ERROR")
       }
 
       client := &Client{
@@ -18,19 +20,24 @@ func ServeFeedWs(pool *Pool, w http.ResponseWriter, r *http.Request) {
         Conn: &conn,
         Pool: pool,
       }
+      
+      log.Info().
+          Str("ip", auth.GetClientIpAddr(r)).
+          Uint("client_id", client.ID).
+          Msg("FEED Endpoint Hit")
 
-      WriteMessage(client.Conn, Message{ClientId: client.ID, Body: "connected"})
+      WriteMessage(client.Conn, Message{ClientId: client.ID, Body: "connected"}, log)
 
       pool.Register <- client
       client.ReadFeed()
 }
 
-func ServeWasmWs(pool *Pool, w http.ResponseWriter, r *http.Request) {
-      fmt.Println("WASM Endpoint Hit")
-      conn, err := Upgrade(w, r)
+func ServeWasmWs(pool *Pool, w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
+      conn, err := Upgrade(w, r, log)
       if err != nil {
-        fmt.Printf("\n :: WASM Upgrade ERROR :: \n")
-        fmt.Fprintf(w, "%+v\n", err)
+        log.Error().
+            Err(err).
+            Msg("WASM Upgrade ERROR")
       }
 
       client := &Client{
@@ -38,6 +45,11 @@ func ServeWasmWs(pool *Pool, w http.ResponseWriter, r *http.Request) {
         Conn: &conn,
         Pool: pool,
       }
+
+      log.Info().
+          Str("ip", auth.GetClientIpAddr(r)).
+          Uint("client_id", client.ID).
+          Msg("WASM Endpoint Hit")
 
       pool.Register <- client
       client.ReadWasm()
