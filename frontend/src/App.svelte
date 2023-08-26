@@ -53,6 +53,9 @@
     }),
     '/public-square': wrap({
       asyncComponent: () => import('./PublicSquare/Container.svelte')
+    }),
+    '/system-diagram': wrap({
+      asyncComponent: () => import('./SystemDiagram.svelte')
     })
   }
 

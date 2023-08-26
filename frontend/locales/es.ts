@@ -11,7 +11,8 @@ export const localeEs: any = {
       about: "Sobre mí",
       magicSquare: "Cuadro mágico",
       giveMeASine: "Dame un seno",
-      none: ""
+      none: "",
+      systemDiagram: "Diagrama de systema",
     }
   },
   gmas: {

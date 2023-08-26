@@ -11,7 +11,8 @@ export const localeEn: any = {
       about: "About",
       magicSquare: "Magic square",
       giveMeASine: "Give me a sine",
-      none: ""
+      none: "",
+      systemDiagram: "System Diagram",
     }
   },
   gmas: {

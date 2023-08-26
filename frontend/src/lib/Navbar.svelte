@@ -64,6 +64,11 @@
                   href="/#/about">
       {i18n.t("nav/about", langVal)}
     </DropdownItem>
+    <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+                  on:click={() => dropdownOpen = false}
+                  href="/#/system-diagram">
+      {i18n.t("nav/systemDiagram", langVal)}
+    </DropdownItem>
   </Dropdown>
 
   <div id="user-drop"
