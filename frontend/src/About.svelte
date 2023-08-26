@@ -2,7 +2,6 @@
   import { onDestroy } from 'svelte'
   import { lang } from "./stores/lang"
   import { I18n, Lang } from "./I18n"
-  import Link from "./lib/Link.svelte"
 
   let i18n = new I18n("about")
   let langVal: Lang
@@ -24,7 +23,7 @@
   let personal_projects: PersonalProject[] = [
     {
       title: 'my_website (this)',
-      description: 'RustWasm, Go, Typescript, Svelte, WebGL, Sass, Tailwind, Vite',
+      description: 'RustWasm, Go, Typescript, Svelte, WebGL, Sass, Tailwind, Vite, NixOS',
       href: 'https://github.com/users/nathanielBellamy/projects/4',
       program: EmbeddedProgram.none
     },
@@ -139,7 +138,7 @@
       {i18n.t("personalProejects", langVal)}
     </div>
     <div class="section_body row-span-8 md:col-span-8 md:row-span-1">
-      {#each personal_projects as { title, description, href, program } }
+      {#each personal_projects as { title, description, href } }
         <div class="project grid grid-rows-1 md:grid-cols-4">
           <button class="project_title"
                   title="See It On Github"
@@ -148,10 +147,6 @@
           </button>
           <div class="project_description ml-10 md:ml-0 row-span-3 md:col-span-3 md:row-span-1">
             {description}
-            {#if program == EmbeddedProgram.giveMeASign}
-              <Link href="/give_me_a_sine"
-                    title={i18n.t("openWasm", langVal)}/>
-            {/if}
           </div>
         </div>
       {/each}
