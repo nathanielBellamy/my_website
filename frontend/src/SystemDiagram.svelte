@@ -8,7 +8,7 @@
     // TODO: unmagic this number
     //  but for now
     //  the navbar and footer heights are static
-    //  and that is what this raw number is accounting for
+    //  and that is for what this number is accounting
     //  plus adding a small margin
     return (ih - 150).toString() + "px"
   }
