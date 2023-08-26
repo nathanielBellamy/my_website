@@ -198,24 +198,23 @@
           border: 3px color.$red-4 double
       
   .feed_message
-    background-color: color.$blue-7
     grid-template-areas: "user body"
-    grid-template-columns: 40% 60%
+    grid-template-columns: 20% 80%
     &_user
       grid-area: "user"
-      background-color: color.$purple-7
+      border: 5px double color.$purple-7
       height: fit-content
     &_body
       grid-area: "body"
       background-color: color.$black
     &_self
-      background-color: color.$yellow-3
+      border: 5px double color.$yellow-3
       display: grid
       grid-template-columns: 50% 50%
       grid-template-rows: 1fr
       gap: 4px
     &_other
-      background-color: color.$green-4
+      border: 5px double color.$green-4
       display: grid
       grid-template-columns: 50% 50%
       grid-template-rows: 1fr

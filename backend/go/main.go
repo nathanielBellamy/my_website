@@ -18,8 +18,7 @@ func main() {
     if err != nil {
       fmt.Printf("Failed creating log file: %s", err)
     }
-    zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-    log := zerolog.New(file)
+    log := zerolog.New(file).With().Timestamp().Logger()
     log.Info().
         Msg("Starting server on 8080")
     
@@ -52,7 +51,7 @@ func SetupRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool
 func SetupBaseRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) {
   if runtime_env.IsProd() {
     fs := http.FileServer(http.Dir("frontend"))
-    http.Handle("/", fs)
+    http.Handle("/", auth.LogClientIp("/", log, fs))
   }
 
   feedPool := websocket.NewPool(log)
@@ -101,6 +100,8 @@ func SetupLocalhostRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[str
 func SetupProdRoutes() {
   // TODO: maybe Set cookie when user goes through ep warning
 }
+
+
 
 func _SetHeaders(handler http.Handler) http.Handler {
   return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
