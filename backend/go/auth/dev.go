@@ -47,11 +47,12 @@ func SetupDevAuth(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, boo
           Str("ip", ip).
           Msg("Dev Auth LOGIN SUCCESS")
       
-      // wait for the browser to set the cookie 
-      // to avoid redirect loop
-      // Firefox takes at least 3 seconds
-      // hopefully deters bots a bit
-      time.Sleep(3 * time.Second)
+      // TODO: wait for the browser to set the cookie 
+      //  - avoid redirect loop
+      //  - Firefox takes at least 3 seconds
+      //  - hopefully deters bots a bit
+      //  - naive time.Sleep didn't solve it 100% so it's not worth it
+      //  - for now, we'll eat some polluted logs due to redirect loop
 
       http.Redirect(w, r, "/", http.StatusFound)
       return
