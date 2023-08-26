@@ -1,47 +1,56 @@
 package websocket
+
 // https://tutorialedge.net/projects/chat-system-in-go-and-react/part-4-handling-multiple-clients/
 import (
-    "encoding/json"
-    "fmt"
-    "net"
-    "net/http"
-    "github.com/gobwas/ws"
-    "github.com/gobwas/ws/wsutil"
+	"encoding/json"
+	"net"
+	"net/http"
+
+	"github.com/gobwas/ws"
+	"github.com/gobwas/ws/wsutil"
+	"github.com/rs/zerolog"
 )
 
-func Upgrade(w http.ResponseWriter, r *http.Request) (net.Conn, error) {
+func Upgrade(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) (net.Conn, error) {
     conn, _, _, err := ws.UpgradeHTTP(r, w)
     if err != nil {
-      fmt.Printf("UpgradeHTTP Error \n")
+      log.Error().
+          Err(err).
+          Msg("UpgradeHTTP Error")
       return conn, err
     }
     return conn, nil
 }
 
-func WriteMessage(conn *net.Conn, msg Message) {
+func WriteMessage(conn *net.Conn, msg Message, log *zerolog.Logger) {
     j, err := json.Marshal(msg)
     if err != nil {
-      fmt.Printf("JSON MESSAGE ERROR \n")
+      log.Error().
+          Err(err).
+          Msg("JSON MESSAGE ERROR")
       return
     }
 
-    Writer(conn, []byte(j))
+    Writer(conn, []byte(j), log)
 }
 
-func WriteSlice(conn *net.Conn, slice []uint8) {
+func WriteSlice(conn *net.Conn, slice []uint8, log *zerolog.Logger) {
   err := wsutil.WriteServerBinary(*conn, []byte(slice))
   if err != nil {
-    fmt.Printf("WriteServerSlice Error \n")
+    log.Error().
+        Err(err).
+        Msg("WriteServer SLICE Error")
     (*conn).Close()
     return
   }
 }
 
-func Writer(conn *net.Conn, msg []byte) {
-    // fmt.Printf("Writer with msg: %v", msg)
+func Writer(conn *net.Conn, msg []byte, log *zerolog.Logger) {
     err := wsutil.WriteServerMessage(*conn, ws.OpText, []byte(msg))
     if err != nil {
-      fmt.Printf("WriteServerMessage Error \n")
+      log.Error().
+          Err(err).
+          Msg("WriteServer MESSAGE Error")
       (*conn).Close()
       return
     }

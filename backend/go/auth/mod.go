@@ -1,16 +1,15 @@
 package auth
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/nathanielBellamy/my_website/backend/go/env"
 	cmap "github.com/orcaman/concurrent-map/v2"
+	"github.com/rs/zerolog"
 )
 
-func getClientIpAddr(r *http.Request) (string, error) {
+func GetClientIpAddr(r *http.Request) string {
   var res string
   // TODO: 
   //  this will have to be conditional on runtime_env
@@ -23,16 +22,19 @@ func getClientIpAddr(r *http.Request) (string, error) {
 		if len(ips) > 0 {
 			res = strings.TrimSpace(ips[0])
 		}
-	}
-  return res, nil
+	} else {
+    res = r.RemoteAddr
+  }
+  return res
 }
 
 type IoPassword struct {
   Password string
 }
 
-func HasValidCookie(runtime_env env.Env, r *http.Request, cookieJar *cmap.ConcurrentMap[string, bool]) bool {
-  res := true  
+func HasValidCookie(runtime_env env.Env, r *http.Request, cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) bool {
+  res := true
+  ip := GetClientIpAddr(r)
 
   var cookieName string
   if runtime_env.IsLocalhost() {
@@ -45,13 +47,19 @@ func HasValidCookie(runtime_env env.Env, r *http.Request, cookieJar *cmap.Concur
   // Check if there was an error (e.g., cookie not found)
   if err != nil {
       // Handle the error
-      fmt.Printf("\n :: Error getting the cookie:: ::%v", err)
+      log.Error().
+          Str("ip", ip).
+          Err(err).
+          Msg("Error Retrieving Cookie")
       return false
   }
 
   if cookieJar.Has(cookie.Value) {
     val, err := cookieJar.Get(cookie.Value)
     if err {
+      log.Error().
+          Str("ip", ip).
+          Msg("Cookie Not Found")
       res = false
     }
     res = val
@@ -64,29 +72,4 @@ func HasValidCookie(runtime_env env.Env, r *http.Request, cookieJar *cmap.Concur
   return res
 }
 
-func ValidateDev (w http.ResponseWriter, r *http.Request) (string, bool) {
-  err := r.ParseForm()
-  if err != nil {
-    fmt.Printf(" \n :: Error Parsing POST :: \n")
-    http.Error(w, err.Error(), http.StatusBadRequest)
-    return "", false
-  }
-  
-  clientSentPassword := r.Form.Get("pw")
 
-  var h Hash
-  res := h.Compare(clientSentPassword)
-
-  if !res {
-    fmt.Printf(" \n :: Incorrect Password :: \n")
-    return "", false
-  }
-
-  sessionToken, err := h.Generate(time.Now().String())
-  if err != nil {
-    fmt.Printf(" \n :: Error Generating Session Token :: \n")
-    return "", false
-  }
-  
-  return sessionToken, true
-}

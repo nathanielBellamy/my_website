@@ -1,9 +1,10 @@
 package websocket
 
 import (
-	"fmt"
 	"net"
+
 	"github.com/gobwas/ws/wsutil"
+	"github.com/rs/zerolog"
 )
 
 type ClientName struct {
@@ -18,6 +19,7 @@ type Client struct {
     Conn *net.Conn
     Pool *Pool
     Name ClientName
+    Log *zerolog.Logger
 }
 
 type Message struct {
@@ -34,8 +36,9 @@ func (c *Client) ReadFeed() {
     for {
         msg, _, err := wsutil.ReadClientData(*c.Conn)
         if err != nil {
-            fmt.Printf(" ReadClientData FEED Error \n")
-            fmt.Printf(" err %v", err)
+            c.Log.Error().
+                  Err(err).
+                  Msg("ReadClientData FEED Error")
             return
         }
         message := Message{ClientId: c.ID, Body: string(msg)}
@@ -52,8 +55,9 @@ func (c *Client) ReadWasm() {
     for {
         msg, _, err := wsutil.ReadClientData(*c.Conn)
         if err != nil {
-            fmt.Printf(" ReadClientData WASM Error \n")
-            fmt.Printf("err: %v", err)
+            c.Log.Error().
+                  Err(err).
+                  Msg("ReadClientData WASM Error")
             return
         } else {
           c.Pool.BroadcastSettings <- msg
