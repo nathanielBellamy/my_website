@@ -50,7 +50,6 @@ button {
   margin: 5px;
   padding: 2px 10px 2px 10px;
   font-weight: 800;
-  overflow-x: scroll;
 }
 button:hover {
   border-color: #395A6D;
@@ -191,3 +190,35 @@ header {  /*impl per component*/
   color: #395A6D;
 }
 
+ /* Hide scrollbar for Chrome, Safari and Opera */
+div::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+div {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+ /* Hide scrollbar for Chrome, Safari and Opera */
+button::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+button {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+ /* Hide scrollbar for Chrome, Safari and Opera */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
