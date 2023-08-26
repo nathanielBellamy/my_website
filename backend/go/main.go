@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	// "log"
 	"net/http"
 	"os"
 
@@ -11,7 +10,6 @@ import (
 	"github.com/nathanielBellamy/my_website/backend/go/websocket"
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"github.com/rs/zerolog"
-	// "github.com/rs/zerolog/log"
 )
 
 func main() {
@@ -22,7 +20,8 @@ func main() {
     }
     zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
     log := zerolog.New(file)
-    log.Info().Msg("Starting server on 8080")
+    log.Info().
+        Msg("Starting server on 8080")
     
     mode := os.Getenv("MODE")
     runtime_env := env.Env {
@@ -113,5 +112,3 @@ func _SetHeaders(handler http.Handler) http.Handler {
     handler.ServeHTTP(w,r)
   })
 }
-
-
