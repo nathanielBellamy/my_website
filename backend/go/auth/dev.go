@@ -11,15 +11,15 @@ import (
 
 func SetupDevAuth(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) {
   fs_frontend := http.FileServer(http.Dir("frontend"))
-  http.Handle("/", http.StripPrefix("/", RequireDevAuth(runtime_env, cookieJar, log, fs_frontend)))
-  
+  http.Handle("/", http.StripPrefix("/", LogClientIp("/", log, RequireDevAuth(runtime_env, cookieJar, log, fs_frontend))))
   fs_auth := http.FileServer(http.Dir("auth/dev"))
-  http.Handle("/auth/dev/",  http.StripPrefix("/auth/dev/", fs_auth))
+  http.Handle("/auth/dev/",  LogClientIp("/auth/dev", log, http.StripPrefix("/auth/dev/", fs_auth)))
 
   http.HandleFunc("/auth/dev/dev-auth", func(w http.ResponseWriter, r *http.Request) {
+    ip := GetClientIpAddr(r)
     log.Info().
-        Str("ip", GetClientIpAddr(r)).
-        Msg("Dev Auth Login Attempt")
+        Str("ip", ip).
+        Msg("Dev Auth LOGIN ATTEMPT")
     sessionToken, success := ValidateDev(w, r, log)
     if success {
       isLocalhost := runtime_env.IsLocalhost()
@@ -43,9 +43,22 @@ func SetupDevAuth(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, boo
       cookieJar.SetIfAbsent(sessionToken, true)
       http.SetCookie(w, &c)
 
+      log.Info().
+          Str("ip", ip).
+          Msg("Dev Auth LOGIN SUCCESS")
+      
+      // wait for the browser to set the cookie 
+      // to avoid redirect loop
+      // Firefox takes at least 3 seconds
+      // hopefully deters bots a bit
+      time.Sleep(3 * time.Second)
+
       http.Redirect(w, r, "/", http.StatusFound)
       return
     } else {
+      log.Warn().
+          Str("ip", ip).
+          Msg("Dev Auth LOGIN FAILURE")
       http.Error(w, "Invalid Password", http.StatusServiceUnavailable)
       return
     }

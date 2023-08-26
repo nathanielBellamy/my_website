@@ -4,7 +4,6 @@ import (
 	"net"
 
 	"github.com/gobwas/ws/wsutil"
-	"github.com/rs/zerolog"
 )
 
 type ClientName struct {
@@ -16,10 +15,10 @@ type ClientName struct {
 type Client struct {
     // ID = 0 indicates system
     ID   uint
+    IP   string
     Conn *net.Conn
     Pool *Pool
     Name ClientName
-    Log *zerolog.Logger
 }
 
 type Message struct {
@@ -36,12 +35,18 @@ func (c *Client) ReadFeed() {
     for {
         msg, _, err := wsutil.ReadClientData(*c.Conn)
         if err != nil {
-            c.Log.Error().
+            c.Pool.Log.Error().
                   Err(err).
                   Msg("ReadClientData FEED Error")
             return
         }
-        message := Message{ClientId: c.ID, Body: string(msg)}
+        msg_str := string(msg)
+        c.Pool.Log.Info().
+                   Uint("client_id_feed", c.ID).
+                   Str("ip", c.IP).
+                   Str("val", msg_str).
+                   Msg("USER MESSAGE")
+        message := Message{ClientId: c.ID, Body: msg_str}
         c.Pool.Broadcast <- message
     }
 }
@@ -55,7 +60,7 @@ func (c *Client) ReadWasm() {
     for {
         msg, _, err := wsutil.ReadClientData(*c.Conn)
         if err != nil {
-            c.Log.Error().
+            c.Pool.Log.Error().
                   Err(err).
                   Msg("ReadClientData WASM Error")
             return

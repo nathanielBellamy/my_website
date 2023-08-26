@@ -51,7 +51,7 @@ func (pool *Pool) StartFeed() {
                      Msg("Client NEW Id")
             pool.Log.Info().
                      Int("int", len(pool.Clients)).
-                     Msg("Size of Feed Connection Pool")
+                     Msg("Size of FEED Connection Pool")
             //send clientId back to client 
             message := Message{ClientId: id, Body: "__init__connected__"}
             WriteMessage(client.Conn, message, pool.Log)
@@ -72,7 +72,7 @@ func (pool *Pool) StartFeed() {
                      Msg("Client SIGN OFF Id")
             pool.Log.Info().
                      Int("int", len(pool.Clients)).
-                     Msg("Size of Feed Connection Pool")
+                     Msg("Size of FEED Connection Pool")
             for client, _ := range pool.Clients {
               WriteMessage(client.Conn, Message{ClientId: 0, Body: messageBody}, pool.Log)
             }
@@ -93,7 +93,7 @@ func (pool *Pool) StartWasm() {
             pool.Clients[client] = true
             pool.Log.Info().
                      Int("int", len(pool.Clients)).
-                     Msg("Size of Wasm Connection Pool")
+                     Msg("Size of WASM Connection Pool")
             // send the current settingsBlob to the new client
             WriteSlice (client.Conn, settingsBlob, pool.Log)
             break
