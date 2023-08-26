@@ -57,9 +57,9 @@ func HasValidCookie(runtime_env env.Env, r *http.Request, cookieJar *cmap.Concur
   if cookieJar.Has(cookie.Value) {
     val, err := cookieJar.Get(cookie.Value)
     if err {
-      log.Error().
+      log.Warn().
           Str("ip", ip).
-          Msg("Cookie Not Found")
+          Msg("Cookie Not Valid")
       res = false
     }
     res = val
@@ -72,4 +72,15 @@ func HasValidCookie(runtime_env env.Env, r *http.Request, cookieJar *cmap.Concur
   return res
 }
 
+func LogClientIp(url string, log *zerolog.Logger, handler http.Handler) http.Handler {
+  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+      log.Info().
+          Str("ip", GetClientIpAddr(r)).
+          Str("url", url).
+          Msg("URL HIT")
+      
+      handler.ServeHTTP(w, r)
+      return  
+  })
+}
 
