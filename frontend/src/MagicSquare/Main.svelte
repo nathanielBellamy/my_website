@@ -303,7 +303,9 @@
 
   function setAllSettingsFromPreset() {
     let presets = JSON.parse(localStorage.getItem("magic_square_presets"))
-    setAllSettings(presets[preset])
+    if (!!presets && !!presets[preset]) {
+      setAllSettings(presets[preset])
+    }
   }
 
   function deriveStorageSettings(): StorageSettings {

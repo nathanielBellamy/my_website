@@ -88,6 +88,7 @@
   $: gradient = `linear-gradient(90deg, ${colorStrings[idx_a]} 0%, ${colorStrings[idx_b]} 100%)`
   let currIdx: number = 0
 
+
   const colorPickerOptions = {
     width: 110,
     height: 90,
@@ -128,6 +129,7 @@
   let innerHeight: number = 375 // assume small
   $: colorPickerWidth = deriveColorPickerWidth(innerWidth, innerHeight)
 
+  let mounted: boolean = false
   onMount(async () => {
     // get height/width for picker
     const width: number = deriveColorPickerWidth(innerWidth, innerHeight)
@@ -137,7 +139,7 @@
       var picker = iro.ColorPicker(`#${toIdxString(idx)}`, Object.assign(colorPickerOptions, {height: width, width}))
       picker.color.rgba = { r: color[0], g: color[1], b: color[2], a: 1 }
 
-      picker.on('color:change', (newColor: any) => {
+      picker.on('input:change', (newColor: any) => {
         const rgba = [newColor.rgba.r, newColor.rgba.g, newColor.rgba.b, 1]       // TODO: simplify/unwind
         // -> due to color value being bound to input.value
         // -> order matters here
@@ -151,8 +153,20 @@
       colorPickers[idx] = picker
     })
 
+    mounted = true
+    // setTimeout(() => updatePickers(colors), 500)
     window.addEventListener('resize', handlePickerResize)
   })
+
+  $: updatePickers(colors) // update pickers whenever colors change
+
+  function updatePickers(colors: number[][]) {
+    if (mounted) {
+      colorPickers.forEach((picker: any, idx: number) => {
+        picker.color.rgba = { r: colors[idx][0], g: colors[idx][1], b: colors[idx][2], a: 1 }
+      })
+    }
+  }
 
   onDestroy(() => {
     window.removeEventListener('resize', handlePickerResize)
