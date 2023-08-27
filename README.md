@@ -18,9 +18,20 @@
 - `prod`
 - `remotdev`
 
+### cross-compiling
+- `mode=localhost`
+  - compiles Go for host architecture
+- `mode=remotedev, prod`
+  - compiles Go for linux
 #### my_password
 - password for site
 - `localhost` and `remotedev` only
+
+### local SPA development
+- `cd` into root of SPA
+- `npm run dev`
+- serves hot-updated SPA on localhost:5173
+- see SPA's `package.json` for more build options
 
 
 ### Made with: RustWasm, Go, Svelte, Typescript, WebGL, Vite, Tailwind, Flowbite

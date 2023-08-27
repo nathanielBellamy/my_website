@@ -40,6 +40,7 @@
     input.value = JSON.stringify({preset, action})
     input.dispatchEvent(new Event('input', {bubbles: true}))
 
+    // triggers update in Main that will read from localStorage
     updateUiSettings()
   }
 

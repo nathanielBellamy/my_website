@@ -302,8 +302,12 @@
   }
 
   function setAllSettingsFromPreset() {
+    // if not already present
+    // presets set in local_storage by RustWasm during init
     let presets = JSON.parse(localStorage.getItem("magic_square_presets"))
-    setAllSettings(presets[preset])
+    if (!!presets && !!presets[preset]) {
+      setAllSettings(presets[preset])
+    }
   }
 
   function deriveStorageSettings(): StorageSettings {
@@ -455,7 +459,8 @@
 <div id="magic_square"
      class="magic_square overscroll-none"
      class:grid_col={smallScreenVal}
-     class:grid_row={!smallScreenVal}>
+     class:grid_row={!smallScreenVal}
+     class:pb-12={smallScreenVal}>
      <!-- on:click={() => console.dir(deriveStorageSettings())} -->
   <div id="magic_square_canvas_container"
        class="magic_square_canvas_container flex flex-col justify-around display"
@@ -1215,7 +1220,7 @@
           ▫️
         </button>
         <button on:click={() => setMagicSquareView(MagicSquareView.controls)}
-                class="view_select_button text-sm flex justify-around items-center"
+                class="view_select_button text-sm pt-2 pb-2 flex justify-around items-center"
                 class:selected={magicSquareView === MagicSquareView.controls}>
           🛠️
         </button>

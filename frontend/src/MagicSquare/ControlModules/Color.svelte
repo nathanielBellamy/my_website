@@ -11,12 +11,17 @@
   onDestroy(unsubLang)
   let i18n = new I18n("magicSquare/color")
 
+
+  import { smallScreen } from '../../stores/smallScreen'
+  let smallScreenVal: boolean
+  const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
+
   function rgbaToString(rgba: number[]): string {
     // rgba = !!rgba ? rgba : [0, 255, 0, 1]
     // while we have some infrastructure set up to accept opacity values
     // our WebGl implimentation does not make use of them at the moment
     // so we keep everything rgb in practice
-    // console.dir({r: rgba[0], g: rgba[1]})
+    // console.dir({r: rgba[0], g: rgba[1], b: rgba[2]})
     return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, 1)`
   }
 
@@ -83,6 +88,7 @@
   $: gradient = `linear-gradient(90deg, ${colorStrings[idx_a]} 0%, ${colorStrings[idx_b]} 100%)`
   let currIdx: number = 0
 
+
   const colorPickerOptions = {
     width: 110,
     height: 90,
@@ -104,26 +110,36 @@
     return `ms_color_picker_picker_${idx}`
   }
 
-  function colorPickerWidth(): number {
-    const colorPickerDiv: any = document.getElementById('color_mode_and_curr')
-    return Math.floor(colorPickerDiv.offsetWidth / 1.7);
+  function deriveColorPickerWidth(iw: number, ih: number): number {
+    var res: number
+    if (smallScreenVal) {
+      const shorterLeg: number = Math.min(iw, ih)
+      res = Math.floor(shorterLeg / 3.5);
+    } else {
+      res = Math.floor(iw / 10);
+    }
+    return Math.max(115, res)
   }
 
   function handlePickerResize() {
-    const width: number = colorPickerWidth()
-    colorPickers.forEach((p: any) => p.resize(width))
+    colorPickers.forEach((p: any) => p.resize(colorPickerWidth))
   }
 
+  let innerWidth: number = 375 // assume small
+  let innerHeight: number = 375 // assume small
+  $: colorPickerWidth = deriveColorPickerWidth(innerWidth, innerHeight)
+
+  let mounted: boolean = false
   onMount(async () => {
     // get height/width for picker
-    const width: number = colorPickerWidth()
+    const width: number = deriveColorPickerWidth(innerWidth, innerHeight)
     var input = document.getElementById(WasmInputId.colors)
 
     colors.forEach((color: number[], idx: number) => {
       var picker = iro.ColorPicker(`#${toIdxString(idx)}`, Object.assign(colorPickerOptions, {height: width, width}))
       picker.color.rgba = { r: color[0], g: color[1], b: color[2], a: 1 }
 
-      picker.on('color:change', (newColor: any) => {
+      picker.on('input:change', (newColor: any) => {
         const rgba = [newColor.rgba.r, newColor.rgba.g, newColor.rgba.b, 1]       // TODO: simplify/unwind
         // -> due to color value being bound to input.value
         // -> order matters here
@@ -137,13 +153,27 @@
       colorPickers[idx] = picker
     })
 
+    mounted = true
+    // setTimeout(() => updatePickers(colors), 500)
     window.addEventListener('resize', handlePickerResize)
   })
+
+  $: updatePickers(colors) // update pickers whenever colors change
+
+  function updatePickers(colors: number[][]) {
+    if (mounted) {
+      colorPickers.forEach((picker: any, idx: number) => {
+        picker.color.rgba = { r: colors[idx][0], g: colors[idx][1], b: colors[idx][2], a: 1 }
+      })
+    }
+  }
 
   onDestroy(() => {
     window.removeEventListener('resize', handlePickerResize)
   })
 </script>
+
+<svelte:window bind:innerWidth />
 
 <div class="color_container h-full pb-10 flex flex-col justify-between items-stretch">
   <div id="color_mode_and_curr"
@@ -267,7 +297,7 @@
     position: relative
     &_id
       position: absolute
-      margin-top: 30%
+      margin-top: 26%
       margin-right: 40px
       z-index: 100
       font-weight: text.$fw-m

@@ -23,22 +23,22 @@ export const localeEn: any = {
     width: "width"
   },
   home: {
-    title: "Nate's New Website",
+    title: "v0.1.0",
     about: "About",
     about_1: "An overview of what I do code-wise",
     about_2: "Please enjoy these AI-generated images of me in \"natural light\"",
-    magicSquare: "Magic square",
-    magicSquare_1: "Interactive 3D with",
-    magicSquare_2: "Exploring concepts from",
-    magicSquare_3: "modular synthesis",
+    magicSquare: "Public square",
+    magicSquare_1: "Interactive 3D in browser with WebGL",
+    magicSquare_2: "Real-time, public collaboration",
+    magicSquare_3: "Magic square is offline-mode + presets",
     giveMeASine: "Give me a sine",
     giveMeASine_1: "All graphs copy-and-paste-able",
-    giveMeASine_2: "practice for",
+    giveMeASine_2: "RustWasm warm-up for the squares",
     intro: {
       1: "I like to learn.",
       2: "I wanted to learn how to combine",
       3: "using",
-      4: "So I built this new website."
+      4: "So I am building this website"
     },
     whatsHere: "What's here?"
   },

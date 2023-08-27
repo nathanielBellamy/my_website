@@ -23,22 +23,22 @@ export const localeFr: any = {
     width: "largeur"
   },
   home: {
-    title: "Le site nouveau de Nate",
+    title: "v0.1.0",
     about: "De moi",
     about_1: "Ce que je fait con code",
     about_2: "S'il vous plaît, appréciez ces images de moi en \"lumière naturelle\" générées par intelligence artificielle",
-    magicSquare: "Carré magique",
-    magicSquare_1: "3D interactive avec",
-    magicSquare_2: "Exploration de concepts de",
-    magicSquare_3: "synthèse modulaire",
+    magicSquare: "Carré publique",
+    magicSquare_1: "3D interactive avec WebGL",
+    magicSquare_2: "Collaboration publique en direct",
+    magicSquare_3: "Carré magique est la version hors ligne",
     giveMeASine: "Donne-moi un sinus",
     giveMeASine_1: "On peut copier et coller tous les graphiques",
-    giveMeASine_2: "préparation pour",
+    giveMeASine_2: "RustWasm préparation pour les carrés",
     intro: {
       1: "J'aime apprendre.",
       2: "Je voulais apprendre comment mélanger",
       3: "en utilisant",
-      4: "Alors, j'ai fait ce site nouveau."
+      4: "Alors, je suis en train de faire ce site"
     },
     whatsHere: "Qu'est-ce qu'il y a ici?"
   },

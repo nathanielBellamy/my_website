@@ -7,7 +7,8 @@ export enum SiteSection {
   home = "home",
   magicSquare = "magicSquare",
   none = "none",
-  publicSquare = "publicSquare"
+  publicSquare = "publicSquare",
+  systemDiagram = "systemDiagram",
 }
 
 export function intoSiteSection(s: string | null | undefined): SiteSection {

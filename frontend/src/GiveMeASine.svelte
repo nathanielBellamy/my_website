@@ -232,7 +232,7 @@
         📈
       </button>
       <button on:click={() => setGmasView(GmasView.control)}
-              class="view_select_button text-xl flex justify-around items-center"
+              class="view_select_button text-xl pt-2 pb-2 flex justify-around items-center"
               class:selected={gmasView === GmasView.control}>
         🛠️
       </button>

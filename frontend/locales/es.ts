@@ -23,22 +23,22 @@ export const localeEs: any = {
     width: "ancho"
   },
   home: {
-    title: "El sitio nuevo de Nate",
+    title: "v0.1.0",
     about: "Sobre mí",
     about_1: "Lo que hago por lo general con codigo",
     about_2: "Por favor, disfrute de estas imágenes generadas por inteligencia artificial de mí en \"luz natural\"",
-    magicSquare: "Cuadro mágico",
-    magicSquare_1: "3D interactivo con",
-    magicSquare_2: "Explorando conceptos de",
-    magicSquare_3: "síntesis modular",
+    magicSquare: "Cuadro público",
+    magicSquare_1: "3D interactivo con WebGL",
+    magicSquare_2: "Colaboración publica en vivo",
+    magicSquare_3: "Cuadro mágico es la versión desconectada",
     giveMeASine: "Dame un seno",
     giveMeASine_1: "Todos gráficos se pueden copiar y pegar",
-    giveMeASine_2: "preparación para",
+    giveMeASine_2: "Preparación de RustWasm para los cuadros",
     intro: {
       1: "Me gusta apprender.",
       2: "Queria apprender como mezclar",
       3: "usando",
-      4: "Entonces, hizo ese sitio nuevo."
+      4: "Entonces, estoy construyendo ese sitio"
     },
     whatsHere: "Que hay aqui?"
   },
