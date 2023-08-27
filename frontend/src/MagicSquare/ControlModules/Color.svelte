@@ -11,6 +11,11 @@
   onDestroy(unsubLang)
   let i18n = new I18n("magicSquare/color")
 
+
+  import { smallScreen } from '../../stores/smallScreen'
+  let smallScreenVal: boolean
+  const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
+
   function rgbaToString(rgba: number[]): string {
     // rgba = !!rgba ? rgba : [0, 255, 0, 1]
     // while we have some infrastructure set up to accept opacity values
@@ -104,19 +109,28 @@
     return `ms_color_picker_picker_${idx}`
   }
 
-  function colorPickerWidth(): number {
-    const colorPickerDiv: any = document.getElementById('color_mode_and_curr')
-    return Math.floor(colorPickerDiv.offsetWidth / 1.7);
+  function deriveColorPickerWidth(iw: number, ih: number): number {
+    var res: number
+    if (smallScreenVal) {
+      const shorterLeg: number = Math.min(iw, ih)
+      res = Math.floor(shorterLeg / 3.5);
+    } else {
+      res = Math.floor(iw / 10);
+    }
+    return Math.max(115, res)
   }
 
   function handlePickerResize() {
-    const width: number = colorPickerWidth()
-    colorPickers.forEach((p: any) => p.resize(width))
+    colorPickers.forEach((p: any) => p.resize(colorPickerWidth))
   }
+
+  let innerWidth: number = 375 // assume small
+  let innerHeight: number = 375 // assume small
+  $: colorPickerWidth = deriveColorPickerWidth(innerWidth, innerHeight)
 
   onMount(async () => {
     // get height/width for picker
-    const width: number = colorPickerWidth()
+    const width: number = deriveColorPickerWidth(innerWidth, innerHeight)
     var input = document.getElementById(WasmInputId.colors)
 
     colors.forEach((color: number[], idx: number) => {
@@ -144,6 +158,8 @@
     window.removeEventListener('resize', handlePickerResize)
   })
 </script>
+
+<svelte:window bind:innerWidth />
 
 <div class="color_container h-full pb-10 flex flex-col justify-between items-stretch">
   <div id="color_mode_and_curr"
@@ -267,7 +283,7 @@
     position: relative
     &_id
       position: absolute
-      margin-top: 30%
+      margin-top: 26%
       margin-right: 40px
       z-index: 100
       font-weight: text.$fw-m
