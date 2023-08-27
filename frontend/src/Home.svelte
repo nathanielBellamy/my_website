@@ -21,8 +21,29 @@
   let innerWidth: number
   $: imgSideLength = deriveImgSideLength(innerHeight, innerWidth)
 
+  $: preview_title_font_size = computePreviewTitleFontSize(innerHeight, innerWidth)
+  $: preview_text_font_size = computePreviewTextFontSize(innerHeight, innerWidth)
+
+  $: showText = deriveShowText(innerWidth)
+
   function deriveImgSideLength(ih: number, iw: number): string {
     return Math.floor(Math.min(ih, iw) / 4.2).toString() + "px"
+  }
+
+  function computePreviewTitleFontSize(ih: number, iw: number): string {
+    return Math.floor(Math.min(ih, iw) / 15.2).toString() + "px"
+  }
+  
+  function computePreviewTextFontSize(ih: number, iw: number): string {
+    if (iw > 768) {
+      return Math.floor(Math.min(ih, iw) / 50.2).toString() + "px"
+    } else {
+      "auto"
+    }
+  }
+
+  function deriveShowText(iw: number): Boolean {
+    return iw > 768 // taliwind md: cutoff
   }
 
   function handlePreviewClick(s: SiteSection) {
@@ -80,17 +101,28 @@
   </div>
   <div class="h-5/6 flex flex-col justify-between items-stretch md:grid md:grid-cols-3 md:grid-rows-1 gap-3">
     <button on:click={() => handlePreviewClick(SiteSection.about)}
-            class="preview grid grid-cols-1 grid-rows-3 md:flex md:flex-col md:justify-between md:items-center md:h-5/6">
-      <div class="preview_title">
-        {i18n.t("about", langVal)}
-      </div>
-      <div class="w-full flex justify-around items-center">
-        <div class="ai_me_container magic_square_img grid grid-rows-1 grid-cols-1">
-          <AiMe imgSideLength={imgSideLength}/>
+            class="preview md:flex md:flex-col md:justify-between md:items-center md:h-5/6"
+            class:pga_small_grid={!showText}>
+      <div class="pga_title_and_pic grow flex flex-col justify-around items-stretch">
+        <div class="h-full flex flex-col justify-between items-stretch">
+          <div class="preview_title grow flex justify-around items-center"
+               style:font-size={preview_title_font_size}>
+            <div class="h-full flex justify-between items-center">
+              {i18n.t("about", langVal)}
+            </div>
+          </div>
+          <div class="grow flex justify-around self-center">
+            <div class="h-full flex justify-between items-center">
+              <div class="ai_me_container magic_square_img">
+                <AiMe imgSideLength={imgSideLength}/>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="flex pl-5 pr-5 mb-2 justify-around items-center overflow-y-scroll">
-        <ul class="preview_list">
+      <div class="pga_text flex pl-5 pr-5 mb-2 justify-around items-center overflow-y-scroll">
+        <ul class="preview_list h-5/6 flex flex-col justify-around items-stretch"
+            style:font-size={preview_text_font_size}>
           <li>
             {i18n.t("about_1", langVal)}
           </li>
@@ -101,19 +133,26 @@
       </div>
     </button>
     <button on:click={() => handlePreviewClick(SiteSection.publicSquare)}
-            class="preview grid grid-cols-1 grid-rows-3 md:flex md:flex-col md:justify-between md:items-center md:h-5/6">
-      <div class="preview_title">
-        {i18n.t("magicSquare", langVal)}
+            class="preview md:flex md:flex-col md:justify-evenly md:items-center md:h-5/6"
+            class:pga_small_grid={!showText}>
+      <div class="pga_title_and_pic grow flex flex-col justify-around items-stretch">
+        <div class="h-full flex flex-col justify-around items-stretch">
+          <div class="preview_title flex justify-around items-center"
+               style:font-size={preview_title_font_size}>
+            {i18n.t("magicSquare", langVal)}
+          </div>
+          <div class="h-full grow flex justify-around items-center">
+            <img class="magic_square_img ai_me"
+                 src={magicSquareExampleGif}
+                 style:height={imgSideLength}
+                 style:width={imgSideLength}
+                 alt="Magic Square Example"/>
+          </div>
+        </div>
       </div>
-      <div class="flex justify-around items-center">
-        <img class="magic_square_img ai_me"
-             src={magicSquareExampleGif}
-             style:height={imgSideLength}
-             style:width={imgSideLength}
-             alt="Magic Square Example"/>
-      </div>
-      <div class="flex pl-5 pr-5 mb-2 justify-around items-center overflow-y-scroll">
-        <ul class="preview_list">
+      <div class="pga_text flex pl-5 pr-5 mb-2 justify-around items-center overflow-y-scroll">
+        <ul class="preview_list h-5/6 flex flex-col justify-around items-stretch"
+            style:font-size={preview_text_font_size}>
           <li>
             {i18n.t("magicSquare_1", langVal)}
           </li>
@@ -127,19 +166,26 @@
       </div>
     </button>
     <button on:click={() => handlePreviewClick(SiteSection.giveMeASine)}
-            class="preview grid grid-cols-1 grid-rows-3 md:flex md:flex-col md:justify-between md:items-center md:h-5/6">
-      <div class="preview_title">
-        {i18n.t("giveMeASine", langVal)}
+            class="preview md:flex md:flex-col md:justify-evenly md:items-center md:h-5/6"
+            class:pga_small_grid={!showText}>
+      <div class="pga_title_and_pic grow flex flex-col justify-around items-stretch">
+        <div class="h-full flex flex-col justify-around items-stretch">
+          <div class="preview_title flex justify-around items-center"
+               style:font-size={preview_title_font_size}>
+            {i18n.t("giveMeASine", langVal)}
+          </div>
+          <div class="h-full flex justify-around items-center">
+            <img class="magic_square_img"
+                 src={giveMeASineExampleGif}
+                 style:height={imgSideLength}
+                 style:width={imgSideLength}
+                 alt="Give Me A Sine Example"/>
+          </div>
+        </div>
       </div>
-      <div class="flex justify-around items-center">
-        <img class="magic_square_img"
-             src={giveMeASineExampleGif}
-             style:height={imgSideLength}
-             style:width={imgSideLength}
-             alt="Give Me A Sine Example"/>
-      </div>
-      <div class="flex flex-col pl-5 pr-5 mb-2 justify-around items-stretch overflow-y-scroll">
-        <ul class="preview_list">
+      <div class="pga_text flex pl-5 pr-5 mb-2 justify-around items-center overflow-y-scroll">
+        <ul class="preview_list h-5/6 flex flex-col justify-around items-stretch"
+            style:font-size={preview_text_font_size}>
           <li>
             {i18n.t("giveMeASine_1", langVal)}
           </li>
@@ -177,13 +223,26 @@
 
   .magic_square_img
     border: 5px double color.$blue-5
-    border-radius: 5px
     padding: 5px
     margin: 5px
     border-radius: 50% 
 
   .ai_me_container
     grid-template-areas: "img"
+
+  .pga
+    &_title_and_pic
+      grid-area: title_and_pic
+    &_text
+      grid-area: text
+    
+    &_small_grid
+      height: 100%
+      display: grid
+      grid-template-rows: 1fr 1fr
+      grid-template-columns: 1fr 1fr
+      grid-template-areas: "title_and_pic text" "title_and_pic text"
+      
  
   .preview
     border-radius: 5px
@@ -191,8 +250,12 @@
     font-weight: text.$fw-l
     font-size: text.$fs-s
     background: color.$black-blue-grad
-    border-width: 0
-    grid-template-rows: 7em 12em 1fr
+    min-height: 300px
+    /* border-top: 5px double color.$blue-7 */
+    /* border-bottom: 5px double color.$blue-7 */
+    border-right: 0px solid black
+    border-left: 0px solid black
+    height: 100%
     &_title
       color: color.$blue-6
       font-weight: text.$fw-l
@@ -205,6 +268,6 @@
       padding: 0 10px 0 10px
       text-align: left
       list-style-type: square
-      height: 100%
+      width: 100%      
       
 </style>
