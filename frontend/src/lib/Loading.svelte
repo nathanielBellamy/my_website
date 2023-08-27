@@ -3,7 +3,7 @@
 </script>
 
 <section>
-  <h1 class="loading">
+  <h1 class="loading font-mono">
     {!!message ? message : "Loading..."}
   </h1>
   <slot />

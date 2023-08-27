@@ -25,7 +25,7 @@
   onDestroy(unsubSmallScreen)
 </script>
 
-<div class="info_gate w-full h-full overflow-y-scroll pb-4">
+<div class="info_gate font-mono w-full h-full overflow-y-scroll pb-4">
   <div class="h-full w-full flex flex-col justify-between items-stretch gap-4">
     <div class="w-full flex justify-around items-center">
       <div class="info_gate_title flex justify-around items-center">
@@ -37,7 +37,7 @@
                  offset={-10}
                  transition={slide}>
           <p>
-            It's The Public Square!
+            WOW!
           </p>
         </Popover>
         <div class="text-3xl md:text-6xl">
@@ -45,7 +45,7 @@
             ===============
           </p>
           <p>
-            == Welcome to ==
+            Welcome to
           </p>
           <p>
             The Public Square
@@ -62,7 +62,7 @@
                  offset={-10}
                  transition={slide}>
           <p>
-            This Way To The Public Square!
+            ZOINKS!
           </p>
         </Popover>
       </div>
@@ -70,22 +70,10 @@
     <div class="h-full w-full pl-4 pr-4 flex justify-around items-center text-left text-2xl">
       <ul class="info_gate_intro w-10/12 font-bold">
         <li>
-          <span class="abelone">
-            The Public Square 
-          </span>
-          is a free art project made for anonymous collaboration
-        </li>
-        <li>
-          A digital wall for geometric graffiti animations
+          The Public Square is a free art project made for anonymous collaboration
         </li>
         <li>
           Make colorful shapes and send emojis
-        </li>
-        <li>
-          Everyone has equal voice to change the art in
-          <span class="w-fit abelone">
-            THE PUBLIC SQUARE
-          </span>
         </li>
         <li>
           For a solo version where you can save presets, nagivate to
@@ -96,7 +84,7 @@
       </ul>
     </div>
     <div class="grow w-full flex justify-around items-center">
-      <button class="abelone text-3xl"
+      <button class="text-3xl"
               on:click={onEnterSquareClick}>
         Enter The Public Square
       </button>
@@ -118,13 +106,9 @@
       color: color.$blue-4
       list-style-type: circle
     &_title 
-      font-family: 'Abelone'
       width: 60%
     &_megaphone
       filter: hue-rotate(90deg) drop-shadow(2px 2px color.$blue-7)
-
-  .abelone
-    font-family: 'Abelone'
 
   .flip
     transform: scaleX(-1)
