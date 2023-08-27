@@ -459,8 +459,7 @@
 <div id="magic_square"
      class="magic_square overscroll-none"
      class:grid_col={smallScreenVal}
-     class:grid_row={!smallScreenVal}
-     class:pb-12={smallScreenVal}>
+     class:grid_row={!smallScreenVal}>
      <!-- on:click={() => console.dir(deriveStorageSettings())} -->
   <div id="magic_square_canvas_container"
        class="magic_square_canvas_container flex flex-col justify-around display"

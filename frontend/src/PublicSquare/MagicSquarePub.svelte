@@ -338,8 +338,7 @@
 <div id="magic_square"
      class="magic_square overscroll-none"
      class:grid_col={smallScreenVal}
-     class:grid_row={!smallScreenVal}
-     class:pb-12={smallScreenVal}>
+     class:grid_row={!smallScreenVal}>
   <div id="magic_square_canvas_container"
        class="magic_square_canvas_container flex flex-col justify-around display"
        class:hidden={smallScreenVal && magicSquareView !== MagicSquareView.square}>
