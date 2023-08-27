@@ -18,6 +18,11 @@
 - `prod`
 - `remotdev`
 
+### cross-compiling
+- `mode=localhost`
+  - compiles Go for host architecture
+- `mode=remotedev, prod`
+  - compiles Go for linux
 #### my_password
 - password for site
 - `localhost` and `remotedev` only
