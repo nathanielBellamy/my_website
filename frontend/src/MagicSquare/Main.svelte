@@ -302,6 +302,8 @@
   }
 
   function setAllSettingsFromPreset() {
+    // if not already present
+    // presets set in local_storage by RustWasm during init
     let presets = JSON.parse(localStorage.getItem("magic_square_presets"))
     if (!!presets && !!presets[preset]) {
       setAllSettings(presets[preset])

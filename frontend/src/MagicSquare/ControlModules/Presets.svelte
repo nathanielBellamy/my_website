@@ -40,10 +40,8 @@
     input.value = JSON.stringify({preset, action})
     input.dispatchEvent(new Event('input', {bubbles: true}))
 
-    // wait for settings to be set in wasm
-    // then rehydrate ui
-    // TODO: remove setTimeout dependency
-    setTimeout(updateUiSettings, 150)
+    // triggers update in Main that will read from localStorage
+    updateUiSettings()
   }
 
   function handlePresetClick(idx: number) {

@@ -68,6 +68,21 @@ impl UiBuffer {
             }
         };
 
+        // set presets in localStorage
+        // TODO: this is redundant if already set in JS
+        //  - if not already set this establishes defaults for JS to access
+        //  - this is likely simplifiable
+        let presets_string: String = js_sys::JSON::stringify(
+            &serde_wasm_bindgen::to_value(&presets_vec).unwrap(),
+        )
+        .unwrap()
+        .into();
+        let local_storage =
+            web_sys::window().unwrap().local_storage().unwrap().unwrap();
+        local_storage
+            .set_item("magic_square_presets", &presets_string)
+            .unwrap();
+
         let mut presets: [Settings; PRESET_CAPACITY] = [Settings::new(); PRESET_CAPACITY];
         for (idx, p) in presets.iter_mut().enumerate() {
             *p = presets_vec[idx];
