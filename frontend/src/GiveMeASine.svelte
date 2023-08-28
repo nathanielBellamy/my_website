@@ -93,6 +93,20 @@
 <body class="give_me_a_sine overflow-y-scroll overscroll-none"
       class:gmas_flex={!smallScreenVal}
       class:gmas_grid={smallScreenVal}>
+  {#if smallScreenVal}
+   <div class="w-full text-sm grid grid-cols-2 grid-rows-1">
+      <button on:click={() => setGmasView(GmasView.graph)}
+              class="view_select_button text-xl pt-2 pb-2 flex justify-around items-center"
+              class:selected={gmasView === GmasView.graph}>
+        📈
+      </button>
+      <button on:click={() => setGmasView(GmasView.control)}
+              class="view_select_button text-xl pt-2 pb-2 flex justify-around items-center"
+              class:selected={gmasView === GmasView.control}>
+        🛠️
+      </button>
+   </div>
+  {/if}
   <div id="give_me_a_sine_output"
        class="give_me_a_sine_output device_graph_font overscroll-none"
        class:flex={!smallScreenVal || gmasView !== GmasView.graph}
@@ -224,20 +238,6 @@
       </div>
     </div>
   </div>
-  {#if smallScreenVal}
-   <div class="w-full text-sm grid grid-cols-2 grid-rows-1">
-      <button on:click={() => setGmasView(GmasView.graph)}
-              class="view_select_button text-xl pt-2 pb-2 flex justify-around items-center"
-              class:selected={gmasView === GmasView.graph}>
-        📈
-      </button>
-      <button on:click={() => setGmasView(GmasView.control)}
-              class="view_select_button text-xl pt-2 pb-2 flex justify-around items-center"
-              class:selected={gmasView === GmasView.control}>
-        🛠️
-      </button>
-   </div>
-  {/if}
 </body>
 
 <style lang="sass">
@@ -256,7 +256,7 @@
       align-items: center
     &_grid
       display: grid
-      grid-template-rows: 90% 10%
+      grid-template-rows: 10% 90%
       grid-template-columns: 100%
 
   .view_select_button

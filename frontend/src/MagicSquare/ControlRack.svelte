@@ -54,7 +54,7 @@
 </script>
 
 <div id="magic_square_control_rack"
-     class="magic_square_control_rack grid_col h-full">
+     class="magic_square_control_rack grid_col h-full overflow-y-scroll">
   <div class="hidden">{storage_mods}</div>
   <div class="h-full w-full flex justify-around items-center">
     <Select bind:curr_mod_left={curr_mod_left}
@@ -155,7 +155,7 @@
   .grid_col
     display: grid
     grid-template-columns: 1fr
-    grid-template-rows: 4em 85% 
+    grid-template-rows: 4em 1fr
     gap: 2px
  
   .slot

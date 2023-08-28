@@ -8,10 +8,6 @@
   import WarningModal from "./WarningModal.svelte"
   import { Spinner } from "flowbite-svelte"
 
-  import { smallScreen } from '../stores/smallScreen'
-  let smallScreenVal: boolean
-  const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
-
   let prevSettingsStoreVal: StorageSettings
   $: prevSettingsStoreVal
   const unsubscribe = prevSettingsStore.subscribe(val => prevSettingsStoreVal = val)
@@ -49,8 +45,7 @@
 </script>
 
 <body id="magic_square_container"
-     class="magic_square_container overscroll-none overflow-y-scroll"
-      class:mb-10={smallScreenVal}>
+     class="magic_square_container overscroll-none overflow-y-scroll">
   {#if counter > 0}
     <div class="h-full w-full flex justify-center items-center gap-4">
       <div class="info_gate_loading font-mono text-4xl md:text-6xl w-fit flex justify-around items-center"> 

@@ -75,7 +75,7 @@
 
 <Navbar />
 
-<main class="rounded-md flex flex-col justify-start overflow-hidden">
+<main class="main_container rounded-md flex flex-col justify-start overflow-hidden">
   <Router {routes}/>
 </main>
 
@@ -87,3 +87,8 @@
     <Language />
   </div>
 </Footer>
+
+<style lang="sass">
+  .main_container
+    height: calc(100vh - 100px)
+</style>

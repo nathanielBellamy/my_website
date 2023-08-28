@@ -360,7 +360,6 @@
             class="magic_square_canvas"/>
   </div>
   <div class="h-full w-full"
-       class:overflow-y-scroll={smallScreenVal}
        class:hidden={smallScreenVal && magicSquareView !== MagicSquareView.controls}>
     <ControlRackPub>
       <!-- COLOR START -->
@@ -1109,7 +1108,6 @@
   .magic_square
     height: 100%
     width: 100%
-    overflow-y: scroll
 
     &_canvas
       border-top: 5px double color.$blue-7
@@ -1126,7 +1124,7 @@
   .grid_col
     display: grid
     grid-template-columns: 1fr
-    grid-template-rows: 2em 1fr
+    grid-template-rows: 2em calc(100% - 2em)
     gap: 5px
 
   .grid_row
