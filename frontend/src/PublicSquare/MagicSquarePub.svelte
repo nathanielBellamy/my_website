@@ -339,6 +339,20 @@
      class="magic_square overscroll-none"
      class:grid_col={smallScreenVal}
      class:grid_row={!smallScreenVal}>
+  {#if smallScreenVal}
+   <div class="text-sm grid grid-cols-2 grid-rows-1">
+      <button on:click={() => setMagicSquareView(MagicSquareView.square)}
+              class="view_select_button pt-2 pb-2 flex justify-around items-center"
+              class:selected={magicSquareView === MagicSquareView.square}>
+        ▫️
+      </button>
+      <button on:click={() => setMagicSquareView(MagicSquareView.controls)}
+              class="view_select_button text-sm pt-2 pb-2 flex justify-around items-center"
+              class:selected={magicSquareView === MagicSquareView.controls}>
+        🛠️
+      </button>
+   </div>
+  {/if}
   <div id="magic_square_canvas_container"
        class="magic_square_canvas_container flex flex-col justify-around display"
        class:hidden={smallScreenVal && magicSquareView !== MagicSquareView.square}>
@@ -1085,20 +1099,6 @@
       </div>
     </ControlRackPub>
   </div>
-  {#if smallScreenVal}
-   <div class="text-sm grid grid-cols-2 grid-rows-1">
-      <button on:click={() => setMagicSquareView(MagicSquareView.square)}
-              class="view_select_button pt-2 pb-2 flex justify-around items-center"
-              class:selected={magicSquareView === MagicSquareView.square}>
-        ▫️
-      </button>
-      <button on:click={() => setMagicSquareView(MagicSquareView.controls)}
-              class="view_select_button text-sm pt-2 pb-2 flex justify-around items-center"
-              class:selected={magicSquareView === MagicSquareView.controls}>
-        🛠️
-      </button>
-   </div>
-  {/if}
 </div>
 
 <style lang="sass">
@@ -1125,7 +1125,7 @@
   .grid_col
     display: grid
     grid-template-columns: 1fr
-    grid-template-rows: 1fr 2em
+    grid-template-rows: 2em 1fr
     gap: 5px
 
   .grid_row
