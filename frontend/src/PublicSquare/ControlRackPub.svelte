@@ -57,6 +57,11 @@
 <div id="magic_square_control_rack"
      class="magic_square_control_rack grid_col h-full">
   <div class="hidden">{storage_mods}</div>
+  <div class="h-full w-full flex justify-around items-center">
+    <Select bind:curr_mod_left={curr_mod_left}
+            bind:curr_mod_right={curr_mod_right}
+            pub={true}/>
+  </div>
   <div class="h-full w-full"
        class:slot_grid={!smallScreenVal}
        class:slot_flex={smallScreenVal}>
@@ -143,11 +148,6 @@
       </div>
     {/if}
   </div>
-  <div class="h-full w-full flex justify-around items-center">
-    <Select bind:curr_mod_left={curr_mod_left}
-            bind:curr_mod_right={curr_mod_right}
-            pub={true}/>
-  </div>
 </div>
 
 <style lang="sass">
@@ -157,7 +157,7 @@
   .grid_col
     display: grid
     grid-template-columns: 1fr
-    grid-template-rows: 85% 15%
+    grid-template-rows: 4em 85%
     gap: 5px
  
   .slot
@@ -165,6 +165,7 @@
       display: flex
       justify-content: space-around
       align-items: center
+      overflow-y: scroll
     &_grid
       display: grid
       grid-template-columns: 1fr 1fr
@@ -172,7 +173,7 @@
       gap: 5px
 
   .magic_square_control_rack
-    padding: 5px 40px 5px 40px
+    padding: 5px 35px 5px 35px
     border-radius: 5px
     background: color.$black-blue-grad
     

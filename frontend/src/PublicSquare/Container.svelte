@@ -32,8 +32,7 @@
 </script>
 
 <body id="magic_square_pub_container"
-      class="w-full h-full overflow-hidden overscroll-none"
-      class:mb-10={smallScreenVal}>
+      class="w-full h-full overflow-hidden overscroll-none">
   {#if counter > 0}
     <div class="h-full w-full flex justify-center items-center gap-4">
       <div class="info_gate_loading font-mono text-4xl md:text-6xl w-fit flex justify-around items-center"> 
