@@ -480,8 +480,10 @@
     <canvas id="magic_square_canvas"
             class="magic_square_canvas"/>
   </div>
-  <div class="h-full w-full overflow-hidden"
-       class:hidden={smallScreenVal && magicSquareView !== MagicSquareView.controls}>
+  <div class="h-full w-full"
+       class:hidden={smallScreenVal && magicSquareView !== MagicSquareView.controls}
+       class:overflow-y-scroll={smallScreenVal}
+       class:overflow-hidden={!smallScreenVal}>
     <ControlRack>
       <div slot="color"
            class="h-full">

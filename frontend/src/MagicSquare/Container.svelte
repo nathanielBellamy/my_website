@@ -49,7 +49,7 @@
 </script>
 
 <body id="magic_square_container"
-     class="magic_square_container overscroll-none"
+     class="magic_square_container overscroll-none overflow-y-scroll"
       class:mb-10={smallScreenVal}>
   {#if counter > 0}
     <div class="h-full w-full flex justify-center items-center gap-4">
