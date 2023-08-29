@@ -141,7 +141,7 @@ main {
   left: 0;
   top: 50px;
   width: 100vw;
-  height: calc(100vh - 100px);
+  min-height: calc(100vh - 100px);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -213,13 +213,14 @@ body {
   scrollbar-width: none;  /* Firefox */
 }
 
-
-@media screen and (-webkit-min-device-pixel-ratio: 0) and (min-device-width: 768px) and (max-device-width: 1024px) {
-    @supports (-webkit-touch-callout: none) {
-        /* Your iOS Safari specific CSS here */
-        main {
-            padding-bottom: 20px;
-            margin-bottom: 20px;
-        }
-    }
+/* fix ios safari bottom padding */
+/* TODO: */
+/*   unfortunately, this adds superflouous padding on iOS Firefox */
+/*   but we will accept that for now as iOS Chrome and Safari look good*/
+@media (max-width: 1000px) {
+  _::-webkit-full-page-media, _:future, :root .main_container {
+    padding-bottom: 80px;
+    min-height: -webkit-fill-available;
+  }
 }
+
