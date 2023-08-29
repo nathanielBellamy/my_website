@@ -65,7 +65,7 @@
   <div class="h-full w-full"
        class:slot_grid={!smallScreenVal}
        class:slot_flex={smallScreenVal}>
-    <div class="left_slot h-full">
+    <div class="left_slot h-full w-full">
       {#if curr_mod_left === Module.color}
         <ControlModule title={i18n.t(Module.color, langVal)}
                        side={Side.left}>
