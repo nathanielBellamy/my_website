@@ -36,6 +36,7 @@
   "dependencies": {
     "@jaames/iro": "^5.5.2",
     "@popperjs/core": "^2.11.8",
+    "@types/grecaptcha": "^3.0.4",
     "flowbite": "^1.7.0",
     "flowbite-svelte": "^0.39.2",
     "node-sass": "^8.0.0",
