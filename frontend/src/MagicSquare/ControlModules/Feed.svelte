@@ -90,7 +90,7 @@
   })
 </script>
 
-<div class="public_square_feed w-full h-full pt-2 pl-2 pr-2 pb-8 grid grid-cols-1 grid-rows-2">
+<div class="public_square_feed h-full w-full pt-2 pl-2 pr-2 pb-8 grid grid-cols-1 grid-rows-2">
   <div  id="public_square_feed_messages_container"
         class="public_square_feed_messages_container h-full rounded-md overflow-y-scroll">
     <div  id="public_square_feed_messages"
@@ -174,53 +174,56 @@
 
   .public_square_feed
     grid-template-areas: "messages" "input"
-    grid-template-rows: max(250px, 60%) 40%
+    grid-template-rows: 20em 
     &_messages
       grid-area: "messages"
       &_container
         background-color: color.$grey-transp
     &_input
       grid-area: "input"
-      grid-template-areas: "body" "keyboard" "buttons"
-      grid-template-rows: 2em max(60%, 155px) 1fr
+      grid-template-areas: "body" "buttons" "keyboard" 
+      grid-template-rows: 2em 4em 226px
       &_emoji_keyboard
-        grid-area: "keyboard"
-        border: 3px color.$yellow-3 double
+        grid-area: keyboard
+        border-left: 3px color.$blue-3 double
+        border-right: 3px color.$blue-3 double
       &_body
-        grid-area: "body"
-        border: 3px color.$yellow-3 double
+        grid-area: body
+        border-right: 3px color.$blue-3 double
       &_buttons
-        grid-area: "buttons"
+        grid-area: buttons
         grid-template-columns: 70% 30%
         &_send
-          border: 3px color.$green-4 double
+          border-left: 3px color.$green-4 double
+          border-right: 3px color.$green-4 double
         &_clr
-          border: 3px color.$red-4 double
+          border-left: 3px color.$red-4 double
+          border-right: 3px color.$red-4 double
       
   .feed_message
     grid-template-areas: "user body"
     grid-template-columns: 20% 80%
     &_user
       grid-area: "user"
-      border: 5px double color.$purple-7
+      border-top: 5px double color.$blue-7
+      border-bottom: 5px double color.$blue-7
       height: fit-content
     &_body
       grid-area: "body"
-      background-color: color.$black
+      background-color: color.$grey-transp
     &_self
-      border: 5px double color.$yellow-3
+      border-right: 5px double color.$blue-3
       display: grid
       grid-template-columns: 50% 50%
       grid-template-rows: 1fr
       gap: 4px
     &_other
-      border: 5px double color.$green-4
+      border-left: 5px double color.$green-4
       display: grid
       grid-template-columns: 50% 50%
       grid-template-rows: 1fr
       gap: 4px
     &_system
-      background-color: color.$blue-7
       display: flex
       flex-direction: column
       justify-content: space-around

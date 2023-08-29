@@ -163,6 +163,7 @@
       display: flex
       justify-content: space-around
       align-items: center
+      overflow-y: scroll
     &_grid
       display: grid
       grid-template-columns: 1fr 1fr
@@ -170,17 +171,16 @@
       gap: 5px
 
   .magic_square_control_rack
-    flex-grow: 1
-    padding: 5px 40px 5px 40px
+    padding: 5px 35px 5px 35px
     border-radius: 5px
     background: color.$black-blue-grad
     
   .left_slot
-    min-width: 226px
+    /* min-width: 226px */
     overflow: hidden
   
   .right_slot
-    min-width: 226px
+    /* min-width: 226px */
     overflow: hidden
 
   .hidden
