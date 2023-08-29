@@ -359,7 +359,7 @@
     <canvas id="magic_square_canvas"
             class="magic_square_canvas"/>
   </div>
-  <div class="h-full w-full"
+  <div class="h-full w-full overflow-x-scroll"
        class:hidden={smallScreenVal && magicSquareView !== MagicSquareView.controls}>
     <ControlRackPub>
       <!-- COLOR START -->

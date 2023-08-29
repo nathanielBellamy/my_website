@@ -173,7 +173,7 @@
       gap: 5px
 
   .magic_square_control_rack
-    padding: 5px 35px 5px 35px
+    padding: 5px
     border-radius: 5px
     background: color.$black-blue-grad
     
