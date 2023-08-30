@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte'
+  export let title: string
   export let hasPassed: boolean = false
 
   function onClick(e) {
@@ -27,14 +28,13 @@
   }
 </script>
 
-<body>
-  <h1> RECAP </h1>
-  <!-- TODO -->
-  <!--   - create Go endpoint and have this hit it -->
-  <form action="?" method="POST">
-    <button on:click={onClick}>
-      Verify
-    </button>
-  </form>
-</body>
+<button on:click={onClick}
+        class="recaptcha_button font-mono">
+  {title}
+</button>
+
+<style lang="sass">
+  .recaptcha_button
+    min-height: 50px
+</style>
 

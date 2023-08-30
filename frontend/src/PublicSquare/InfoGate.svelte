@@ -83,16 +83,8 @@
         </li>
       </ul>
     </div>
-    <div class="grow w-full flex justify-around items-center">
-      <button class="text-3xl"
-              on:click={onEnterSquareClick}>
-        Enter The Public Square
-      </button>
-    </div>
-    <!-- {#if showRecaptcha && import.meta.env.MODE !== ViteMode.localhost} -->
-    <Modal bind:open={showRecaptcha}>
-      <Recaptcha bind:hasPassed={hasPassedGate}/>
-    </Modal>
+    <Recaptcha title="Enter The Public Square"
+               bind:hasPassed={hasPassedGate}/>
   </div>
 </div>
 
