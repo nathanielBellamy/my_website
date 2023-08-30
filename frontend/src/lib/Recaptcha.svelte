@@ -9,6 +9,20 @@
         import.meta.env.VITE_RECAPTCHA_SITE_KEY, 
         {action: 'LOGIN'}
       )
+      const res = await sendTokenToServer(token)
+    })
+  }
+
+  async function sendTokenToServer(token: string) {
+    await fetch('recaptcha', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({token})
+    })
+    .then((res) => {
+      console.log(res)
     })
   }
 </script>

@@ -54,15 +54,14 @@ func SetupBaseRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, 
     http.Handle("/", auth.LogClientIp("/", log, fs) )
   }
 
-  if !runtime_env.IsLocalhost() {
-    // setup recaptcha
-    http.HandleFunc("/ps-recaptcha", func(w http.ResponseWriter, r *http.Request) {
-      fmt.Printf("recaptcha endpoint hit")
-      // TODO
-      // Read token from body
-      // Verify token
-    })
-  }
+  // setup recaptcha
+  http.HandleFunc("/recaptcha", func(w http.ResponseWriter, r *http.Request) {
+    fmt.Printf("recaptcha endpoint hit")
+    fmt.Printf("body %v", r.Body)
+    // TODO
+    // Read token from body
+    // Verify token
+  })
 
   feedPool := websocket.NewPool(log)
   wasmPool := websocket.NewPool(log)
