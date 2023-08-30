@@ -51,7 +51,17 @@ func SetupRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool
 func SetupBaseRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) {
   if runtime_env.IsProd() {
     fs := http.FileServer(http.Dir("frontend"))
-    http.Handle("/", auth.LogClientIp("/", log, fs))
+    http.Handle("/", auth.LogClientIp("/", log, fs) )
+  }
+
+  if !runtime_env.IsLocalhost() {
+    // setup recaptcha
+    http.HandleFunc("/ps-recaptcha", func(w http.ResponseWriter, r *http.Request) {
+      fmt.Printf("recaptcha endpoint hit")
+      // TODO
+      // Read token from body
+      // Verify token
+    })
   }
 
   feedPool := websocket.NewPool(log)

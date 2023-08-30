@@ -1,17 +1,19 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   export let hasPassed: boolean = false
-  var onloadCallback = function() {
-    grecaptcha.render('html_recaptcha_element', {
-      'sitekey' : import.meta.env.VITE_GRECAPTCHA_KEY
-    });
-  };
+  // var onloadCallback = function() {
+  //   grecaptcha.render('html_recaptcha_element', {
+  //     'sitekey' : import.meta.env.VITE_RECAPTCHA_SITE_KEY
+  //   });
+  // };
 
   let error: string
   let token: string
 
-  async function handleCaptchaCallback() {
-    await fetch('/api/login', {
+  async function onloadCallback() {
+    console.log("onloadCallback")
+    console.log(token)
+    await fetch('/ps-recaptcha', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -43,13 +45,14 @@
   }
 
   onMount(() => {
-    window.handleCaptchaCallback = handleCaptchaCallback;
+    window.onloadCallback = onloadCallback;
     window.handleCaptchaError = handleCaptchaError;
     window.resetCaptcha = resetCaptcha;
   })
 </script>
 
 <body>
+  <h1> RECAP </h1>
   <!-- TODO -->
   <!--   - create Go endpoint and have this hit it -->
   <form action="?" method="POST">
@@ -60,9 +63,9 @@
     {/if}
     <div class="g-recaptcha"
          data-sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-         data-callback="handleCaptchaCallback"
-         data-expired-callback="resetCaptcha"
-         data-error-callback="handleCaptchaError"
+         data-callback={onloadCallback}
+         data-expired-callback={resetCaptcha}
+         data-error-callback={handleCaptchaError}
          data-size="invisible"/>
     <div id="html_recaptcha_element"></div>
     <br>

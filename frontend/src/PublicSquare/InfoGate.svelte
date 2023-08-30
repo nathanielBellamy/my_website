@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
-  import { Popover } from 'flowbite-svelte'
+  import { Modal, Popover } from 'flowbite-svelte'
   import { slide } from 'svelte/transition'
   import Recaptcha from "../lib/Recaptcha.svelte"
   import { ViteMode } from "../ViteMode"
@@ -11,7 +11,7 @@
   const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
 
   export let hasPassedGate: boolean
-  let showRecaptcha = false
+  let showRecaptcha = true
 
   function onEnterSquareClick() {
     // TODO: set up recaptcha on dev-site
@@ -89,9 +89,10 @@
         Enter The Public Square
       </button>
     </div>
-    {#if showRecaptcha && import.meta.env.MODE !== ViteMode.localhost}
+    <!-- {#if showRecaptcha && import.meta.env.MODE !== ViteMode.localhost} -->
+    <Modal bind:open={showRecaptcha}>
       <Recaptcha bind:hasPassed={hasPassedGate}/>
-    {/if}
+    </Modal>
   </div>
 </div>
 
