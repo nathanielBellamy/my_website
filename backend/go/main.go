@@ -10,6 +10,7 @@ import (
 	"github.com/nathanielBellamy/my_website/backend/go/websocket"
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"github.com/rs/zerolog"
+  "github.com/joho/godotenv"
 )
 
 func main() {
@@ -19,20 +20,35 @@ func main() {
       fmt.Printf("Failed creating log file: %s", err)
     }
     log := zerolog.New(file).With().Timestamp().Logger()
+
+    // load env
     log.Info().
-        Msg("Starting server on 8080")
+        Msg("Loading ENV")
+    
+    envErr := godotenv.Load()
+    if envErr != nil {
+      log.Fatal().
+          Msg("Error loading .env file")
+    }
     
     mode := os.Getenv("MODE")
     runtime_env := env.Env {
       Mode: string(mode),
     }
     cookieJar := cmap.New[bool]()
+
+    log.Info().
+        Msg("Establishing Routes")
+
     SetupRoutes(runtime_env, &cookieJar, &log)
 
     if err := http.ListenAndServe(":8080", nil); err != nil {
       log.Fatal().
           Msg("UnableToServe")
     }
+
+    log.Info().
+        Msg("Now serving on 8080")
 }
 
 func SetupRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) {
