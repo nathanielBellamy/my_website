@@ -25,6 +25,16 @@ build_go_server() {
     echo "Building For Host Architecture"
     go build -o "./../../build" main.go
   fi
+
+  # copy .env file to build directory
+  if [ -f ".env.$MODE" ]; then
+      rm ./../../build/.env.* # remove old .env files
+      cp ".env.$MODE" ./../../build/ # copy in current
+  else
+      echo ".env.$MODE not found!"
+      exit 1
+  fi
+
   cd .. && cd ..
   echo "Go server built successfully."
 }
