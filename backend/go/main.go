@@ -13,34 +13,39 @@ import (
   "github.com/joho/godotenv"
 )
 
+// MODE=<mode> ./main
 func main() {
-    // setup logging
-  	file, err := os.Create("log.txt")
+    // init log
+    file, err := os.Create("log.txt")
     if err != nil {
       fmt.Printf("Failed creating log file: %s", err)
     }
     log := zerolog.New(file).With().Timestamp().Logger()
 
-    // load env
+
+    // determine runtime env 
+    mode := os.Getenv("MODE")
+    if mode == "" {
+      mode = "localhost"
+    }
+
+    // read env file
     log.Info().
         Msg("Loading ENV")
     
-    envErr := godotenv.Load()
+    envErr := godotenv.Load(".env." + mode)
     if envErr != nil {
       log.Fatal().
+          Err(envErr).
           Msg("Error loading .env file")
     }
-    
-    mode := os.Getenv("MODE")
-    runtime_env := env.Env {
-      Mode: string(mode),
-    }
+
     cookieJar := cmap.New[bool]()
 
     log.Info().
         Msg("Establishing Routes")
 
-    SetupRoutes(runtime_env, &cookieJar, &log)
+    SetupRoutes(&cookieJar, &log)
 
     if err := http.ListenAndServe(":8080", nil); err != nil {
       log.Fatal().
@@ -51,21 +56,22 @@ func main() {
         Msg("Now serving on 8080")
 }
 
-func SetupRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) {
-    switch runtime_env.Mode {
-    case "localhost":
-      SetupLocalhostRoutes(runtime_env, cookieJar, log)
-    case "prod":
+func SetupRoutes(cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) {
+    mode := os.Getenv("MODE")
+    if env.IsProd(mode) {
       SetupProdRoutes()
-    case "remotedev":
-      SetupRemotedevRoutes(runtime_env, cookieJar, log)
+    } else if env.IsRemotedev(mode) {
+      SetupRemotedevRoutes(cookieJar, log)
+    } else {
+      SetupLocalhostRoutes(cookieJar, log)
     }
 
-    SetupBaseRoutes(runtime_env, cookieJar, log)
+    SetupBaseRoutes(cookieJar, log)
 }
 
-func SetupBaseRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) {
-  if runtime_env.IsProd() {
+func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) {
+  mode := os.Getenv("MODE")
+  if env.IsProd(mode) {
     fs := http.FileServer(http.Dir("frontend"))
     http.Handle("/", auth.LogClientIp("/", log, fs) )
   }
@@ -84,9 +90,9 @@ func SetupBaseRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, 
   go feedPool.StartFeed()
   go wasmPool.StartWasm()
   http.HandleFunc("/public-square-feed-ws", func(w http.ResponseWriter, r *http.Request) {
-    if !runtime_env.IsProd() {
+    if !env.IsProd(mode) {
       // localhost and remote dev require basic login
-      res := auth.HasValidCookie(runtime_env, r, cookieJar, log)
+      res := auth.HasValidCookie(r, cookieJar, log)
       if res {
         websocket.ServeFeedWs(feedPool, w, r, log)
       } else {
@@ -98,9 +104,10 @@ func SetupBaseRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, 
     }
   })
   http.HandleFunc("/public-square-wasm-ws", func(w http.ResponseWriter, r *http.Request) {
-    if !runtime_env.IsProd() {
+    mode := os.Getenv("MODE")
+    if !env.IsProd(mode) {
       // localhost and remote dev require basic login
-      res := auth.HasValidCookie(runtime_env, r, cookieJar, log)
+      res := auth.HasValidCookie(r, cookieJar, log)
       if res {
         websocket.ServeWasmWs(wasmPool, w, r, log)
       } else {
@@ -113,20 +120,17 @@ func SetupBaseRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, 
   })
 }
 
-func SetupRemotedevRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) {
-  auth.SetupDevAuth(runtime_env, cookieJar, log)
-
+func SetupRemotedevRoutes(cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) {
+  auth.SetupDevAuth(cookieJar, log)
 }
 
-func SetupLocalhostRoutes(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) {
-  auth.SetupDevAuth(runtime_env, cookieJar, log)
+func SetupLocalhostRoutes(cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) {
+  auth.SetupDevAuth(cookieJar, log)
 }
 
 func SetupProdRoutes() {
   // TODO: maybe Set cookie when user goes through ep warning
 }
-
-
 
 func _SetHeaders(handler http.Handler) http.Handler {
   return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

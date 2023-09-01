@@ -2,6 +2,7 @@ package auth
 
 import (
 	"net/http"
+  "os"
 	"strings"
 
 	"github.com/nathanielBellamy/my_website/backend/go/env"
@@ -11,9 +12,6 @@ import (
 
 func GetClientIpAddr(r *http.Request) string {
   var res string
-  // TODO: 
-  //  this will have to be conditional on runtime_env
-  //  are we behind Nginx or not?
 
 	if forwardedFor := r.Header.Get("X-Forwarded-For"); forwardedFor != "" {
 		// The header can contain multiple IPs, comma-separated.
@@ -32,12 +30,13 @@ type IoPassword struct {
   Password string
 }
 
-func HasValidCookie(runtime_env env.Env, r *http.Request, cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) bool {
+func HasValidCookie(r *http.Request, cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) bool {
   res := true
   ip := GetClientIpAddr(r)
 
   var cookieName string
-  if runtime_env.IsLocalhost() {
+  mode := os.Getenv("MODE")
+  if env.IsLocalhost(mode) {
     cookieName = "nbs-dev"
   } else {
     cookieName = "__Secure-nbs-dev"

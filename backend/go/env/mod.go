@@ -1,13 +1,11 @@
 package env
 
-type Env struct {
-  Mode string
-}
+type Env int
 
-func (self Env) IsProd() bool {
+func IsProd(mode string) bool {
   var res bool
   res = true // assume the worst
-  switch self.Mode {
+  switch mode {
   case "localhost":
     fallthrough
   case "remotedev":
@@ -17,13 +15,27 @@ func (self Env) IsProd() bool {
   return res
 }
 
-func (self Env) IsLocalhost() bool {
+func IsLocalhost(mode string) bool {
   var res bool
   res = true // assume the worst
-  switch self.Mode {
+  switch mode {
   case "prod":
     fallthrough
   case "remotedev":
+    res = false
+  }
+
+  return res
+}
+
+
+func IsRemotedev(mode string) bool {
+  var res bool
+  res = true // assume the worst
+  switch mode {
+  case "prod":
+    fallthrough
+  case "localhost":
     res = false
   }
 

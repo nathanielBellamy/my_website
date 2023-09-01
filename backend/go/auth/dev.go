@@ -2,6 +2,7 @@ package auth
 
 import (
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/nathanielBellamy/my_website/backend/go/env"
@@ -9,20 +10,21 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func SetupDevAuth(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) {
+func SetupDevAuth(cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) {
   fs_frontend := http.FileServer(http.Dir("frontend"))
-  http.Handle("/", http.StripPrefix("/", LogClientIp("/", log, RequireDevAuth(runtime_env, cookieJar, log, fs_frontend))))
+  http.Handle("/", http.StripPrefix("/", LogClientIp("/", log, RequireDevAuth(cookieJar, log, fs_frontend))))
   fs_auth := http.FileServer(http.Dir("auth/dev"))
   http.Handle("/auth/dev/",  LogClientIp("/auth/dev", log, http.StripPrefix("/auth/dev/", fs_auth)))
 
   http.HandleFunc("/auth/dev/dev-auth", func(w http.ResponseWriter, r *http.Request) {
+    mode := os.Getenv("MODE")
     ip := GetClientIpAddr(r)
     log.Info().
         Str("ip", ip).
         Msg("Dev Auth LOGIN ATTEMPT")
     sessionToken, success := ValidateDev(w, r, log)
     if success {
-      isLocalhost := runtime_env.IsLocalhost()
+      isLocalhost := env.IsLocalhost(mode)
       var name string 
       if isLocalhost {
         name = "nbs-dev"
@@ -66,9 +68,9 @@ func SetupDevAuth(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, boo
   })
 }
 
-func RequireDevAuth(runtime_env env.Env, cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger, handler http.Handler) http.Handler {
+func RequireDevAuth(cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger, handler http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        if HasValidCookie(runtime_env, r, cookieJar, log){
+        if HasValidCookie(r, cookieJar, log){
           handler.ServeHTTP(w, r)
           return
         } else {
