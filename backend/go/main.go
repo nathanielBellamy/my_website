@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
@@ -82,7 +81,6 @@ func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *ze
 
   // setup recaptcha
   http.HandleFunc("/recaptcha", func (w http.ResponseWriter, r *http.Request) {
-    // auth.LogClientIp("/recaptcha", log, http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {}))
     ip := auth.GetClientIpAddr(r)
     log.Info().
         Str("ip", ip).
@@ -96,7 +94,6 @@ func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *ze
 
     if res {
       auth.SetRecaptchaCookieOnClient(w, cookieJar, log)
-      time.Sleep(3000 * time.Millisecond)
 
       w.WriteHeader(http.StatusOK)
       w.Write([]byte("OK"))

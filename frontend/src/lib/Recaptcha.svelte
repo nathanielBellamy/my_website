@@ -1,7 +1,19 @@
 <script lang="ts">
+  import { Modal } from "flowbite-svelte"
+  import rImg from "../assets/recaptcha_logo.svg"
+
   export let action: string
   export let title: string
   export let hasPassed: boolean = false
+
+  let showModal: boolean = false
+  function timeout(ms: number) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  async function sleep(ms: number) {
+      await timeout(ms)
+  }
+
 
   function onClick(e: any) {
     e.preventDefault();
@@ -10,7 +22,9 @@
         import.meta.env.VITE_RECAPTCHA_SITE_KEY, 
         {action: 'LOGIN'}
       )
+      showModal = true
       await sendTokenToServer(token)
+      showModal = false
     })
   }
 
@@ -28,14 +42,33 @@
       },
       body: JSON.stringify(payload)
     })
+    .then(async (res) => {
+        await sleep(1626)
+        return res
+      })
     .then((res) => { hasPassed = res.status === 200 })
   }
 </script>
 
-<button on:click={onClick}
-        class="recaptcha_button font-mono">
-  {title}
-</button>
+<Modal bind:open={showModal}
+       class="w-2/3 bg-slate-800 text-slate-300">
+  <div class="h-5/6 w-5/6 bg-slate-800 flex justify-between items-center">
+    <img src={rImg}
+         style:height="70px"
+         style:width="70px"
+         alt="Google Recaptcha"/>
+    <h3 class="text-center font-mono font-extrabold flex justify-around items-center">
+      Validating
+    </h3>
+  </div>
+</Modal>
+
+<div class="w-full flex justify-around items-center">
+  <button on:click={onClick}
+          class="recaptcha_button font-mono w-5/6">
+    {title}
+  </button>
+</div>
 
 <style lang="sass">
   .recaptcha_button

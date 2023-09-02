@@ -11,16 +11,6 @@
   const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
 
   export let hasPassedGate: boolean
-  let showRecaptcha = true
-
-  function onEnterSquareClick() {
-    // TODO: set up recaptcha on dev-site
-    if (false) {// (import.meta.env.MODE !== ViteMode.localhost) {
-      showRecaptcha = true
-    } else {
-      hasPassedGate = true
-    }
-  }
 
   onDestroy(unsubSmallScreen)
 </script>
@@ -36,11 +26,11 @@
         <Popover class="bg-slate-800 text-2xl"
                  offset={-10}
                  transition={slide}>
-          <p>
+          <p class="font-extrabold">
             WOW!
           </p>
         </Popover>
-        <div class="text-3xl md:text-6xl">
+        <div class="text-3xl md:text-6xl font-extrabold">
           <p>
             ===============
           </p>
@@ -61,7 +51,7 @@
         <Popover class="bg-slate-800 text-2xl"
                  offset={-10}
                  transition={slide}>
-          <p>
+          <p class="font-extrabold">
             ZOINKS!
           </p>
         </Popover>
@@ -76,7 +66,7 @@
           Make colorful shapes and send emojis
         </li>
         <li>
-          For a solo version where you can save presets, nagivate to
+          For an offline version where you can save presets, nagivate to
           <span class="abelone">
             The Magic Square
           </span>
