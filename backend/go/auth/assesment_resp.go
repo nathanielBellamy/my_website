@@ -1,9 +1,5 @@
 package auth
 
-import (
-  // "encoding/json"
-)
-
 // Example response from Google's docs
 // {
 //  "event":{

@@ -1,18 +1,16 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
   export let action: string
   export let title: string
   export let hasPassed: boolean = false
 
-  function onClick(e) {
+  function onClick(e: any) {
     e.preventDefault();
     grecaptcha.enterprise.ready(async () => {
       const token = await grecaptcha.enterprise.execute(
         import.meta.env.VITE_RECAPTCHA_SITE_KEY, 
         {action: 'LOGIN'}
       )
-      const res = await sendTokenToServer(token)
-      console.dir({res})
+      await sendTokenToServer(token)
     })
   }
 
@@ -30,9 +28,7 @@
       },
       body: JSON.stringify(payload)
     })
-    .then((res) => {
-      console.log(res)
-    })
+    .then((res) => { hasPassed = res.status === 200 })
   }
 </script>
 

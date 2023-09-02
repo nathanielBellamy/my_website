@@ -11,10 +11,11 @@ import (
 )
 
 type RecaptchaData struct {
+  ClientIP string
   ProjectID string
-  RecaptchaSiteKey string
   Token string
   RecaptchaAction string
+  RecaptchaSiteKey string
 }
 
 type AssessmentBody struct {
@@ -33,12 +34,14 @@ type FrontendJson struct {
 }
 
 func ValidateRecaptcha(r *http.Request, log *zerolog.Logger) bool {
+  ip := GetClientIpAddr(r)
   var jsonData FrontendJson
   
   err := json.NewDecoder(r.Body).Decode(&jsonData)
   if err != nil {
     log.Error().
         Err(err).
+        Str("ip", ip).
         Msg("Error Decoding Recaptcha Payload")
     return false
   }
@@ -46,6 +49,7 @@ func ValidateRecaptcha(r *http.Request, log *zerolog.Logger) bool {
   log.Info().
       Str("Action", jsonData.Action).
       Str("Token", jsonData.Token).
+      Str("ip", ip).
       Msg("Recaptcha Frontend Json")
 
   projectId := os.Getenv("RECAPTCHA_PROJECT_ID")
@@ -54,9 +58,11 @@ func ValidateRecaptcha(r *http.Request, log *zerolog.Logger) bool {
   log.Info().
       Str("projectId", projectId).
       Str("siteKey", siteKey).
+      Str("ip", ip).
       Msg("Recaptcha Env Vars")
 
   rData := RecaptchaData {
+    ClientIP: ip,
     ProjectID: projectId,
     RecaptchaSiteKey: siteKey,
     Token: jsonData.Token,
@@ -68,6 +74,7 @@ func ValidateRecaptcha(r *http.Request, log *zerolog.Logger) bool {
 
 func CreateAssessment(rData RecaptchaData, log *zerolog.Logger) bool {
   log.Info().
+      Str("clientIP", rData.ClientIP).
       Str("projectId", rData.ProjectID).
       Str("siteKey", rData.RecaptchaSiteKey).
       Str("recaptchaAction", rData.RecaptchaAction).
@@ -88,6 +95,7 @@ func CreateAssessment(rData RecaptchaData, log *zerolog.Logger) bool {
   assessmentBody := AssessmentBody { Event: assessmentEvent }
   
   log.Info().
+      Str("ip", rData.ClientIP).
       Any("assessmentBody", assessmentBody).
       Msg("CreateAssessment")
 
@@ -96,6 +104,7 @@ func CreateAssessment(rData RecaptchaData, log *zerolog.Logger) bool {
   if err != nil {
     log.Error().
         Err(err).
+        Str("ip", rData.ClientIP).
         Msg("Recaptcha Assessment Json")
     return false
   }
@@ -107,6 +116,7 @@ func CreateAssessment(rData RecaptchaData, log *zerolog.Logger) bool {
   if err != nil {
     log.Error().
         Err(err).
+        Str("ip", rData.ClientIP).
         Msg("Recaptcha CreateAssesment Client Resp")
     return false
   }
@@ -116,13 +126,16 @@ func CreateAssessment(rData RecaptchaData, log *zerolog.Logger) bool {
   assessmentErr := json.NewDecoder(response.Body).Decode(&assessmentResp)
   if assessmentErr != nil {
     log.Error().
+        Str("ip", rData.ClientIP).
         Err(assessmentErr).
         Msg("Recaptcha Assement Response")
     return false
   }
 
   log.Info().
+      Str("ip", rData.ClientIP).
       Any("response", assessmentResp).
       Msg("Recaptcha Assessment Resp")
-  return true
+
+  return assessmentResp.RiskAnalysis.Score > 0.5 // closer to 1.0 is safer/more likely legit
 }

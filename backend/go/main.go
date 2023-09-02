@@ -86,11 +86,20 @@ func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.L
     log.Info().
         Str("ip", ip).
         Msg("Recaptcha Endpoint Hit")
+
     res := auth.ValidateRecaptcha(r, log)
     log.Info().
         Str("ip", ip).
         Bool("res", res).
-        Msg("ValidateRecaptcha res")
+        Msg("ValidateRecaptcha")
+
+    if res {
+      w.WriteHeader(http.StatusOK)
+      w.Write([]byte("OK"))
+    } else {
+      w.WriteHeader(http.StatusForbidden)
+      w.Write([]byte("NOT OK"))
+    }
   })
 
   feedPool := websocket.NewPool(log)
