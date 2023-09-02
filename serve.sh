@@ -4,7 +4,7 @@
 serve() {
   echo "🚀🚀🚀 Now serving $MODE on :8080 🚀🚀🚀"
   cd build 
-  export MODE=$MODE
+  export MODE=$MODE PW=$PW
   ./main
   cd ..
   echo "🫡 Server Is Out. Process completed.🫡"
