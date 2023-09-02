@@ -6,7 +6,10 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
+	"github.com/nathanielBellamy/my_website/backend/go/env"
+	cmap "github.com/orcaman/concurrent-map/v2"
 	"github.com/rs/zerolog"
 )
 
@@ -138,4 +141,41 @@ func CreateAssessment(rData RecaptchaData, log *zerolog.Logger) bool {
       Msg("Recaptcha Assessment Resp")
 
   return assessmentResp.RiskAnalysis.Score > 0.5 // closer to 1.0 is safer/more likely legit
+}
+
+func SetRecaptchaCookieOnClient(
+  w http.ResponseWriter, 
+  cookieJar *cmap.ConcurrentMap[string, Cookie], 
+  log *zerolog.Logger,
+) {
+  mode := os.Getenv("MODE")
+  isLocalhost := env.IsLocalhost(mode)
+  var name string 
+  if isLocalhost {
+    name = "nbs-psr"
+  } else {
+    name = "__Secure-nbs-psr"
+  }
+  // set cookie on client
+  var h Hash
+  sessionToken, err := h.Generate(time.Now().String())
+  if err != nil {
+    log.Error().
+        Err(err).
+        Msg("Generate PS Cookie Token")
+    return 
+  }
+
+  c := http.Cookie {
+    Name: name,
+    Value: sessionToken,
+    Path: "/",
+    MaxAge: 60 * 60 * 2, // two hours or whenever the server restarts as cookieJar is in-memory
+    Secure: !isLocalhost, // https only
+    HttpOnly: true, // don't let JS touch it
+    SameSite: http.SameSiteLaxMode,
+  }
+
+  cookieJar.SetIfAbsent(sessionToken, Cookie{Valid: true, Type: CTPSR})
+  http.SetCookie(w, &c)
 }

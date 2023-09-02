@@ -10,7 +10,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func SetupDevAuth(cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) {
+func SetupDevAuth(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger) {
   fs_frontend := http.FileServer(http.Dir("frontend"))
   http.Handle("/", http.StripPrefix("/", LogClientIp("/", log, RequireDevAuth(cookieJar, log, fs_frontend))))
   fs_auth := http.FileServer(http.Dir("auth/dev"))
@@ -42,7 +42,7 @@ func SetupDevAuth(cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logg
         SameSite: http.SameSiteLaxMode,
       }
 
-      cookieJar.SetIfAbsent(sessionToken, true)
+      cookieJar.SetIfAbsent(sessionToken, Cookie{Valid: true, Type: CTDEV})
       http.SetCookie(w, &c)
 
       log.Info().
@@ -68,9 +68,9 @@ func SetupDevAuth(cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logg
   })
 }
 
-func RequireDevAuth(cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger, handler http.Handler) http.Handler {
+func RequireDevAuth(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger, handler http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        if HasValidCookie(r, cookieJar, log){
+        if HasValidCookie(r, CTDEV, cookieJar, log){
           handler.ServeHTTP(w, r)
           return
         } else {
@@ -125,5 +125,12 @@ func RedirectToDevAuth(w http.ResponseWriter, r *http.Request, log *zerolog.Logg
       Str("ip", GetClientIpAddr(r)).
       Msg("REDIRECT To Dev Auth")
   http.Redirect(w,r,"/auth/dev/", http.StatusSeeOther)
+}
+
+func RedirectToHome(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
+  log.Warn().
+      Str("ip", GetClientIpAddr(r)).
+      Msg("REDIRECT To Home")
+  http.Redirect(w,r,"/", http.StatusSeeOther)
 }
 
