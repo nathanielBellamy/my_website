@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-  "io"
 	"net/http"
 	"os"
 
@@ -75,10 +74,11 @@ func CreateAssessment(rData RecaptchaData, log *zerolog.Logger) bool {
       Str("token", rData.Token).
       Msg("CreateAssessment rData")
 
+  apiKey := os.Getenv("GOOGLE_API_KEY")
   url := fmt.Sprintf(
     "https://recaptchaenterprise.googleapis.com/v1/projects/%s/assessments?key=%s",
     rData.ProjectID,
-    rData.RecaptchaSiteKey,
+    apiKey,
   )
   assessmentEvent := AssessmentEvent {
     Token: rData.Token,
@@ -97,29 +97,32 @@ func CreateAssessment(rData RecaptchaData, log *zerolog.Logger) bool {
     log.Error().
         Err(err).
         Msg("Recaptcha Assessment Json")
+    return false
   }
 
   b := bytes.NewBuffer(jsonBody)
 
-  req, err := http.NewRequest(
-    http.MethodPost, 
-    url, 
-    b,
-  )
-
-  client := &http.Client{}
-  response, err := client.Do(req)
+  client := http.Client{}
+  response, err := client.Post(url, `json`, b)
   if err != nil {
-      log.Error().
-          Err(err).
-          Msg("Recaptcha CreateAssesment Client Resp")
+    log.Error().
+        Err(err).
+        Msg("Recaptcha CreateAssesment Client Resp")
+    return false
   }
   defer response.Body.Close()
 
-  body, err := io.ReadAll(response.Body)
-  log.Info().
-      Any("response", body).
-      Msg("Recaptcha Assessment Response")
+  var assessmentResp AssessmentResp
+  assessmentErr := json.NewDecoder(response.Body).Decode(&assessmentResp)
+  if assessmentErr != nil {
+    log.Error().
+        Err(assessmentErr).
+        Msg("Recaptcha Assement Response")
+    return false
+  }
 
+  log.Info().
+      Any("response", assessmentResp).
+      Msg("Recaptcha Assessment Resp")
   return true
 }
