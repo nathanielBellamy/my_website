@@ -8,6 +8,8 @@
   import giveMeASineExampleGif from './assets/give_me_a_sine_example.gif'
   import AiMe from "./lib/AiMe.svelte";
   import { intoUrl, siteSection, SiteSection } from "./stores/siteSection";
+    import Toaster from "./lib/Toaster.svelte";
+    import { ToastColor } from "./lib/Toasty";
 
   let siteSectionVal: SiteSection
   const unsubSiteSection = siteSection.subscribe((val: SiteSection) => siteSectionVal = val)
@@ -60,12 +62,17 @@
     unsubLang()
     unsubSiteSection()
   })
+
+  let showCoookieWarning: boolean = true
 </script>
 
 <svelte:window bind:innerHeight
                bind:innerWidth />
 
 <body class="pl-5 pr-5 pb-5 flex flex-col justify-between items-stretch gap-2 overflow-y-scroll">
+  <Toaster bind:open={showCoookieWarning}
+           color={ToastColor.red}
+           text={"Some features use Cookies"}/>
   <div class="home_title_container flex flex-col justify-between items-stretch md:flex-row md:justify-start md:items-center">
     <button class="home_title font-mono flex justify-around items-center pl-2 pr-2 mt-5 md:mt-0"
             on:click={() => window.open("https://github.com/nathanielBellamy/my_website", '_blank').focus()}
