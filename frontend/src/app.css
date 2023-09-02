@@ -217,8 +217,8 @@ body {
 /* TODO: */
 /*   unfortunately, this adds superflouous padding on iOS Firefox */
 /*   but we will accept that for now as iOS Chrome and Safari look good*/
-@media (max-width: 1000px) {
-  _::-webkit-full-page-media, _:future, :root .main_container {
+_::-webkit-full-page-media, _:future, :root .main_container {
+  @media (max-width: 1000px) {
     padding-bottom: 80px;
     min-height: -webkit-fill-available;
   }
