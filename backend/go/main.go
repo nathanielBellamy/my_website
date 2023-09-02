@@ -22,7 +22,6 @@ func main() {
     }
     log := zerolog.New(file).With().Timestamp().Logger()
 
-
     // determine runtime env 
     mode := os.Getenv("MODE")
     if mode == "" {
@@ -39,6 +38,10 @@ func main() {
           Err(envErr).
           Msg("Error loading .env file")
     }
+
+    log.Info().
+        Str("mode", mode).
+        Msg("Runtime Env")
 
     cookieJar := cmap.New[bool]()
 
@@ -77,12 +80,17 @@ func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.L
   }
 
   // setup recaptcha
-  http.HandleFunc("/recaptcha", func(w http.ResponseWriter, r *http.Request) {
-    fmt.Printf("recaptcha endpoint hit")
-    fmt.Printf("body %v", r.Body)
-    // TODO
-    // Read token from body
-    // Verify token
+  http.HandleFunc("/recaptcha", func (w http.ResponseWriter, r *http.Request) {
+    // auth.LogClientIp("/recaptcha", log, http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {}))
+    ip := auth.GetClientIpAddr(r)
+    log.Info().
+        Str("ip", ip).
+        Msg("Recaptcha Endpoint Hit")
+    res := auth.ValidateRecaptcha(r, log)
+    log.Info().
+        Str("ip", ip).
+        Bool("res", res).
+        Msg("ValidateRecaptcha res")
   })
 
   feedPool := websocket.NewPool(log)

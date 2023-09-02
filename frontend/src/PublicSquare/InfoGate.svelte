@@ -70,7 +70,7 @@
     <div class="h-full w-full pl-4 pr-4 flex justify-around items-center text-left text-2xl">
       <ul class="info_gate_intro w-10/12 font-bold">
         <li>
-          The Public Square is a free art project made for anonymous collaboration
+          The Public Square is a free art project
         </li>
         <li>
           Make colorful shapes and send emojis
@@ -84,6 +84,7 @@
       </ul>
     </div>
     <Recaptcha title="Enter The Public Square"
+               action="PS-LOGIN"
                bind:hasPassed={hasPassedGate}/>
   </div>
 </div>

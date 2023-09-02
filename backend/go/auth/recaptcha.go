@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+  "io"
 	"net/http"
 	"os"
 
@@ -11,47 +12,87 @@ import (
 )
 
 type RecaptchaData struct {
-  projectID string
-  recaptchaSiteKey string
-  token string
-  recaptchaAction string
+  ProjectID string
+  RecaptchaSiteKey string
+  Token string
+  RecaptchaAction string
 }
 
 type AssessmentBody struct {
-  event AssessmentEvent
+  Event AssessmentEvent `json:"event"`
 }
 
 type AssessmentEvent struct {
-  token string
-  siteKey string
-  expectedAction string
+  Token string `json:"token"`
+  SiteKey string `json:"siteKey"`
+  ExpectedAction string `json:"expectedAction"`
 }
 
-func ValidateRecaptcha(token string, recaptchaAction string, log *zerolog.Logger) {
+type FrontendJson struct {
+  Action string `json:"action"`
+  Token  string `json:"token"`
+}
+
+func ValidateRecaptcha(r *http.Request, log *zerolog.Logger) bool {
+  var jsonData FrontendJson
   
+  err := json.NewDecoder(r.Body).Decode(&jsonData)
+  if err != nil {
+    log.Error().
+        Err(err).
+        Msg("Error Decoding Recaptcha Payload")
+    return false
+  }
+
+  log.Info().
+      Str("Action", jsonData.Action).
+      Str("Token", jsonData.Token).
+      Msg("Recaptcha Frontend Json")
+
+  projectId := os.Getenv("RECAPTCHA_PROJECT_ID")
+  siteKey := os.Getenv("RECAPTCHA_SITE_KEY")
+  
+  log.Info().
+      Str("projectId", projectId).
+      Str("siteKey", siteKey).
+      Msg("Recaptcha Env Vars")
+
   rData := RecaptchaData {
-    projectID: os.Getenv("RECAPTCHA_PROJECT_ID"),
-    recaptchaSiteKey: os.Getenv("RECAPTCHA_SITE_KEY"),
-    token: token,
-    recaptchaAction: recaptchaAction,
+    ProjectID: projectId,
+    RecaptchaSiteKey: siteKey,
+    Token: jsonData.Token,
+    RecaptchaAction: jsonData.Action,
   }
   
-  CreateAssessment(rData, log)
+  return CreateAssessment(rData, log)
 }
 
-func CreateAssessment(rData RecaptchaData, log *zerolog.Logger) {
+func CreateAssessment(rData RecaptchaData, log *zerolog.Logger) bool {
+  log.Info().
+      Str("projectId", rData.ProjectID).
+      Str("siteKey", rData.RecaptchaSiteKey).
+      Str("recaptchaAction", rData.RecaptchaAction).
+      Str("token", rData.Token).
+      Msg("CreateAssessment rData")
+
   url := fmt.Sprintf(
     "https://recaptchaenterprise.googleapis.com/v1/projects/%s/assessments?key=%s",
-    rData.projectID,
-    rData.recaptchaSiteKey,
+    rData.ProjectID,
+    rData.RecaptchaSiteKey,
   )
   assessmentEvent := AssessmentEvent {
-    token: rData.token,
-    siteKey: rData.recaptchaSiteKey,
-    expectedAction: rData.recaptchaAction,
+    Token: rData.Token,
+    SiteKey: rData.RecaptchaSiteKey,
+    ExpectedAction: rData.RecaptchaAction,
   }
-  assessmentBody := AssessmentBody { event: assessmentEvent }
+  assessmentBody := AssessmentBody { Event: assessmentEvent }
+  
+  log.Info().
+      Any("assessmentBody", assessmentBody).
+      Msg("CreateAssessment")
+
   jsonBody, err := json.Marshal(assessmentBody)
+
   if err != nil {
     log.Error().
         Err(err).
@@ -66,12 +107,19 @@ func CreateAssessment(rData RecaptchaData, log *zerolog.Logger) {
     b,
   )
 
-  res, err := http.DefaultClient.Do(req)
+  client := &http.Client{}
+  response, err := client.Do(req)
   if err != nil {
-    log.Error().
-        Err(err).
-        Msg("Recaptcha Response")
+      log.Error().
+          Err(err).
+          Msg("Recaptcha CreateAssesment Client Resp")
   }
-  
-  fmt.Printf("Recaptcha Res: %v", res)
+  defer response.Body.Close()
+
+  body, err := io.ReadAll(response.Body)
+  log.Info().
+      Any("response", body).
+      Msg("Recaptcha Assessment Response")
+
+  return true
 }
