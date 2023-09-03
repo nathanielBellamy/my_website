@@ -29,6 +29,8 @@
   import { lang } from '../stores/lang'
   import { smallScreen } from '../stores/smallScreen'
   import { touchScreen } from '../stores/touchScreen.js'
+  import Icon from '../lib/Icon.svelte'
+  import { Icons } from '../lib/Icons.js'
 
   // TODO:
   // this combination of touchSreen store and value updates works 
@@ -344,12 +346,16 @@
       <button on:click={() => setMagicSquareView(MagicSquareView.square)}
               class="view_select_button pt-2 pb-2 flex justify-around items-center"
               class:selected={magicSquareView === MagicSquareView.square}>
-        ▫️
+        <span class="text-cyan-500">
+          <Icon icon={Icons.EyeSolid} />
+        </span>
       </button>
       <button on:click={() => setMagicSquareView(MagicSquareView.controls)}
               class="view_select_button text-sm pt-2 pb-2 flex justify-around items-center"
               class:selected={magicSquareView === MagicSquareView.controls}>
-        🛠️
+        <span class="text-cyan-500">
+          <Icon icon={Icons.GearSolid} />
+        </span>
       </button>
    </div>
   {/if}

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Modal } from "flowbite-svelte"
+  import { Modal, Spinner } from "flowbite-svelte"
   import rImg from "../assets/recaptcha_logo.svg"
 
   export let action: string
@@ -52,14 +52,16 @@
 
 <Modal bind:open={showModal}
        class="w-2/3 bg-slate-800 text-slate-300">
-  <div class="h-5/6 w-5/6 bg-slate-800 flex justify-between items-center">
+  <div class="h-5/6 w-5/6 bg-slate-800 flex items-center">
     <img src={rImg}
          style:height="70px"
          style:width="70px"
          alt="Google Recaptcha"/>
-    <h3 class="text-center font-mono font-extrabold flex justify-around items-center">
-      Validating
+    <h3 class="text-cyan-700 pl-4 pr-4 font-mono font-extrabold flex items-center">
+      Verifying
     </h3>
+    <Spinner color="blue" 
+             size="5"/>
   </div>
 </Modal>
 

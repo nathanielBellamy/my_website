@@ -208,7 +208,7 @@
   //EyeOutline,
   //EyeSlashOutline,
   //EyeSlashSolid,
-  //EyeSolid,
+  EyeSolid,
   //FaceExplodeOutline,
   //FaceGrinOutline,
   //FaceGrinSolid,
@@ -277,7 +277,7 @@
   //ForwardSolid,
   //ForwardStepOutline,
   //ForwardStepSolid,
-  //GearSolid,
+  GearSolid,
   //GiftBoxOutline,
   //GiftBoxSolid,
   GithubSolid,
@@ -303,7 +303,7 @@
   //InboxOutline,
   //InboxSolid,
   //InfoCircleOutline,
-  //InfoCircleSolid,
+  InfoCircleSolid,
   //ItalicSolid,
   //KeyboardOutline,
   //KeyboardSolid,
@@ -477,7 +477,7 @@
   //WandSparklesSolid,
   //WindowOutline,
   //WindowRestoreOutline,
-  //WindowSolid,
+  // WindowSolid,
   XCircleOutline,
   //YoutubeSolid,
   //ZoomInOutline,
@@ -510,10 +510,16 @@
   <ExclamationCircleOutline />
 {:else if icon == Icons.ExclamationCircleSolid}
   <ExclamationCircleSolid />
+{:else if icon == Icons.EyeSolid}
+  <EyeSolid />
+{:else if icon == Icons.GearSolid}
+  <GearSolid />
 {:else if icon == Icons.GithubSolid}
   <GithubSolid />
 {:else if icon == Icons.GridPlusSolid}
   <GridPlusSolid />
+{:else if icon == Icons.InfoCircleSolid}
+  <InfoCircleSolid />
 {:else if icon == Icons.LinkedinSolid}
   <LinkedinSolid />
 {:else if icon == Icons.MailBoxSolid}

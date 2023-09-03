@@ -72,8 +72,8 @@
 
 <body class="pl-5 pr-5 pb-5 flex flex-col justify-between items-stretch gap-2 overflow-y-scroll">
   <Toaster bind:open={showCoookieWarning}
-           color={ToastColor.gray}
-           icon={Icons.BriefcaseSolid}
+           color={ToastColor.blue}
+           icon={Icons.InfoCircleSolid}
            text={"Some features use Cookies"}/>
   <div class="home_title_container flex flex-col justify-between items-stretch md:flex-row md:justify-start md:items-center">
     <button class="home_title font-mono flex justify-around items-center pl-2 pr-2 mt-5 md:mt-0"

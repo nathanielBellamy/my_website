@@ -6,15 +6,15 @@
 
 <div class="h-full w-fit flex justify-between items-center gap-4">
   <FooterIcon href="https://github.com/nathanielBellamy" 
-              class="text-slate-300 hover:text-slate-500 h-10 flex justify-around items-center">
+              class="text-cyan-700 hover:text-cyan-900 h-10 flex justify-around items-center">
     <Icon icon={Icons.GithubSolid}/>
   </FooterIcon>
   <FooterIcon href="https://www.linkedin.com/in/nateschieber/" 
-              class="text-slate-300 hover:text-slate-500 h-10 flex justify-around items-center">
+              class="text-cyan-700 hover:text-cyan-900 h-10 flex justify-around items-center">
     <Icon icon={Icons.LinkedinSolid}/>
   </FooterIcon>
   <FooterIcon href="mailto:nbschieber@gmail.com" 
-              class="text-slate-300 hover:text-slate-500 h-10 flex justify-around items-center">
+              class="text-cyan-700 hover:text-cyan-900 h-10 flex justify-around items-center">
     <Icon icon={Icons.MailBoxSolid}/>
   </FooterIcon>
 </div>
