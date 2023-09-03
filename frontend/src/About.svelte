@@ -241,8 +241,8 @@
       padding-left: 1em
       font-weight: 700
       color: color.$green-2
-      border-bottom: 3px solid color.$green-4
-      border-left: 3px solid color.$green-4
+      border-bottom: 3px solid color.$green-7
+      border-left: 3px solid color.$green-7
 
       border-radius: 5px
 

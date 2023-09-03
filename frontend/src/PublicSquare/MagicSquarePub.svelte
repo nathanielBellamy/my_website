@@ -1155,12 +1155,12 @@
     display: none
 
   .active
-    background-color: color.$red-5
+    background-color: color.$red-7
 
   .view_select_button
     border: 3px solid color.$blue-7
     box-shadow: none
 
   .selected
-    background-color: color.$green-4
+    background-color: color.$green-7
 </style>

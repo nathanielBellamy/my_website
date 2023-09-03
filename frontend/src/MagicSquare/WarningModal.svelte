@@ -63,19 +63,19 @@
   @use "./../styles/text"
 
   .green
-    color: color.$green-4
-    border-color: color.$green-4
+    color: color.$green-7
+    border-color: color.$green-7
 
   .red
-    color: color.$red-4
-    border-color: color.$red-4
+    color: color.$red-7
+    border-color: color.$red-7
 
   .warning_main
     overflow-y: scroll
 
   .title
     font-size: text.$fs-l
-    color: color.$red-4
+    color: color.$red-7
     font-weight: text.$fw-xl
 
   .content

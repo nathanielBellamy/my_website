@@ -234,14 +234,14 @@
       border-right: 5px double color.$blue-7
       border-radius: 10px
       &_dark
-        color: color.$green-4
+        color: color.$green-7
         font-weight: text.$fw-l
         font-size: text.$fs-ml
       &_container
         border-bottom: 5px double color.$blue-5
 
     &_intro_list
-      color: color.$green-4
+      color: color.$green-7
       font-weight: text.$fw-m
 
   .magic_square_img
@@ -272,7 +272,7 @@
  
   .preview
     border-radius: 5px
-    color: color.$green-4
+    color: color.$green-7
     font-weight: text.$fw-l
     font-size: text.$fs-s
     background: color.$black-blue-grad

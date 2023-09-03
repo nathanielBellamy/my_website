@@ -159,7 +159,7 @@
 
     &_left
       &_selected
-        background-color: color.$green-4
+        background-color: color.$green-7
     &_right
       &_selected
         background-color: color.$purple-7
@@ -178,7 +178,7 @@
     min-width: 30px
 
   .selected_left
-    background-color: color.$green-4
+    background-color: color.$green-7
   .selected_right
     background-color: color.$purple-7
 

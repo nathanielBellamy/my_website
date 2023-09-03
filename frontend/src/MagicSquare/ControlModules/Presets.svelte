@@ -167,7 +167,7 @@
   .active
     border: solid
     border-width: 5px
-    border-color: color.$red-5
+    border-color: color.$red-7
 
   .selected
     background-color: color.$blue-7
