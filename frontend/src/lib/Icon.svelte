@@ -491,45 +491,66 @@
 </script>
 
 {#if icon == Icons.ArrowUpDownSolid}
-  <ArrowUpDownSolid />
+  <ArrowUpDownSolid 
+    class="!border-none"/>
 {:else if icon == Icons.AtomSolid}
-  <AtomSolid />
+  <AtomSolid 
+    class="!border-none"/>
 {:else if icon == Icons.ArrowUpRightFromSquareOutline}
-  <ArrowUpRightFromSquareOutline />
+  <ArrowUpRightFromSquareOutline 
+    class="!border-none"/>
 {:else if icon == Icons.BriefcaseSolid}
-  <BriefcaseSolid />
+  <BriefcaseSolid 
+    class="!border-none"/>
 {:else if icon == Icons.CheckCircleSolid}
-  <CheckCircleSolid />
+  <CheckCircleSolid 
+    class="!border-none"/>
 {:else if icon == Icons.ChevronLeftSolid}
-  <ChevronLeftSolid />
+  <ChevronLeftSolid 
+    class="!border-none"/>
 {:else if icon == Icons.ChevronRightSolid}
-  <ChevronRightSolid />
+  <ChevronRightSolid 
+    class="!border-none"/>
 {:else if icon == Icons.DrawSquareSolid}
-  <DrawSquareSolid />
+  <DrawSquareSolid 
+    class="!border-none"/>
 {:else if icon == Icons.ExclamationCircleOutline}
-  <ExclamationCircleOutline />
+  <ExclamationCircleOutline 
+    class="!border-none"/>
 {:else if icon == Icons.ExclamationCircleSolid}
-  <ExclamationCircleSolid />
+  <ExclamationCircleSolid 
+    class="!border-none"/>
 {:else if icon == Icons.EyeSolid}
-  <EyeSolid />
+  <EyeSolid 
+    class="!border-none"/>
 {:else if icon == Icons.GearSolid}
-  <GearSolid />
+  <GearSolid 
+    class="!border-none"/>
 {:else if icon == Icons.GithubSolid}
-  <GithubSolid />
+  <GithubSolid 
+    class="!border-none"/>
 {:else if icon == Icons.GridPlusSolid}
-  <GridPlusSolid />
+  <GridPlusSolid 
+    class="!border-none"/>
 {:else if icon == Icons.InfoCircleSolid}
-  <InfoCircleSolid />
+  <InfoCircleSolid 
+    class="!border-none"/>
 {:else if icon == Icons.LinkedinSolid}
-  <LinkedinSolid />
+  <LinkedinSolid 
+    class="!border-none"/>
 {:else if icon == Icons.MailBoxSolid}
-  <MailBoxSolid />
+  <MailBoxSolid 
+    class="!border-none"/>
 {:else if icon == Icons.MessagesOutline}
-  <MessagesOutline />
+  <MessagesOutline 
+    class="!border-none"/>
 {:else if icon == Icons.MessagesSolid}
-  <MessagesSolid />
+  <MessagesSolid 
+    class="!border-none"/>
 {:else if icon == Icons.RotateOutline}
-  <RotateOutline />
+  <RotateOutline 
+    class="!border-none"/>
 {:else if icon == Icons.XCircleOutline}
-  <XCircleOutline />
+  <XCircleOutline 
+    class="!border-none"/>
 {/if}

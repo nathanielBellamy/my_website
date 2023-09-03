@@ -57,7 +57,7 @@
          style:height="70px"
          style:width="70px"
          alt="Google Recaptcha"/>
-    <h3 class="text-cyan-700 pl-4 pr-4 font-mono font-extrabold flex items-center">
+    <h3 class="text-cyan-700 mt-4 pl-4 pr-4 font-mono font-extrabold flex items-center">
       Verifying
     </h3>
     <Spinner color="blue" 
