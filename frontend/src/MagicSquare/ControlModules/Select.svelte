@@ -4,6 +4,11 @@
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
   import { smallScreen } from '../../stores/smallScreen'
+  import Icon from '../../lib/Icon.svelte'
+  import { Icons } from '../../lib/Icons'
+  import { ToastColor } from '../../lib/Toasty';
+  import DrawPattern from './DrawPattern.svelte';
+    import { MessagesSolid } from 'flowbite-svelte-icons';
 
   let langVal: Lang 
   const unsubLang = lang.subscribe(val => langVal = val)
@@ -86,13 +91,13 @@
               class:side_set_left_selected={sideToSet === Side.left}
               on:dblclick={() => swap()}
               on:click={() => sideToSet = Side.left}>
-        {i18n.t("left", langVal)}
+        <Icon icon={Icons.ChevronLeftSolid} />
       </button>
       <button class="side_set flex justify-around items-center pl-2 pr-2"
               class:side_set_right_selected={sideToSet === Side.right}
               on:dblclick={() => swap()}
               on:click={() => sideToSet = Side.right}>
-        {i18n.t("right", langVal)}
+        <Icon icon={Icons.ChevronRightSolid} />
       </button>
     </div>
   {/if}
@@ -104,7 +109,21 @@
               class:selected_right={curr_mod_right === mod && !smallScreenVal}
               on:click={() => setMod(mod)}
               on:keydown={(e) => handleModKeydown(e, mod)}>
-          {i18n.t(mod + "_emoji", langVal)}
+        {#if mod == Module.drawPattern}
+          <Icon icon={Icons.AtomSolid}/>
+        {:else if mod === Module.feed}
+          <Icon icon={Icons.MessagesOutline} />
+        {:else if mod == Module.translation}
+          <Icon icon={Icons.ArrowUpDownSolid}/>
+        {:else if mod == Module.presets}
+          <Icon icon={Icons.BriefcaseSolid} />
+        {:else if mod == Module.rotation}
+          <Icon icon={Icons.RotateOutline} />
+        {:else}
+          <span class="font-extrabold text-xl">
+            {i18n.t(mod + "_emoji", langVal)} 
+          </span>
+        {/if}
       </button>
       <input id={`mod_radio_${mod}`}
              value={mod}

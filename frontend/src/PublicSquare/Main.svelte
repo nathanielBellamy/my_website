@@ -10,7 +10,7 @@
   import { FEED_LENGTH, psFeed } from '../stores/psFeed'
   import Toaster from '../lib/Toaster.svelte'
   import { ViteMode } from '../ViteMode'
-    import { Icons } from '../lib/Icons';
+  import { Icons } from '../lib/Icons'
 
   let clientId: number
 
@@ -61,7 +61,7 @@
   const toastDisconnected: ToasterProps = {
     color: ToastColor.red,
     text: "Disconnected",
-    icon: Icons.XCircleOutline
+    icon: Icons.ExclamationCircleSolid
   }
 
   const toastError: ToasterProps = {

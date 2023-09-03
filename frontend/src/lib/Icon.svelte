@@ -40,9 +40,9 @@
   //ArrowSortLettersOutline,
   //ArrowSortLettersSolid,
   //ArrowUpDownOutline,
-  //ArrowUpDownSolid,
+  ArrowUpDownSolid,
   //ArrowUpOutline,
-  //ArrowUpRightFromSquareOutline,
+  ArrowUpRightFromSquareOutline,
   //ArrowUpRightSquareSolid,
   //ArrowUpSolid,
   //ArrowsRepeat1Outline,
@@ -50,7 +50,7 @@
   //ArrowsRepeatOutline,
   //ArrowsRepeatSolid,
   //AtomOutline,
-  //AtomSolid,
+  AtomSolid,
   //BackwardStepOutline,
   //BackwardStepSolid,
   //BadgeCheckOutline,
@@ -133,9 +133,9 @@
   //ChevronDownOutline,
   //ChevronDownSolid,
   //ChevronLeftOutline,
-  //ChevronLeftSolid,
+  ChevronLeftSolid,
   //ChevronRightOutline,
-  //ChevronRightSolid,
+  ChevronRightSolid,
   //ChevronSortOutline,
   //ChevronSortSolid,
   //ChevronUpOutline,
@@ -189,7 +189,7 @@
   //DownloadOutline,
   //DownloadSolid,
   //DrawSquareOutline,
-  //DrawSquareSolid,
+  DrawSquareSolid,
   //DribbbleSolid,
   //DropboxSolid,
   //EditOutline,
@@ -201,8 +201,8 @@
   //EnvelopeSolid,
   //EuroOutline,
   //EuroSolid,
-  //ExclamationCircleOutline,
-  //ExclamationCircleSolid,
+  ExclamationCircleOutline,
+  ExclamationCircleSolid,
   //ExpandOutline,
   //ExpandSolid,
   //EyeOutline,
@@ -280,13 +280,13 @@
   //GearSolid,
   //GiftBoxOutline,
   //GiftBoxSolid,
-  //GithubSolid,
+  GithubSolid,
   //GlobeOutline,
   //GlobeSolid,
   //GoogleSolid,
   //GridOutline,
   //GridPlusOutline,
-  //GridPlusSolid,
+  GridPlusSolid,
   //GridSolid,
   //HeadphonesOutline,
   //HeadphonesSolid,
@@ -318,7 +318,7 @@
   //LifeBuoySolid,
   //LinkOutline,
   //LinkSolid,
-  //LinkedinSolid,
+  LinkedinSolid,
   //ListMusicOutline,
   //ListMusicSolid,
   //ListOrdoredSolid,
@@ -329,7 +329,7 @@
   //LockOutline,
   //LockSolid,
   //MailBoxOutline,
-  //MailBoxSolid,
+  MailBoxSolid,
   //MapLocationOutline,
   //MapPinAltSolid,
   //MapPinOutline,
@@ -337,8 +337,8 @@
   //MessageCaptionOutline,
   //MessageCaptionSolid,
   //MessageDotsOutline,
-  //MessagesOutline,
-  //MessagesSolid,
+  MessagesOutline,
+  MessagesSolid,
   //MicrophoneOutline,
   //MicrophoneSolid,
   //MinimizeOutline,
@@ -387,7 +387,7 @@
   //RestoreWindowSolid,
   //RocketOutline,
   //RocketSolid,
-  //RotateOutline,
+  RotateOutline,
   //RuleCombinedOutline,
   //RulerCombinedSolid,
   //SalePercentOutline,
@@ -490,10 +490,40 @@
   export let icon: Icons
 </script>
 
-{#if icon == Icons.CheckCircleSolid}
-  <CheckCircleSolid />
-{:else if icon == Icons.XCircleOutline}
-  <XCircleOutline />
+{#if icon == Icons.ArrowUpDownSolid}
+  <ArrowUpDownSolid />
+{:else if icon == Icons.AtomSolid}
+  <AtomSolid />
+{:else if icon == Icons.ArrowUpRightFromSquareOutline}
+  <ArrowUpRightFromSquareOutline />
 {:else if icon == Icons.BriefcaseSolid}
   <BriefcaseSolid />
+{:else if icon == Icons.CheckCircleSolid}
+  <CheckCircleSolid />
+{:else if icon == Icons.ChevronLeftSolid}
+  <ChevronLeftSolid />
+{:else if icon == Icons.ChevronRightSolid}
+  <ChevronRightSolid />
+{:else if icon == Icons.DrawSquareSolid}
+  <DrawSquareSolid />
+{:else if icon == Icons.ExclamationCircleOutline}
+  <ExclamationCircleOutline />
+{:else if icon == Icons.ExclamationCircleSolid}
+  <ExclamationCircleSolid />
+{:else if icon == Icons.GithubSolid}
+  <GithubSolid />
+{:else if icon == Icons.GridPlusSolid}
+  <GridPlusSolid />
+{:else if icon == Icons.LinkedinSolid}
+  <LinkedinSolid />
+{:else if icon == Icons.MailBoxSolid}
+  <MailBoxSolid />
+{:else if icon == Icons.MessagesOutline}
+  <MessagesOutline />
+{:else if icon == Icons.MessagesSolid}
+  <MessagesSolid />
+{:else if icon == Icons.RotateOutline}
+  <RotateOutline />
+{:else if icon == Icons.XCircleOutline}
+  <XCircleOutline />
 {/if}
