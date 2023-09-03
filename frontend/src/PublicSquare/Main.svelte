@@ -10,6 +10,7 @@
   import { FEED_LENGTH, psFeed } from '../stores/psFeed'
   import Toaster from '../lib/Toaster.svelte'
   import { ViteMode } from '../ViteMode'
+    import { Icons } from '../lib/Icons';
 
   let clientId: number
 
@@ -58,13 +59,15 @@
   }
 
   const toastDisconnected: ToasterProps = {
-    color: ToastColor.blue,
-    text: "Disconnected"
+    color: ToastColor.red,
+    text: "Disconnected",
+    icon: Icons.XCircleOutline
   }
 
   const toastError: ToasterProps = {
     color: ToastColor.red,
-    text: "Connection error"
+    text: "Connection error",
+    icon: Icons.XCircleOutline
   }
   
   let toasts: ToasterProps[] = []
@@ -101,9 +104,11 @@
   </MagicSquarePub>
   <Toaster bind:open={showConnected}
            color={ToastColor.green}
+           icon={Icons.CheckCircleSolid}
            text={"Connected"}/>
-  {#each toasts as { color, text }}
+  {#each toasts as { color, text, icon }}
       <Toaster open={null}
+               icon={icon}
                color={color}
                text={text}/>
   {/each}
