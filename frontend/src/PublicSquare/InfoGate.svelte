@@ -74,7 +74,7 @@
       </ul>
     </div>
     <Recaptcha title="Enter The Public Square"
-               action="PS-LOGIN"
+               action="PSLOGIN"
                bind:hasPassed={hasPassedGate}/>
   </div>
 </div>

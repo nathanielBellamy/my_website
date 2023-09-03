@@ -20,7 +20,7 @@
     grecaptcha.enterprise.ready(async () => {
       const token = await grecaptcha.enterprise.execute(
         import.meta.env.VITE_RECAPTCHA_SITE_KEY, 
-        {action: 'LOGIN'}
+        {action}
       )
       showModal = true
       await sendTokenToServer(token)
