@@ -40,7 +40,6 @@
     "@types/grecaptcha": "^3.0.4",
     "flowbite": "^1.7.0",
     "flowbite-svelte": "^0.39.2",
-    "flowbite-svelte-icons": "^0.4.2",
     "node-sass": "^8.0.0",
     "svelte-spa-router": "^3.3.0",
     "svelte-watch-resize": "^1.0.3",

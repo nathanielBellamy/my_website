@@ -67,7 +67,7 @@
   const toastError: ToasterProps = {
     color: ToastColor.red,
     text: "Connection error",
-    icon: Icons.XCircleOutline
+    icon: Icons.ExclamationCircleSolid
   }
   
   let toasts: ToasterProps[] = []

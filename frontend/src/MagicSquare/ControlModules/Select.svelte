@@ -6,9 +6,6 @@
   import { smallScreen } from '../../stores/smallScreen'
   import Icon from '../../lib/Icon.svelte'
   import { Icons } from '../../lib/Icons'
-  import { ToastColor } from '../../lib/Toasty';
-  import DrawPattern from './DrawPattern.svelte';
-    import { MessagesSolid } from 'flowbite-svelte-icons';
 
   let langVal: Lang 
   const unsubLang = lang.subscribe(val => langVal = val)
