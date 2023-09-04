@@ -23,7 +23,7 @@
   let personal_projects: PersonalProject[] = [
     {
       title: 'my_website (this)',
-      description: 'RustWasm, Go, Typescript, Svelte, WebGL, Sass, Tailwind, Vite, NixOS',
+      description: 'RustWasm, Go, Typescript, NixOS, Svelte, WebGL, Tailwind, Flowbite, Sass, Vite',
       href: 'https://github.com/users/nathanielBellamy/projects/4',
       program: EmbeddedProgram.none
     },
