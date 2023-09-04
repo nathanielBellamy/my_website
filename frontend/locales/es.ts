@@ -10,6 +10,7 @@ export const localeEs: any = {
       home: "Inicio",
       about: "Sobre mí",
       magicSquare: "Cuadro mágico",
+      publicSquare: "Cuadro público",
       giveMeASine: "Dame un seno",
       none: "",
       systemDiagram: "Diagrama de systema",
@@ -176,6 +177,13 @@ export const localeEs: any = {
       go_home: "Regresar a inicio",
       accept_and_continue: "Aceptar y continuar",
     }
-
   },
+  publicSquare: {
+    infoGate: {
+      publicSquare: "Cuadro público",
+      welcome: "Bienvenido al",
+      wow: "GAUA",
+      zoinks: "ZOINKS"
+    }
+  }
 }

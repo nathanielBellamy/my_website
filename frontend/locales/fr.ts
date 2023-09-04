@@ -10,6 +10,7 @@ export const localeFr: any = {
       home: "Accueil",
       about: "De moi",
       magicSquare: "Carré magique",
+      publicSquare: "Carré publique",
       giveMeASine: "Donne-moi un sinus",
       none: "",
       systemDiagram: "Diagramme du système",
@@ -177,7 +178,12 @@ export const localeFr: any = {
       accept_and_continue: "Accepter et continuer",
     }
   },
-  misc: {
-
+  publicSquare: {
+    infoGate: {
+      publicSquare: "Carré publique",
+      welcome: "Bienvenu au",
+      wow: "OUAH",
+      zoinks: "ZOINKS"
+    }
   }
 }

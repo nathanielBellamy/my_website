@@ -10,6 +10,7 @@ export const localeEn: any = {
       home: "Home",
       about: "About",
       magicSquare: "Magic square",
+      publicSquare: "Public square",
       giveMeASine: "Give me a sine",
       none: "",
       systemDiagram: "System Diagram",
@@ -179,9 +180,11 @@ export const localeEn: any = {
     }
   },
   publicSquare: {
-    messaging: {
-      cool: "匚ㄖㄖㄥ!",
-      neat: "ᑎEᗩT!",
+    infoGate: {
+      publicSquare: "Public Square",
+      welcome: "Welcome to the",
+      wow: "WOW",
+      zoinks: "ZOINKS"
     }
   }
 }

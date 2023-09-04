@@ -29,8 +29,8 @@
 
 <nav class="nav_bar bg-black mx-0 flex justify-between items-center gap-2 pt-2 pb-2 pr-4">
   <button id="siteSectionDropdown"
-          class="dropdown_button shadow-none h-11/12 p-2 flex justify-around items-center text-xs border-transparent">
-    <div class="dropdown_icon pb-1 flex justify-around items-center">
+          class="dropdown_button shadow-none h-5/6 flex justify-around items-center text-xs border-transparent">
+    <div class="dropdown_icon text-xl pb-2 flex justify-around items-center">
       ☰
     </div>
   </button>
@@ -47,7 +47,7 @@
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
                   on:click={() => dropdownOpen = false}
                   href="/#/public-square">
-      Public square
+      {i18n.t("nav/publicSquare", langVal)}
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
                   on:click={() => dropdownOpen = false}
