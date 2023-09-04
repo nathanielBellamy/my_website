@@ -10,7 +10,8 @@
 
 ### serve
 - `MODE=<mode> PW=<my_password> ./serve.sh`
-- `cd backend/go && MODE=<mode> PW=<my_password> ./main`
+- or more directly
+  - `cd backend/go && MODE=<mode> PW=<my_password> ./main`
 
 ### config.env
 - `MODE=mode`
