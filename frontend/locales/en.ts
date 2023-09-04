@@ -180,6 +180,11 @@ export const localeEn: any = {
     }
   },
   publicSquare: {
+    feed: {
+      connected: "Connected",
+      connectionError: "Connection error",
+      disconneted: "Disconneted"
+    },
     infoGate: {
       enter: "Enter The Public Square",
       freeArt: "The Public Square is a free art project",

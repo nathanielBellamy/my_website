@@ -179,6 +179,11 @@ export const localeFr: any = {
     }
   },
   publicSquare: {
+    feed: {
+      connected: "Connecté",
+      connectionError: "Erreur de connexion",
+      disconneted: "Débranché"
+    },
     infoGate: {
       enter: "Entrez Sur Le Carré Publique",
       freeArt: "Le Carré Publique est un projet d'art gratuit",

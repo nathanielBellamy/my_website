@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
-  import { Modal } from 'flowbite-svelte'
   import { WebsocketBuilder } from 'websocket-ts'
   import Feed from '../MagicSquare/ControlModules/Feed.svelte'
   import type { ToasterProps } from '../lib/Toasty'
@@ -11,6 +10,12 @@
   import Toaster from '../lib/Toaster.svelte'
   import { ViteMode } from '../ViteMode'
   import { Icons } from '../lib/Icons'
+
+  import { I18n, Lang } from "../I18n"
+  import { lang } from "../stores/lang"
+  let i18n = new I18n("publiscSquare/feed")
+  let langVal: Lang
+  const unsubLang = lang.subscribe( val => langVal = val)
 
   let clientId: number
 
@@ -60,13 +65,13 @@
 
   const toastDisconnected: ToasterProps = {
     color: ToastColor.red,
-    text: "Disconnected",
+    text: i18n.t("disconnected", langVal),
     icon: Icons.ExclamationCircleSolid
   }
 
   const toastError: ToasterProps = {
     color: ToastColor.red,
-    text: "Connection error",
+    text: i18n.t("connectionEror", langVal),
     icon: Icons.ExclamationCircleSolid
   }
   
@@ -90,6 +95,7 @@
 
   onDestroy(() => {
     ws.close()
+    unsubLang()
   })
 </script>
 
@@ -105,7 +111,7 @@
   <Toaster bind:open={showConnected}
            color={ToastColor.green}
            icon={Icons.CheckCircleSolid}
-           text={"Connected"}/>
+           text={i18n.t("connected", langVal)}/>
   {#each toasts as { color, text, icon }}
       <Toaster open={null}
                icon={icon}
@@ -113,7 +119,3 @@
                text={text}/>
   {/each}
 </div>
-
-<style lang="sass">
-
-</style>

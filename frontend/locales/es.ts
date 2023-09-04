@@ -179,6 +179,11 @@ export const localeEs: any = {
     }
   },
   publicSquare: {
+    feed: {
+      connected: "Conectado",
+      connectionError: "Error de conexión",
+      disconneted: "Desconectado"
+    },
     infoGate: {
       enter: "Entra En El Cuadro Público",
       freeArt: "El Cuadro Público es un proyecto del arte libre",
