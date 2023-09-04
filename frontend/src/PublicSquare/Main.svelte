@@ -13,7 +13,7 @@
 
   import { I18n, Lang } from "../I18n"
   import { lang } from "../stores/lang"
-  let i18n = new I18n("publiscSquare/feed")
+  let i18n = new I18n("publicSquare/main")
   let langVal: Lang
   const unsubLang = lang.subscribe( val => langVal = val)
 
@@ -25,13 +25,16 @@
     : "wss"
   const fullUrl: string = `${protocol}://${baseUrl}/public-square-feed-ws`
 
+  let showConnectionError: boolean = false
+  let showDisconnected: boolean = false
+
   // websocket
   const ws = new WebsocketBuilder(fullUrl)
       .onOpen(() => {
         triggerShowConnected()
       })
-      .onClose(() => pushToast(toastDisconnected))
-      .onError(() => pushToast(toastError))
+      .onClose(() => showDisconnected = true)
+      .onError(() => showConnectionError = true)
       .onMessage((_i, ev) => {
         const message: FeedMessage = JSON.parse(ev.data)
         if (message.body === "__init__connected__") {
@@ -62,16 +65,20 @@
       return setTimeout(timeout, 1000);
     showConnected = false;
   }
+  
+  $: connectedText = i18n.t("connected", langVal)
+  $: connectionErrorText = i18n.t("connectionError", langVal)
+  $: disconnectedText = i18n.t("disconnected", langVal)
 
   const toastDisconnected: ToasterProps = {
     color: ToastColor.red,
-    text: i18n.t("disconnected", langVal),
+    text: disconnectedText,
     icon: Icons.ExclamationCircleSolid
   }
 
   const toastError: ToasterProps = {
     color: ToastColor.red,
-    text: i18n.t("connectionEror", langVal),
+    text: connectionErrorText,
     icon: Icons.ExclamationCircleSolid
   }
   
@@ -97,6 +104,7 @@
     ws.close()
     unsubLang()
   })
+
 </script>
 
 <div class="h-full w-full overflow-hidden">
@@ -111,11 +119,17 @@
   <Toaster bind:open={showConnected}
            color={ToastColor.green}
            icon={Icons.CheckCircleSolid}
-           text={i18n.t("connected", langVal)}/>
-  {#each toasts as { color, text, icon }}
-      <Toaster open={null}
-               icon={icon}
-               color={color}
-               text={text}/>
-  {/each}
+           bind:text={connectedText}/>
+  {#if showConnectionError}
+    <Toaster open={null}
+             icon={Icons.ExclamationCircleSolid}
+             color={ToastColor.red}
+             bind:text={connectionErrorText}/>
+  {/if}
+  {#if showDisconnected}
+    <Toaster open={null}
+             icon={Icons.ExclamationCircleSolid}
+             color={ToastColor.red}
+             bind:text={connectionErrorText}/>
+  {/if}
 </div>

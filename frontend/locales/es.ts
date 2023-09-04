@@ -25,6 +25,7 @@ export const localeEs: any = {
   },
   home: {
     title: "v0.1.0",
+    cookieWarning: "Este sitio utiliza cookies.",
     about: "Sobre mí",
     about_1: "Lo que hago por lo general con codigo",
     about_2: "Por favor, disfrute de estas imágenes generadas por inteligencia artificial de mí en \"luz natural\"",
@@ -42,6 +43,9 @@ export const localeEs: any = {
       4: "Entonces, estoy construyendo ese sitio"
     },
     whatsHere: "Que hay aqui?"
+  },
+  loading: {
+    title: "Cargando..."
   },
   magicSquare: {
     color: {
@@ -179,10 +183,10 @@ export const localeEs: any = {
     }
   },
   publicSquare: {
-    feed: {
+    main: {
       connected: "Conectado",
       connectionError: "Error de conexión",
-      disconneted: "Desconectado"
+      disconnected: "Desconectado"
     },
     infoGate: {
       enter: "Entra En El Cuadro Público",

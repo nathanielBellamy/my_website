@@ -25,6 +25,7 @@ export const localeFr: any = {
   },
   home: {
     title: "v0.1.0",
+    cookieWarning: "Ce site utilise des cookies.",
     about: "De moi",
     about_1: "Ce que je fait con code",
     about_2: "S'il vous plaît, appréciez ces images de moi en \"lumière naturelle\" générées par intelligence artificielle",
@@ -42,6 +43,9 @@ export const localeFr: any = {
       4: "Alors, je suis en train de faire ce site"
     },
     whatsHere: "Qu'est-ce qu'il y a ici?"
+  },
+  loading: {
+    title: "Chargement..."
   },
   magicSquare: {
     color: {
@@ -179,10 +183,10 @@ export const localeFr: any = {
     }
   },
   publicSquare: {
-    feed: {
+    main: {
       connected: "Connecté",
       connectionError: "Erreur de connexion",
-      disconneted: "Débranché"
+      disconnected: "Débranché"
     },
     infoGate: {
       enter: "Entrez Sur Le Carré Publique",

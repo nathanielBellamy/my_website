@@ -74,7 +74,7 @@
   <Toaster bind:open={showCoookieWarning}
            color={ToastColor.blue}
            icon={Icons.InfoCircleSolid}
-           text={"Some features use Cookies"}/>
+           text={i18n.t("cookieWarning", langVal)}/>
   <div class="home_title_container flex flex-col justify-between items-stretch md:flex-row md:justify-start md:items-center">
     <button class="home_title font-mono flex justify-around items-center pl-2 pr-2 mt-5 md:mt-0"
             on:click={() => window.open("https://github.com/nathanielBellamy/my_website", '_blank').focus()}
