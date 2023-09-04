@@ -180,10 +180,17 @@ export const localeFr: any = {
   },
   publicSquare: {
     infoGate: {
-      publicSquare: "Carré publique",
+      enter: "Entrez Sur Le Carré Publique",
+      freeArt: "Le Carré Publique est un projet d'art gratuit",
+      shapesEmojis: "Créez des formes colorées et envoyez des emojis",
+      offlineVersion: "Pour une version hors ligne où vous pouvez sauvegarder des préréglages, naviguez vers Le Carré Magique",
+      publicSquare: "Carré Publique",
       welcome: "Bienvenu au",
       wow: "OUAH",
       zoinks: "ZOINKS"
     }
+  },
+  recaptcha: {
+    verifying: "Vérification"
   }
 }

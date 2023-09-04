@@ -18,7 +18,10 @@
 
   export let hasPassedGate: boolean
 
-  onDestroy(unsubSmallScreen)
+  onDestroy(() => {
+    unsubLang()
+    unsubSmallScreen()
+  })
 </script>
 
 <div class="info_gate font-mono w-full h-full overflow-y-scroll pb-4">
@@ -66,20 +69,17 @@
     <div class="h-full w-full pl-4 pr-4 flex justify-around items-center text-left text-2xl">
       <ul class="info_gate_intro w-10/12 font-bold">
         <li>
-          The Public Square is a free art project
+          {i18n.t("freeArt", langVal)}
         </li>
         <li>
-          Make colorful shapes and send emojis
+          {i18n.t("shapesEmojis", langVal)}
         </li>
         <li>
-          For an offline version where you can save presets, nagivate to
-          <span class="abelone">
-            The Magic Square
-          </span>
+          {i18n.t("offlineVersion", langVal)}
         </li>
       </ul>
     </div>
-    <Recaptcha title="Enter The Public Square"
+    <Recaptcha title={i18n.t("enter", langVal)}
                action="PSLOGIN"
                bind:hasPassed={hasPassedGate}/>
   </div>

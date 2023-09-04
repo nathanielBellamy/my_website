@@ -180,10 +180,17 @@ export const localeEs: any = {
   },
   publicSquare: {
     infoGate: {
-      publicSquare: "Cuadro público",
+      enter: "Entra En El Cuadro Público",
+      freeArt: "El Cuadro Público es un proyecto del arte libre",
+      shapesEmojis: "Crea formas coloridas y envía emojis",
+      offlineVersion: "Para una versión sin conexión donde puedes guardar preajustes, navega a El Cuadro Mágico",
+      publicSquare: "Cuadro Público",
       welcome: "Bienvenido al",
       wow: "GAUA",
       zoinks: "ZOINKS"
     }
+  },
+  recaptcha: {
+    verifying: "Verificando"
   }
 }

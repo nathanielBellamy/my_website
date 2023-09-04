@@ -181,10 +181,17 @@ export const localeEn: any = {
   },
   publicSquare: {
     infoGate: {
+      enter: "Enter The Public Square",
+      freeArt: "The Public Square is a free art project",
+      shapesEmojis: "Make colorful shapes and send emojis",
+      offlineVersion: "For an offline version where you can save presets, nagivate to The Magic Square",
       publicSquare: "Public Square",
       welcome: "Welcome to the",
       wow: "WOW",
       zoinks: "ZOINKS"
     }
+  },
+  recaptcha: {
+    verifying: "Verifying"
   }
 }
