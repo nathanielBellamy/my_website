@@ -194,11 +194,11 @@
         grid-area: buttons
         grid-template-columns: 70% 30%
         &_send
-          border-left: 3px color.$green-4 double
-          border-right: 3px color.$green-4 double
+          border-left: 3px color.$green-7 double
+          border-right: 3px color.$green-7 double
         &_clr
-          border-left: 3px color.$red-4 double
-          border-right: 3px color.$red-4 double
+          border-left: 3px color.$red-7 double
+          border-right: 3px color.$red-7 double
       
   .feed_message
     grid-template-areas: "user body"
@@ -218,7 +218,7 @@
       grid-template-rows: 1fr
       gap: 4px
     &_other
-      border-left: 5px double color.$green-4
+      border-left: 5px double color.$green-7
       display: grid
       grid-template-columns: 50% 50%
       grid-template-rows: 1fr

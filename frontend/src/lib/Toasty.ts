@@ -1,3 +1,5 @@
+import type { Icons } from "./Icons"
+
 export enum ToastColor {
   green = "green",
   blue = "blue",
@@ -13,4 +15,5 @@ export enum ToastColor {
 export interface ToasterProps {
   color: ToastColor,
   text: string,
+  icon: Icons
 }

@@ -1,35 +1,20 @@
 <script lang="ts">
   import { FooterIcon } from "flowbite-svelte"
-  import githubLogo from '../assets/github_logo.png'
-  import linkedInLogo from '../assets/linked_in_logo.png'
-  import gmailLogo from '../assets/gmail_logo.png'
+  import Icon from "./Icon.svelte"
+  import { Icons } from "./Icons"
 </script>
 
 <div class="h-full w-fit flex justify-between items-center gap-4">
   <FooterIcon href="https://github.com/nathanielBellamy" 
-              class="text-gray-400 hover:text-gray-900 h-10 flex justify-around items-center">
-    <img src={githubLogo}
-         title="GitHub"
-         class="invert"
-         style:width="30px"
-         style:height="30px"
-         alt="GitHub"/>
+              class="text-cyan-700 hover:text-cyan-900 h-10 flex justify-around items-center">
+    <Icon icon={Icons.GithubSolid}/>
   </FooterIcon>
   <FooterIcon href="https://www.linkedin.com/in/nateschieber/" 
-              class="text-gray-400 hover:text-gray-900 h-10 flex justify-around items-center">
-    <img src={linkedInLogo}
-         title="LinkedIn"
-         style:width="30px"
-         style:height="30px"
-         alt="LinkedIn"/>
+              class="text-cyan-700 hover:text-cyan-900 h-10 flex justify-around items-center">
+    <Icon icon={Icons.LinkedinSolid}/>
   </FooterIcon>
   <FooterIcon href="mailto:nbschieber@gmail.com" 
-              class="w-fit text-gray-400 hover:text-gray-900 h-10 flex justify-around items-center">
-    <img src={gmailLogo}
-         title="gmail"
-         class="invert"
-         style:width="30px"
-         style:height="30px"
-         alt="gmail"/>
+              class="text-cyan-700 hover:text-cyan-900 h-10 flex justify-around items-center">
+    <Icon icon={Icons.MailBoxSolid}/>
   </FooterIcon>
 </div>

@@ -4,6 +4,8 @@
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
   import { smallScreen } from '../../stores/smallScreen'
+  import Icon from '../../lib/Icon.svelte'
+  import { Icons } from '../../lib/Icons'
 
   let langVal: Lang 
   const unsubLang = lang.subscribe(val => langVal = val)
@@ -76,35 +78,59 @@
   })
 </script>
 
-<div class="select_container rounded-md h-fit w-11/12 pl-2 pr-2 overflow-x-scroll"
+<div class="select_container rounded-md h-10 w-11/12 pl-2 pr-2 overflow-x-scroll"
      class:module_selector_grid={!smallScreenVal}
      class:module_selector_flex={smallScreenVal}
      class:text-xs={smallScreenVal}>
   {#if !smallScreenVal}
     <div class="left_right_buttons pr-2 h-full w-fit flex justify-between items-center">
-      <button class="side_set flex justify-around items-center pl-2 pr-2"
+      <button class="side_set h-5/6 text-cyan-500 flex justify-around items-center pl-2 pr-2"
               class:side_set_left_selected={sideToSet === Side.left}
               on:dblclick={() => swap()}
               on:click={() => sideToSet = Side.left}>
-        {i18n.t("left", langVal)}
+        <Icon icon={Icons.ChevronLeftSolid} />
       </button>
-      <button class="side_set flex justify-around items-center pl-2 pr-2"
+      <button class="side_set h-5/6 text-cyan-500 flex justify-around items-center pl-2 pr-2"
               class:side_set_right_selected={sideToSet === Side.right}
               on:dblclick={() => swap()}
               on:click={() => sideToSet = Side.right}>
-        {i18n.t("right", langVal)}
+        <Icon icon={Icons.ChevronRightSolid} />
       </button>
     </div>
   {/if}
   <div class="h-full w-full pl-2 pr-2 flex justify-between items-center overflow-x-scroll">
     {#each modules as mod}
-      <button class="module_option w-fit pr-2 pl-2 text-ellipsis"
+      <button class="module_option text-cyan-700 h-5/6 w-fit pr-2 pl-2"
               title={i18n.t(mod, langVal)}
               class:selected_left={curr_mod_left === mod}
               class:selected_right={curr_mod_right === mod && !smallScreenVal}
               on:click={() => setMod(mod)}
               on:keydown={(e) => handleModKeydown(e, mod)}>
-          {i18n.t(mod + "_emoji", langVal)}
+        {#if mod == Module.drawPattern}
+          <span class="text-cyan-500">
+            <Icon icon={Icons.AtomSolid}/>
+          </span>
+        {:else if mod === Module.feed}
+          <span class="text-cyan-500">
+            <Icon icon={Icons.MessagesOutline} />
+          </span>
+        {:else if mod == Module.translation}
+          <span class="text-cyan-500">
+            <Icon icon={Icons.ArrowUpDownSolid}/>
+          </span>
+        {:else if mod == Module.presets}
+          <span class="text-cyan-500">
+            <Icon icon={Icons.BriefcaseSolid} />
+          </span>
+        {:else if mod == Module.rotation}
+          <span class="text-cyan-500">
+            <Icon icon={Icons.RotateOutline} />
+          </span>
+        {:else}
+          <span class="font-extrabold text-xl">
+            {i18n.t(mod + "_emoji", langVal)} 
+          </span>
+        {/if}
       </button>
       <input id={`mod_radio_${mod}`}
              value={mod}
@@ -130,7 +156,7 @@
 
     &_left
       &_selected
-        background-color: color.$green-4
+        background-color: color.$green-7
     &_right
       &_selected
         background-color: color.$purple-7
@@ -149,7 +175,7 @@
     min-width: 30px
 
   .selected_left
-    background-color: color.$green-4
+    background-color: color.$green-7
   .selected_right
     background-color: color.$purple-7
 

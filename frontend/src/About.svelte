@@ -23,7 +23,7 @@
   let personal_projects: PersonalProject[] = [
     {
       title: 'my_website (this)',
-      description: 'RustWasm, Go, Typescript, Svelte, WebGL, Sass, Tailwind, Vite, NixOS',
+      description: 'RustWasm, Go, Typescript, NixOS, Svelte, WebGL, Tailwind, Flowbite, Sass, Vite',
       href: 'https://github.com/users/nathanielBellamy/projects/4',
       program: EmbeddedProgram.none
     },
@@ -241,8 +241,8 @@
       padding-left: 1em
       font-weight: 700
       color: color.$green-2
-      border-bottom: 3px solid color.$green-4
-      border-left: 3px solid color.$green-4
+      border-bottom: 3px solid color.$green-7
+      border-left: 3px solid color.$green-7
 
       border-radius: 5px
 

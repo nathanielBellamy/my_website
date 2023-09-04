@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
-  import { Popover } from 'flowbite-svelte'
+  import { Modal, Popover } from 'flowbite-svelte'
   import { slide } from 'svelte/transition'
   import Recaptcha from "../lib/Recaptcha.svelte"
   import { ViteMode } from "../ViteMode"
@@ -11,16 +11,6 @@
   const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
 
   export let hasPassedGate: boolean
-  let showRecaptcha = false
-
-  function onEnterSquareClick() {
-    // TODO: set up recaptcha on dev-site
-    if (false) {// (import.meta.env.MODE !== ViteMode.localhost) {
-      showRecaptcha = true
-    } else {
-      hasPassedGate = true
-    }
-  }
 
   onDestroy(unsubSmallScreen)
 </script>
@@ -36,11 +26,11 @@
         <Popover class="bg-slate-800 text-2xl"
                  offset={-10}
                  transition={slide}>
-          <p>
+          <p class="font-extrabold">
             WOW!
           </p>
         </Popover>
-        <div class="text-3xl md:text-6xl">
+        <div class="text-3xl md:text-6xl font-extrabold">
           <p>
             ===============
           </p>
@@ -61,7 +51,7 @@
         <Popover class="bg-slate-800 text-2xl"
                  offset={-10}
                  transition={slide}>
-          <p>
+          <p class="font-extrabold">
             ZOINKS!
           </p>
         </Popover>
@@ -70,28 +60,22 @@
     <div class="h-full w-full pl-4 pr-4 flex justify-around items-center text-left text-2xl">
       <ul class="info_gate_intro w-10/12 font-bold">
         <li>
-          The Public Square is a free art project made for anonymous collaboration
+          The Public Square is a free art project
         </li>
         <li>
           Make colorful shapes and send emojis
         </li>
         <li>
-          For a solo version where you can save presets, nagivate to
+          For an offline version where you can save presets, nagivate to
           <span class="abelone">
             The Magic Square
           </span>
         </li>
       </ul>
     </div>
-    <div class="grow w-full flex justify-around items-center">
-      <button class="text-3xl"
-              on:click={onEnterSquareClick}>
-        Enter The Public Square
-      </button>
-    </div>
-    {#if showRecaptcha && import.meta.env.MODE !== ViteMode.localhost}
-      <Recaptcha bind:hasPassed={hasPassedGate}/>
-    {/if}
+    <Recaptcha title="Enter The Public Square"
+               action="PSLOGIN"
+               bind:hasPassed={hasPassedGate}/>
   </div>
 </div>
 

@@ -59,7 +59,7 @@
       border-bottom: 5px solid color.$blue-7
 
   .left
-    background-color: color.$green-4
+    background-color: color.$green-7
   .right
     background-color: color.$purple-7
 </style>

@@ -215,12 +215,24 @@ body {
 
 /* fix ios safari bottom padding */
 /* TODO: */
-/*   unfortunately, this adds superflouous padding on iOS Firefox */
+/*   unfortunately, this adds superflouous padding on some browsers (iOS Firefox) */
 /*   but we will accept that for now as iOS Chrome and Safari look good*/
-@media (max-width: 1000px) {
-  _::-webkit-full-page-media, _:future, :root .main_container {
+/*   may compile with an error but does seem to work in testing thus far*/
+_::-webkit-full-page-media, _:future, :root .main_container {
+  @media (max-width: 750px) {
     padding-bottom: 80px;
     min-height: -webkit-fill-available;
   }
 }
 
+.grecaptcha-badge {
+  width: 5px !important;
+  overflow: hidden !important;
+  transition: all 0.3s ease !important;
+  right: 4px !important;
+  top: 60px !important;
+}
+
+.grecaptcha-badge:hover {
+  width: 256px !important;
+}

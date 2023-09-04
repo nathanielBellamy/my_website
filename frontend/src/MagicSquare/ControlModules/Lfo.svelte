@@ -285,7 +285,7 @@
     box-shadow: 0 0
 
   .active
-    border-color: color.$red-5
+    border-color: color.$red-7
 
   .lfo_select
     flex-grow: 0.2

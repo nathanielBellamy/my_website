@@ -2,6 +2,7 @@ package auth
 
 import (
 	"net/http"
+  "os"
 	"strings"
 
 	"github.com/nathanielBellamy/my_website/backend/go/env"
@@ -11,9 +12,6 @@ import (
 
 func GetClientIpAddr(r *http.Request) string {
   var res string
-  // TODO: 
-  //  this will have to be conditional on runtime_env
-  //  are we behind Nginx or not?
 
 	if forwardedFor := r.Header.Get("X-Forwarded-For"); forwardedFor != "" {
 		// The header can contain multiple IPs, comma-separated.
@@ -32,15 +30,31 @@ type IoPassword struct {
   Password string
 }
 
-func HasValidCookie(runtime_env env.Env, r *http.Request, cookieJar *cmap.ConcurrentMap[string, bool], log *zerolog.Logger) bool {
+func HasValidCookie(
+  r *http.Request, 
+  cookieType CookieType, 
+  cookieJar *cmap.ConcurrentMap[string, Cookie], 
+  log *zerolog.Logger,
+) bool {
   res := true
   ip := GetClientIpAddr(r)
 
   var cookieName string
-  if runtime_env.IsLocalhost() {
-    cookieName = "nbs-dev"
+  mode := os.Getenv("MODE")
+  if env.IsLocalhost(mode) {
+    switch cookieType {
+    case CTDEV:
+      cookieName = "nbs-dev"
+    case CTPSR:
+      cookieName = "nbs-psr"
+    }
   } else {
-    cookieName = "__Secure-nbs-dev"
+    switch cookieType {
+    case CTDEV:
+      cookieName = "__Secure-nbs-dev"
+    case CTPSR:
+      cookieName = "__Secure-nbs-psr"
+    }
   }
   // Try to get the cookie
   cookie, err := r.Cookie(cookieName)
@@ -48,24 +62,30 @@ func HasValidCookie(runtime_env env.Env, r *http.Request, cookieJar *cmap.Concur
   if err != nil {
       // Handle the error
       log.Error().
-          Str("ip", ip).
           Err(err).
+          Str("ip", ip).
+          Int32("Type", int32(cookieType)).
+          Str("cookieName", cookieName).
           Msg("Error Retrieving Cookie")
       return false
   }
 
   if cookieJar.Has(cookie.Value) {
-    val, err := cookieJar.Get(cookie.Value)
+    cookieFromJar, err := cookieJar.Get(cookie.Value)
     if err {
-      log.Warn().
+      log.Error().
           Str("ip", ip).
-          Msg("Cookie Not Valid")
+          Int32("Type", int32(cookieType)).
+          Msg("Cookie Not Found in Jar")
       res = false
     }
-    res = val
+    res = cookieFromJar.Valid && cookieFromJar.Type == cookieType
   } else {
     // poison invalid token
-    cookieJar.SetIfAbsent(cookie.Value, false)
+    cookieJar.SetIfAbsent(
+      cookie.Value, 
+      Cookie{ Valid: false, Type: cookieType },
+    )
     res = false
   }
 

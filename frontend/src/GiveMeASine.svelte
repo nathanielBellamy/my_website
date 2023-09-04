@@ -2,6 +2,8 @@
   import { onDestroy } from 'svelte'
   import init, { GmasWasm, rust_init_message  } from '../pkg/src_rust.js'
   import { I18n, Lang } from "./I18n"
+  import Icon from './lib/Icon.svelte'
+  import { Icons } from './lib/Icons.js'
   import { lang } from './stores/lang'
   
   // INIT LANG BOILER PLATE
@@ -98,12 +100,16 @@
       <button on:click={() => setGmasView(GmasView.graph)}
               class="view_select_button text-xl pt-2 pb-2 flex justify-around items-center"
               class:selected={gmasView === GmasView.graph}>
-        📈
+        <span class="text-cyan-500">
+          <Icon icon={Icons.EyeSolid} />
+        </span>
       </button>
       <button on:click={() => setGmasView(GmasView.control)}
               class="view_select_button text-xl pt-2 pb-2 flex justify-around items-center"
               class:selected={gmasView === GmasView.control}>
-        🛠️
+        <span class="text-cyan-500">
+          <Icon icon={Icons.GearSolid} />
+        </span>
       </button>
    </div>
   {/if}
