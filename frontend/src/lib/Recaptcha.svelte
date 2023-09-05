@@ -76,7 +76,7 @@
 
 <div class="w-full flex justify-around items-center">
   <button on:click={onClick}
-          class="text-cyant-500 recaptcha_button font-mono w-5/6">
+          class="text-cyan-500 recaptcha_button font-mono w-5/6">
     {title}
   </button>
 </div>

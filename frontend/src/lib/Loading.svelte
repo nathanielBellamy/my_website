@@ -10,11 +10,12 @@
   onDestroy(unsubLang)
 </script>
 
-<section class="h-full w-full flex flex-col justify-around items-stretch gap-4">
-  <div class="h-16 w-full flex justify-center items-center">
+<section class="h-full w-full flex flex-col justify-around items-stretch">
+  <div class="h-16 w-full flex justify-center items-center gap-6">
+    <Spinner color="purple" 
+             size="10"/>
     <div class="font-mono text-cyan-500 text-4xl md:text-6xl w-fit flex justify-around items-center"> 
       {i18n.t("title", langVal)}
     </div>
-    <Spinner color="purple" />
   </div>
 </section>
