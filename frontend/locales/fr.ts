@@ -115,10 +115,10 @@ export const localeFr: any = {
       rotation: "rotation",
       shape: "forme",
       translation: "translation",
-      xBase: "X base",
-      xSpread: "pas de X",
-      yBase: "Y base",
-      ySpread: "pas de Y"
+      translationXBase: "X base",
+      translationXSpread: "pas de X",
+      translationYBase: "Y base",
+      translationYSpread: "pas de Y"
     },
     main: {
       active: "actif",

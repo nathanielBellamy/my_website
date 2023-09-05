@@ -226,16 +226,16 @@
           </optgroup>
           <optgroup label={i18n.t("translation", langVal)}>
             <option value={LfoDestination.translationXBase}> 
-              {i18n.t("xBase", langVal)}
+              {i18n.t("translationXBase", langVal)}
             </option>
             <option value={LfoDestination.translationXSpread}> 
-              {i18n.t("xSpread", langVal)}
+              {i18n.t("translationXSpread", langVal)}
             </option>
             <option value={LfoDestination.translationYBase}> 
-              {i18n.t("yBase", langVal)}
+              {i18n.t("translationYBase", langVal)}
             </option>
             <option value={LfoDestination.translationYSpread}> 
-              {i18n.t("ySpread", langVal)}
+              {i18n.t("translationYSpread", langVal)}
             </option>
           </optgroup>
         </select>
