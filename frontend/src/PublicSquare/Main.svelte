@@ -120,16 +120,12 @@
            color={ToastColor.green}
            icon={Icons.CheckCircleSolid}
            bind:text={connectedText}/>
-  {#if showConnectionError}
-    <Toaster open={null}
-             icon={Icons.ExclamationCircleSolid}
-             color={ToastColor.red}
-             bind:text={connectionErrorText}/>
-  {/if}
-  {#if showDisconnected}
-    <Toaster open={null}
-             icon={Icons.ExclamationCircleSolid}
-             color={ToastColor.red}
-             bind:text={connectionErrorText}/>
-  {/if}
+  <Toaster bind:open={showConnectionError}
+           icon={Icons.ExclamationCircleSolid}
+           color={ToastColor.red}
+           bind:text={connectionErrorText}/>
+  <Toaster bind:open={showDisconnected}
+           icon={Icons.ExclamationCircleSolid}
+           color={ToastColor.red}
+           bind:text={connectionErrorText}/>
 </div>
