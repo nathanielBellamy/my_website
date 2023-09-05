@@ -2,7 +2,6 @@
   import { onDestroy } from 'svelte'
   import { WebsocketBuilder } from 'websocket-ts'
   import Feed from '../MagicSquare/ControlModules/Feed.svelte'
-  import type { ToasterProps } from '../lib/Toasty'
   import { ToastColor } from '../lib/Toasty'
   import type { FeedMessage } from './../MagicSquare/ControlModules/FeedMessage'
   import MagicSquarePub from './MagicSquarePub.svelte'
@@ -69,24 +68,7 @@
   $: connectedText = i18n.t("connected", langVal)
   $: connectionErrorText = i18n.t("connectionError", langVal)
   $: disconnectedText = i18n.t("disconnected", langVal)
-
-  const toastDisconnected: ToasterProps = {
-    color: ToastColor.red,
-    text: disconnectedText,
-    icon: Icons.ExclamationCircleSolid
-  }
-
-  const toastError: ToasterProps = {
-    color: ToastColor.red,
-    text: connectionErrorText,
-    icon: Icons.ExclamationCircleSolid
-  }
   
-  let toasts: ToasterProps[] = []
-  function pushToast(t: ToasterProps) {
-    toasts = [t, ...toasts]
-  }
-
   // messaging
   let toSendBody: string = ""
   
@@ -104,7 +86,6 @@
     ws.close()
     unsubLang()
   })
-
 </script>
 
 <div class="h-full w-full overflow-hidden">
@@ -127,5 +108,5 @@
   <Toaster bind:open={showDisconnected}
            icon={Icons.ExclamationCircleSolid}
            color={ToastColor.red}
-           bind:text={connectionErrorText}/>
+           bind:text={disconnectedText}/>
 </div>
