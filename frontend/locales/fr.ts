@@ -10,6 +10,7 @@ export const localeFr: any = {
       home: "Accueil",
       about: "De moi",
       magicSquare: "Carré magique",
+      publicSquare: "Carré publique",
       giveMeASine: "Donne-moi un sinus",
       none: "",
       systemDiagram: "Diagramme du système",
@@ -24,6 +25,7 @@ export const localeFr: any = {
   },
   home: {
     title: "v0.1.0",
+    cookieWarning: "Ce site utilise des cookies.",
     about: "De moi",
     about_1: "Ce que je fait con code",
     about_2: "S'il vous plaît, appréciez ces images de moi en \"lumière naturelle\" générées par intelligence artificielle",
@@ -41,6 +43,9 @@ export const localeFr: any = {
       4: "Alors, je suis en train de faire ce site"
     },
     whatsHere: "Qu'est-ce qu'il y a ici?"
+  },
+  loading: {
+    title: "Chargement..."
   },
   magicSquare: {
     color: {
@@ -177,7 +182,24 @@ export const localeFr: any = {
       accept_and_continue: "Accepter et continuer",
     }
   },
-  misc: {
-
+  publicSquare: {
+    main: {
+      connected: "Connecté",
+      connectionError: "Erreur de connexion",
+      disconnected: "Débranché"
+    },
+    infoGate: {
+      enter: "Entrez Sur Le Carré Publique",
+      freeArt: "Le Carré Publique est un projet d'art gratuit",
+      shapesEmojis: "Créez des formes colorées et envoyez des emojis",
+      offlineVersion: "Pour une version hors ligne où vous pouvez sauvegarder des préréglages, naviguez vers Le Carré Magique",
+      publicSquare: "Carré Publique",
+      welcome: "Bienvenu au",
+      wow: "OUAH",
+      zoinks: "ZOINKS"
+    }
+  },
+  recaptcha: {
+    verifying: "Vérification"
   }
 }

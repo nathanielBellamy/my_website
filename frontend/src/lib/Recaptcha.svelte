@@ -1,6 +1,13 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte'
   import { Modal, Spinner } from "flowbite-svelte"
   import rImg from "../assets/recaptcha_logo.svg"
+
+  import { I18n, Lang } from "../I18n"
+  import { lang } from "../stores/lang"
+  let i18n = new I18n("recaptcha")
+  let langVal: Lang
+  const unsubLang = lang.subscribe( val => langVal = val)
 
   export let action: string
   export let title: string
@@ -48,6 +55,8 @@
       })
     .then((res) => { hasPassed = res.status === 200 })
   }
+
+  onDestroy(unsubLang)
 </script>
 
 <Modal bind:open={showModal}
@@ -58,7 +67,7 @@
          style:width="70px"
          alt="Google Recaptcha"/>
     <h3 class="text-cyan-700 mt-4 pl-4 pr-4 font-mono font-extrabold flex items-center">
-      Verifying
+      {i18n.t("verifying", langVal)}
     </h3>
     <Spinner color="blue" 
              size="5"/>
@@ -67,7 +76,7 @@
 
 <div class="w-full flex justify-around items-center">
   <button on:click={onClick}
-          class="recaptcha_button font-mono w-5/6">
+          class="text-cyan-500 recaptcha_button font-mono w-5/6">
     {title}
   </button>
 </div>

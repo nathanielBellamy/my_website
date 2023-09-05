@@ -3,11 +3,7 @@
   import Main from "./Main.svelte"
   import WarningModal from "../MagicSquare/WarningModal.svelte"
   import InfoGate from "./InfoGate.svelte"
-  import { Spinner } from "flowbite-svelte"
-
-  import { smallScreen } from '../stores/smallScreen'
-  let smallScreenVal: boolean
-  const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
+  import Loading from "../lib/Loading.svelte";
  
   let hasPassedGate: boolean = false
   let hasAcceptedWarning: boolean = false
@@ -28,18 +24,12 @@
   onMount(() => {
     hasAcceptedWarning = !!localStorage.getItem("magic_square_has_accepted_warning")
   })
-
 </script>
 
 <body id="magic_square_pub_container"
       class="w-full h-full overflow-hidden overscroll-none">
   {#if counter > 0}
-    <div class="h-full w-full flex justify-center items-center gap-4">
-      <div class="info_gate_loading font-mono text-4xl md:text-6xl w-fit flex justify-around items-center"> 
-        Loading...
-      </div>
-      <Spinner color="purple" />
-    </div>
+    <Loading />
   {:else}
     {#if !hasPassedGate}
       <InfoGate bind:hasPassedGate={hasPassedGate}/>
@@ -50,12 +40,3 @@
     {/if}
   {/if}
 </body>
-
-<style lang="sass">
-  @use "./../styles/color"
-  @use "./../styles/text"
-
-  .info_gate_loading
-    color: color.$blue-7
-</style>
-

@@ -1,9 +1,7 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
-  import { Modal } from 'flowbite-svelte'
   import { WebsocketBuilder } from 'websocket-ts'
   import Feed from '../MagicSquare/ControlModules/Feed.svelte'
-  import type { ToasterProps } from '../lib/Toasty'
   import { ToastColor } from '../lib/Toasty'
   import type { FeedMessage } from './../MagicSquare/ControlModules/FeedMessage'
   import MagicSquarePub from './MagicSquarePub.svelte'
@@ -11,6 +9,12 @@
   import Toaster from '../lib/Toaster.svelte'
   import { ViteMode } from '../ViteMode'
   import { Icons } from '../lib/Icons'
+
+  import { I18n, Lang } from "../I18n"
+  import { lang } from "../stores/lang"
+  let i18n = new I18n("publicSquare/main")
+  let langVal: Lang
+  const unsubLang = lang.subscribe( val => langVal = val)
 
   let clientId: number
 
@@ -20,13 +24,16 @@
     : "wss"
   const fullUrl: string = `${protocol}://${baseUrl}/public-square-feed-ws`
 
+  let showConnectionError: boolean = false
+  let showDisconnected: boolean = false
+
   // websocket
   const ws = new WebsocketBuilder(fullUrl)
       .onOpen(() => {
         triggerShowConnected()
       })
-      .onClose(() => pushToast(toastDisconnected))
-      .onError(() => pushToast(toastError))
+      .onClose(() => showDisconnected = true)
+      .onError(() => showConnectionError = true)
       .onMessage((_i, ev) => {
         const message: FeedMessage = JSON.parse(ev.data)
         if (message.body === "__init__connected__") {
@@ -57,24 +64,11 @@
       return setTimeout(timeout, 1000);
     showConnected = false;
   }
-
-  const toastDisconnected: ToasterProps = {
-    color: ToastColor.red,
-    text: "Disconnected",
-    icon: Icons.ExclamationCircleSolid
-  }
-
-  const toastError: ToasterProps = {
-    color: ToastColor.red,
-    text: "Connection error",
-    icon: Icons.ExclamationCircleSolid
-  }
   
-  let toasts: ToasterProps[] = []
-  function pushToast(t: ToasterProps) {
-    toasts = [t, ...toasts]
-  }
-
+  $: connectedText = i18n.t("connected", langVal)
+  $: connectionErrorText = i18n.t("connectionError", langVal)
+  $: disconnectedText = i18n.t("disconnected", langVal)
+  
   // messaging
   let toSendBody: string = ""
   
@@ -90,6 +84,7 @@
 
   onDestroy(() => {
     ws.close()
+    unsubLang()
   })
 </script>
 
@@ -105,15 +100,13 @@
   <Toaster bind:open={showConnected}
            color={ToastColor.green}
            icon={Icons.CheckCircleSolid}
-           text={"Connected"}/>
-  {#each toasts as { color, text, icon }}
-      <Toaster open={null}
-               icon={icon}
-               color={color}
-               text={text}/>
-  {/each}
+           bind:text={connectedText}/>
+  <Toaster bind:open={showConnectionError}
+           icon={Icons.ExclamationCircleSolid}
+           color={ToastColor.red}
+           bind:text={connectionErrorText}/>
+  <Toaster bind:open={showDisconnected}
+           icon={Icons.ExclamationCircleSolid}
+           color={ToastColor.red}
+           bind:text={disconnectedText}/>
 </div>
-
-<style lang="sass">
-
-</style>

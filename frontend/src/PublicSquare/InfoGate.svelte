@@ -7,12 +7,21 @@
   import megaphone from '../assets/megaphone.png'
   import Link from '../lib/Link.svelte'
   import { smallScreen } from '../stores/smallScreen'
+  import { I18n, type Lang } from '../I18n'
+  import { lang } from '../stores/lang'
   let smallScreenVal: boolean
   const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
+  
+  const i18n = new I18n('publicSquare/infoGate')
+  let langVal: Lang
+  const unsubLang = lang.subscribe(val => langVal = val)
 
   export let hasPassedGate: boolean
 
-  onDestroy(unsubSmallScreen)
+  onDestroy(() => {
+    unsubLang()
+    unsubSmallScreen()
+  })
 </script>
 
 <div class="info_gate font-mono w-full h-full overflow-y-scroll pb-4">
@@ -26,19 +35,19 @@
         <Popover class="bg-slate-800 text-2xl"
                  offset={-10}
                  transition={slide}>
-          <p class="font-extrabold">
-            WOW!
+          <p class="font-extrabold text-cyan-500">
+            {i18n.t("wow", langVal)}
           </p>
         </Popover>
-        <div class="text-3xl md:text-6xl font-extrabold">
+        <div class="text-3xl md:text-6xl font-extrabold text-cyan-500">
           <p>
             ===============
           </p>
           <p>
-            Welcome to
+            {i18n.t("welcome", langVal)}
           </p>
           <p>
-            The Public Square
+            {i18n.t("publicSquare", langVal)}
           </p>
           <p>
             ===============
@@ -51,8 +60,8 @@
         <Popover class="bg-slate-800 text-2xl"
                  offset={-10}
                  transition={slide}>
-          <p class="font-extrabold">
-            ZOINKS!
+          <p class="font-extrabold text-cyan-500">
+            {i18n.t("zoinks", langVal)}
           </p>
         </Popover>
       </div>
@@ -60,20 +69,17 @@
     <div class="h-full w-full pl-4 pr-4 flex justify-around items-center text-left text-2xl">
       <ul class="info_gate_intro w-10/12 font-bold">
         <li>
-          The Public Square is a free art project
+          {i18n.t("freeArt", langVal)}
         </li>
         <li>
-          Make colorful shapes and send emojis
+          {i18n.t("shapesEmojis", langVal)}
         </li>
         <li>
-          For an offline version where you can save presets, nagivate to
-          <span class="abelone">
-            The Magic Square
-          </span>
+          {i18n.t("offlineVersion", langVal)}
         </li>
       </ul>
     </div>
-    <Recaptcha title="Enter The Public Square"
+    <Recaptcha title={i18n.t("enter", langVal)}
                action="PSLOGIN"
                bind:hasPassed={hasPassedGate}/>
   </div>

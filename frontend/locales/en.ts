@@ -10,6 +10,7 @@ export const localeEn: any = {
       home: "Home",
       about: "About",
       magicSquare: "Magic square",
+      publicSquare: "Public square",
       giveMeASine: "Give me a sine",
       none: "",
       systemDiagram: "System Diagram",
@@ -24,6 +25,7 @@ export const localeEn: any = {
   },
   home: {
     title: "v0.1.0",
+    cookieWarning: "This site uses cookies.",
     about: "About",
     about_1: "An overview of what I do code-wise",
     about_2: "Please enjoy these AI-generated images of me in \"natural light\"",
@@ -41,6 +43,9 @@ export const localeEn: any = {
       4: "So I am building this website"
     },
     whatsHere: "What's here?"
+  },
+  loading: {
+    title: "Loading..."
   },
   magicSquare: {
     color: {
@@ -179,9 +184,23 @@ export const localeEn: any = {
     }
   },
   publicSquare: {
-    messaging: {
-      cool: "匚ㄖㄖㄥ!",
-      neat: "ᑎEᗩT!",
+    main: {
+      connected: "Connected",
+      connectionError: "Connection error",
+      disconnected: "Disconneted"
+    },
+    infoGate: {
+      enter: "Enter The Public Square",
+      freeArt: "The Public Square is a free art project",
+      shapesEmojis: "Make colorful shapes and send emojis",
+      offlineVersion: "For an offline version where you can save presets, nagivate to The Magic Square",
+      publicSquare: "Public Square",
+      welcome: "Welcome to the",
+      wow: "WOW",
+      zoinks: "ZOINKS"
     }
+  },
+  recaptcha: {
+    verifying: "Verifying"
   }
 }

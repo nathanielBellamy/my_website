@@ -10,6 +10,7 @@ export const localeEs: any = {
       home: "Inicio",
       about: "Sobre mí",
       magicSquare: "Cuadro mágico",
+      publicSquare: "Cuadro público",
       giveMeASine: "Dame un seno",
       none: "",
       systemDiagram: "Diagrama de systema",
@@ -24,6 +25,7 @@ export const localeEs: any = {
   },
   home: {
     title: "v0.1.0",
+    cookieWarning: "Este sitio utiliza cookies.",
     about: "Sobre mí",
     about_1: "Lo que hago por lo general con codigo",
     about_2: "Por favor, disfrute de estas imágenes generadas por inteligencia artificial de mí en \"luz natural\"",
@@ -41,6 +43,9 @@ export const localeEs: any = {
       4: "Entonces, estoy construyendo ese sitio"
     },
     whatsHere: "Que hay aqui?"
+  },
+  loading: {
+    title: "Cargando..."
   },
   magicSquare: {
     color: {
@@ -176,6 +181,25 @@ export const localeEs: any = {
       go_home: "Regresar a inicio",
       accept_and_continue: "Aceptar y continuar",
     }
-
   },
+  publicSquare: {
+    main: {
+      connected: "Conectado",
+      connectionError: "Error de conexión",
+      disconnected: "Desconectado"
+    },
+    infoGate: {
+      enter: "Entra En El Cuadro Público",
+      freeArt: "El Cuadro Público es un proyecto del arte libre",
+      shapesEmojis: "Crea formas coloridas y envía emojis",
+      offlineVersion: "Para una versión sin conexión donde puedes guardar preajustes, navega a El Cuadro Mágico",
+      publicSquare: "Cuadro Público",
+      welcome: "Bienvenido al",
+      wow: "GAUA",
+      zoinks: "ZOINKS"
+    }
+  },
+  recaptcha: {
+    verifying: "Verificando"
+  }
 }

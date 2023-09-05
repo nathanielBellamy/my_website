@@ -7,6 +7,7 @@
   import { prevSettingsStore } from './PrevSettingsStore'
   import WarningModal from "./WarningModal.svelte"
   import { Spinner } from "flowbite-svelte"
+  import Loading from "../lib/Loading.svelte"
 
   let prevSettingsStoreVal: StorageSettings
   $: prevSettingsStoreVal
@@ -47,12 +48,7 @@
 <body id="magic_square_container"
      class="magic_square_container overscroll-none overflow-y-scroll">
   {#if counter > 0}
-    <div class="h-full w-full flex justify-center items-center gap-4">
-      <div class="info_gate_loading font-mono text-4xl md:text-6xl w-fit flex justify-around items-center"> 
-        Loading...
-      </div>
-      <Spinner color="purple" />
-    </div>
+    <Loading />
   {:else}
     {#if !hasAcceptedWarning}
       <WarningModal bind:hasAccepted={hasAcceptedWarning}/>
@@ -66,10 +62,6 @@
 
 <style lang="sass">
   @use "./../styles/color"
-
-  .info_gate_loading
-    color: color.$blue-7
-
   .magic_square_container
     height: 100%
     width: 100%
