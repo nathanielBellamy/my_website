@@ -11,9 +11,3 @@ export enum ToastColor {
   orange = "orange",
   none = "none"
 }
-
-export interface ToasterProps {
-  color: ToastColor,
-  text: string,
-  icon: Icons
-}
