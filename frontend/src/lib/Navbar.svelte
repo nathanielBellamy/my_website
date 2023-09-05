@@ -42,32 +42,44 @@
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
                   on:click={() => dropdownOpen = false}
                   href="/#/">
-      {i18n.t("nav/home", langVal)} 
+      <span tabIndex="0">
+        {i18n.t("nav/home", langVal)} 
+      </span>
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
                   on:click={() => dropdownOpen = false}
                   href="/#/public-square">
-      {i18n.t("nav/publicSquare", langVal)}
+      <span tabIndex="0">
+        {i18n.t("nav/publicSquare", langVal)}
+      </span>
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
                   on:click={() => dropdownOpen = false}
                   href="/#/magic-square">
-      {i18n.t("nav/magicSquare", langVal)}
+      <span tabIndex="0">
+        {i18n.t("nav/magicSquare", langVal)}
+      </span>
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
                   on:click={() => dropdownOpen = false}
                   href="/#/give-me-a-sine">
-      {i18n.t("nav/giveMeASine", langVal)}
+      <span tabIndex="0">
+        {i18n.t("nav/giveMeASine", langVal)}
+      </span>
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
                   on:click={() => dropdownOpen = false}
                   href="/#/about">
-      {i18n.t("nav/about", langVal)}
+      <span tabIndex="0">
+        {i18n.t("nav/about", langVal)}
+      </span>
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
                   on:click={() => dropdownOpen = false}
                   href="/#/system-diagram">
-      {i18n.t("nav/systemDiagram", langVal)}
+      <span tabIndex="0">
+        {i18n.t("nav/systemDiagram", langVal)}
+      </span>
     </DropdownItem>
   </Dropdown>
 
