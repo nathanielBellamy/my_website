@@ -21,7 +21,6 @@
       await timeout(ms)
   }
 
-
   function onClick(e: any) {
     e.preventDefault();
     grecaptcha.enterprise.ready(async () => {
