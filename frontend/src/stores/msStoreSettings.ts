@@ -4,6 +4,8 @@ import type { Writable } from 'svelte/store'
 // these settings are non-input settings
 // a.k.a. settings that do NOT appear in UiBuffer.settings in RustWasm
 export interface MsStoreSettings {
+  colorIdxA: number,
+  colorIdxB: number,
   geometryIdxA: number,
   geometryIdxB: number,
   geometryShapeIdx: number,
@@ -11,8 +13,10 @@ export interface MsStoreSettings {
 }
 
 const defaultMsStoreSettings: MsStoreSettings = {
+  colorIdxA: 0,
+  colorIdxB: 15,
   geometryIdxA: 0,
-  geometryIdxB: 4,
+  geometryIdxB: 15,
   geometryShapeIdx: 0,
   presetBank: 0
 }

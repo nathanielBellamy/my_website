@@ -6,6 +6,11 @@
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
 
+  import { msStoreSettings } from '../../stores/msStoreSettings'
+  import type { MsStoreSettings } from '../../stores/msStoreSettings'
+  let msStoreSettingsVal: MsStoreSettings
+  const unsubMsStoreSettings = msStoreSettings.subscribe((val: MsStoreSettings) => msStoreSettingsVal = val)
+
   let langVal: Lang 
   const unsubLang = lang.subscribe(val => langVal = val)
   onDestroy(unsubLang)
@@ -25,11 +30,11 @@
     return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, 1)`
   }
 
-  let idx_a: number = 0
-  let idx_b: number = 15
+  let idxA: number
+  let idxB: number
 
-  $: idxLeft = idx_a < idx_b ? idx_a : idx_b
-  $: idxRight = idx_a > idx_b ? idx_a : idx_b
+  $: idxLeft = idxA < idxB ? idxA : idxB
+  $: idxRight = idxA > idxB ? idxA : idxB
 
   export let colorDirection: ColorDirection
   export let colors: number[][]
@@ -73,19 +78,28 @@
     e.stopPropagation()
     switch (id) {
       case 'a':
-        idx_a = parseInt(e.target.value)
+        idxA = parseInt(e.target.value)
         break
       case 'b':
-        idx_b = parseInt(e.target.value)
+        idxB = parseInt(e.target.value)
         break
       default:
         break
     }
+    updateStoreRange(idxA, idxB)
+  }
+
+  function updateStoreRange(idxA: number, idxB: number) {
+    msStoreSettings.update((prevSettings: MsStoreSettings) => {
+      prevSettings.colorIdxA = idxA
+      prevSettings.colorIdxB = idxB
+      return prevSettings
+    })
   }
 
   let colorStrings: string[]
   $: colorStrings = colors.map(x => rgbaToString(x))
-  $: gradient = `linear-gradient(90deg, ${colorStrings[idx_a]} 0%, ${colorStrings[idx_b]} 100%)`
+  $: gradient = `linear-gradient(90deg, ${colorStrings[idxA]} 0%, ${colorStrings[idxB]} 100%)`
   let currIdx: number = 0
 
 
@@ -131,6 +145,10 @@
 
   let mounted: boolean = false
   onMount(async () => {
+    // read range idxs from store
+    idxA = msStoreSettingsVal.colorIdxA
+    idxB = msStoreSettingsVal.colorIdxB
+
     // get height/width for picker
     const width: number = deriveColorPickerWidth(innerWidth, innerHeight)
     var input = document.getElementById(WasmInputId.colors)
@@ -170,6 +188,8 @@
 
   onDestroy(() => {
     window.removeEventListener('resize', handlePickerResize)
+    unsubLang()
+    unsubMsStoreSettings()
   })
 </script>
 
@@ -226,23 +246,23 @@
       {/each}
   </div>
   <div class="color_gradient h-fit rounded-md pt-4 p-2 m-2 grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-1">
-    <select bind:value={idx_a}
+    <select bind:value={idxA}
             class="h-fit"
             on:input={(e) => e.stopPropagation()}
             on:change={(e) => handleGradientIndexChange(e, 'a')}>
       {#each {length: 16} as _, idx}
-        <option selected={idx_a === idx}
+        <option selected={idxA === idx}
                 value={idx}>
           {idx + 1}
         </option>
       {/each}
     </select>
-    <select bind:value={idx_b}
+    <select bind:value={idxB}
             class="h-fit"
             on:input={(e) => e.stopPropagation()}
             on:change={(e) => handleGradientIndexChange(e, 'b')}>
       {#each {length: 16} as _, idx}
-        <option selected={idx_b === idx}
+        <option selected={idxB === idx}
                 value={idx}>
           {idx + 1}
         </option>

@@ -13,9 +13,7 @@
   import { msStoreSettings } from '../../stores/msStoreSettings'
   import type { MsStoreSettings } from '../../stores/msStoreSettings'
   let msStoreSettingsVal: MsStoreSettings
-  const unsubMsStoreSettings = msStoreSettings.subscribe((val: MsStoreSettings) => {
-    msStoreSettingsVal = val
-  })
+  const unsubMsStoreSettings = msStoreSettings.subscribe((val: MsStoreSettings) => msStoreSettingsVal = val)
 
   export let shapes: Shape[]
 
