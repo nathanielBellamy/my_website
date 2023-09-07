@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy } from "svelte"
+  import { onDestroy, onMount } from "svelte"
   import { WasmInputId } from "../WasmInputId"
   import { ShapeTag } from "./Shape"
   import type { Shape } from "./Shape"
@@ -10,61 +10,89 @@
   const unsubLang = lang.subscribe(val => langVal = val)
   let i18n = new I18n("magicSquare/geometry")
 
+  import { msStoreSettings } from '../../stores/msStoreSettings'
+  import type { MsStoreSettings } from '../../stores/msStoreSettings'
+  let msStoreSettingsVal: MsStoreSettings
+  const unsubMsStoreSettings = msStoreSettings.subscribe((val: MsStoreSettings) => {
+    msStoreSettingsVal = val
+  })
+
   export let shapes: Shape[]
 
-  let shapeIndex: number = 0
-  $: shapeJson = JSON.stringify({shape: shapes[shapeIndex], index: shapeIndex})
-  let n: number = shapes[shapeIndex].c
+  let shapeIdx: number = 0
+  let n: number = 0 
 
-  let idx_a: number = 0
-  let idx_b: number = 4
+  let idxA: number
+  let idxB: number
 
-  $: idxLeft = idx_a < idx_b ? idx_a : idx_b
-  $: idxRight = idx_a > idx_b ? idx_a : idx_b
+  $: idxLeft = idxA < idxB ? idxA : idxB
+  $: idxRight = idxA > idxB ? idxA : idxB
 
   function handleShapeIndexSelect(e: any, new_idx: number) {
     e.stopPropagation()
-    shapeIndex = new_idx
-    n = shapes[shapeIndex].c
+    shapeIdx = new_idx
+    updateStoreShapeIdx(new_idx)
+    n = shapes[shapeIdx].c
+    setShapeSelectValue(shapeIdx)
+  }
+
+  function setShapeSelectValue(shapeIdx: number) {
     var sel = document.getElementById('magic_square_shape_select')
-    sel.value = JSON.stringify({t: shapes[shapeIndex].t, c: n})
+    sel.value = JSON.stringify({t: shapes[shapeIdx].t, c: n})
+  }
+
+  function updateStoreShapeIdx(shapeIdx: number) {
+    msStoreSettings.update((prevSettings: MsStoreSettings) => {
+      prevSettings.geometryShapeIdx = shapeIdx
+      return prevSettings
+    })
   }
 
   function handleShapeSelect(e: any) {
     e.stopPropagation()
     var input = document.getElementById(WasmInputId.shapes)
     const new_shape: Shape = JSON.parse(e.target.value)
-    shapes[shapeIndex] = new_shape
+    shapes[shapeIdx] = new_shape
     shapes = [...shapes]
     n = new_shape.c
-    input.value = JSON.stringify({shape: {t: new_shape.t, c: n}, index: shapeIndex})
+    input.value = JSON.stringify({shape: {t: new_shape.t, c: n}, index: shapeIdx})
     input.dispatchEvent(new Event('input', {bubbles: true}))
-  } 
+  }
 
   function handleRangeIndexChange(e: any, id: string) {
     e.stopPropagation()
     switch (id) {
       case 'a':
-        idx_a = parseInt(e.target.value)
+        idxA = parseInt(e.target.value)
         break
       case 'b':
-        idx_b = parseInt(e.target.value)
+        idxB = parseInt(e.target.value)
         break
       default:
         break
     }
+    updateStoreRange(idxA, idxB)
+  }
+
+  function updateStoreRange(idxA: number, idxB: number) {
+    msStoreSettings.update((prevSettings: MsStoreSettings) => {
+      prevSettings.geometryIdxA = idxA
+      prevSettings.geometryIdxB = idxB
+      console.dir({prevSettings})
+      return prevSettings
+    })
   }
 
   function setRange() {
     let width: number = idxRight - idxLeft;
     let input = document.getElementById(WasmInputId.shapes)
     if (!!width) {
-      const new_shape = shapes[shapeIndex]
+      const new_shape = shapes[shapeIdx]
       shapes.forEach((_: Shape, idx: number) => {
         if (idx >= idxLeft && idx <= idxRight) {
           shapes[idx] = new_shape
           shapes = [...shapes]
-          input.value = JSON.stringify({shape: shapes[shapeIndex], index: idx})
+          input.value = JSON.stringify({shape: shapes[shapeIdx], index: idx})
           input.dispatchEvent(new Event('input', {bubbles: true}))
         }
       })
@@ -72,15 +100,23 @@
   }
 
   function handleNInput() {
-   shapes[shapeIndex].c = n
+   shapes[shapeIdx].c = n
    shapes = [...shapes]
    var input = document.getElementById(WasmInputId.shapes)
-   input.value = JSON.stringify({shape: shapes[shapeIndex], index: shapeIndex})
+   input.value = JSON.stringify({shape: shapes[shapeIdx], index: shapeIdx})
    input.dispatchEvent(new Event('input', {bubbles: true}))
  }
 
+  onMount(() => {
+    idxA = msStoreSettingsVal.geometryIdxA
+    idxB = msStoreSettingsVal.geometryIdxB
+    shapeIdx = msStoreSettingsVal.geometryShapeIdx
+    n = shapes[msStoreSettingsVal.geometryShapeIdx].c
+  })
+
   onDestroy(() => {
     unsubLang()
+    unsubMsStoreSettings()
   })
 </script>
 
@@ -94,7 +130,7 @@
       {#each {length: 16} as _, i}
         <button class="flex justify-around items-center"
                 on:click={(e) => handleShapeIndexSelect(e, i)}
-                class:selected={shapeIndex === i}>
+                class:selected={shapeIdx === i}>
           {i + 1}
         </button>
       {/each}
@@ -102,7 +138,7 @@
     <div class="pt-5 pl-5 pr-5 grid grid-cols-4">
       <select id="magic_square_shape_select"
               class="col-span-3 shape_select"
-              value={JSON.stringify({t: shapes[shapeIndex].t, c: n})}
+              value={JSON.stringify({t: shapes[shapeIdx].t, c: n})}
               on:input={(e) => e.stopPropagation()}
               on:change={handleShapeSelect}>
         <optgroup label="Misc.">
@@ -140,14 +176,14 @@
     </div>
     <div class="pl-5 pr-5 flex flex-col justify-between items-stretch">
       <label class="slider_label flex justify-between" 
-             class:disabled={shapes[shapeIndex].t !== ShapeTag.ngon}
+             class:disabled={shapes[shapeIdx].t !== ShapeTag.ngon}
              for="ngon_n">
         <div> {"n"} </div>
         <div> {n} </div>
       </label>
       <input id="ngon_n"
              bind:value={n}
-             disabled={shapes[shapeIndex].t !== ShapeTag.ngon}
+             disabled={shapes[shapeIdx].t !== ShapeTag.ngon}
              on:input={handleNInput}
              type="range"
              min={3}
@@ -155,23 +191,23 @@
              step={1}/>
     </div>
     <div class="geometry_range rounded-md p-2 m-2 grid grid-cols-2 grid-rows-2 gap-2">
-      <select bind:value={idx_a}
+      <select bind:value={idxA}
               class="flex justify-around items-center"
               on:input={(e) => e.stopPropagation()}
               on:change={(e) => handleRangeIndexChange(e, 'a')}>
         {#each {length: 16} as _, idx}
-          <option selected={idx_a === idx}
+          <option selected={idxA === idx}
                   value={idx}>
             {idx + 1}
           </option>
         {/each}
       </select>
-      <select bind:value={idx_b}
+      <select bind:value={idxB}
               class="flex justify-around items-center"
               on:input={(e) => e.stopPropagation()}
               on:change={(e) => handleRangeIndexChange(e, 'b')}>
         {#each {length: 16} as _, idx}
-          <option selected={idx_b === idx}
+          <option selected={idxB === idx}
                   value={idx}>
             {idx + 1}
           </option>
