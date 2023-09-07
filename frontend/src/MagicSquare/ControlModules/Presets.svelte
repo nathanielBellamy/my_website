@@ -1,19 +1,22 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
   import { WasmInputId } from "../WasmInputId"
   import { PresetAction } from "./Preset"
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
 
+  import { msStoreSettings } from '../../stores/msStoreSettings'
+  import type { MsStoreSettings } from '../../stores/msStoreSettings'
+  let msStoreSettingsVal: MsStoreSettings
+  const unsubMsStoreSettings = msStoreSettings.subscribe((val: MsStoreSettings) => msStoreSettingsVal = val)
+
   let langVal: Lang 
   const unsubLang = lang.subscribe(val => langVal = val)
-  onDestroy(unsubLang)
 
   let i18n = new I18n("magicSquare/presets")
 
-  // TODO: CSS prevent top cutoff on small screen
-
-  let bank: number = 0
+  // bank is non-input setting
+  let bank: number
   export let preset: number
   export let updateUiSettings: Function
   let presetNext: number = preset
@@ -44,9 +47,26 @@
     updateUiSettings()
   }
 
+  function handleBankClick(id: number) {
+    bank = id
+    msStoreSettings.update((prevSettings: MsStoreSettings) => {
+      prevSettings.presetBank = id
+      return prevSettings
+    })
+  }
+
   function handlePresetClick(idx: number) {
     presetNext = idx
   }
+
+  onMount(() => {
+    bank = msStoreSettingsVal.presetBank
+  })
+
+  onDestroy(() => {
+    unsubLang()
+    unsubMsStoreSettings()
+  })
 </script>
 
 <section class="h-full flex flex-col justify-between items-stretch gap-2">
@@ -81,7 +101,7 @@
   <div class="flex flex-col justify-between items-stretch">
     <div class="pl-5 pr-5 grid grid-cols-4">
       {#each {length: 4} as _, i}
-        <button on:click={() => bank = i}
+        <button on:click={() => handleBankClick(i)}
                 class:selected={bank === i}>
         {banks[i]}
         </button>

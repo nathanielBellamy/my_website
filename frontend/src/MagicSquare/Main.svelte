@@ -34,10 +34,6 @@
   import Icon from '../lib/Icon.svelte'
   import { Icons } from '../lib/Icons.js'
 
-  import { magicSquareSettings } from '../stores/magicSquareSettings'
-  let magicSquareSettingsVal: StorageSettings
-  const unsubMagicSquareSettings = magicSquareSettings.subscribe((val: boolean) => touchScreenVal = val)
-
   // TODO:
   // this combination of touchSreen store and value updates works 
   // to ensure that the touchScreen value is updated by the time it is passed to RustWasm
@@ -305,8 +301,6 @@
     setInitialPreset(settings)
     setInitialRotationVars(settings)
     setInitialTranslationVars(settings)
-     
-    magicSquareSettings.update((_: StorageSettings) => settings)
   }
 
   function setAllSettingsFromPreset() {
