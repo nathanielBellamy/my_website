@@ -52,9 +52,18 @@
     e.stopPropagation()
     var input = document.getElementById(WasmInputId.shapes)
     const new_shape: Shape = JSON.parse(e.target.value)
+
+    if (shapes[shapeIdx].t === ShapeTag.misc && new_shape.t === ShapeTag.ngon) { 
+      // if prevShapeTag == misc && newShapeTag == nGon
+      n = 3
+      new_shape.c = n
+    } else {
+      n = new_shape.c
+    }
+
     shapes[shapeIdx] = new_shape
     shapes = [...shapes]
-    n = new_shape.c
+
     input.value = JSON.stringify({shape: {t: new_shape.t, c: n}, index: shapeIdx})
     input.dispatchEvent(new Event('input', {bubbles: true}))
   }
@@ -78,7 +87,6 @@
     msStoreSettings.update((prevSettings: MsStoreSettings) => {
       prevSettings.geometryIdxA = idxA
       prevSettings.geometryIdxB = idxB
-      console.dir({prevSettings})
       return prevSettings
     })
   }
