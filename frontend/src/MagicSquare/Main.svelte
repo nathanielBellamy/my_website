@@ -30,7 +30,6 @@
   import { I18n, Lang } from '../I18n'
   import { lang } from '../stores/lang'
   import { touchScreen } from '../stores/touchScreen'
-  import { smallScreen } from '../stores/smallScreen'
   import Icon from '../lib/Icon.svelte'
   import { Icons } from '../lib/Icons.js'
 
@@ -45,8 +44,13 @@
   const unsubTouchScreen = touchScreen.subscribe((val: boolean) => touchScreenVal = val)
   $: isTouchScreen = id(touchScreenVal)
 
+  import { smallScreen } from '../stores/smallScreen'
   let smallScreenVal: boolean
   const unsubSmallScreen = smallScreen.subscribe((val: boolean) => smallScreenVal = val)
+
+  import { currSquare, SquareType } from '../stores/currSquare'
+  let currSquareVal: SquareType
+  const unsubCurrSquare = currSquare.subscribe((val: SquareType) => currSquareVal = val)
   
   const i18n = new I18n('magicSquare/main')
   let langVal: Lang
@@ -293,14 +297,14 @@
   let hasBeenDestroyed = false
 
   function setAllSettings(settings: StorageSettings) {
-      setInitialDrawPatternVars(settings)
-      setInitialColorVars(settings)
-      setInitialLfoVars(settings)
-      setInitialGeometryVars(settings)
-      setInitialMouseTracking(settings)
-      setInitialPreset(settings)
-      setInitialRotationVars(settings)
-      setInitialTranslationVars(settings)
+    setInitialDrawPatternVars(settings)
+    setInitialColorVars(settings)
+    setInitialLfoVars(settings)
+    setInitialGeometryVars(settings)
+    setInitialMouseTracking(settings)
+    setInitialPreset(settings)
+    setInitialRotationVars(settings)
+    setInitialTranslationVars(settings)
   }
 
   function setAllSettingsFromPreset() {
@@ -394,23 +398,6 @@
     }
   }
 
-  const unsubPrevSettings = prevSettingsStore.subscribe(val => prevSettings = val)
-
-  onDestroy(() => {
-    hasBeenDestroyed = true
-    const storageSettings: StorageSettings = deriveStorageSettings()
-    if (!Object.values(storageSettings).some(x => typeof x === 'undefined')) {
-      prevSettingsStore.update((_: StorageSettings) => storageSettings)
-      window.localStorage.setItem("magic_square_settings", JSON.stringify(storageSettings))
-    }
-    unsubLang()
-    unsubPrevSettings()
-    unsubSmallScreen()
-    unsubTouchScreen()
-    let app = document.getElementById(("app_main"))
-    app.dispatchEvent(new Event("destroymswasm", {bubbles: true}))
-  })
-
   afterUpdate(() => {
     const res: StorageSettings = deriveStorageSettings()
     if (Object.values(res).every(x => typeof x !== 'undefined')){
@@ -451,7 +438,27 @@
   }
 
   onMount(async () => {
+    currSquare.update((_: SquareType) => SquareType.magic)
     await run()
+  })
+
+  const unsubPrevSettings = prevSettingsStore.subscribe(val => prevSettings = val)
+
+  onDestroy(() => {
+    hasBeenDestroyed = true
+    const storageSettings: StorageSettings = deriveStorageSettings()
+    if (!Object.values(storageSettings).some(x => typeof x === 'undefined')) {
+      prevSettingsStore.update((_: StorageSettings) => storageSettings)
+      window.localStorage.setItem("magic_square_settings", JSON.stringify(storageSettings))
+    }
+    currSquare.update((_: SquareType) => SquareType.none)
+    unsubCurrSquare()
+    unsubLang()
+    unsubPrevSettings()
+    unsubSmallScreen()
+    unsubTouchScreen()
+    let app = document.getElementById(("app_main"))
+    app.dispatchEvent(new Event("destroymswasm", {bubbles: true}))
   })
 </script>
 

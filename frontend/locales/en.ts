@@ -137,10 +137,10 @@ export const localeEn: any = {
       rotation: "rotation",
       shape: "shape",
       translation: "translation",
-      xBase: "X base",
-      xSpread: "X spread",
-      yBase: "Y base",
-      ySpread: "Y spread"
+      translationXBase: "X base",
+      translationXSpread: "X spread",
+      translationYBase: "Y base",
+      translationYSpread: "Y spread"
     },
     mouseTracking: {
       invert: "invert",
