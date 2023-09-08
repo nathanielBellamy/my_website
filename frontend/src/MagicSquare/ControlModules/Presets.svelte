@@ -12,8 +12,13 @@
 
   let langVal: Lang 
   const unsubLang = lang.subscribe(val => langVal = val)
-
   let i18n = new I18n("magicSquare/presets")
+
+  // TODO:
+  // bring presets to PublicSquare
+  import { currSquare, SquareType } from '../../stores/currSquare'
+  let currSquareVal: SquareType
+  const unsubCurrSquare = currSquare.subscribe((val: SquareType) => currSquareVal = val)
 
   // bank is non-input setting
   let bank: number
@@ -50,7 +55,7 @@
   function handleBankClick(id: number) {
     bank = id
     msStoreSettings.update((prevSettings: MsStoreSettings) => {
-      prevSettings.presetBank = id
+      prevSettings.msPresetBank = id
       return prevSettings
     })
   }
@@ -60,10 +65,21 @@
   }
 
   onMount(() => {
-    bank = msStoreSettingsVal.presetBank
+    switch(currSquareVal){
+      case SquareType.magic:
+        bank = msStoreSettingsVal.msPresetBank
+        break
+      case SquareType.public:
+        bank = msStoreSettingsVal.psPresetBank
+        break
+      case SquareType.none:
+        bank = 0
+        break
+    }
   })
 
   onDestroy(() => {
+    unsubCurrSquare()
     unsubLang()
     unsubMsStoreSettings()
   })

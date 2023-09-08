@@ -16,10 +16,13 @@
   onDestroy(unsubLang)
   let i18n = new I18n("magicSquare/color")
 
-
   import { smallScreen } from '../../stores/smallScreen'
   let smallScreenVal: boolean
   const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
+
+  import { currSquare, SquareType } from '../../stores/currSquare'
+  let currSquareVal: SquareType
+  const unsubCurrSquare = currSquare.subscribe((val: SquareType) => currSquareVal = val)
 
   function rgbaToString(rgba: number[]): string {
     // rgba = !!rgba ? rgba : [0, 255, 0, 1]
@@ -91,8 +94,16 @@
 
   function updateStoreRange(idxA: number, idxB: number) {
     msStoreSettings.update((prevSettings: MsStoreSettings) => {
-      prevSettings.colorIdxA = idxA
-      prevSettings.colorIdxB = idxB
+      switch (currSquareVal) {
+        case SquareType.magic:
+          prevSettings.msColorIdxA = idxA
+          prevSettings.msColorIdxB = idxB
+          break
+        case SquareType.public:
+          prevSettings.psColorIdxA = idxA
+          prevSettings.psColorIdxB = idxB
+          break
+      }
       return prevSettings
     })
   }
@@ -101,7 +112,6 @@
   $: colorStrings = colors.map(x => rgbaToString(x))
   $: gradient = `linear-gradient(90deg, ${colorStrings[idxA]} 0%, ${colorStrings[idxB]} 100%)`
   let currIdx: number = 0
-
 
   const colorPickerOptions = {
     width: 110,
@@ -146,8 +156,20 @@
   let mounted: boolean = false
   onMount(async () => {
     // read range idxs from store
-    idxA = msStoreSettingsVal.colorIdxA
-    idxB = msStoreSettingsVal.colorIdxB
+    switch (currSquareVal) {
+      case SquareType.magic:
+        idxA = msStoreSettingsVal.msColorIdxA
+        idxB = msStoreSettingsVal.msColorIdxB
+        break
+      case SquareType.public:
+        idxA = msStoreSettingsVal.psColorIdxA
+        idxB = msStoreSettingsVal.psColorIdxB
+        break
+      case SquareType.none:
+        idxA = 0
+        idxB = 15
+        break
+    }
 
     // get height/width for picker
     const width: number = deriveColorPickerWidth(innerWidth, innerHeight)
@@ -188,7 +210,9 @@
 
   onDestroy(() => {
     window.removeEventListener('resize', handlePickerResize)
+    unsubCurrSquare()
     unsubLang()
+    unsubSmallScreen()
     unsubMsStoreSettings()
   })
 </script>

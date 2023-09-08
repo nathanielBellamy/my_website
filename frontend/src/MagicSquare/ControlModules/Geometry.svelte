@@ -15,6 +15,10 @@
   let msStoreSettingsVal: MsStoreSettings
   const unsubMsStoreSettings = msStoreSettings.subscribe((val: MsStoreSettings) => msStoreSettingsVal = val)
 
+  import { currSquare, SquareType } from '../../stores/currSquare'
+  let currSquareVal: SquareType
+  const unsubCurrSquare = currSquare.subscribe((val: SquareType) => currSquareVal = val)
+
   export let shapes: Shape[]
 
   let shapeIdx: number = 0
@@ -41,7 +45,14 @@
 
   function updateStoreShapeIdx(shapeIdx: number) {
     msStoreSettings.update((prevSettings: MsStoreSettings) => {
-      prevSettings.geometryShapeIdx = shapeIdx
+      switch (currSquareVal) {
+        case SquareType.magic:
+          prevSettings.msGeometryShapeIdx = shapeIdx
+          break
+        case SquareType.public:
+          prevSettings.psGeometryShapeIdx = shapeIdx
+          break
+      }
       return prevSettings
     })
   }
@@ -78,13 +89,22 @@
       default:
         break
     }
+    console.dir({idxA, idxB})
     updateStoreRange(idxA, idxB)
   }
 
   function updateStoreRange(idxA: number, idxB: number) {
     msStoreSettings.update((prevSettings: MsStoreSettings) => {
-      prevSettings.geometryIdxA = idxA
-      prevSettings.geometryIdxB = idxB
+      switch (currSquareVal) {
+        case SquareType.magic:
+          prevSettings.msGeometryIdxA = idxA
+          prevSettings.msGeometryIdxB = idxB
+          break
+        case SquareType.public:
+          prevSettings.psGeometryIdxA = idxA
+          prevSettings.psGeometryIdxB = idxB
+          break
+      }
       return prevSettings
     })
   }
@@ -106,21 +126,39 @@
   }
 
   function handleNInput() {
-   shapes[shapeIdx].c = n
-   shapes = [...shapes]
-   var input = document.getElementById(WasmInputId.shapes)
-   input.value = JSON.stringify({shape: shapes[shapeIdx], index: shapeIdx})
-   input.dispatchEvent(new Event('input', {bubbles: true}))
- }
+    shapes[shapeIdx].c = n
+    shapes = [...shapes]
+    var input = document.getElementById(WasmInputId.shapes)
+    input.value = JSON.stringify({shape: shapes[shapeIdx], index: shapeIdx})
+    input.dispatchEvent(new Event('input', {bubbles: true}))
+  }
 
   onMount(() => {
-    idxA = msStoreSettingsVal.geometryIdxA
-    idxB = msStoreSettingsVal.geometryIdxB
-    shapeIdx = msStoreSettingsVal.geometryShapeIdx
-    n = shapes[msStoreSettingsVal.geometryShapeIdx].c
+    console.dir({currSquareVal})
+    switch (currSquareVal) {
+      case SquareType.magic:
+        idxA = msStoreSettingsVal.msGeometryIdxA
+        idxB = msStoreSettingsVal.msGeometryIdxB
+        shapeIdx = msStoreSettingsVal.msGeometryShapeIdx
+        n = shapes[msStoreSettingsVal.msGeometryShapeIdx].c
+        break
+      case SquareType.public:
+        idxA = msStoreSettingsVal.psGeometryIdxA
+        idxB = msStoreSettingsVal.psGeometryIdxB
+        shapeIdx = msStoreSettingsVal.psGeometryShapeIdx
+        n = shapes[msStoreSettingsVal.psGeometryShapeIdx].c
+        break
+      case SquareType.none:
+        idxA = 0
+        idxB = 15
+        shapeIdx = 0
+        n = 0
+        break
+    }
   })
 
   onDestroy(() => {
+    unsubCurrSquare()
     unsubLang()
     unsubMsStoreSettings()
   })
