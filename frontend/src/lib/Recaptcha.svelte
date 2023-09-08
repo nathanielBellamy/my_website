@@ -82,8 +82,7 @@
   </div>
 </Modal>
 
-<!-- <Modal bind:open={true} -->
-<Modal open={true}
+<Modal bind:open={showModalFailed}
        class="w-2/3 bg-slate-800 text-slate-300">
   <div class="h-5/6 w-full bg-slate-800 flex items-center gap-4">
     <img src={rImg}
