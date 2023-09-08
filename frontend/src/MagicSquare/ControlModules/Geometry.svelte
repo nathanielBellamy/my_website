@@ -89,7 +89,6 @@
       default:
         break
     }
-    console.dir({idxA, idxB})
     updateStoreRange(idxA, idxB)
   }
 
@@ -134,7 +133,6 @@
   }
 
   onMount(() => {
-    console.dir({currSquareVal})
     switch (currSquareVal) {
       case SquareType.magic:
         idxA = msStoreSettingsVal.msGeometryIdxA
