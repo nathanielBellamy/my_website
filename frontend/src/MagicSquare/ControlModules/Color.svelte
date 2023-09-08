@@ -262,7 +262,7 @@
   </div>
   <div class="color_rows pl-2 pr-2 grid grid-cols-4 grid-rows-4">
       {#each colorStrings as rgbaStr, idx}
-        <button class="color_button"
+        <button class="color_button flex justify-around items-center"
                 on:click={() => onIdxClick(idx)}
                 style:background-color={rgbaStr}>
           {idx + 1}
@@ -329,6 +329,7 @@
 
   .color_button
     flex-grow: 1
+    min-width: 30px
 
   .hidden_input
     display: none

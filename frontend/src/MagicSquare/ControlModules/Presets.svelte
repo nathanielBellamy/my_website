@@ -117,7 +117,8 @@
   <div class="flex flex-col justify-between items-stretch">
     <div class="pl-5 pr-5 grid grid-cols-4">
       {#each {length: 4} as _, i}
-        <button on:click={() => handleBankClick(i)}
+        <button class="bank_button flex justify-around items-center"
+                on:click={() => handleBankClick(i)}
                 class:selected={bank === i}>
         {banks[i]}
         </button>
@@ -127,8 +128,8 @@
   <div class="title pl-5 text-left">
     {i18n.t("preset", langVal)}
   </div>
-  <div class="grow pr-5 flex flex-col justify-around items-stretch">
-    <div class="preset_buttons grow pl-5 pr-5 pb-5 grid grid-cols-4 grid-rows-5 gap-4">
+  <div class="grow flex flex-col justify-around items-stretch">
+    <div class="preset_buttons grow pl-5 pr-5 pb-5 grid grid-cols-4 grid-rows-5">
       <div class="col-span-2 flex justify-around items-stretch">
         <button class="grow pl-2 pr-2 flex justify-around items-center"
                 on:click={() => presetAction(PresetAction.set)}>
@@ -143,7 +144,7 @@
       </div>
       {#if bank === 0}
         {#each {length: 16} as _, idx}
-          <button class="no_shadow flex justify-around items-center p-4"
+          <button class="no_shadow flex justify-around items-center p-2"
                   on:click={() => handlePresetClick(idx)}
                   class:active={preset === idx}
                   class:selected={presetNext === idx}>
@@ -152,7 +153,7 @@
         {/each}
       {:else if bank === 1}
         {#each {length: 16} as _, idx}
-          <button class="no_shadow flex justify-around items-center p-4"
+          <button class="no_shadow flex justify-around items-center p-2"
                   on:click={() => handlePresetClick(idx + 16)}
                   class:active={preset === idx + 16}
                   class:selected={presetNext === idx + 16}>
@@ -161,7 +162,7 @@
         {/each}
       {:else if bank === 2}
         {#each {length: 16} as _, idx}
-          <button class="no_shadow flex justify-around items-center p-4"
+          <button class="no_shadow flex justify-around items-center p-2"
                   on:click={() => handlePresetClick(idx + 32)}
                   class:active={preset === idx + 32}
                   class:selected={presetNext === idx + 32}>
@@ -170,7 +171,7 @@
         {/each}
       {:else if bank === 3}
         {#each {length: 16} as _, idx}
-          <button class="no_shadow flex justify-around items-center p-4"
+          <button class="no_shadow flex justify-around items-center p-2"
                   on:click={() => handlePresetClick(idx + 48)}
                   class:active={preset === idx + 48}
                   class:selected={presetNext === idx + 48}>
@@ -187,6 +188,9 @@
   @use "../../styles/text"
   
   @import "../styles/control_module_title.sass"
+
+  .bank_button
+    min-width: 30px  
 
   .preset_buttons
     grid-template-rows: 0.5fr 1fr 1fr 1fr 1fr
@@ -210,4 +214,5 @@
 
   .no_shadow
     box-shadow: 0 0 
+    min-width: 30px
 </style>
