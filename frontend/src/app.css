@@ -220,7 +220,7 @@ body {
 /*   may compile with an error but does seem to work in testing thus far*/
 _::-webkit-full-page-media, _:future, :root .main_container {
   @media (max-width: 750px) {
-    padding-bottom: 80px;
+    padding-bottom: 69px;
     min-height: -webkit-fill-available;
   }
 }
