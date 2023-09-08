@@ -202,6 +202,10 @@ export const localeEn: any = {
     }
   },
   recaptcha: {
-    verifying: "Verifying"
+    verifying: "Verifying",
+    failed_1: "Unable to verify.",
+    failed_2: "Please try again later", 
+    failed_3: "or visit",
+    magicSquare: "Magic square",
   }
 }

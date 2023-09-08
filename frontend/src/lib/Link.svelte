@@ -50,7 +50,7 @@
       onClick(e)
      }}
      class={`link ${className}`}>
-    <button class="link_button">
+    <button class="link_button hover:bg-slate-700">
       {title}
     </button>
   </a>
@@ -61,7 +61,7 @@
       onClick(e)
      }}
      class={`link ${className}`}>
-    <button class="link_button">
+    <button class="link_button hover:bg-slate-700">
       {title}
     </button>
   </a>

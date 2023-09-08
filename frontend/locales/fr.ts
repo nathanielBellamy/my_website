@@ -201,6 +201,10 @@ export const localeFr: any = {
     }
   },
   recaptcha: {
-    verifying: "Vérification"
+    verifying: "Vérification",
+    failed_1: "Vérification n'a pas reussit.",
+    failed_2: "Svp, essayez plus tard", 
+    failed_3: "ou naviguez vers",
+    magicSquare: "Carré magique",
   }
 }
