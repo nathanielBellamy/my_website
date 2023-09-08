@@ -177,7 +177,8 @@ export const localeEs: any = {
       title: "Advertencia de Epilepsia ",
       body_1: "Por favor, tenga en cuenta que este software contiene secuencias de luces intermitentes que pueden provocar convulsiones a personas con epilepsia fotosensitiva. Se recomienda discreción al espectador.",
       body_2: "Si usted o alguien en su hogar padece una condición epiléptica, consulte a un profesional médico antes de usar este software. Si experimenta mareos, visión alterada, parpadeo ocular o muscular, pérdida de conciencia, desorientación, o cualquier movimiento o convulsión involuntaria mientras usa el software, deje de usarlo inmediatamente y consulte a un profesional médico.",
-      body_3: "Asegúrese de usar en un ambiente bien iluminado y tome descansos frecuentes. Su seguridad es importante para nosotros.",
+      body_3_ms: "Asegúrese de usar en un ambiente bien iluminado y tome descansos frecuentes. Su seguridad es importante para nosotros.",
+      body_3_ps: "Asegúrese de usar en un ambiente bien iluminado y tome descansos frecuentes. Su seguridad es importante para nosotros.",
       go_home: "Regresar a inicio",
       accept_and_continue: "Aceptar y continuar",
     }
