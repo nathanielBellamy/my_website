@@ -5,7 +5,7 @@
 
   import { I18n, Lang } from "../I18n"
   import { lang } from '../stores/lang'
-  import { SquareType } from '../stores/msStoreSettings'
+  import { SquareType } from '../stores/currSquare'
 
   // INIT LANG BOILER PLATE
   const i18n = new I18n("magicSquare/warning")

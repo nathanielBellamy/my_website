@@ -45,6 +45,10 @@
 
   let smallScreenVal: boolean
   const unsubSmallScreen = smallScreen.subscribe((val: boolean) => smallScreenVal = val)
+
+  import { currSquare, SquareType } from '../stores/currSquare'
+  let currSquareVal: SquareType
+  const unsubCurrSquare = currSquare.subscribe((val: SquareType) => currSquareVal = val)
   
   const i18n = new I18n('magicSquare/main')
   let langVal: Lang
@@ -298,6 +302,8 @@
   let hasBeenDestroyed: boolean = false
   onDestroy(() => {
     hasBeenDestroyed = true
+    currSquare.update((_: SquareType) => SquareType.none)
+    unsubCurrSquare()
     unsubLang()
     unsubSmallScreen()
     unsubTouchScreen()
@@ -329,6 +335,7 @@
   }
 
   onMount(async () => {
+    currSquare.update((_: SquareType) => SquareType.public)
     await run()
   })
 </script>
