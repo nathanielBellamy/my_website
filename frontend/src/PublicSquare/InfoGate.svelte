@@ -88,7 +88,6 @@
 <style lang="sass">
   @use "./../styles/color"
   @use "./../styles/text"
-  @use "./../styles/font"
 
   .info_gate
     background-color: color.$blue-9
