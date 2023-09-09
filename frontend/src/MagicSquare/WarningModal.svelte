@@ -26,12 +26,16 @@
     push("/")
   }
 
-  function body_3() {
+  $: body_3 = body3(langVal)
+
+  function body3(lv: Lang): String {
     switch (squareType) {
       case SquareType.magic:
-        return i18n.t('body_3_ms', langVal)
+        return i18n.t('body_3_ms', lv)
       case SquareType.public:
-        return i18n.t('body_3_ps', langVal)
+        return i18n.t('body_3_ps', lv)
+      case SquareType.none:
+        return ""
     }
   }
 </script>
@@ -52,7 +56,7 @@
   </div>
   <div class="grow w-full p-5 flex justify-around items-stretch">
     <p class="content">
-      {body_3()}
+      {body_3}
     </p>
   </div>
   <div class="grow w-full p-5 flex justify-around items-stretch">

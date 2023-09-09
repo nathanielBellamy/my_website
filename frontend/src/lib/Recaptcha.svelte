@@ -89,7 +89,7 @@
          style:height="70px"
          style:width="70px"
          alt="Google Recaptcha"/>
-    <div class="font-extrabold flex flex-col justify-between items-center gap-4">
+    <div class="font-extrabold flex flex-col justify-between items-stretch gap-4 text-left">
       <p class="text-xl text-red-700">
         {i18n.t("failed_1", langVal)}
       </p>
