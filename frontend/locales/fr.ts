@@ -202,8 +202,8 @@ export const localeFr: any = {
   },
   recaptcha: {
     verifying: "Vérification",
-    failed_1: "Vérification n'a pas reussit.",
-    failed_2: "Svp, essayez plus tard", 
+    failed_1: "Impossible de vérifier.",
+    failed_2: "Veuillez réessayer plus tard", 
     failed_3: "ou naviguez vers",
     magicSquare: "Carré magique",
   }

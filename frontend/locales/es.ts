@@ -203,8 +203,8 @@ export const localeEs: any = {
   recaptcha: {
     verifying: "Verificando",
     failed_1: "No se puede verificar.",
-    failed_2: "Por favor, trate mas tarde", 
-    failed_3: "o visite a",
+    failed_2: "Por favor, intente mas tarde", 
+    failed_3: "o navega a",
     magicSquare: "Cuadro mágico",
   }
 }
