@@ -178,7 +178,8 @@ export const localeEn: any = {
       title: "Epilepsy Warning",
       body_1: "Please be aware that this software contains sequences of flashing lights which may trigger seizures for people with photosensitive epilepsy. Viewer discretion is advised.",
       body_2: "If you or anyone in your household has an epileptic condition, please consult a medical professional before using this software. If you experience dizziness, altered vision, eye or muscle twitches, loss of awareness, disorientation, or any involuntary movement or convulsion while using the software, immediately discontinue use and consult a medical professional.",
-      body_3: "Please ensure you enjoy Magic Square in a well-lit environment and take frequent breaks. Your safety is important to us.",
+      body_3_ms: "Please ensure you enjoy Magic Square in a well-lit environment and take frequent breaks. Your safety is important to us.",
+      body_3_ps: "Please ensure you enjoy The Public Square in a well-lit environment and take frequent breaks. Your safety is important to us.",
       go_home: "Go To Home",
       accept_and_continue: "Accept & Continue",
     }
@@ -201,6 +202,10 @@ export const localeEn: any = {
     }
   },
   recaptcha: {
-    verifying: "Verifying"
+    verifying: "Verifying",
+    failed_1: "Unable to verify.",
+    failed_2: "Please try again later", 
+    failed_3: "or visit",
+    magicSquare: "Magic square",
   }
 }

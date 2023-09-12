@@ -35,6 +35,7 @@
 
   let idxA: number
   let idxB: number
+  let currIdx: number
 
   $: idxLeft = idxA < idxB ? idxA : idxB
   $: idxRight = idxA > idxB ? idxA : idxB
@@ -111,7 +112,6 @@
   let colorStrings: string[]
   $: colorStrings = colors.map(x => rgbaToString(x))
   $: gradient = `linear-gradient(90deg, ${colorStrings[idxA]} 0%, ${colorStrings[idxB]} 100%)`
-  let currIdx: number = 0
 
   const colorPickerOptions = {
     width: 110,
@@ -123,6 +123,17 @@
 
   function onIdxClick(idx: number) {
     currIdx = idx
+    msStoreSettings.update((prevSettings: MsStoreSettings) => {
+      switch (currSquareVal) {
+        case SquareType.magic:
+          prevSettings.msColorCurrIdx = currIdx
+          break
+        case SquareType.public:
+          prevSettings.psColorCurrIdx = currIdx
+          break
+      }
+      return prevSettings
+    })
   }
 
   function setNewColor(color: number[], idx: number) {
@@ -158,10 +169,12 @@
     // read range idxs from store
     switch (currSquareVal) {
       case SquareType.magic:
+        currIdx = msStoreSettingsVal.msColorCurrIdx
         idxA = msStoreSettingsVal.msColorIdxA
         idxB = msStoreSettingsVal.msColorIdxB
         break
       case SquareType.public:
+        currIdx = msStoreSettingsVal.psColorCurrIdx
         idxA = msStoreSettingsVal.psColorIdxA
         idxB = msStoreSettingsVal.psColorIdxB
         break
@@ -262,7 +275,7 @@
   </div>
   <div class="color_rows pl-2 pr-2 grid grid-cols-4 grid-rows-4">
       {#each colorStrings as rgbaStr, idx}
-        <button class="color_button"
+        <button class="color_button flex justify-around items-center"
                 on:click={() => onIdxClick(idx)}
                 style:background-color={rgbaStr}>
           {idx + 1}
@@ -329,6 +342,7 @@
 
   .color_button
     flex-grow: 1
+    min-width: 30px
 
   .hidden_input
     display: none

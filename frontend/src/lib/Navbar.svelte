@@ -40,46 +40,40 @@
             classUl="w-40"
             ulClass="pt-2 pb-2 rounded-lg bg-black text-blue-200">
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+                  tabIndex="0"
                   on:click={() => dropdownOpen = false}
                   href="/#/">
-      <span tabIndex="0">
-        {i18n.t("nav/home", langVal)} 
-      </span>
+      {i18n.t("nav/home", langVal)} 
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+                  tabIndex="0"
                   on:click={() => dropdownOpen = false}
                   href="/#/public-square">
-      <span tabIndex="0">
-        {i18n.t("nav/publicSquare", langVal)}
-      </span>
+      {i18n.t("nav/publicSquare", langVal)}
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+                  tabIndex="0"
                   on:click={() => dropdownOpen = false}
                   href="/#/magic-square">
-      <span tabIndex="0">
-        {i18n.t("nav/magicSquare", langVal)}
-      </span>
+      {i18n.t("nav/magicSquare", langVal)}
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+                  tabIndex="0"
                   on:click={() => dropdownOpen = false}
                   href="/#/give-me-a-sine">
-      <span tabIndex="0">
-        {i18n.t("nav/giveMeASine", langVal)}
-      </span>
+      {i18n.t("nav/giveMeASine", langVal)}
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+                  tabIndex="0"
                   on:click={() => dropdownOpen = false}
                   href="/#/about">
-      <span tabIndex="0">
-        {i18n.t("nav/about", langVal)}
-      </span>
+      {i18n.t("nav/about", langVal)}
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+                  tabIndex="0"
                   on:click={() => dropdownOpen = false}
                   href="/#/system-diagram">
-      <span tabIndex="0">
-        {i18n.t("nav/systemDiagram", langVal)}
-      </span>
+      {i18n.t("nav/systemDiagram", langVal)}
     </DropdownItem>
   </Dropdown>
 

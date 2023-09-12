@@ -6,8 +6,8 @@
   // INIT Prev Settings
   import { prevSettingsStore } from './PrevSettingsStore'
   import WarningModal from "./WarningModal.svelte"
-  import { Spinner } from "flowbite-svelte"
   import Loading from "../lib/Loading.svelte"
+  import { SquareType } from "../stores/currSquare"
 
   let prevSettingsStoreVal: StorageSettings
   $: prevSettingsStoreVal
@@ -51,7 +51,8 @@
     <Loading />
   {:else}
     {#if !hasAcceptedWarning}
-      <WarningModal bind:hasAccepted={hasAcceptedWarning}/>
+      <WarningModal bind:hasAccepted={hasAcceptedWarning}
+                    squareType={SquareType.magic}/>
     {:else}
         {#if dataReady}
           <Main />

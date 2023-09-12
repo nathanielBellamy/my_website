@@ -156,7 +156,7 @@
 
   .grid_col
     display: grid
-    grid-template-columns: 1fr
+    grid-template-columns: 100%
     grid-template-rows: 4em 1fr
     gap: 5px
  

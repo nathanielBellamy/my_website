@@ -1136,7 +1136,7 @@
 
   .grid_col
     display: grid
-    grid-template-columns: 1fr
+    grid-template-columns: 100%
     grid-template-rows: 2em calc(100% - 2em)
     gap: 5px
 

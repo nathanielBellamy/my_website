@@ -4,6 +4,7 @@
   import WarningModal from "../MagicSquare/WarningModal.svelte"
   import InfoGate from "./InfoGate.svelte"
   import Loading from "../lib/Loading.svelte";
+  import { SquareType } from "../stores/currSquare";
  
   let hasPassedGate: boolean = false
   let hasAcceptedWarning: boolean = false
@@ -34,7 +35,8 @@
     {#if !hasPassedGate}
       <InfoGate bind:hasPassedGate={hasPassedGate}/>
     {:else if !hasAcceptedWarning}
-      <WarningModal bind:hasAccepted={hasAcceptedWarning}/>
+      <WarningModal bind:hasAccepted={hasAcceptedWarning}
+                    squareType={SquareType.public}/>
     {:else}
       <Main />
     {/if}

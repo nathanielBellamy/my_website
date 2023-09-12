@@ -5,6 +5,7 @@
 
   import { I18n, Lang } from "../I18n"
   import { lang } from '../stores/lang'
+  import { SquareType } from '../stores/currSquare'
 
   // INIT LANG BOILER PLATE
   const i18n = new I18n("magicSquare/warning")
@@ -13,6 +14,7 @@
   onDestroy(unsubLang)
 
   export let hasAccepted: boolean = false
+  export let squareType: SquareType
 
   function handleAccept() {
     localStorage.setItem('magic_square_has_accepted_warning', "true")
@@ -22,6 +24,19 @@
   function handleGoBack() {
     siteSection.update((_:SiteSection) => SiteSection.home)
     push("/")
+  }
+
+  $: body_3 = body3(langVal)
+
+  function body3(lv: Lang): String {
+    switch (squareType) {
+      case SquareType.magic:
+        return i18n.t('body_3_ms', lv)
+      case SquareType.public:
+        return i18n.t('body_3_ps', lv)
+      case SquareType.none:
+        return ""
+    }
   }
 </script>
 
@@ -41,7 +56,7 @@
   </div>
   <div class="grow w-full p-5 flex justify-around items-stretch">
     <p class="content">
-      {i18n.t('body_3', langVal)}
+      {body_3}
     </p>
   </div>
   <div class="grow w-full p-5 flex justify-around items-stretch">

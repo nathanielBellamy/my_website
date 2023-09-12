@@ -27,7 +27,7 @@ export const localeFr: any = {
     title: "v0.1.0",
     cookieWarning: "Ce site utilise des cookies.",
     about: "De moi",
-    about_1: "Ce que je fait con code",
+    about_1: "Ce que je fait avec code",
     about_2: "S'il vous plaît, appréciez ces images de moi en \"lumière naturelle\" générées par intelligence artificielle",
     magicSquare: "Carré publique",
     magicSquare_1: "3D interactive avec WebGL",
@@ -177,7 +177,8 @@ export const localeFr: any = {
       title: "Avertissement sur l'Épilepsie",
       body_1: "Veuillez noter que ce logiciel contient des séquences de lumières clignotantes qui peuvent déclencher des crises d'épilepsie chez les personnes atteintes d'épilepsie photosensible. La prudence du spectateur est conseillée.",
       body_2: "Si vous ou quelqu'un dans votre foyer souffrez d'une condition épileptique, veuillez consulter un professionnel de la santé avant d'utiliser ce logiciel. Si vous ressentez des étourdissements, une vision altérée, des tics oculaires ou musculaires, une perte de conscience, une désorientation, ou tout mouvement ou convulsion involontaire lors de l'utilisation du logiciel, arrêtez immédiatement son utilisation et consultez un professionnel de la santé.",
-      body_3: "Assurez-vous de utiliser dans un environnement bien éclairé et de faire des pauses fréquentes. Votre sécurité est importante pour nous.",
+      body_3_ms: "Assurez-vous de utiliser dans un environnement bien éclairé et de faire des pauses fréquentes. Votre sécurité est importante pour nous.",
+      body_3_ps: "Assurez-vous de utiliser dans un environnement bien éclairé et de faire des pauses fréquentes. Votre sécurité est importante pour nous.",
       go_home: "Retour à l'accueil",
       accept_and_continue: "Accepter et continuer",
     }
@@ -200,6 +201,10 @@ export const localeFr: any = {
     }
   },
   recaptcha: {
-    verifying: "Vérification"
+    verifying: "Vérification",
+    failed_1: "Impossible de vérifier.",
+    failed_2: "Veuillez réessayer plus tard", 
+    failed_3: "ou naviguez vers",
+    magicSquare: "Carré magique",
   }
 }
