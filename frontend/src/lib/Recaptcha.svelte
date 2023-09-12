@@ -68,13 +68,13 @@
 </script>
 
 <Modal bind:open={showModalVerify}
-       class="w-2/3 bg-slate-800 text-slate-300">
-  <div class="h-5/6 w-5/6 bg-slate-800 flex items-center gap-4">
+       class="w-2/3 bg-slate-900 text-slate-300">
+  <div class="h-5/6 w-5/6 bg-slate-900 flex items-center gap-4">
     <img src={rImg}
          style:height="70px"
          style:width="70px"
          alt="Google Recaptcha"/>
-    <h3 class="text-cyan-700 mt-4 pl-4 pr-4 font-mono font-extrabold flex items-center">
+    <h3 class="text-cyan-600 mt-4 pr-4 font-mono font-extrabold flex items-center">
       {i18n.t("verifying", langVal)}
     </h3>
     <Spinner color="blue" 
@@ -83,8 +83,8 @@
 </Modal>
 
 <Modal bind:open={showModalFailed}
-       class="w-2/3 bg-slate-800 text-slate-300">
-  <div class="h-5/6 w-full bg-slate-800 flex items-center gap-4">
+       class="w-2/3 bg-slate-900 text-slate-300">
+  <div class="h-5/6 w-full bg-slate-900 flex items-center gap-4">
     <img src={rImg}
          style:height="70px"
          style:width="70px"
@@ -93,10 +93,10 @@
       <p class="text-xl text-red-700">
         {i18n.t("failed_1", langVal)}
       </p>
-      <p class="text-cyan-700">
+      <p class="text-cyan-600">
         {i18n.t("failed_2", langVal)}
       </p>
-      <p class="text-cyan-700">
+      <p class="text-cyan-600">
         {i18n.t("failed_3", langVal)}
         <Link href="/magic-square"
               title={i18n.t("magicSquare", langVal)}
