@@ -68,12 +68,12 @@
   let prefessional_things: ProfessionalThing[] = [
     {
       title: 'Ruby',
-      description: 'on Rails, Rspec, Capybara',
+      description: 'on Rails, RBS, Steep, Rspec, Capybara',
       href: 'https://www.ruby-lang.org/en/'
     },
     {
       title: 'JS',
-      description: 'React, Vue, Node, JQuery, Mocha',
+      description: 'React, Vue, Vue Testing Library, Node, JQuery, Mocha',
       href: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript'
     },
     {
