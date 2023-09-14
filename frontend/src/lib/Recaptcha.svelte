@@ -68,8 +68,9 @@
 </script>
 
 <Modal bind:open={showModalVerify}
-       class="w-2/3 bg-slate-900 text-slate-300">
-  <div class="h-5/6 w-5/6 bg-slate-900 flex items-center gap-4">
+       outsideclose={false}
+       class="w-full md:w-2/3 bg-slate-900 text-slate-300">
+  <div class="h-5/6 w-full bg-slate-900 flex items-center gap-4">
     <img src={rImg}
          style:height="70px"
          style:width="70px"
@@ -83,13 +84,13 @@
 </Modal>
 
 <Modal bind:open={showModalFailed}
-       class="w-2/3 bg-slate-900 text-slate-300">
-  <div class="h-5/6 w-full bg-slate-900 flex items-center gap-4">
+       class="w-full md:w-2/3 bg-slate-900 text-slate-300">
+  <div class="h-5/6 w-full bg-slate-900 flex items-center gap-1">
     <img src={rImg}
          style:height="70px"
          style:width="70px"
          alt="Google Recaptcha"/>
-    <div class="font-extrabold flex flex-col justify-between items-stretch gap-4 text-left">
+    <div class="font-extrabold mt-6 mr-2 flex flex-col justify-between items-stretch gap-4 text-left">
       <p class="text-xl text-red-700">
         {i18n.t("failed_1", langVal)}
       </p>

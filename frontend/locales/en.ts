@@ -187,8 +187,8 @@ export const localeEn: any = {
   publicSquare: {
     main: {
       connected: "Connected",
-      connectionError: "Connection error",
-      disconnected: "Disconneted"
+      connectionError: "Connection error. Please refresh.",
+      disconnected: "Disconneted. Please refresh."
     },
     infoGate: {
       enter: "Enter The Public Square",
