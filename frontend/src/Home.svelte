@@ -20,6 +20,10 @@
   let langVal: Lang
   const unsubLang = lang.subscribe(val => langVal = val)
 
+  import { initialLoad } from "./stores/initialLoad"
+  let initialLoadVal: boolean
+  const unsubInitialLoad = initialLoad.subscribe(val => initialLoadVal = val)
+
   let innerHeight: number
   let innerWidth: number
   $: imgSideLength = deriveImgSideLength(innerHeight, innerWidth)
@@ -60,18 +64,18 @@
   }
 
   onDestroy(() => {
+    initialLoad.update((_: boolean) => false)
+    unsubInitialLoad()
     unsubLang()
     unsubSiteSection()
   })
-
-  let showCoookieWarning: boolean = true
 </script>
 
 <svelte:window bind:innerHeight
                bind:innerWidth />
 
 <body class="pl-5 pr-5 pb-5 flex flex-col justify-between items-stretch gap-2 overflow-y-scroll">
-  <Toaster bind:open={showCoookieWarning}
+  <Toaster open={initialLoadVal}
            color={ToastColor.blue}
            icon={Icons.InfoCircleSolid}
            text={i18n.t("cookieWarning", langVal)}/>
