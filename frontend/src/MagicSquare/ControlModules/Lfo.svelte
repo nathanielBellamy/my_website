@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
   import { Lfo } from './Lfo'
@@ -9,9 +9,16 @@
 
   let langVal: Lang 
   const unsubLang = lang.subscribe(val => langVal = val)
-  onDestroy(unsubLang)
-
   let i18n = new I18n("magicSquare/lfo")
+
+  import { msStoreSettings } from '../../stores/msStoreSettings'
+  import type { MsStoreSettings } from '../../stores/msStoreSettings'
+  let msStoreSettingsVal: MsStoreSettings
+  const unsubMsStoreSettings = msStoreSettings.subscribe((val: MsStoreSettings) => msStoreSettingsVal = val)
+
+  import { currSquare, SquareType } from '../../stores/currSquare'
+  let currSquareVal: SquareType
+  const unsubCurrSquare = currSquare.subscribe((val: SquareType) => currSquareVal = val)
 
   export let lfo1Active: boolean = false
   export let lfo1Dest: LfoDestination = LfoDestination.none
@@ -29,12 +36,11 @@
   export let lfo4Dest: LfoDestination = LfoDestination.none
   export let lfo4Shape: LfoShape = LfoShape.sine
 
-  let lfo: Lfo = Lfo.one
+  let lfoCurr: Lfo
+  $: currDest = intoCurrDestination(lfoCurr)
+  $: currShape = intoCurrShape(lfoCurr)
 
-  // destination
-  $: currDest = intoCurrDestination(lfo)
-
-  function intoCurrDestination(lfo: Lfo) {
+  function intoCurrDestination(lfo: Lfo): LfoDestination {
     switch (lfo) {
       case Lfo.two:
         return lfo2Dest
@@ -71,10 +77,7 @@
     }
   }
 
-  // shape
-  $: currShape = intoCurrShape(lfo)
-
-  function intoCurrShape(lfo: Lfo) {
+  function intoCurrShape(lfo: Lfo): LfoShape {
     switch (lfo) {
       case Lfo.two:
         return lfo2Shape
@@ -121,41 +124,82 @@
     const newFirst = oldStr[0].toLowerCase()
     return `${newFirst}${oldStr.substring(1)}`
   }
+
+  function setLfoCurr(lfo: Lfo) {
+    switch (currSquareVal) {
+      case SquareType.public:
+        msStoreSettings.update((prevSettings: MsStoreSettings) => {
+          prevSettings.psLfoCurr = lfo
+          return prevSettings
+        })
+        lfoCurr = lfo
+        break
+      case SquareType.magic:
+        msStoreSettings.update((prevSettings: MsStoreSettings) => {
+          prevSettings.msLfoCurr = lfo
+          return prevSettings
+        })
+        lfoCurr = lfo
+        break
+      default:
+        return
+    }
+  }
+
+  onMount(() => {
+    switch (currSquareVal) {
+      case SquareType.public:
+        lfoCurr = msStoreSettingsVal.psLfoCurr
+        break
+      case SquareType.magic:
+        lfoCurr = msStoreSettingsVal.msLfoCurr
+        break
+      case SquareType.none:
+      default:
+        lfoCurr = Lfo.one
+    }
+  })
+
+  onDestroy(() => {
+    unsubCurrSquare()
+    unsubLang()
+    unsubMsStoreSettings()
+  })
 </script>
 
 <div class="h-full pb-5 flex flex-col justify-between items-stretch">
   <div id="magic_square_lfo_select"
        class="lfo_select pb-2 flex flex-col justify-between items-stretch">
-    <button on:click = {() => lfo = Lfo.one}
+    <button on:click = {() => setLfoCurr(Lfo.one)}
             class:active = {lfo1Active}
-            class:selected = {lfo === Lfo.one}
+            class:selected = {lfoCurr === Lfo.one}
             class="grid grid-cols-5 ml-5 mr-5 text-sm border-4 rounded-xl">
       <p> {Lfo.one} </p>
       <p class="col-span-4"> 
         {i18n.t(lowerCaseFirstLetter(lfo1Dest), langVal)} 
       </p>
     </button>
-    <button on:click = {() => lfo = Lfo.two}
+    <button on:click = {() => setLfoCurr(Lfo.two)}
             class:active = {lfo2Active}
-            class:selected = {lfo === Lfo.two}
+            class:selected = {lfoCurr === Lfo.two}
             class="grid grid-cols-5 ml-5 mr-5 text-sm border-4 rounded-xl">
       <p> {Lfo.two} </p>
       <p class="col-span-4"> 
         {i18n.t(lowerCaseFirstLetter(lfo2Dest), langVal)} 
       </p>
     </button>
-    <button on:click = {() => lfo = Lfo.three}
+    <button on:click = {() => setLfoCurr(Lfo.three)}
             class:active = {lfo3Active}
-            class:selected = {lfo === Lfo.three}
+            class:selected = {lfoCurr === Lfo.three}
             class="grid grid-cols-5 ml-5 mr-5 text-sm border-4 rounded-xl">
       <p> {Lfo.three} </p>
       <p class="col-span-4"> 
         {i18n.t(lowerCaseFirstLetter(lfo3Dest), langVal)} 
       </p>
     </button>
-    <button on:click = {() => lfo = Lfo.four}
+    <button on:click = {() => setLfoCurr(Lfo.four)}
             class:active = {lfo4Active}
-            class:selected = {lfo === Lfo.four}
+            class:selected = {lfoCurr === Lfo.four}
             class="grid grid-cols-5 ml-5 mr-5 text-sm border-4 rounded-xl">
       <p> {Lfo.four} </p>
       <p class="col-span-4"> 
@@ -176,7 +220,7 @@
                 value={currDest}
                 on:input={e => e.stopPropagation()}
                 on:change={(e) => {
-                  handleLfoDestChange(e, lfo)
+                  handleLfoDestChange(e, lfoCurr)
                 }}>
           <optgroup label={i18n.t("rotation", langVal)}>
             <option value={LfoDestination.pitchBase}> 
@@ -240,13 +284,13 @@
           </optgroup>
         </select>
       </div>
-      {#if lfo === Lfo.one}
+      {#if lfoCurr === Lfo.one}
         <slot name="lfo1"/>
-      {:else if lfo === Lfo.two}
+      {:else if lfoCurr === Lfo.two}
         <slot name="lfo2"/>
-      {:else if lfo === Lfo.three}
+      {:else if lfoCurr === Lfo.three}
         <slot name="lfo3"/>
-      {:else if lfo === Lfo.four}
+      {:else if lfoCurr === Lfo.four}
         <slot name="lfo4"/>
       {/if}
       <div class="w-full pl-5 pr-5 flex flex-col justify-around items-stretch">
@@ -259,7 +303,7 @@
         <select id="lfo_shape_select"
                 value={currShape}
                 on:input={e => e.stopPropagation()}
-                on:change={e => handleLfoShapeChange(e, lfo)}>
+                on:change={e => handleLfoShapeChange(e, lfoCurr)}>
           <option value={LfoShape.linear}> 
             Linear 
           </option>
