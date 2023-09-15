@@ -90,6 +90,12 @@ func CreateAssessment(rData RecaptchaData, log *zerolog.Logger) bool {
     rData.ProjectID,
     apiKey,
   )
+
+  log.Info().
+      Str("ip", rData.ClientIP).
+      Str("url", url).
+      Msg("Recaptcha URL")
+
   assessmentEvent := AssessmentEvent {
     Token: rData.Token,
     SiteKey: rData.RecaptchaSiteKey,

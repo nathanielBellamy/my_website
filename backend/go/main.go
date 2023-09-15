@@ -168,7 +168,7 @@ func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *ze
           Msg("PS WASM WS")
 
       if validRecaptcha {
-        websocket.ServeWasmWs(feedPool, w, r, log)
+        websocket.ServeWasmWs(wasmPool, w, r, log)
       } else {
         auth.RedirectToHome(w, r, log)
       }
