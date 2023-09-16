@@ -1,16 +1,27 @@
 <script lang="ts">
+  import { onDestroy, onMount } from 'svelte'
   import { WasmInputId } from "../WasmInputId"
   import { PresetAction } from "./Preset"
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
 
+  import { msStoreSettings } from '../../stores/msStoreSettings'
+  import type { MsStoreSettings } from '../../stores/msStoreSettings'
+  let msStoreSettingsVal: MsStoreSettings
+  const unsubMsStoreSettings = msStoreSettings.subscribe((val: MsStoreSettings) => msStoreSettingsVal = val)
+
   let langVal: Lang 
-  lang.subscribe(val => langVal = val)
+  const unsubLang = lang.subscribe(val => langVal = val)
   let i18n = new I18n("magicSquare/presets")
 
-  // TODO: CSS prevent top cutoff on small screen
+  // TODO:
+  // bring presets to PublicSquare
+  import { currSquare, SquareType } from '../../stores/currSquare'
+  let currSquareVal: SquareType
+  const unsubCurrSquare = currSquare.subscribe((val: SquareType) => currSquareVal = val)
 
-  let bank: number = 0
+  // bank is non-input setting
+  let bank: number
   export let preset: number
   export let updateUiSettings: Function
   let presetNext: number = preset
@@ -37,12 +48,41 @@
     input.value = JSON.stringify({preset, action})
     input.dispatchEvent(new Event('input', {bubbles: true}))
 
+    // triggers update in Main that will read from localStorage
     updateUiSettings()
+  }
+
+  function handleBankClick(id: number) {
+    bank = id
+    msStoreSettings.update((prevSettings: MsStoreSettings) => {
+      prevSettings.msPresetBank = id
+      return prevSettings
+    })
   }
 
   function handlePresetClick(idx: number) {
     presetNext = idx
   }
+
+  onMount(() => {
+    switch(currSquareVal){
+      case SquareType.magic:
+        bank = msStoreSettingsVal.msPresetBank
+        break
+      case SquareType.public:
+        bank = msStoreSettingsVal.psPresetBank
+        break
+      case SquareType.none:
+        bank = 0
+        break
+    }
+  })
+
+  onDestroy(() => {
+    unsubCurrSquare()
+    unsubLang()
+    unsubMsStoreSettings()
+  })
 </script>
 
 <section class="h-full flex flex-col justify-between items-stretch gap-2">
@@ -77,7 +117,8 @@
   <div class="flex flex-col justify-between items-stretch">
     <div class="pl-5 pr-5 grid grid-cols-4">
       {#each {length: 4} as _, i}
-        <button on:click={() => bank = i}
+        <button class="bank_button flex justify-around items-center"
+                on:click={() => handleBankClick(i)}
                 class:selected={bank === i}>
         {banks[i]}
         </button>
@@ -87,8 +128,8 @@
   <div class="title pl-5 text-left">
     {i18n.t("preset", langVal)}
   </div>
-  <div class="grow pr-5 flex flex-col justify-around items-stretch">
-    <div class="preset_buttons grow pl-5 pr-5 pb-5 grid grid-cols-4 grid-rows-5 gap-4">
+  <div class="grow flex flex-col justify-around items-stretch">
+    <div class="preset_buttons grow pl-5 pr-5 pb-5 grid grid-cols-4 grid-rows-5">
       <div class="col-span-2 flex justify-around items-stretch">
         <button class="grow pl-2 pr-2 flex justify-around items-center"
                 on:click={() => presetAction(PresetAction.set)}>
@@ -103,7 +144,7 @@
       </div>
       {#if bank === 0}
         {#each {length: 16} as _, idx}
-          <button class="no_shadow flex justify-around items-center p-4"
+          <button class="no_shadow flex justify-around items-center p-2"
                   on:click={() => handlePresetClick(idx)}
                   class:active={preset === idx}
                   class:selected={presetNext === idx}>
@@ -112,7 +153,7 @@
         {/each}
       {:else if bank === 1}
         {#each {length: 16} as _, idx}
-          <button class="no_shadow flex justify-around items-center p-4"
+          <button class="no_shadow flex justify-around items-center p-2"
                   on:click={() => handlePresetClick(idx + 16)}
                   class:active={preset === idx + 16}
                   class:selected={presetNext === idx + 16}>
@@ -121,7 +162,7 @@
         {/each}
       {:else if bank === 2}
         {#each {length: 16} as _, idx}
-          <button class="no_shadow flex justify-around items-center p-4"
+          <button class="no_shadow flex justify-around items-center p-2"
                   on:click={() => handlePresetClick(idx + 32)}
                   class:active={preset === idx + 32}
                   class:selected={presetNext === idx + 32}>
@@ -130,7 +171,7 @@
         {/each}
       {:else if bank === 3}
         {#each {length: 16} as _, idx}
-          <button class="no_shadow flex justify-around items-center p-4"
+          <button class="no_shadow flex justify-around items-center p-2"
                   on:click={() => handlePresetClick(idx + 48)}
                   class:active={preset === idx + 48}
                   class:selected={presetNext === idx + 48}>
@@ -148,6 +189,9 @@
   
   @import "../styles/control_module_title.sass"
 
+  .bank_button
+    min-width: 30px  
+
   .preset_buttons
     grid-template-rows: 0.5fr 1fr 1fr 1fr 1fr
 
@@ -163,11 +207,12 @@
   .active
     border: solid
     border-width: 5px
-    border-color: color.$red-5
+    border-color: color.$red-7
 
   .selected
     background-color: color.$blue-7
 
   .no_shadow
     box-shadow: 0 0 
+    min-width: 30px
 </style>

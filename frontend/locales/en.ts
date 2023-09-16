@@ -10,8 +10,10 @@ export const localeEn: any = {
       home: "Home",
       about: "About",
       magicSquare: "Magic square",
+      publicSquare: "Public square",
       giveMeASine: "Give me a sine",
-      none: ""
+      none: "",
+      systemDiagram: "System Diagram",
     }
   },
   gmas: {
@@ -22,24 +24,28 @@ export const localeEn: any = {
     width: "width"
   },
   home: {
-    title: "Nate's New Website",
+    title: "v0.1.0",
+    cookieWarning: "This site uses cookies.",
     about: "About",
     about_1: "An overview of what I do code-wise",
     about_2: "Please enjoy these AI-generated images of me in \"natural light\"",
-    magicSquare: "Magic square",
-    magicSquare_1: "Interactive 3D with",
-    magicSquare_2: "Exploring concepts from",
-    magicSquare_3: "modular synthesis",
+    magicSquare: "Public square",
+    magicSquare_1: "Interactive 3D in browser with WebGL",
+    magicSquare_2: "Real-time, public collaboration",
+    magicSquare_3: "Magic square is offline-mode + presets",
     giveMeASine: "Give me a sine",
     giveMeASine_1: "All graphs copy-and-paste-able",
-    giveMeASine_2: "practice for",
+    giveMeASine_2: "RustWasm warm-up for the squares",
     intro: {
       1: "I like to learn.",
       2: "I wanted to learn how to combine",
       3: "using",
-      4: "So I built this new website."
+      4: "So I am building this website"
     },
     whatsHere: "What's here?"
+  },
+  loading: {
+    title: "Loading..."
   },
   magicSquare: {
     color: {
@@ -55,6 +61,7 @@ export const localeEn: any = {
     controlRack: {
       color: "color",
       drawPattern: "pattern",
+      feed: "messages",
       geometry: 'geometry',
       lfo: "lfo",
       modules: "modules",
@@ -130,10 +137,10 @@ export const localeEn: any = {
       rotation: "rotation",
       shape: "shape",
       translation: "translation",
-      xBase: "X base",
-      xSpread: "X spread",
-      yBase: "Y base",
-      ySpread: "Y spread"
+      translationXBase: "X base",
+      translationXSpread: "X spread",
+      translationYBase: "Y base",
+      translationYSpread: "Y spread"
     },
     mouseTracking: {
       invert: "invert",
@@ -148,24 +155,57 @@ export const localeEn: any = {
       yaw: "yaw"
     },
     select: {
-      left: "left",
-      right: "right",
+      left: "⬅️ ",
+      right: "➡️ ",
       color: "color",
+      color_emoji: "🖍️",
       drawPattern: "pattern",
+      drawPattern_emoji: "🎦",
+      feed: "messages",
+      feed_emoji: "✉️",
       geometry: 'geometry',
+      geometry_emoji: '📐',
       lfo: "lfo",
+      lfo_emoji: "🌊",
       presets: "presets",
-      radius: "radius",
+      presets_emoji: "🧰",
       rotation: "rotation",
-      translation: "translation"
+      rotation_emoji: "🔄",
+      translation: "translation",
+      translation_emoji: "🚌"
     },
     warning: {
       title: "Epilepsy Warning",
       body_1: "Please be aware that this software contains sequences of flashing lights which may trigger seizures for people with photosensitive epilepsy. Viewer discretion is advised.",
       body_2: "If you or anyone in your household has an epileptic condition, please consult a medical professional before using this software. If you experience dizziness, altered vision, eye or muscle twitches, loss of awareness, disorientation, or any involuntary movement or convulsion while using the software, immediately discontinue use and consult a medical professional.",
-      body_3: "Please ensure you enjoy Magic Square in a well-lit environment and take frequent breaks. Your safety is important to us.",
+      body_3_ms: "Please ensure you enjoy Magic Square in a well-lit environment and take frequent breaks. Your safety is important to us.",
+      body_3_ps: "Please ensure you enjoy The Public Square in a well-lit environment and take frequent breaks. Your safety is important to us.",
       go_home: "Go To Home",
       accept_and_continue: "Accept & Continue",
     }
+  },
+  publicSquare: {
+    main: {
+      connected: "Connected",
+      connectionError: "Connection error. Please refresh.",
+      disconnected: "Disconneted. Please refresh."
+    },
+    infoGate: {
+      enter: "Enter The Public Square",
+      freeArt: "The Public Square is a free art project",
+      shapesEmojis: "Make colorful shapes and send emojis",
+      offlineVersion: "For an offline version where you can save presets, nagivate to The Magic Square",
+      publicSquare: "Public Square",
+      welcome: "Welcome to the",
+      wow: "WOW",
+      zoinks: "ZOINKS"
+    }
+  },
+  recaptcha: {
+    verifying: "Verifying",
+    failed_1: "Unable to verify.",
+    failed_2: "Please try again later", 
+    failed_3: "or visit",
+    magicSquare: "Magic square",
   }
 }

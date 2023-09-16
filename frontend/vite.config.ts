@@ -9,4 +9,7 @@ export default defineConfig({
         preprocess: sveltePreprocess()
     })
   ],
+  build: {
+    outDir: '../build/frontend/'
+  }
 })
