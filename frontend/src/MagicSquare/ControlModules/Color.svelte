@@ -1,29 +1,44 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
   import iro from '@jaames/iro'
   import { ColorDirection } from './Color'
   import { WasmInputId } from '../WasmInputId'
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
 
+  import { msStoreSettings } from '../../stores/msStoreSettings'
+  import type { MsStoreSettings } from '../../stores/msStoreSettings'
+  let msStoreSettingsVal: MsStoreSettings
+  const unsubMsStoreSettings = msStoreSettings.subscribe((val: MsStoreSettings) => msStoreSettingsVal = val)
+
   let langVal: Lang 
-  lang.subscribe(val => langVal = val)
+  const unsubLang = lang.subscribe(val => langVal = val)
+  onDestroy(unsubLang)
   let i18n = new I18n("magicSquare/color")
+
+  import { smallScreen } from '../../stores/smallScreen'
+  let smallScreenVal: boolean
+  const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
+
+  import { currSquare, SquareType } from '../../stores/currSquare'
+  let currSquareVal: SquareType
+  const unsubCurrSquare = currSquare.subscribe((val: SquareType) => currSquareVal = val)
 
   function rgbaToString(rgba: number[]): string {
     // rgba = !!rgba ? rgba : [0, 255, 0, 1]
     // while we have some infrastructure set up to accept opacity values
     // our WebGl implimentation does not make use of them at the moment
     // so we keep everything rgb in practice
-    // console.dir({r: rgba[0], g: rgba[1]})
+    // console.dir({r: rgba[0], g: rgba[1], b: rgba[2]})
     return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, 1)`
   }
 
-  let idx_a: number = 0
-  let idx_b: number = 15
+  let idxA: number
+  let idxB: number
+  let currIdx: number
 
-  $: idxLeft = idx_a < idx_b ? idx_a : idx_b
-  $: idxRight = idx_a > idx_b ? idx_a : idx_b
+  $: idxLeft = idxA < idxB ? idxA : idxB
+  $: idxRight = idxA > idxB ? idxA : idxB
 
   export let colorDirection: ColorDirection
   export let colors: number[][]
@@ -51,7 +66,7 @@
     if (!!width) {
       var input = document.getElementById(WasmInputId.colors)
       let step: number = 0
-      while (idxLeft + step < idxRight) {
+      while (idxLeft + step < idxRight + 1) {
         const newColor = colorGradientAtStep(step, width)
         colors[idxLeft + step] = newColor
         colorPickers[idxLeft + step].color.rgba = {r: newColor[0], g: newColor[1], b: newColor[2], a: newColor[3]}
@@ -67,20 +82,36 @@
     e.stopPropagation()
     switch (id) {
       case 'a':
-        idx_a = parseInt(e.target.value)
+        idxA = parseInt(e.target.value)
         break
       case 'b':
-        idx_b = parseInt(e.target.value)
+        idxB = parseInt(e.target.value)
         break
       default:
         break
     }
+    updateStoreRange(idxA, idxB)
+  }
+
+  function updateStoreRange(idxA: number, idxB: number) {
+    msStoreSettings.update((prevSettings: MsStoreSettings) => {
+      switch (currSquareVal) {
+        case SquareType.magic:
+          prevSettings.msColorIdxA = idxA
+          prevSettings.msColorIdxB = idxB
+          break
+        case SquareType.public:
+          prevSettings.psColorIdxA = idxA
+          prevSettings.psColorIdxB = idxB
+          break
+      }
+      return prevSettings
+    })
   }
 
   let colorStrings: string[]
   $: colorStrings = colors.map(x => rgbaToString(x))
-  $: gradient = `linear-gradient(90deg, ${colorStrings[idx_a]} 0%, ${colorStrings[idx_b]} 100%)`
-  let currIdx: number = 0
+  $: gradient = `linear-gradient(90deg, ${colorStrings[idxA]} 0%, ${colorStrings[idxB]} 100%)`
 
   const colorPickerOptions = {
     width: 110,
@@ -92,6 +123,17 @@
 
   function onIdxClick(idx: number) {
     currIdx = idx
+    msStoreSettings.update((prevSettings: MsStoreSettings) => {
+      switch (currSquareVal) {
+        case SquareType.magic:
+          prevSettings.msColorCurrIdx = currIdx
+          break
+        case SquareType.public:
+          prevSettings.psColorCurrIdx = currIdx
+          break
+      }
+      return prevSettings
+    })
   }
 
   function setNewColor(color: number[], idx: number) {
@@ -103,17 +145,54 @@
     return `ms_color_picker_picker_${idx}`
   }
 
+  function deriveColorPickerWidth(iw: number, ih: number): number {
+    var res: number
+    if (smallScreenVal) {
+      const shorterLeg: number = Math.min(iw, ih)
+      res = Math.floor(shorterLeg / 3.5);
+    } else {
+      res = Math.floor(iw / 10);
+    }
+    return Math.max(115, res)
+  }
+
+  function handlePickerResize() {
+    colorPickers.forEach((p: any) => p.resize(colorPickerWidth))
+  }
+
+  let innerWidth: number = 375 // assume small
+  let innerHeight: number = 375 // assume small
+  $: colorPickerWidth = deriveColorPickerWidth(innerWidth, innerHeight)
+
+  let mounted: boolean = false
   onMount(async () => {
+    // read range idxs from store
+    switch (currSquareVal) {
+      case SquareType.magic:
+        currIdx = msStoreSettingsVal.msColorCurrIdx
+        idxA = msStoreSettingsVal.msColorIdxA
+        idxB = msStoreSettingsVal.msColorIdxB
+        break
+      case SquareType.public:
+        currIdx = msStoreSettingsVal.psColorCurrIdx
+        idxA = msStoreSettingsVal.psColorIdxA
+        idxB = msStoreSettingsVal.psColorIdxB
+        break
+      case SquareType.none:
+        idxA = 0
+        idxB = 15
+        break
+    }
+
     // get height/width for picker
-    var colorPickerDiv: any = document.getElementById('color_mode_and_curr')
-    const width: number = Math.floor(colorPickerDiv.offsetWidth / 1.7);
+    const width: number = deriveColorPickerWidth(innerWidth, innerHeight)
     var input = document.getElementById(WasmInputId.colors)
 
     colors.forEach((color: number[], idx: number) => {
       var picker = iro.ColorPicker(`#${toIdxString(idx)}`, Object.assign(colorPickerOptions, {height: width, width}))
       picker.color.rgba = { r: color[0], g: color[1], b: color[2], a: 1 }
 
-      picker.on('color:change', (newColor: any) => {
+      picker.on('input:change', (newColor: any) => {
         const rgba = [newColor.rgba.r, newColor.rgba.g, newColor.rgba.b, 1]       // TODO: simplify/unwind
         // -> due to color value being bound to input.value
         // -> order matters here
@@ -126,8 +205,32 @@
       })
       colorPickers[idx] = picker
     })
+
+    mounted = true
+    // setTimeout(() => updatePickers(colors), 500)
+    window.addEventListener('resize', handlePickerResize)
+  })
+
+  $: updatePickers(colors) // update pickers whenever colors change
+
+  function updatePickers(colors: number[][]) {
+    if (mounted) {
+      colorPickers.forEach((picker: any, idx: number) => {
+        picker.color.rgba = { r: colors[idx][0], g: colors[idx][1], b: colors[idx][2], a: 1 }
+      })
+    }
+  }
+
+  onDestroy(() => {
+    window.removeEventListener('resize', handlePickerResize)
+    unsubCurrSquare()
+    unsubLang()
+    unsubSmallScreen()
+    unsubMsStoreSettings()
   })
 </script>
+
+<svelte:window bind:innerWidth />
 
 <div class="color_container h-full pb-10 flex flex-col justify-between items-stretch">
   <div id="color_mode_and_curr"
@@ -172,40 +275,39 @@
   </div>
   <div class="color_rows pl-2 pr-2 grid grid-cols-4 grid-rows-4">
       {#each colorStrings as rgbaStr, idx}
-        <button class="color_button"
+        <button class="color_button flex justify-around items-center"
                 on:click={() => onIdxClick(idx)}
                 style:background-color={rgbaStr}>
           {idx + 1}
         </button>
       {/each}
   </div>
-  <div class="color_gradient p-2 flex justify-around items-stretch gap-2">
-    <select bind:value={idx_a}
-            class="grow flex justify-around items-center"
+  <div class="color_gradient h-fit rounded-md pt-4 p-2 m-2 grid grid-cols-2 grid-rows-2 gap-y-2 gap-x-1">
+    <select bind:value={idxA}
+            class="h-fit"
             on:input={(e) => e.stopPropagation()}
             on:change={(e) => handleGradientIndexChange(e, 'a')}>
       {#each {length: 16} as _, idx}
-        <option selected={idx_a === idx}
+        <option selected={idxA === idx}
                 value={idx}>
           {idx + 1}
         </option>
       {/each}
     </select>
-    <button class="grow color_mode_option"
-            style:background="{gradient}"
-            on:click={setColorGradient}/>
-    <select bind:value={idx_b}
-            class="grow flex justify-around items-center"
+    <select bind:value={idxB}
+            class="h-fit"
             on:input={(e) => e.stopPropagation()}
             on:change={(e) => handleGradientIndexChange(e, 'b')}>
       {#each {length: 16} as _, idx}
-        <option selected={idx_b === idx}
+        <option selected={idxB === idx}
                 value={idx}>
           {idx + 1}
         </option>
       {/each}
     </select>
-
+    <button class="h-6 col-span-2"
+            style:background="{gradient}"
+            on:click={setColorGradient}/>
   </div>
   <slot name="hiddenInputs"/>
 </div>
@@ -223,7 +325,7 @@
     background-color: color.$blue-4
 
   .color_gradient
-    min-height: 75px
+    border: 3px solid $blue-7
 
   .color_mode
     &s
@@ -240,6 +342,7 @@
 
   .color_button
     flex-grow: 1
+    min-width: 30px
 
   .hidden_input
     display: none
@@ -252,12 +355,12 @@
     position: relative
     &_id
       position: absolute
-      margin-top: 30%
+      margin-top: 26%
       margin-right: 40px
       z-index: 100
       font-weight: text.$fw-m
       font-size: text.$fs-xl
-      color: color.$black-7
+      color: color.$black
       pointer-events: none
 </style>
 

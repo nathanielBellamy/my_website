@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
   import { Lang } from "../I18n"
   import { lang } from '../stores/lang'
   
   let langVal: Lang 
-  lang.subscribe(val => langVal = val)
+  const unsubLang = lang.subscribe(val => langVal = val)
   function setLang(newLangKey:string) {
     localStorage.setItem('lang', Lang[newLangKey])
     lang.update((_: Lang) => {
@@ -20,12 +20,16 @@
       setLang(Lang.en)
     }
   })
+
+  onDestroy(() => {
+    unsubLang()
+  })
 </script>
 
-<section>
-  <div class="lang_select grow">
+<section class="w-fit">
+  <div class="lang_select flex justify-between items-center">
     {#each Object.keys(Lang) as langKey }
-      <button class="lang_select_opt mt-0"
+      <button class="lang_select_opt mt-0 flex justify-around items-center"
               class:selected="{Lang[langKey] === langVal}"
               on:click={() => setLang(langKey)}>
         {langKey}

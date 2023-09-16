@@ -1,14 +1,18 @@
 <script lang="ts">
-  // INIT LANG BOILER PLATE
+  import { onDestroy } from 'svelte'
   import { I18n, Lang } from '../I18n'
   import { lang } from '../stores/lang'
 
   const i18n = new I18n('magicSquare/controlModule')
   let langVal: Lang
-  lang.subscribe(val => langVal = val)
+  const unsubLang = lang.subscribe(val => langVal = val)
 
   export let title: string = ''
   export let side: string = ''
+
+  onDestroy(() => {
+    unsubLang()
+  })
 </script>
 
 <div class="control_module flex flex-col">
@@ -36,7 +40,7 @@
     align-items: stretch 
     border-radius: 5px
     height: 98%
-    min-width: 226px
+    /* min-width: 226px */
     &_slot
       height: 98%
       
@@ -55,7 +59,7 @@
       border-bottom: 5px solid color.$blue-7
 
   .left
-    background-color: color.$green-4
+    background-color: color.$green-7
   .right
     background-color: color.$purple-7
 </style>

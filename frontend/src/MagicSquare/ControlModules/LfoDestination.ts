@@ -66,7 +66,7 @@ export function intoLfoDestination(s: string): LfoDestination {
       return LfoDestination.translationXSpread
     case "TranslationYBase": 
       return LfoDestination.translationYBase
-    case "translationYSpread":
+    case "TranslationYSpread":
       return LfoDestination.translationYSpread
     default:
       return LfoDestination.none

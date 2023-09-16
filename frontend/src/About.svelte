@@ -1,11 +1,11 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte'
   import { lang } from "./stores/lang"
   import { I18n, Lang } from "./I18n"
-  import Link from "./lib/Link.svelte"
 
   let i18n = new I18n("about")
   let langVal: Lang
-  lang.subscribe( val => langVal = val)
+  const unsubLang = lang.subscribe( val => langVal = val)
 
   enum EmbeddedProgram {
     giveMeASign,
@@ -23,7 +23,7 @@
   let personal_projects: PersonalProject[] = [
     {
       title: 'my_website (this)',
-      description: 'Rust, WebAssembly, Typescript, Svelte, WebGL, Sass, Tailwind, Vite',
+      description: 'RustWasm, Go, Typescript, NixOS, Svelte, WebGL, Tailwind, Flowbite, Sass, Vite',
       href: 'https://github.com/users/nathanielBellamy/projects/4',
       program: EmbeddedProgram.none
     },
@@ -68,12 +68,12 @@
   let prefessional_things: ProfessionalThing[] = [
     {
       title: 'Ruby',
-      description: 'on Rails, Rspec, Capybara',
+      description: 'on Rails, RBS, Steep, Rspec, Capybara',
       href: 'https://www.ruby-lang.org/en/'
     },
     {
       title: 'JS',
-      description: 'React, Vue, Node, JQuery, Mocha',
+      description: 'React, Vue, Vue Testing Library, Node, JQuery, Mocha',
       href: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript'
     },
     {
@@ -127,6 +127,9 @@
     window.open(href, '_blank');
   }
 
+  onDestroy(() => {
+    unsubLang()
+  })
 </script>
 
 <div class="about_me flex flex-col justify-start items-stretch gap-2">
@@ -135,7 +138,7 @@
       {i18n.t("personalProejects", langVal)}
     </div>
     <div class="section_body row-span-8 md:col-span-8 md:row-span-1">
-      {#each personal_projects as { title, description, href, program } }
+      {#each personal_projects as { title, description, href } }
         <div class="project grid grid-rows-1 md:grid-cols-4">
           <button class="project_title"
                   title="See It On Github"
@@ -144,10 +147,6 @@
           </button>
           <div class="project_description ml-10 md:ml-0 row-span-3 md:col-span-3 md:row-span-1">
             {description}
-            {#if program == EmbeddedProgram.giveMeASign}
-              <Link href="/give_me_a_sine"
-                    title={i18n.t("openWasm", langVal)}/>
-            {/if}
           </div>
         </div>
       {/each}
@@ -200,7 +199,7 @@
       flex-direction: column
       justify-content: flex-start
       align-items: stretch
-      color: color.$black-7
+      color: color.$black
       flex-grow: .9
       padding: 5px 0 5px 0
    
@@ -209,7 +208,7 @@
     /* justify-content: flex-start */
     align-items: stretch
     flex-grow: 1
-    border-bottom: 2px solid color.$black-7
+    border-bottom: 2px solid color.$black
     
     &_title
       flex-grow: .1
@@ -242,8 +241,8 @@
       padding-left: 1em
       font-weight: 700
       color: color.$green-2
-      border-bottom: 3px solid color.$green-4
-      border-left: 3px solid color.$green-4
+      border-bottom: 3px solid color.$green-7
+      border-left: 3px solid color.$green-7
 
       border-radius: 5px
 

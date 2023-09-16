@@ -10,8 +10,10 @@ export const localeEs: any = {
       home: "Inicio",
       about: "Sobre mí",
       magicSquare: "Cuadro mágico",
+      publicSquare: "Cuadro público",
       giveMeASine: "Dame un seno",
-      none: ""
+      none: "",
+      systemDiagram: "Diagrama de systema",
     }
   },
   gmas: {
@@ -22,24 +24,28 @@ export const localeEs: any = {
     width: "ancho"
   },
   home: {
-    title: "El sitio nuevo de Nate",
+    title: "v0.1.0",
+    cookieWarning: "Este sitio utiliza cookies.",
     about: "Sobre mí",
     about_1: "Lo que hago por lo general con codigo",
     about_2: "Por favor, disfrute de estas imágenes generadas por inteligencia artificial de mí en \"luz natural\"",
-    magicSquare: "Cuadro mágico",
-    magicSquare_1: "3D interactivo con",
-    magicSquare_2: "Explorando conceptos de",
-    magicSquare_3: "síntesis modular",
+    magicSquare: "Cuadro público",
+    magicSquare_1: "3D interactivo con WebGL",
+    magicSquare_2: "Colaboración publica en vivo",
+    magicSquare_3: "Cuadro mágico es la versión desconectada",
     giveMeASine: "Dame un seno",
     giveMeASine_1: "Todos gráficos se pueden copiar y pegar",
-    giveMeASine_2: "preparación para",
+    giveMeASine_2: "Preparación de RustWasm para los cuadros",
     intro: {
       1: "Me gusta apprender.",
       2: "Queria apprender como mezclar",
       3: "usando",
-      4: "Entonces, hizo ese sitio nuevo."
+      4: "Entonces, estoy construyendo ese sitio"
     },
     whatsHere: "Que hay aqui?"
+  },
+  loading: {
+    title: "Cargando..."
   },
   magicSquare: {
     color: {
@@ -55,6 +61,7 @@ export const localeEs: any = {
     controlRack: {
       color: "color",
       drawPattern: "dispersión",
+      feed: "mensajes",
       geometry: 'geometría',
       lfo: "lfo",
       modules: "módulos",
@@ -108,10 +115,10 @@ export const localeEs: any = {
       rotation: "rotación",
       shape: "forma",
       translation: "traslado",
-      xBase: "X base",
-      xSpread: "X escalón",
-      yBase: "Y base",
-      ySpread: "Y escalón"
+      translationXBase: "X base",
+      translationXSpread: "X escalón",
+      translationYBase: "Y base",
+      translationYSpread: "Y escalón"
     },
     main: {
       active: "activo",
@@ -147,25 +154,57 @@ export const localeEs: any = {
       yaw: "guiñada"
     },
     select: {
-      left: "izquierda",
-      right: "derecha",
+      left: "⬅️ ",
+      right: "➡️ ",
       color: "color",
+      color_emoji: "🖍️",
       drawPattern: "dispersión",
+      drawPattern_emoji: "🎦",
+      feed: "mensajes",
+      feed_emoji: "✉️",
       geometry: 'geometría',
+      geometry_emoji: '📐',
       lfo: "lfo",
+      lfo_emoji: "🌊",
       presets: "preajustes",
-      radius: "radio",
+      presets_emoji: "🧰",
       rotation: "rotación",
-      translation: "traslado"
+      rotation_emoji: "🔄",
+      translation: "traslado",
+      translation_emoji: "🚌"
     },
     warning: {
       title: "Advertencia de Epilepsia ",
       body_1: "Por favor, tenga en cuenta que este software contiene secuencias de luces intermitentes que pueden provocar convulsiones a personas con epilepsia fotosensitiva. Se recomienda discreción al espectador.",
       body_2: "Si usted o alguien en su hogar padece una condición epiléptica, consulte a un profesional médico antes de usar este software. Si experimenta mareos, visión alterada, parpadeo ocular o muscular, pérdida de conciencia, desorientación, o cualquier movimiento o convulsión involuntaria mientras usa el software, deje de usarlo inmediatamente y consulte a un profesional médico.",
-      body_3: "Asegúrese de usar en un ambiente bien iluminado y tome descansos frecuentes. Su seguridad es importante para nosotros.",
+      body_3_ms: "Asegúrese de usar en un ambiente bien iluminado y tome descansos frecuentes. Su seguridad es importante para nosotros.",
+      body_3_ps: "Asegúrese de usar en un ambiente bien iluminado y tome descansos frecuentes. Su seguridad es importante para nosotros.",
       go_home: "Regresar a inicio",
       accept_and_continue: "Aceptar y continuar",
     }
-
   },
+  publicSquare: {
+    main: {
+      connected: "Conectado",
+      connectionError: "Error de conexión. Porfavor refresca.",
+      disconnected: "Desconectado. Porfavor refresca."
+    },
+    infoGate: {
+      enter: "Entra En El Cuadro Público",
+      freeArt: "El Cuadro Público es un proyecto del arte libre",
+      shapesEmojis: "Crea formas coloridas y envía emojis",
+      offlineVersion: "Para una versión sin conexión donde puedes guardar preajustes, navega a El Cuadro Mágico",
+      publicSquare: "Cuadro Público",
+      welcome: "Bienvenido al",
+      wow: "GAUA",
+      zoinks: "ZOINKS"
+    }
+  },
+  recaptcha: {
+    verifying: "Verificando",
+    failed_1: "No se puede verificar.",
+    failed_2: "Por favor, intente mas tarde", 
+    failed_3: "o navega a",
+    magicSquare: "Cuadro mágico",
+  }
 }

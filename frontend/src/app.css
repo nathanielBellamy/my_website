@@ -9,7 +9,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: rgba(0,0,0,1);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -43,14 +43,14 @@ h1 {
 
 button {
   border-radius: 8px;
-  border: 2px solid #9DBFCB;
+  border: 2px solid rgba(74, 117, 141, 0.5);
   font-family: inherit;
   cursor: pointer;
   transition: border-color 0.15s;
   margin: 5px;
   padding: 2px 10px 2px 10px;
   font-weight: 800;
-  overflow-x: scroll;
+  background-color: black;
 }
 button:hover {
   border-color: #395A6D;
@@ -69,28 +69,18 @@ button:disabled:hover {
   color: #666;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
 select {
-  color: #395A6D;
+  color: #629BBC;
+  background-color: #1A2831;
   border-radius: 5px;
   padding: 2px 10px 2px 10px;
   font-weight: 800;
+  cursor: pointer;
 }
 
 select optgroup {
-  color: #395A6D;
+  color: #629BBC;
+  background-color: #1A2831;
 }
 
 /***** Chrome, Safari, Opera and Edge Chromium styles *****/
@@ -117,7 +107,6 @@ input[type=range]::-webkit-slider-thumb {
   background: blue; /*#395A6D;*/
 }
 
-
 /* slider thumb */
 input[type="range"]::-moz-range-thumb {
   background: linear-gradient(270deg, #395A6D, #223642, #395A6D);
@@ -134,8 +123,8 @@ nav {
   display: flex;
   align-items: center;
   border-bottom: 5px double #395A6D;
-  overflow: show;
   z-index: 1000;
+  background-color: black;
 }
 
 nav a {
@@ -152,24 +141,26 @@ main {
   left: 0;
   top: 50px;
   width: 100vw;
-  height: calc(100vh - 100px);
+  min-height: calc(100vh - 100px);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  background-color: black;
 }
 
 body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
+  min-width: 140px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
   overflow-y: hidden;
+  background-color: black;
 }
 
 footer { /*global*/
@@ -177,23 +168,11 @@ footer { /*global*/
   left: 0;
   bottom: 0;
   width: 100%;
-  color: #395A6D;
   height: 45px;
-  overflow-x: scroll;
   margin-top: 5px;
   padding: 0 10px 0 10px;
   border-top: 5px double #395A6D;
-  gap: 10px;
-  background-color: #232323;
-}
-
-footer div {
-  flex-grow: 1;
-  padding: 0 10px 0 10px;
-}
-
-footer div:not(:last-child) {
-  border-right: 5px double #395A6D;
+  background-color: black;
 }
 
 header {  /*impl per component*/
@@ -201,3 +180,59 @@ header {  /*impl per component*/
   color: #395A6D;
 }
 
+ /* Hide scrollbar for Chrome, Safari and Opera */
+div::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+div {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+ /* Hide scrollbar for Chrome, Safari and Opera */
+button::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+button {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+ /* Hide scrollbar for Chrome, Safari and Opera */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* fix ios safari bottom padding */
+/* TODO: */
+/*   unfortunately, this adds superflouous padding on some browsers (iOS Firefox) */
+/*   but we will accept that for now as iOS Chrome and Safari look good*/
+/*   may compile with an error but does seem to work in testing thus far*/
+_::-webkit-full-page-media, _:future, :root .main_container {
+  @media (max-width: 750px) {
+    padding-bottom: 69px;
+    min-height: -webkit-fill-available;
+  }
+}
+
+.grecaptcha-badge {
+  width: 0px !important;
+  overflow: hidden !important;
+  transition: all 0.3s ease !important;
+  right: 4px !important;
+  top: 60px !important;
+}
+
+.grecaptcha-badge:hover {
+  width: 0px !important;
+}

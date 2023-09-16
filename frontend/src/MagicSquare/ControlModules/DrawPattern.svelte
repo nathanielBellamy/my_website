@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte'
   import { WasmInputId } from '../WasmInputId'
   import { DrawPatternType } from './DrawPattern'
   import { TransformOrder } from './TransformOrder'
@@ -6,7 +7,9 @@
   import { lang } from '../../stores/lang'
 
   let langVal: Lang 
-  lang.subscribe(val => langVal = val)
+  const unsubLang = lang.subscribe(val => langVal = val)
+  onDestroy(unsubLang)
+
   let i18n = new I18n("magicSquare/drawPattern")
   
   export let drawPatternType: DrawPatternType

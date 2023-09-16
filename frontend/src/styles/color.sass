@@ -1,23 +1,9 @@
 $white: #EFF0E9
 $cream: #E0DACE
+$black: rgba(0,0,0,1)
 
-// $black-1: #545654
-// $black-2: #5D5A55
-// $black-3: #4F4F4D
-// $black-4: #232323
-
-$black-7: #232323
-$black-1: lighten($black-7, 60%)
-$black-2: lighten($black-7, 50%)
-$black-3: lighten($black-7, 40%)
-$black-4: lighten($black-7, 30%)
-$black-5: lighten($black-7, 20%)
-$black-6: lighten($black-7, 10%)
-$black-8: darken($black-7, 10%)
-$black-9: darken($black-7, 20%)
-$black-10: darken($black-7, 30%)
-
-$blue-7: #395A6D
+$blue-transp: rgba(48, 116, 144, 0.5)
+$blue-7: rgba(48, 116, 144, 1)
 $blue-1: lighten($blue-7, 60%)
 $blue-2: lighten($blue-7, 50%)
 $blue-3: lighten($blue-7, 40%)
@@ -28,35 +14,39 @@ $blue-8: darken($blue-7, 10%)
 $blue-9: darken($blue-7, 20%)
 $blue-10: darken($blue-7, 30%)
 
-// $coral-4: darken(#FF7F50, 10%)
-// $coral-4: darken(#FF8247, 10%)
-$purple-7: #6E407C
+$purple-7: rgb(128, 65, 206, 1)
 
-$red-1: #C9B2AC
-$red-2: #7C4A43
-$red-3: #774043
-// $red-4: #6F4344
-// $red-4: lighten(#721F1F, 10%)
-// $red-4: darken(#F28484, 15%)
-$red-4: #8A0A0A
-$red-5: darken($red-4, 10%)
-$red-6: darken($red-4, 20%)
-$red-7: darken($red-4, 30%)
+$red-7: rgba(185, 49, 32, 1)
 
-$green-1: #A0A390
-$green-2: #769073
-// $green-4: #4D625B
-// $green-4: #204F3C
+$red-1: lighten($red-7, 60%)
+$red-2: lighten($red-7, 50%)
+$red-3: lighten($red-7, 40%)
+$red-4: lighten($red-7, 30%)
+$red-5: lighten($red-7, 20%)
+$red-6: lighten($red-7, 10%)
+// $red-7: rgba(185, 49, 32, 1)
+$red-8: darken($red-7, 10%)
+$red-9: darken($red-7, 20%)
 
 
-$green-2: darken(#AED9D6, 35%)
-$green-3: darken(#AED9D6, 40%)
-$green-4: darken(#AED9D6, 45%)
+$green-7: rgba(55, 121, 87, 1)
+
+$green-1: lighten($green-7, 60%)
+$green-2: lighten($green-7, 50%)
+$green-3: lighten($green-7, 40%)
+$green-4: lighten($green-7, 30%)
+$green-5: lighten($green-7, 20%)
+$green-6: lighten($green-7, 10%)
+// $green-7: rgba(52, 118, 110, 1)
+$green-8: darken($green-7, 10%)
+$green-9: darken($green-7, 20%)
 
 $grey-1: #C8C8CA
 $grey-2: #AEAEB0
 $grey-3: #848488
 $grey-4: #848387
+
+$grey-transp: rgba(132, 131, 135, 0.2)
 
 $yellow-1: #DDD8BB
 $yellow-2: #D8C58A
@@ -66,12 +56,12 @@ $yellow-3: #B58D46
 $yellow-4: $blue-4
 
 // gradients
-$black-grad: linear-gradient(110deg, $black-7 0%, $black-6 100%)
-$black-blue-grad: linear-gradient(270deg, $blue-7 0%, $black-7 4%, $black-7 96%, $blue-7 100%)
-$black-blue-horiz-grad: linear-gradient(0deg, $blue-7 0%, $black-7 4%, $black-7 96%, $blue-7 100%)
+$black-grad: linear-gradient(110deg, $black 0%, $black 100%)
+$black-blue-grad: linear-gradient(270deg, $blue-7 0%, $black 4%, $black 96%, $blue-7 100%)
+$black-blue-horiz-grad: linear-gradient(0deg, $blue-7 0%, $black 4%, $black 96%, $blue-7 100%)
 
 $blue-grad: linear-gradient(110deg, $blue-4 0%, $blue-2 100%)
-$blue-black-grad: linear-gradient(110deg, $blue-4 0%, $black-4 100%)
+$blue-black-grad: linear-gradient(110deg, $blue-4 0%, $black 100%)
 
 $red-grad: linear-gradient(110deg, $red-3 0%, $red-2 100%)
 
@@ -80,5 +70,5 @@ $green-cream-grad: linear-gradient(110deg, $cream 0%, $green-2 100%)
 
 $grey-grad: linear-gradient(110deg, $grey-4 0%, $grey-2 100%)
 
-$yellow-black-grad: linear-gradient(110deg, $yellow-2 0%, $black-1 100%)
-$black-yellow-grad: linear-gradient(0deg, $yellow-4 0%, $black-7 4%, $black-7 96%, $yellow-4 100%)
+$yellow-black-grad: linear-gradient(110deg, $yellow-2 0%, $black 100%)
+$black-yellow-grad: linear-gradient(0deg, $yellow-4 0%, $black 4%, $black 96%, $yellow-4 100%)

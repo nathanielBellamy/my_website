@@ -10,8 +10,10 @@ export const localeFr: any = {
       home: "Accueil",
       about: "De moi",
       magicSquare: "Carré magique",
+      publicSquare: "Carré publique",
       giveMeASine: "Donne-moi un sinus",
-      none: ""
+      none: "",
+      systemDiagram: "Diagramme du système",
     }
   },
   gmas: {
@@ -22,24 +24,28 @@ export const localeFr: any = {
     width: "largeur"
   },
   home: {
-    title: "Le site nouveau de Nate",
+    title: "v0.1.0",
+    cookieWarning: "Ce site utilise des cookies.",
     about: "De moi",
-    about_1: "Ce que je fait con code",
+    about_1: "Ce que je fait avec code",
     about_2: "S'il vous plaît, appréciez ces images de moi en \"lumière naturelle\" générées par intelligence artificielle",
-    magicSquare: "Carré magique",
-    magicSquare_1: "3D interactive avec",
-    magicSquare_2: "Exploration de concepts de",
-    magicSquare_3: "synthèse modulaire",
+    magicSquare: "Carré publique",
+    magicSquare_1: "3D interactive avec WebGL",
+    magicSquare_2: "Collaboration publique en direct",
+    magicSquare_3: "Carré magique est la version hors ligne",
     giveMeASine: "Donne-moi un sinus",
     giveMeASine_1: "On peut copier et coller tous les graphiques",
-    giveMeASine_2: "préparation pour",
+    giveMeASine_2: "RustWasm préparation pour les carrés",
     intro: {
       1: "J'aime apprendre.",
       2: "Je voulais apprendre comment mélanger",
       3: "en utilisant",
-      4: "Alors, j'ai fait ce site nouveau."
+      4: "Alors, je suis en train de faire ce site"
     },
     whatsHere: "Qu'est-ce qu'il y a ici?"
+  },
+  loading: {
+    title: "Chargement..."
   },
   magicSquare: {
     color: {
@@ -55,6 +61,7 @@ export const localeFr: any = {
     controlRack: {
       color: "couleur",
       drawPattern: "dispersion",
+      feed: "messages",
       geometry: 'géométrie',
       lfo: "lfo",
       modules: "modules",
@@ -108,10 +115,10 @@ export const localeFr: any = {
       rotation: "rotation",
       shape: "forme",
       translation: "translation",
-      xBase: "X base",
-      xSpread: "pas de X",
-      yBase: "Y base",
-      ySpread: "pas de Y"
+      translationXBase: "X base",
+      translationXSpread: "pas de X",
+      translationYBase: "Y base",
+      translationYSpread: "pas de Y"
     },
     main: {
       active: "actif",
@@ -147,27 +154,57 @@ export const localeFr: any = {
       yaw: "lacet"
     },
     select: {
-      left: "gauche",
-      right: "droite",
+      left: "⬅️ ",
+      right: "➡️ ",
       color: "couleur",
+      color_emoji: "🖍️",
       drawPattern: "dispersion",
+      drawPattern_emoji: "🎦",
+      feed: "messages",
+      feed_emoji: "✉️",
       geometry: 'géométrie',
+      geometry_emoji: '📐',
       lfo: "lfo",
+      lfo_emoji: "🌊",
       presets: "préréglages",
-      radius: "rayon",
+      presets_emoji: "🧰",
       rotation: "rotation",
-      translation: "translation"
+      rotation_emoji: "🔄",
+      translation: "translation",
+      translation_emoji: "🚌"
     },
     warning: {
       title: "Avertissement sur l'Épilepsie",
       body_1: "Veuillez noter que ce logiciel contient des séquences de lumières clignotantes qui peuvent déclencher des crises d'épilepsie chez les personnes atteintes d'épilepsie photosensible. La prudence du spectateur est conseillée.",
       body_2: "Si vous ou quelqu'un dans votre foyer souffrez d'une condition épileptique, veuillez consulter un professionnel de la santé avant d'utiliser ce logiciel. Si vous ressentez des étourdissements, une vision altérée, des tics oculaires ou musculaires, une perte de conscience, une désorientation, ou tout mouvement ou convulsion involontaire lors de l'utilisation du logiciel, arrêtez immédiatement son utilisation et consultez un professionnel de la santé.",
-      body_3: "Assurez-vous de utiliser dans un environnement bien éclairé et de faire des pauses fréquentes. Votre sécurité est importante pour nous.",
+      body_3_ms: "Assurez-vous de utiliser dans un environnement bien éclairé et de faire des pauses fréquentes. Votre sécurité est importante pour nous.",
+      body_3_ps: "Assurez-vous de utiliser dans un environnement bien éclairé et de faire des pauses fréquentes. Votre sécurité est importante pour nous.",
       go_home: "Retour à l'accueil",
       accept_and_continue: "Accepter et continuer",
     }
   },
-  misc: {
-
+  publicSquare: {
+    main: {
+      connected: "Connecté",
+      connectionError: "Erreur de connexion. Rafraichissez, s'il vous plait.",
+      disconnected: "Débranché. Rafraichissez, s'il vous plait."
+    },
+    infoGate: {
+      enter: "Entrez Sur Le Carré Publique",
+      freeArt: "Le Carré Publique est un projet d'art gratuit",
+      shapesEmojis: "Créez des formes colorées et envoyez des emojis",
+      offlineVersion: "Pour une version hors ligne où vous pouvez sauvegarder des préréglages, naviguez vers Le Carré Magique",
+      publicSquare: "Carré Publique",
+      welcome: "Bienvenu au",
+      wow: "OUAH",
+      zoinks: "ZOINKS"
+    }
+  },
+  recaptcha: {
+    verifying: "Vérification",
+    failed_1: "Impossible de vérifier.",
+    failed_2: "Veuillez réessayer plus tard", 
+    failed_3: "ou naviguez vers",
+    magicSquare: "Carré magique",
   }
 }
