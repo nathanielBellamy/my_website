@@ -42,9 +42,12 @@
 - `npm run dev`
 - serves hot-updated SPA on `localhost:5173`
 - see SPA's `package.json` for more build options
-- NOTE: you will need to either
-    - establish a Recaptcha Enterprise project, key, and Api Key (Credentials)
-    - disable Recaptcha manually 
-  in order to work with `PublicSquare` locally
+- NOTE: in order to work with `PublicSquare` locally, you will need
+    - to serve on `localhost:8080` or change `VITE_BASE_URL`
+    - either
+      - to disable Recaptcha manually in code
+      - to establish a test Recaptcha Enterprise project, key, and Api Key (Credentials)
+        - test Recaptcha Key protected by domain (localhost:8080)
+        - test Api Key (Credentials) for the Project protected by IP
 
 ### Made with: RustWasm, Go, Typescript, NixOS, Svelte, WebGL, Tailwind, Flowbite, Sass, Vite
