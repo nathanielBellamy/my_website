@@ -11,7 +11,7 @@ export const localeEs: any = {
       about: "Sobre mí",
       magicSquare: "Cuadro mágico",
       publicSquare: "Cuadro público",
-      giveMeASine: "Dame un seno",
+      giveMeASine: "Gráficas triginométricas",
       none: "",
       systemDiagram: "Diagrama de systema",
     }
@@ -33,7 +33,7 @@ export const localeEs: any = {
     magicSquare_1: "3D interactivo con WebGL",
     magicSquare_2: "Colaboración publica en vivo",
     magicSquare_3: "Cuadro mágico es la versión desconectada",
-    giveMeASine: "Dame un seno",
+    giveMeASine: "Gráficas triginométricas",
     giveMeASine_1: "Todos gráficos se pueden copiar y pegar",
     giveMeASine_2: "Preparación de RustWasm para los cuadros",
     intro: {

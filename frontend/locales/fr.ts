@@ -11,7 +11,7 @@ export const localeFr: any = {
       about: "De moi",
       magicSquare: "Carré magique",
       publicSquare: "Carré publique",
-      giveMeASine: "Donne-moi un sinus",
+      giveMeASine: "Graphiques triginométriques",
       none: "",
       systemDiagram: "Diagramme du système",
     }
@@ -33,9 +33,9 @@ export const localeFr: any = {
     magicSquare_1: "3D interactive avec WebGL",
     magicSquare_2: "Collaboration publique en direct",
     magicSquare_3: "Carré magique est la version hors ligne",
-    giveMeASine: "Donne-moi un sinus",
+    giveMeASine: "Graphiques triginométriques",
     giveMeASine_1: "On peut copier et coller tous les graphiques",
-    giveMeASine_2: "RustWasm préparation pour les carrés",
+    giveMeASine_2: "Préparation de RustWasm pour les carrés",
     intro: {
       1: "J'aime apprendre.",
       2: "Je voulais apprendre comment mélanger",
