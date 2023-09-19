@@ -3,6 +3,19 @@
   import { emojis, emojiKeymap } from '../../locales/emojis'
   export let value: string = "😎"
   export let valueSetIndicator: boolean = false
+
+  interface EmojiVal {
+    val: string,
+    sortIdx: number
+  }
+
+  let sortedEmojiKeys: any[] = Object.entries(emojis)
+                                     .sort(
+    (a: any[], b: any[]) => {
+      const aEmojiVal: EmojiVal = a[1]
+      const bEmojiVal: EmojiVal = b[1]
+      return aEmojiVal.sortIdx < bEmojiVal.sortIdx ? 1 : -1
+    }).map(([key, _]) => key)
   
   function setVal(x: string) {
     valueSetIndicator = !valueSetIndicator
@@ -33,14 +46,10 @@
 
 <div  id="emoji_keyboard"
       class="w-full h-full text-xs grid grid-cols-3 auto-rows-min">
-  {#each Object.keys(emojis) as emojiName }
+  {#each sortedEmojiKeys as emojiKey }
     <button class="p-2"
-            on:click={() => setVal(emojis[emojiName])}>
-      {emojis[emojiName]}
+            on:click={() => setVal(emojis[emojiKey])}>
+      {emojis[emojiKey]}
     </button>
   {/each}
 </div>
-
-<style lang="sass">
-
-</style>
