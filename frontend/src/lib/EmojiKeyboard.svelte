@@ -14,7 +14,7 @@
     (a: any[], b: any[]) => {
       const aEmojiVal: EmojiVal = a[1]
       const bEmojiVal: EmojiVal = b[1]
-      return aEmojiVal.sortIdx < bEmojiVal.sortIdx ? 1 : -1
+      return aEmojiVal.sortIdx > bEmojiVal.sortIdx ? 1 : -1
     }).map(([key, _]) => key)
   
   function setVal(x: string) {
@@ -26,7 +26,7 @@
     const emoji = emojiKeymap[e.key]
     if (!!emoji) {
       e.preventDefault()
-      setVal(emojis[emoji])
+      setVal(emojis[emoji].val)
     }
   }
 
@@ -48,8 +48,8 @@
       class="w-full h-full text-xs grid grid-cols-3 auto-rows-min">
   {#each sortedEmojiKeys as emojiKey }
     <button class="p-2"
-            on:click={() => setVal(emojis[emojiKey])}>
-      {emojis[emojiKey]}
+            on:click={() => setVal(emojis[emojiKey].val)}>
+      {emojis[emojiKey].val}
     </button>
   {/each}
 </div>
