@@ -62,7 +62,8 @@
   <Router {routes}/>
 </main>
 
-<Footer class="w-full rounded-none flex justify-between items-center pt-2 pb-2 bg-black">
+<Footer class="w-full rounded-none flex justify-between items-center pt-2 pb-2 bg-black"
+        data-testid="footer">
   <div class="grow h-full pl-2 pr-2 flex items-center">
     <SocialLinks />
   </div>

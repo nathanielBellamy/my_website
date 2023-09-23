@@ -27,7 +27,8 @@
   })
 </script>
 
-<nav class="nav_bar bg-black mx-0 flex justify-between items-center gap-2 pt-2 pb-2 pr-4">
+<nav class="nav_bar bg-black mx-0 flex justify-between items-center gap-2 pt-2 pb-2 pr-4"
+     data-testid="nav_bar">
   <button id="siteSectionDropdown"
           class="dropdown_button shadow-none h-5/6 flex justify-around items-center text-xs border-transparent">
     <div class="dropdown_icon text-xl pb-2 flex justify-around items-center">
