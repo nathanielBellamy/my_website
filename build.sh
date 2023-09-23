@@ -111,7 +111,6 @@ FRONTEND SPA BUILT
 EOF
 }
 
-
 cat << EOF
 
   📣  🏗️   BUILDING WEBSITE
