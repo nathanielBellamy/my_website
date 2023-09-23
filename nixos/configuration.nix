@@ -26,23 +26,33 @@
     recommendedTlsSettings = true;
     proxyTimeout = "1d";
 
-    virtualHosts."my.domain.com" = {
+    virtualHosts."mydomain.dev" = {
       forceSSL = true;
       enableACME = true;
-      serverName = "my.domain.com";
-      locations."/" = {
-       proxyPass = "http://127.0.0.1:8080";
-       proxyWebsockets = true;
+      serverName = "mydomain.dev";
+      #root = "/path/to/static/assets/to/serve";
+      locations."/"= {
+        proxyPass = "http://localhost:8080";
+        proxyWebsockets = true;
       };
+    };
+
+    # HTTPS redirect secondary domain
+    virtualHosts."mydomain.com" = {
+      forceSSL = true;
+      enableACME = true;
+      serverName = "mydomain.com";
+      globalRedirect = "mydomain.dev";
     };
   };
 
-  # certbot
+  # Certbot
   security.acme.acceptTerms = true;
-  security.acme.email = "example@example.com";
-  security.acme.defaults.email = "example@example.com";
+  security.acme.email = "example@email.com";
+  security.acme.defaults.email = "example@email.com";
   security.acme.certs = {
-    "my.domain.com".email="example@example.com";
+     "mydomain.dev".email = "example@email.com";
+     "mydomain.com".email = "example@email.com";
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
