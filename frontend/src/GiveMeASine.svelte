@@ -1,12 +1,12 @@
 <script lang='ts' type="module">
   import { onDestroy } from 'svelte'
   import init, { GmasWasm, rust_init_message  } from '../pkg/src_rust.js'
-  import { I18n, Lang } from "./I18n"
   import Icon from './lib/Icon.svelte'
   import { Icons } from './lib/Icons.js'
-  import { lang } from './stores/lang'
   
   // INIT LANG BOILER PLATE
+  import { I18n, Lang } from "./I18n"
+  import { lang } from './stores/lang'
   const i18n = new I18n("gmas")
   let langVal: Lang
   const unsubLang = lang.subscribe(val => langVal = val)
@@ -321,4 +321,3 @@
           padding-left: 10px
           padding-right: 10px
 </style>
-

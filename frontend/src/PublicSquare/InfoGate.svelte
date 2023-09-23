@@ -6,16 +6,17 @@
   import { ViteMode } from "../ViteMode"
   import megaphone from '../assets/megaphone.png'
   import Link from '../lib/Link.svelte'
-  import { smallScreen } from '../stores/smallScreen'
+  
   import { I18n, type Lang } from '../I18n'
   import { lang } from '../stores/lang'
-  let smallScreenVal: boolean
-  const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
-  
   const i18n = new I18n('publicSquare/infoGate')
   let langVal: Lang
   const unsubLang = lang.subscribe(val => langVal = val)
 
+  import { smallScreen } from '../stores/smallScreen'
+  let smallScreenVal: boolean
+  const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
+  
   export let hasPassedGate: boolean
 
   onDestroy(() => {

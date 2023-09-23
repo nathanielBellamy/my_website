@@ -1,17 +1,13 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
   import { push } from "svelte-spa-router"
-  import { siteSection, SiteSection } from "../stores/siteSection"
+  import { SquareType } from '../stores/currSquare'
 
   import { I18n, Lang } from "../I18n"
   import { lang } from '../stores/lang'
-  import { SquareType } from '../stores/currSquare'
-
-  // INIT LANG BOILER PLATE
   const i18n = new I18n("magicSquare/warning")
   let langVal: Lang
   const unsubLang = lang.subscribe(val => langVal = val)
-  onDestroy(unsubLang)
 
   export let hasAccepted: boolean = false
   export let squareType: SquareType
@@ -22,7 +18,6 @@
   }
 
   function handleGoBack() {
-    siteSection.update((_:SiteSection) => SiteSection.home)
     push("/")
   }
 
@@ -38,6 +33,8 @@
         return ""
     }
   }
+
+  onDestroy(unsubLang)
 </script>
 
 <div class="warning_main h-full flex flex-col justify-between items-stretch">

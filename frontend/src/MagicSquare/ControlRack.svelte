@@ -3,20 +3,19 @@
   import { into_module, Module } from './ControlModules/Module'
   import ControlModule from './ControlModule.svelte'
   import Select from './ControlModules/Select.svelte'
-  import { smallScreen } from '../stores/smallScreen'
 
   // INIT LANG BOILER PLATE
   import { I18n, Lang } from '../I18n'
   import { lang } from '../stores/lang'
-
   const i18n = new I18n('magicSquare/controlRack')
   let langVal: Lang
   const unsubLang = lang.subscribe(val => langVal = val)
 
-  $: translationTitle = i18n.t(Module.translation, langVal)
-
+  import { smallScreen } from '../stores/smallScreen'
   let smallScreenVal: boolean
   const unsubSmallScreen = smallScreen.subscribe((val: boolean) => smallScreenVal = val)
+
+  $: translationTitle = i18n.t(Module.translation, langVal)
 
   enum Side {
     left = 'left',

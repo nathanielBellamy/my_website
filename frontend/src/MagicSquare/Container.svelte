@@ -4,17 +4,28 @@
   import Main from "./Main.svelte"
 
   // INIT Prev Settings
-  import { prevSettingsStore } from './PrevSettingsStore'
   import WarningModal from "./WarningModal.svelte"
   import Loading from "../lib/Loading.svelte"
   import { SquareType } from "../stores/currSquare"
 
+  import { prevSettingsStore } from './PrevSettingsStore'
   let prevSettingsStoreVal: StorageSettings
   $: prevSettingsStoreVal
-  const unsubscribe = prevSettingsStore.subscribe(val => prevSettingsStoreVal = val)
+  const unsubPrevSettings = prevSettingsStore.subscribe(val => prevSettingsStoreVal = val)
 
   let dataReady: boolean = false
   let hasAcceptedWarning: boolean = false
+
+  let counter: number = 2
+
+  function waitOnLoad() {
+    timeout()
+  }
+
+  function timeout() {
+    if (--counter > 0)
+      return setTimeout(timeout, 1000)
+  }
 
   onMount(() => {
     hasAcceptedWarning = !!localStorage.getItem("magic_square_has_accepted_warning")
@@ -29,18 +40,7 @@
     dataReady = true
   })
 
-  onDestroy(unsubscribe)
-
-  let counter: number = 2
-
-  function waitOnLoad() {
-    timeout()
-  }
-
-  function timeout() {
-    if (--counter > 0)
-      return setTimeout(timeout, 1000)
-  }
+  onDestroy(unsubPrevSettings)
 
   waitOnLoad()
 </script>

@@ -1,26 +1,18 @@
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte'
-  import { push } from "svelte-spa-router"
-  import { Footer, FooterCopyright, FooterLinkGroup, FooterLink, FooterBrand, FooterIcon } from 'flowbite-svelte'
+  import { onDestroy } from 'svelte'
+  import { Footer } from 'flowbite-svelte'
   import Device from 'svelte-device-info'
   import Router from "svelte-spa-router"
   import {wrap} from 'svelte-spa-router/wrap'
-  import Link from "./lib/Link.svelte"
   import Language from "./lib/Language.svelte"
-  import { I18n, Lang } from "./I18n"
-  import { lang } from "./stores/lang"
-  import { intoSiteSection, intoUrl, SiteSection, siteSection } from "./stores/siteSection"
   import Navbar from './lib/Navbar.svelte'
   import SocialLinks from './lib/SocialLinks.svelte'
-  import { ViteMode } from './ViteMode'
 
   import { smallScreen } from './stores/smallScreen'
-  let smallScreenVal: boolean
-  const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
+  const unsubSmallScreen = smallScreen.subscribe((_: boolean | null) => {})
 
   import { touchScreen } from './stores/touchScreen'
-  let touchScreenVal: boolean
-  const unsubTouchScreen = touchScreen.subscribe((val: boolean) => touchScreenVal = val)
+  const unsubTouchScreen = touchScreen.subscribe((_: boolean) => {})
   touchScreen.update((_: boolean) => isTouchScreen())
 
   function isTouchScreen(): boolean {
@@ -34,9 +26,6 @@
   $: if (innerWidth > 1000) {
     smallScreen.update((_: boolean | null) => false)
   }
-
-  let siteSectionVal: SiteSection
-  const unsubSiteSection = siteSection.subscribe((val: SiteSection) => siteSectionVal = val)
 
   const routes: { [key: string]: any } = {
     '/': wrap({
@@ -59,13 +48,7 @@
     })
   }
 
-  onMount(() => {
-    let storageSiteSection: SiteSection = intoSiteSection(localStorage.getItem('ns_site_section'))
-    siteSection.update((_:SiteSection) => storageSiteSection)
-  })
-
   onDestroy(() => {
-    unsubSiteSection()
     unsubSmallScreen()
     unsubTouchScreen()
   })

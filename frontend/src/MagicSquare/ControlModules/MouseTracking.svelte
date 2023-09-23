@@ -1,14 +1,12 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
   import { MouseTracking } from './MouseTracking'
+  
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
-
+  let i18n = new I18n("magicSquare/mouseTracking")
   let langVal: Lang 
   const unsubLang = lang.subscribe(val => langVal = val)
-  onDestroy(unsubLang)
-
-  let i18n = new I18n("magicSquare/mouseTracking")
 
   export let currOption: MouseTracking
   const hiddenInputId = 'magic_square_input_mouse_tracking'
@@ -86,15 +84,6 @@
     return false // do not refresh page on submit
   }
 
-  onMount(async () => {
-    // wasm listens to input events on the forms
-    // within the manual call to dispatchEvent we must
-    // explicitly set bubbles:true so that wasm can catch the event
-    // while listening to the form
-    // this way a single wasm closure can handle all ui data updates
-    parseVars(currOption)
-  })
-
   function handleToggleKeydown(e: any, newToggle: Toggle) {
     e.stopPropagation()
     if (e.keyCode === 13){
@@ -128,6 +117,10 @@
 
   const invGroup1: Inv[] = [Inv.x, Inv.y, Inv.xy]
   const invGroup2: Inv[] = [Inv.none]
+
+  onMount(() => parseVars(currOption))
+
+  onDestroy(unsubLang)
 </script>
 
 <form id={formId}

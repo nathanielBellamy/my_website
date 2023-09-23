@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
+  
   import { lang } from "./stores/lang"
   import { I18n, Lang } from "./I18n"
-
   let i18n = new I18n("about")
   let langVal: Lang
   const unsubLang = lang.subscribe( val => langVal = val)
@@ -127,9 +127,7 @@
     window.open(href, '_blank');
   }
 
-  onDestroy(() => {
-    unsubLang()
-  })
+  onDestroy(unsubLang)
 </script>
 
 <div class="about_me flex flex-col justify-start items-stretch gap-2">

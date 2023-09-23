@@ -3,9 +3,9 @@
   import { WasmInputId } from "../WasmInputId"
   import { ShapeTag } from "./Shape"
   import type { Shape } from "./Shape"
+  
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
-
   let langVal: Lang 
   const unsubLang = lang.subscribe(val => langVal = val)
   let i18n = new I18n("magicSquare/geometry")
@@ -272,7 +272,6 @@
 <style lang="sass">
   @use "./../../styles/color"
   @use "./../../styles/text"
-
   @import "../styles/control_module_title.sass"
 
   .disabled

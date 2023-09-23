@@ -2,20 +2,16 @@
   import { onDestroy } from "svelte"
   import { push } from "svelte-spa-router"
   import Link from "./lib/Link.svelte"
-  import { I18n, Lang } from "./I18n"
-  import { lang } from './stores/lang'
   import magicSquareExampleGif from './assets/magic_square_example.gif'
   import giveMeASineExampleGif from './assets/give_me_a_sine_example.gif'
   import AiMe from "./lib/AiMe.svelte"
-  import { intoUrl, siteSection, SiteSection } from "./stores/siteSection"
   import Toaster from "./lib/Toaster.svelte"
   import { ToastColor } from "./lib/Toasty"
   import { Icons } from "./lib/Icons"
+  import { intoUrl, SiteSection } from "./stores/siteSection"
 
-  let siteSectionVal: SiteSection
-  const unsubSiteSection = siteSection.subscribe((val: SiteSection) => siteSectionVal = val)
-
-  // INIT LANG BOILER PLATE
+  import { I18n, Lang } from "./I18n"
+  import { lang } from './stores/lang'
   const i18n = new I18n("home")
   let langVal: Lang
   const unsubLang = lang.subscribe(val => langVal = val)
@@ -58,8 +54,6 @@
   }
 
   function handlePreviewClick(s: SiteSection) {
-    localStorage.setItem('ns_site_section', s)
-    siteSection.update((_: SiteSection) => s)
     push(intoUrl(s))
   }
 
@@ -67,7 +61,6 @@
     initialLoad.update((_: boolean) => false)
     unsubInitialLoad()
     unsubLang()
-    unsubSiteSection()
   })
 </script>
 
@@ -273,7 +266,6 @@
       grid-template-columns: 1fr 1fr
       grid-template-areas: "title_and_pic text" "title_and_pic text"
       
- 
   .preview
     border-radius: 5px
     color: color.$green-7
@@ -299,5 +291,4 @@
       text-align: left
       list-style-type: square
       width: 100%      
-      
 </style>

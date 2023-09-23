@@ -3,17 +3,16 @@
   import iro from '@jaames/iro'
   import { ColorDirection } from './Color'
   import { WasmInputId } from '../WasmInputId'
-  import { I18n, Lang } from '../../I18n'
-  import { lang } from '../../stores/lang'
 
   import { msStoreSettings } from '../../stores/msStoreSettings'
   import type { MsStoreSettings } from '../../stores/msStoreSettings'
   let msStoreSettingsVal: MsStoreSettings
   const unsubMsStoreSettings = msStoreSettings.subscribe((val: MsStoreSettings) => msStoreSettingsVal = val)
 
+  import { I18n, Lang } from '../../I18n'
+  import { lang } from '../../stores/lang'
   let langVal: Lang 
   const unsubLang = lang.subscribe(val => langVal = val)
-  onDestroy(unsubLang)
   let i18n = new I18n("magicSquare/color")
 
   import { smallScreen } from '../../stores/smallScreen'
@@ -320,7 +319,6 @@
   .title
     @include control_module_title
 
-
   .selected
     background-color: color.$blue-4
 
@@ -363,7 +361,3 @@
       color: color.$black
       pointer-events: none
 </style>
-
-
-
-
