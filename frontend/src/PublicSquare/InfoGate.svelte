@@ -25,7 +25,8 @@
   })
 </script>
 
-<div class="info_gate font-mono w-full h-full overflow-y-scroll pb-4">
+<div class="info_gate font-mono w-full h-full overflow-y-scroll pb-4"
+     data-testid="public_square_info_gate">
   <div class="h-full w-full flex flex-col justify-between items-stretch gap-4">
     <div class="w-full flex justify-around items-center">
       <div class="info_gate_title flex justify-around items-center">
@@ -44,10 +45,10 @@
           <p>
             ===============
           </p>
-          <p>
+          <p data-testid="public_square_info_gate_welcome">
             {i18n.t("welcome", langVal)}
           </p>
-          <p>
+          <p data-testid="public_square_info_gate_title">
             {i18n.t("publicSquare", langVal)}
           </p>
           <p>

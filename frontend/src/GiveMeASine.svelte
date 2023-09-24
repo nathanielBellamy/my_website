@@ -121,7 +121,8 @@
   <div id="give_me_a_sine_form"
        class="give_me_a_sine_form overflow-y-scroll flex flex-col overscroll-none"
        class:hidden={smallScreenVal && gmasView !== GmasView.control}>
-    <div class="give_me_a_sine_form_header font-bold">
+    <div class="give_me_a_sine_form_header font-bold"
+         data-testid="gmas_form_header">
       <p>f(x) = a * sin(b*x + c)</p>
     </div>
     <div class="give_me_a_sine_form_body flex flex-col justify-between items-stretch">

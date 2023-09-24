@@ -46,7 +46,7 @@
 </script>
 
 <body id="magic_square_container"
-     class="magic_square_container overscroll-none overflow-y-scroll">
+      class="magic_square_container overscroll-none overflow-y-scroll">
   {#if counter > 0}
     <Loading />
   {:else}

@@ -1,6 +1,8 @@
+import { Mode } from "../support/mode"
+
 describe('all domains', () => {
   it('redirect to nateschieber.dev', () => {
-    cy.visit_home()
+    cy.visit_home(Mode.prod)
     cy.url().should('eq', 'https://nateschieber.dev/')
 
     cy.visit('https://nateschieber.com')

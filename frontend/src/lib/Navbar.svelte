@@ -30,7 +30,8 @@
 <nav class="nav_bar bg-black mx-0 flex justify-between items-center gap-2 pt-2 pb-2 pr-4"
      data-testid="nav_bar">
   <button id="siteSectionDropdown"
-          class="dropdown_button shadow-none h-5/6 flex justify-around items-center text-xs border-transparent">
+          class="dropdown_button shadow-none h-5/6 flex justify-around items-center text-xs border-transparent"
+          data-testid="nav_button">
     <div class="dropdown_icon text-xl pb-2 flex justify-around items-center">
       ☰
     </div>
@@ -39,41 +40,48 @@
             bind:open={dropdownOpen}
             placement={touchScreenVal ? "bottom" : "right"}
             classUl="w-40"
-            ulClass="pt-2 pb-2 rounded-lg bg-black text-blue-200">
+            ulClass="pt-2 pb-2 rounded-lg bg-black text-blue-200"
+            data-testid="nav_dropdown">
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
                   tabIndex="0"
                   on:click={() => dropdownOpen = false}
-                  href="/#/">
+                  href="/#/"
+                  data-testid="nav_dropdown_home">
       {i18n.t("nav/home", langVal)} 
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
                   tabIndex="0"
                   on:click={() => dropdownOpen = false}
-                  href="/#/public-square">
+                  href="/#/public-square"
+                  data-testid="nav_dropdown_public_square">
       {i18n.t("nav/publicSquare", langVal)}
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
                   tabIndex="0"
                   on:click={() => dropdownOpen = false}
-                  href="/#/magic-square">
+                  href="/#/magic-square"
+                  data-testid="nav_dropdown_magic_square">
       {i18n.t("nav/magicSquare", langVal)}
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
                   tabIndex="0"
                   on:click={() => dropdownOpen = false}
-                  href="/#/give-me-a-sine">
+                  href="/#/give-me-a-sine"
+                  data-testid="nav_dropdown_give_me_a_sine">
       {i18n.t("nav/giveMeASine", langVal)}
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
                   tabIndex="0"
                   on:click={() => dropdownOpen = false}
-                  href="/#/about">
+                  href="/#/about"
+                  data-testid="nav_dropdown_about">
       {i18n.t("nav/about", langVal)}
     </DropdownItem>
     <DropdownItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
                   tabIndex="0"
                   on:click={() => dropdownOpen = false}
-                  href="/#/system-diagram">
+                  href="/#/system-diagram"
+                  data-testid="nav_dropdown_system_diagram">
       {i18n.t("nav/systemDiagram", langVal)}
     </DropdownItem>
   </Dropdown>

@@ -467,7 +467,8 @@
 <div id="magic_square"
      class="magic_square overscroll-none"
      class:grid_col={smallScreenVal}
-     class:grid_row={!smallScreenVal}>
+     class:grid_row={!smallScreenVal}
+     data-testid="magic_square">
   {#if smallScreenVal}
      <div class="text-sm grid grid-cols-2 grid-rows-1">
         <button on:click={() => setMagicSquareView(MagicSquareView.square)}
