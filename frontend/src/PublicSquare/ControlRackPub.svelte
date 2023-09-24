@@ -4,16 +4,13 @@
   import ControlModule from '../MagicSquare/ControlModule.svelte'
   import Select from '../MagicSquare/ControlModules/Select.svelte'
 
-  // INIT LANG BOILER PLATE
   import { I18n, Lang } from '../I18n'
   import { lang } from '../stores/lang'
-
   const i18n = new I18n('magicSquare/controlRack')
   let langVal: Lang
   const unsubLang = lang.subscribe(val => langVal = val)
 
   import { smallScreen } from '../stores/smallScreen'
-
   let smallScreenVal: boolean
   const unsubSmallScreen = smallScreen.subscribe((val: boolean) => smallScreenVal = val)
 

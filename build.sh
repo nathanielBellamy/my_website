@@ -1,4 +1,5 @@
 #!/bin/bash
+#
 
 # Load environment variables from config.env
 if [ -f "config.env" ]; then
@@ -16,13 +17,32 @@ fi
 
 # Function for Go server build
 build_go_server() {
-  echo "Building Go server..."
+    cat << EOF
+
+  📣  🏗️   BUILDING:
+GO SERVER
+
+EOF
   cd backend && cd go
+  TARGET_ARCH="LINUX"
   if [ "$MODE" != "localhost" ]; then
-    echo "Building For Linux"
+
+    cat << EOF
+
+  ⚡  GO TARGET ARCH:
+LINUX
+
+EOF
+
     GOOS=linux GOARCH=amd64 go build -o "./../../build" main.go
   else
-    echo "Building For Host Architecture"
+    TARGET_ARCH="HOST_ARCHITECTURE"
+    cat << EOF
+
+  ⚡  GO TARGET ARCH:
+HOST ARCHITECTURE
+
+EOF
     go build -o "./../../build" main.go
   fi
 
@@ -36,30 +56,68 @@ build_go_server() {
   fi
 
   cd .. && cd ..
-  echo "Go server built successfully."
+    cat << EOF
+
+  📣  🏁  DONE:
+GO SERVER BUILT
+
+EOF
 }
 
 # Function for auth SPA build
 build_auth_dev_spa() {
-  echo "Building Auth SPA..."
+  cat << EOF
+
+  📣  🏗️   BUILDING:
+AUTH SPA
+
+EOF
   SPA_ENV=$1
   cd auth && cd dev && npm run build-$SPA_ENV 
   cd .. && cd ..
-  echo "Auth SPA built successfully."
+  cat << EOF
+
+  📣  🏁  DONE:
+AUTH SPA BUILT
+
+EOF
 
   # Perform the regex string replacement
   sed -i '' 's/\/assets/\.\/assets/g' build/auth/dev/index.html
-  echo "Updated asset paths in Auth SPA's index.html."
+  cat << EOF
+
+  📣  🏁  DONE:
+UPDATED ASSET PATHS IN AUTH SPA index.html
+
+EOF
 }
 
 # Function for main SPA build
 build_main_spa() {
-  echo "Building Main SPA..."
+  cat << EOF
+
+  📣  🏗️   BUILDING:
+FRONTEND SPA
+
+EOF
   SPA_ENV=$1
   cd frontend && npm run build-frontend-$SPA_ENV 
   cd ..
-  echo "Main SPA built successfully."
+  cat << EOF
+
+  📣  🏁  DONE:
+FRONTEND SPA BUILT
+
+EOF
 }
+
+cat << EOF
+
+  📣  🏗️   BUILDING WEBSITE
+  ⚡  MODE:
+${MODE}
+
+EOF
 
 # Check if we only want to build the Go server
 if [ "$1" == "--server-only" ]; then
@@ -90,4 +148,24 @@ case $MODE in
     ;;
 esac
 
-echo "Build process completed."
+cat << EOF
+
+  📣  🏁  DONE:
+BUILD COMPLETE
+CHECK ABOVE OUTPUT FOR WARNINGS
+
+  ⚡  VERIFY
+  ⚡  VERIFY
+  ⚡  VERIFY
+
+  ⚡  GO TARGET ARCH:
+${TARGET_ARCH}
+
+  ⚡  MODE:
+${MODE}
+
+  🚀🚀🚀  
+  🚀🚀🚀  Happy
+  🚀🚀🚀  Coding
+
+EOF

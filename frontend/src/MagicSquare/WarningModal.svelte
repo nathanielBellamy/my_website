@@ -1,17 +1,13 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
   import { push } from "svelte-spa-router"
-  import { siteSection, SiteSection } from "../stores/siteSection"
+  import { SquareType } from '../stores/currSquare'
 
   import { I18n, Lang } from "../I18n"
   import { lang } from '../stores/lang'
-  import { SquareType } from '../stores/currSquare'
-
-  // INIT LANG BOILER PLATE
   const i18n = new I18n("magicSquare/warning")
   let langVal: Lang
   const unsubLang = lang.subscribe(val => langVal = val)
-  onDestroy(unsubLang)
 
   export let hasAccepted: boolean = false
   export let squareType: SquareType
@@ -22,7 +18,6 @@
   }
 
   function handleGoBack() {
-    siteSection.update((_:SiteSection) => SiteSection.home)
     push("/")
   }
 
@@ -38,9 +33,12 @@
         return ""
     }
   }
+
+  onDestroy(unsubLang)
 </script>
 
-<div class="warning_main h-full flex flex-col justify-between items-stretch">
+<div class="warning_main h-full flex flex-col justify-between items-stretch"
+     data-testid="epilepsy_warning">
   <div class="title p-5">
     {i18n.t('title', langVal)}
   </div>
@@ -62,11 +60,13 @@
   <div class="grow w-full p-5 flex justify-around items-stretch">
     <div class="grow grid grid-cols-2 grid-rows-1">
       <button on:click={handleGoBack}
-              class="green">
+              class="green"
+              data-testid="epilepsy_warning_go_home">
         {i18n.t('go_home', langVal)}
       </button>
       <button on:click={handleAccept}
-              class="red">
+              class="red"
+              data-testid="epilepsy_warning_accept">
         {i18n.t('accept_and_continue', langVal)}
       </button>
     </div>

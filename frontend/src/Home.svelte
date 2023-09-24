@@ -1,21 +1,18 @@
 <script lang="ts">
+  import { version_current, version_latest_major } from "../../version"
   import { onDestroy } from "svelte"
   import { push } from "svelte-spa-router"
   import Link from "./lib/Link.svelte"
-  import { I18n, Lang } from "./I18n"
-  import { lang } from './stores/lang'
   import magicSquareExampleGif from './assets/magic_square_example.gif'
   import giveMeASineExampleGif from './assets/give_me_a_sine_example.gif'
   import AiMe from "./lib/AiMe.svelte"
-  import { intoUrl, siteSection, SiteSection } from "./stores/siteSection"
   import Toaster from "./lib/Toaster.svelte"
   import { ToastColor } from "./lib/Toasty"
   import { Icons } from "./lib/Icons"
+  import { intoUrl, SiteSection } from "./stores/siteSection"
 
-  let siteSectionVal: SiteSection
-  const unsubSiteSection = siteSection.subscribe((val: SiteSection) => siteSectionVal = val)
-
-  // INIT LANG BOILER PLATE
+  import { I18n, Lang } from "./I18n"
+  import { lang } from './stores/lang'
   const i18n = new I18n("home")
   let langVal: Lang
   const unsubLang = lang.subscribe(val => langVal = val)
@@ -23,6 +20,9 @@
   import { initialLoad } from "./stores/initialLoad"
   let initialLoadVal: boolean
   const unsubInitialLoad = initialLoad.subscribe(val => initialLoadVal = val)
+
+  const version_url_current: string = `https://github.com/nathanielBellamy/my_website/releases/tag/${version_current}`
+  const version_url_latest_major: string = `https://github.com/nathanielBellamy/my_website/releases/tag/${version_latest_major}`
 
   let innerHeight: number
   let innerWidth: number
@@ -58,8 +58,6 @@
   }
 
   function handlePreviewClick(s: SiteSection) {
-    localStorage.setItem('ns_site_section', s)
-    siteSection.update((_: SiteSection) => s)
     push(intoUrl(s))
   }
 
@@ -67,7 +65,6 @@
     initialLoad.update((_: boolean) => false)
     unsubInitialLoad()
     unsubLang()
-    unsubSiteSection()
   })
 </script>
 
@@ -80,12 +77,34 @@
            icon={Icons.InfoCircleSolid}
            text={i18n.t("cookieWarning", langVal)}/>
   <div class="home_title_container flex flex-col justify-between items-stretch md:flex-row md:justify-start md:items-center">
-    <button class="home_title font-mono flex justify-around items-center pl-2 pr-2 mt-5 md:mt-0"
-            on:click={() => window.open("https://github.com/nathanielBellamy/my_website", '_blank').focus()}
-            style:font-size={preview_title_font_size}>
-      {i18n.t("title", langVal)}
-    </button>
-    <ul class="home_intro_list text-left p-5 flex flex-col justify-between items-stretch">
+    <div class="text-cyan-500 font-mono flex flex-col justify-around items-stretch pl-2 pr-2 mt-5 md:mt-0">
+      <div class="flex items-center font-bold">
+        {i18n.t("version", langVal)}
+      </div>
+      <a class="h-full w-full grid grid-cols-2 grid-rows-1"
+         href={version_url_current}
+         data-testid="version_link_current">
+        <span class="text-lg h-full flex flex-col justify-around items-start">
+          {i18n.t("version_current", langVal)}
+        </span>
+        <span class="text-xl h-full flex flex-col justify-around items-center"
+              data-testid="version_current">
+          {version_current}
+        </span>
+      </a>
+      <a  class="h-full w-full grid grid-cols-2 grid-rows-1"
+          href={version_url_latest_major}
+          data-testid="version_link_latest_major">
+        <span class="text-lg h-full flex flex-col justify-around items-start">
+          {i18n.t("version_latest_major", langVal)}
+        </span>
+        <span class="text-xl h-full flex flex-col justify-around items-center"
+              data-testid="version_latest_major">
+          {version_latest_major}
+        </span>
+      </a>
+    </div>
+    <ul class="text-emerald-700 font-bold text-left p-5 flex flex-col justify-between items-stretch">
       <li>
         {i18n.t("intro/2", langVal)}
         <p>
@@ -115,7 +134,8 @@
       </li>
     </ul>
   </div>
-  <div class="home_title_dark text-left pl-5">
+  <div class="home_title_dark text-lg font-bold text-left text-emerald-700 pl-5"
+       data-testid="whats_here">
     {i18n.t("whatsHere", langVal)}
   </div>
   <div class="h-5/6 flex flex-col justify-between items-stretch md:grid md:grid-cols-3 md:grid-rows-1 gap-3">
@@ -229,24 +249,8 @@
   @use "./styles/color"
   @use "./styles/text"
 
-  .home
-    &_title
-      color: color.$blue-5
-      font-size: text.$fs-l
-      font-weight: text.$fw-l
-      border-left: 5px double color.$blue-7
-      border-right: 5px double color.$blue-7
-      border-radius: 10px
-      &_dark
-        color: color.$green-7
-        font-weight: text.$fw-l
-        font-size: text.$fs-ml
-      &_container
-        border-bottom: 5px double color.$blue-5
-
-    &_intro_list
-      color: color.$green-7
-      font-weight: text.$fw-m
+  .home_title_container
+    border-bottom: 5px double color.$blue-5
 
   .magic_square_img
     border: 5px double color.$blue-5
@@ -273,7 +277,6 @@
       grid-template-columns: 1fr 1fr
       grid-template-areas: "title_and_pic text" "title_and_pic text"
       
- 
   .preview
     border-radius: 5px
     color: color.$green-7
@@ -299,5 +302,4 @@
       text-align: left
       list-style-type: square
       width: 100%      
-      
 </style>

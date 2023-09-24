@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
+  
   import { lang } from "./stores/lang"
   import { I18n, Lang } from "./I18n"
-
   let i18n = new I18n("about")
   let langVal: Lang
   const unsubLang = lang.subscribe( val => langVal = val)
@@ -127,14 +127,13 @@
     window.open(href, '_blank');
   }
 
-  onDestroy(() => {
-    unsubLang()
-  })
+  onDestroy(unsubLang)
 </script>
 
 <div class="about_me flex flex-col justify-start items-stretch gap-2">
   <div class="section grid grid-rows-10 md:grid-cols-10 gap-4">
-    <div class="section_title text-xl font-extrabold row-span-2 md:col-span-2 md:row-span-1">
+    <div class="section_title text-xl font-extrabold row-span-2 md:col-span-2 md:row-span-1"
+         data-testid="about_personal_projects">
       {i18n.t("personalProejects", langVal)}
     </div>
     <div class="section_body row-span-8 md:col-span-8 md:row-span-1">
@@ -153,7 +152,8 @@
     </div>
   </div>
   <div class="section grid grid-rows-10 md:grid-cols-10 gap-4">
-    <div class="section_title text-xl font-extrabold row-span-2 md:col-span-2 md:row-span-1">
+    <div class="section_title text-xl font-extrabold row-span-2 md:col-span-2 md:row-span-1"
+         data-testid="about_technical_experience">
       {i18n.t("technicalExperience", langVal)}
     </div>
     <div class = "section_body row-span-8 md:col-span-8 md:row-span-1">

@@ -19,5 +19,6 @@
 <body class="w-full h-full bg-black flex justify-around items-center">
   <img src={sd}
        style:height={imgHeight}
-       alt="System Diagram"/>
+       alt="System Diagram"
+       data-testid="system_diagram"/>
 </body>

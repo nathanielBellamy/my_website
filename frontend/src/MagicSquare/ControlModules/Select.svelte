@@ -1,16 +1,16 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
   import { Module } from './Module'
-  import { I18n, Lang } from '../../I18n'
-  import { lang } from '../../stores/lang'
-  import { smallScreen } from '../../stores/smallScreen'
   import Icon from '../../lib/Icon.svelte'
   import { Icons } from '../../lib/Icons'
 
+  import { I18n, Lang } from '../../I18n'
+  import { lang } from '../../stores/lang'
+  let i18n = new I18n("magicSquare/select")
   let langVal: Lang 
   const unsubLang = lang.subscribe(val => langVal = val)
-  let i18n = new I18n("magicSquare/select")
 
+  import { smallScreen } from '../../stores/smallScreen'
   let smallScreenVal: boolean
   const unsubSmallScreen = smallScreen.subscribe((val: boolean) => smallScreenVal = val)
 

@@ -2,17 +2,17 @@
   import { onDestroy, onMount } from 'svelte'
   import { WasmInputId } from "../WasmInputId"
   import { PresetAction } from "./Preset"
-  import { I18n, Lang } from '../../I18n'
-  import { lang } from '../../stores/lang'
 
   import { msStoreSettings } from '../../stores/msStoreSettings'
   import type { MsStoreSettings } from '../../stores/msStoreSettings'
   let msStoreSettingsVal: MsStoreSettings
   const unsubMsStoreSettings = msStoreSettings.subscribe((val: MsStoreSettings) => msStoreSettingsVal = val)
 
+  import { I18n, Lang } from '../../I18n'
+  import { lang } from '../../stores/lang'
+  let i18n = new I18n("magicSquare/presets")
   let langVal: Lang 
   const unsubLang = lang.subscribe(val => langVal = val)
-  let i18n = new I18n("magicSquare/presets")
 
   // TODO:
   // bring presets to PublicSquare

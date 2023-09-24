@@ -54,6 +54,7 @@
       authorize(password)
     }}>
     <input type="password"
+           data-testid="pw_input"
            bind:value={password}
            on:input={onInput}>
   </form>
