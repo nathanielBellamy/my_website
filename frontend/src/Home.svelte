@@ -104,7 +104,7 @@
         </span>
       </a>
     </div>
-    <ul class="home_intro_list text-left p-5 flex flex-col justify-between items-stretch">
+    <ul class="text-emerald-700 font-bold text-left p-5 flex flex-col justify-between items-stretch">
       <li>
         {i18n.t("intro/2", langVal)}
         <p>
@@ -134,7 +134,7 @@
       </li>
     </ul>
   </div>
-  <div class="home_title_dark text-lg font-bold text-left pl-5"
+  <div class="home_title_dark text-lg font-bold text-left text-emerald-700 pl-5"
        data-testid="whats_here">
     {i18n.t("whatsHere", langVal)}
   </div>
@@ -249,20 +249,8 @@
   @use "./styles/color"
   @use "./styles/text"
 
-  .home
-    &_title
-      color: color.$blue-5
-      border-left: 5px double color.$blue-7
-      border-right: 5px double color.$blue-7
-      border-radius: 10px
-      &_dark
-        color: color.$green-7
-      &_container
-        border-bottom: 5px double color.$blue-5
-
-    &_intro_list
-      color: color.$green-7
-      font-weight: text.$fw-m
+  .home_title_container
+    border-bottom: 5px double color.$blue-5
 
   .magic_square_img
     border: 5px double color.$blue-5
