@@ -3,18 +3,17 @@
   import { Toast } from 'flowbite-svelte'
   import { fly } from 'svelte/transition'
   import type { ToastColor } from './Toasty'
+  import Icon from './Icon.svelte';
+  import type { Icons } from './Icons';
+  
+  import { smallScreen } from '../stores/smallScreen'
+  let smallScreenVal: boolean
+  const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
 
   export let color: ToastColor
   export let text: string
   export let open: boolean | null
   export let icon: Icons
-
-
-  import { smallScreen } from '../stores/smallScreen'
-  import Icon from './Icon.svelte';
-  import type { Icons } from './Icons';
-  let smallScreenVal: boolean
-  const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
 
   enum Position {
     tr = "top-right",
@@ -34,9 +33,7 @@
     position = Position.br
   }
 
-  onDestroy(() => {
-    unsubSmallScreen()
-  })
+  onDestroy(unsubSmallScreen)
 </script>
 
 {#if open === null}

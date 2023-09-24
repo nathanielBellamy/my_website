@@ -1,14 +1,12 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte'
   import { link } from "svelte-spa-router"
-  import { siteSection, SiteSection } from "../stores/siteSection"
+  import { SiteSection } from "../stores/siteSection"
 
-  let siteSectionVal: SiteSection
-  const unsubSiteSection = siteSection.subscribe(val => siteSectionVal = val)
-
-  function updateSiteSection(s: SiteSection) {
-    siteSection.update((_: SiteSection) => s)
-  }
+  export let sameOrigin:boolean = true
+  export let href: string = "/"
+  export let className: string = ""
+  export let title: string = "Home"
+  export let onClick: any = (e:any) => {e.stopPropagation()}
 
   function setSiteSection(href: string){
     var newSection: SiteSection = SiteSection.home
@@ -29,17 +27,7 @@
     }
 
     localStorage.setItem('ns_site_section', newSection)
-    updateSiteSection(newSection)
   }
-  export let sameOrigin:boolean = true
-  export let href: string = "/"
-  export let className: string = ""
-  export let title: string = "Home"
-  export let onClick: any = (e:any) => {e.stopPropagation()}
-
-  onDestroy(() => {
-    unsubSiteSection()
-  })
 </script>
 
 {#if sameOrigin}
@@ -70,7 +58,6 @@
     </button>
   </a>
 {/if}
-
 
 <style lang="sass">
   @use "./../styles/color"

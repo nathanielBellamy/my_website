@@ -50,4 +50,21 @@
         - test Recaptcha Key protected by domain (localhost:8080)
         - test Api Key (Credentials) for the Project protected by IP
 
-### Made with: RustWasm, Go, Typescript, NixOS, Svelte, WebGL, Tailwind, Flowbite, Sass, Vite
+
+### specs
+- build with `MODE=localhost`
+- start Go server on `localhost:8080` (default) with password `foo`
+```
+MODE=localhost PW=foo ./serve.sh
+```
+- start cypress, use ui to run specs
+```
+cd spec && npx cypress open && cd ..
+```
+
+- NOTE: 
+  - specs are in early development focused on running in Chrome 
+  - [ticket for e2e testing](https://github.com/users/nathanielBellamy/projects/4?pane=issue&itemId=33246560)
+  - [ticket for unit/component testing](https://github.com/users/nathanielBellamy/projects/4?pane=issue&itemId=39606773)
+
+### Made with: RustWasm, Go, Typescript, NixOS, Svelte, WebGL, Tailwind, Flowbite, Sass, Vite, Cypress

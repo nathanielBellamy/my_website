@@ -1,9 +1,9 @@
 <script lang="ts">
   import { afterUpdate, beforeUpdate, onDestroy, onMount } from 'svelte'
   import type { FeedMessage } from './FeedMessage'
-  import { psFeed } from '../../stores/psFeed'
   import EmojiKeyboard from '../../lib/EmojiKeyboard.svelte'
 
+  import { psFeed } from '../../stores/psFeed'
   let psFeedVal: FeedMessage[]
   const unsubPsFeed = psFeed.subscribe((val: FeedMessage[]) => psFeedVal = [...val])
 

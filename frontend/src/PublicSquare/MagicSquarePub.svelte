@@ -24,11 +24,6 @@
   import { ColorDirection, intoColorDirection } from '../MagicSquare/ControlModules/Color'
   import { intoShape } from '../MagicSquare/ControlModules/Shape'
   import type { Shape } from '../MagicSquare/ControlModules/Shape'
-  // INIT LANG BOILER PLATE
-  import { I18n, Lang } from '../I18n'
-  import { lang } from '../stores/lang'
-  import { smallScreen } from '../stores/smallScreen'
-  import { touchScreen } from '../stores/touchScreen.js'
   import Icon from '../lib/Icon.svelte'
   import { Icons } from '../lib/Icons.js'
 
@@ -38,11 +33,13 @@
   // this includes the hidden element using touchScreenVal in the html
   // not sure why this magic combo gets it done
   // but we won't worry about it right now
+  import { touchScreen } from '../stores/touchScreen.js'
   const id = (x: any): any => x
   let touchScreenVal: boolean
   const unsubTouchScreen = touchScreen.subscribe((val: boolean) => touchScreenVal = val)
   $: isTouchScreen = id(touchScreenVal)
 
+  import { smallScreen } from '../stores/smallScreen'
   let smallScreenVal: boolean
   const unsubSmallScreen = smallScreen.subscribe((val: boolean) => smallScreenVal = val)
 
@@ -50,6 +47,8 @@
   let currSquareVal: SquareType
   const unsubCurrSquare = currSquare.subscribe((val: SquareType) => currSquareVal = val)
   
+  import { I18n, Lang } from '../I18n'
+  import { lang } from '../stores/lang'
   const i18n = new I18n('magicSquare/main')
   let langVal: Lang
   const unsubLang = lang.subscribe(val => langVal = val)

@@ -42,3 +42,8 @@ frontend/*.sw?
 # rust build
 frontend/src-rust/target/
 
+# spec
+spec/node_modules
+spec/**/*.swp
+spec/cypress/screenshots/*
+

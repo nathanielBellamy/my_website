@@ -1,4 +1,3 @@
-
 export const localeEn: any = {
   about: {
     personalProejects: "Personal projects",
@@ -24,7 +23,9 @@ export const localeEn: any = {
     width: "width"
   },
   home: {
-    title: "v0.1.0",
+    version: "version",
+    version_current: "current:",
+    version_latest_major: "latest major:",
     cookieWarning: "This site uses cookies.",
     about: "About",
     about_1: "An overview of what I do code-wise",

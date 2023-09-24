@@ -1,0 +1,19 @@
+{
+  "name": "spec",
+  "version": "0.1.0",
+  "description": "tests for my_website",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run spec"
+  },
+  "keywords": [
+    "spec",
+    "test"
+  ],
+  "author": "Nate Schieber",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^13.2.0",
+    "typescript": "^5.2.2"
+  }
+}

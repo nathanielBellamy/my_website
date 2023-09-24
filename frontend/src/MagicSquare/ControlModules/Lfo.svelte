@@ -1,15 +1,15 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
-  import { I18n, Lang } from '../../I18n'
-  import { lang } from '../../stores/lang'
   import { Lfo } from './Lfo'
   import { LfoDestination } from './LfoDestination'
   import { LfoShape } from './LfoShape'
   import { WasmInputId } from '../WasmInputId';
 
+  import { I18n, Lang } from '../../I18n'
+  import { lang } from '../../stores/lang'
+  let i18n = new I18n("magicSquare/lfo")
   let langVal: Lang 
   const unsubLang = lang.subscribe(val => langVal = val)
-  let i18n = new I18n("magicSquare/lfo")
 
   import { msStoreSettings } from '../../stores/msStoreSettings'
   import type { MsStoreSettings } from '../../stores/msStoreSettings'

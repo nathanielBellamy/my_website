@@ -1,12 +1,12 @@
 <script lang='ts' type="module">
   import { onDestroy } from 'svelte'
   import init, { GmasWasm, rust_init_message  } from '../pkg/src_rust.js'
-  import { I18n, Lang } from "./I18n"
   import Icon from './lib/Icon.svelte'
   import { Icons } from './lib/Icons.js'
-  import { lang } from './stores/lang'
   
   // INIT LANG BOILER PLATE
+  import { I18n, Lang } from "./I18n"
+  import { lang } from './stores/lang'
   const i18n = new I18n("gmas")
   let langVal: Lang
   const unsubLang = lang.subscribe(val => langVal = val)
@@ -121,7 +121,8 @@
   <div id="give_me_a_sine_form"
        class="give_me_a_sine_form overflow-y-scroll flex flex-col overscroll-none"
        class:hidden={smallScreenVal && gmasView !== GmasView.control}>
-    <div class="give_me_a_sine_form_header font-bold">
+    <div class="give_me_a_sine_form_header font-bold"
+         data-testid="gmas_form_header">
       <p>f(x) = a * sin(b*x + c)</p>
     </div>
     <div class="give_me_a_sine_form_body flex flex-col justify-between items-stretch">
@@ -321,4 +322,3 @@
           padding-left: 10px
           padding-right: 10px
 </style>
-

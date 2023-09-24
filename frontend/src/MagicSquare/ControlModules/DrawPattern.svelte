@@ -3,15 +3,13 @@
   import { WasmInputId } from '../WasmInputId'
   import { DrawPatternType } from './DrawPattern'
   import { TransformOrder } from './TransformOrder'
+  
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
-
+  let i18n = new I18n("magicSquare/drawPattern")
   let langVal: Lang 
   const unsubLang = lang.subscribe(val => langVal = val)
-  onDestroy(unsubLang)
 
-  let i18n = new I18n("magicSquare/drawPattern")
-  
   export let drawPatternType: DrawPatternType
   export let transformOrder: TransformOrder
 
@@ -28,6 +26,8 @@
     input.value = tr_or
     input.dispatchEvent(new Event('input', {bubbles: true}))
   }
+
+  onDestroy(unsubLang)
 </script>
 
 <section class="h-full pb-5 pr-5 flex flex-col justify-between items-stretch gap-2">

@@ -1,19 +1,19 @@
 <script lang="ts">
   import { onDestroy } from 'svelte'
+  
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
-
+  let i18n = new I18n("magicSquare/rotation")
   let langVal: Lang 
   const unsubLang = lang.subscribe(val => langVal = val)
-  onDestroy(unsubLang)
-  let i18n = new I18n("magicSquare/rotation")
-
 
   enum Freedom {
     pitch = "pitch",
     roll = "roll",
     yaw = "yaw"
   }
+
+  onDestroy(unsubLang)
 </script>
 
 <div class="h-full rotation_container w-full flex flex-col justify-between items-stretch">

@@ -1,4 +1,3 @@
-
 export const localeFr: any = {
   about: {
     personalProejects: "Projets personnels",
@@ -11,7 +10,7 @@ export const localeFr: any = {
       about: "De moi",
       magicSquare: "Carré magique",
       publicSquare: "Carré publique",
-      giveMeASine: "Donne-moi un sinus",
+      giveMeASine: "Graphiques triginométriques",
       none: "",
       systemDiagram: "Diagramme du système",
     }
@@ -24,7 +23,9 @@ export const localeFr: any = {
     width: "largeur"
   },
   home: {
-    title: "v0.1.0",
+    version: "version",
+    version_current: "actuelle:",
+    version_latest_major: "dernière majeure:",
     cookieWarning: "Ce site utilise des cookies.",
     about: "De moi",
     about_1: "Ce que je fait avec code",
@@ -33,9 +34,9 @@ export const localeFr: any = {
     magicSquare_1: "3D interactive avec WebGL",
     magicSquare_2: "Collaboration publique en direct",
     magicSquare_3: "Carré magique est la version hors ligne",
-    giveMeASine: "Donne-moi un sinus",
+    giveMeASine: "Graphiques triginométriques",
     giveMeASine_1: "On peut copier et coller tous les graphiques",
-    giveMeASine_2: "RustWasm préparation pour les carrés",
+    giveMeASine_2: "Préparation de RustWasm pour les carrés",
     intro: {
       1: "J'aime apprendre.",
       2: "Je voulais apprendre comment mélanger",

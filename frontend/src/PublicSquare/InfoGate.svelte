@@ -6,16 +6,17 @@
   import { ViteMode } from "../ViteMode"
   import megaphone from '../assets/megaphone.png'
   import Link from '../lib/Link.svelte'
-  import { smallScreen } from '../stores/smallScreen'
+  
   import { I18n, type Lang } from '../I18n'
   import { lang } from '../stores/lang'
-  let smallScreenVal: boolean
-  const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
-  
   const i18n = new I18n('publicSquare/infoGate')
   let langVal: Lang
   const unsubLang = lang.subscribe(val => langVal = val)
 
+  import { smallScreen } from '../stores/smallScreen'
+  let smallScreenVal: boolean
+  const unsubSmallScreen = smallScreen.subscribe((val: boolean | null) => smallScreenVal = val)
+  
   export let hasPassedGate: boolean
 
   onDestroy(() => {
@@ -24,7 +25,8 @@
   })
 </script>
 
-<div class="info_gate font-mono w-full h-full overflow-y-scroll pb-4">
+<div class="info_gate font-mono w-full h-full overflow-y-scroll pb-4"
+     data-testid="public_square_info_gate">
   <div class="h-full w-full flex flex-col justify-between items-stretch gap-4">
     <div class="w-full flex justify-around items-center">
       <div class="info_gate_title flex justify-around items-center">
@@ -43,10 +45,10 @@
           <p>
             ===============
           </p>
-          <p>
+          <p data-testid="public_square_info_gate_welcome">
             {i18n.t("welcome", langVal)}
           </p>
-          <p>
+          <p data-testid="public_square_info_gate_title">
             {i18n.t("publicSquare", langVal)}
           </p>
           <p>

@@ -1,4 +1,3 @@
-
 export const localeEs: any = {  
   about: {
     personalProejects: "Proyectos personales",
@@ -11,7 +10,7 @@ export const localeEs: any = {
       about: "Sobre mí",
       magicSquare: "Cuadro mágico",
       publicSquare: "Cuadro público",
-      giveMeASine: "Dame un seno",
+      giveMeASine: "Gráficas triginométricas",
       none: "",
       systemDiagram: "Diagrama de systema",
     }
@@ -24,7 +23,9 @@ export const localeEs: any = {
     width: "ancho"
   },
   home: {
-    title: "v0.1.0",
+    version: "versión",
+    version_current: "actual:",
+    version_latest_major: "último importante:",
     cookieWarning: "Este sitio utiliza cookies.",
     about: "Sobre mí",
     about_1: "Lo que hago por lo general con codigo",
@@ -33,7 +34,7 @@ export const localeEs: any = {
     magicSquare_1: "3D interactivo con WebGL",
     magicSquare_2: "Colaboración publica en vivo",
     magicSquare_3: "Cuadro mágico es la versión desconectada",
-    giveMeASine: "Dame un seno",
+    giveMeASine: "Gráficas triginométricas",
     giveMeASine_1: "Todos gráficos se pueden copiar y pegar",
     giveMeASine_2: "Preparación de RustWasm para los cuadros",
     intro: {

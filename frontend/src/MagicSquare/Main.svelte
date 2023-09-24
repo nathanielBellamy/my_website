@@ -26,12 +26,14 @@
   import { intoShape } from './ControlModules/Shape'
   import type { Shape } from './ControlModules/Shape'
   import Presets from './ControlModules/Presets.svelte'
-  // INIT LANG BOILER PLATE
-  import { I18n, Lang } from '../I18n'
-  import { lang } from '../stores/lang'
-  import { touchScreen } from '../stores/touchScreen'
   import Icon from '../lib/Icon.svelte'
   import { Icons } from '../lib/Icons.js'
+
+  import { I18n, Lang } from '../I18n'
+  import { lang } from '../stores/lang'
+  const i18n = new I18n('magicSquare/main')
+  let langVal: Lang
+  const unsubLang = lang.subscribe(val => langVal = val)
 
   // TODO:
   // this combination of touchSreen store and value updates works 
@@ -39,6 +41,7 @@
   // this includes the hidden element using touchScreenVal in the html
   // not sure why this magic combo gets it done
   // but we won't worry about it right now
+  import { touchScreen } from '../stores/touchScreen'
   const id = (x: any): any => x
   let touchScreenVal: boolean
   const unsubTouchScreen = touchScreen.subscribe((val: boolean) => touchScreenVal = val)
@@ -51,10 +54,6 @@
   import { currSquare, SquareType } from '../stores/currSquare'
   let currSquareVal: SquareType
   const unsubCurrSquare = currSquare.subscribe((val: SquareType) => currSquareVal = val)
-  
-  const i18n = new I18n('magicSquare/main')
-  let langVal: Lang
-  const unsubLang = lang.subscribe(val => langVal = val)
 
   enum MagicSquareView {
     square = "square",
@@ -468,7 +467,8 @@
 <div id="magic_square"
      class="magic_square overscroll-none"
      class:grid_col={smallScreenVal}
-     class:grid_row={!smallScreenVal}>
+     class:grid_row={!smallScreenVal}
+     data-testid="magic_square">
   {#if smallScreenVal}
      <div class="text-sm grid grid-cols-2 grid-rows-1">
         <button on:click={() => setMagicSquareView(MagicSquareView.square)}

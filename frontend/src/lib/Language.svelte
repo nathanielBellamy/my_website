@@ -1,10 +1,11 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
+  
   import { Lang } from "../I18n"
   import { lang } from '../stores/lang'
-  
   let langVal: Lang 
   const unsubLang = lang.subscribe(val => langVal = val)
+  
   function setLang(newLangKey:string) {
     localStorage.setItem('lang', Lang[newLangKey])
     lang.update((_: Lang) => {
@@ -21,9 +22,7 @@
     }
   })
 
-  onDestroy(() => {
-    unsubLang()
-  })
+  onDestroy(unsubLang)
 </script>
 
 <section class="w-fit">
