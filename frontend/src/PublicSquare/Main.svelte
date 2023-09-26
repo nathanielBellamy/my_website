@@ -16,6 +16,9 @@
   let langVal: Lang
   const unsubLang = lang.subscribe( val => langVal = val)
 
+  import { psConnected } from "../stores/psConnected"
+  const unsubPsConnected = psConnected.subscribe( () => {} )
+
   let clientId: number
 
   const baseUrl: string = import.meta.env.VITE_BASE_URL
@@ -31,9 +34,16 @@
   const ws = new WebsocketBuilder(fullUrl)
       .onOpen(() => {
         triggerShowConnected()
+        psConnected.set(true)
       })
-      .onClose(() => showDisconnected = true)
-      .onError(() => showConnectionError = true)
+      .onClose(() => {
+        showDisconnected = true
+        psConnected.set(false)
+      })
+      .onError(() => {
+        showConnectionError = true
+        psConnected.set(false)
+      })
       .onMessage((_i, ev) => {
         const message: FeedMessage = JSON.parse(ev.data)
         if (message.body === "__init__connected__") {
@@ -84,7 +94,9 @@
 
   onDestroy(() => {
     ws.close()
+    psConnected.set(false)
     unsubLang()
+    unsubPsConnected()
   })
 </script>
 

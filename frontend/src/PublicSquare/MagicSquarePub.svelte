@@ -53,6 +53,10 @@
   let langVal: Lang
   const unsubLang = lang.subscribe(val => langVal = val)
 
+  import { psConnected } from "../stores/psConnected"
+  let psConnectedVal: boolean
+  const unsubPsConnected = psConnected.subscribe(val => psConnectedVal = val)
+
   enum MagicSquareView {
     square = "square",
     controls = "controls"
@@ -304,6 +308,7 @@
     currSquare.update((_: SquareType) => SquareType.none)
     unsubCurrSquare()
     unsubLang()
+    unsubPsConnected()
     unsubSmallScreen()
     unsubTouchScreen()
     let app = document.getElementById(("app_main"))
@@ -369,7 +374,9 @@
        class="magic_square_canvas_container flex flex-col justify-around display"
        class:hidden={smallScreenVal && magicSquareView !== MagicSquareView.square}>
     <canvas id="magic_square_canvas"
-            class="magic_square_canvas"/>
+            class="magic_square_canvas"
+            class:border_connected={psConnectedVal}
+            class:border_disconnected={!psConnectedVal}/>
   </div>
   <div class="h-full w-full overflow-x-scroll"
        class:hidden={smallScreenVal && magicSquareView !== MagicSquareView.controls}>
@@ -1116,15 +1123,22 @@
 <style lang="sass">
   @use "./../styles/color"
   @use "./../styles/text"
-  
+
+  .border
+    &_connected
+      border-top: 5px double color.$blue-7
+      border-bottom: 5px double color.$blue-7
+      border-radius: 10px
+    &_disconnected
+      border-top: 5px double color.$red-9
+      border-bottom: 5px double color.$red-9
+      border-radius: 10px
+    
   .magic_square
     height: 100%
     width: 100%
 
     &_canvas
-      border-top: 5px double color.$blue-7
-      border-bottom: 5px double color.$blue-7
-      border-radius: 10px
       cursor: crosshair
       &_container
         background: color.$black-blue-horiz-grad
