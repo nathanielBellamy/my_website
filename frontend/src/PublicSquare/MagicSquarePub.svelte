@@ -377,6 +377,22 @@
             class="magic_square_canvas"
             class:border_connected={psConnectedVal}
             class:border_disconnected={!psConnectedVal}/>
+    <div class="connection_message w-11/12 flex justify-end items-center">
+      <span class="w-1/2 flex justify-end items-center gap-2"
+            class:text-cyan-700={psConnectedVal}
+            class:text-red-900={!psConnectedVal}>
+        <span class="font-mono">
+          connection:
+        </span>
+        <span class="text-xxs">
+          {#if psConnectedVal}
+            <Icon icon={Icons.CheckCircleSolid} />
+          {:else}
+            <Icon icon={Icons.XCircleOutline} />
+          {/if}
+        </span>
+      </span>
+    </div>
   </div>
   <div class="h-full w-full overflow-x-scroll"
        class:hidden={smallScreenVal && magicSquareView !== MagicSquareView.controls}>
