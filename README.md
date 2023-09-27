@@ -1,5 +1,12 @@
 # Nate's Website
 
+### dev environment
+- suggest using [Nix](https://nixos.org/guides/how-nix-works)
+- [rustup](https://rustup.rs/)
+- [wasm-pack](https://rustwasm.github.io/wasm-pack/)
+- [Go](https://go.dev/)
+- [npm](https://www.npmjs.com/)
+
 ### build -- Go server, frontend SPA, auth SPA
 - `./build.sh`
   - outputs to `build` directory
@@ -32,9 +39,10 @@
 - `localhost` and `remotedev` modes only
 
 ### cross-compiling
-- `mode=localhost`
+- set `MODE` in `config.env`
+- `MODE=localhost`
   - build compiles Go for localhost architecture
-- `mode=remotedev, prod`
+- `MODE=remotedev, prod`
   - build compiles Go for Linux
 
 ### local SPA development
