@@ -101,6 +101,7 @@ export const localeEn: any = {
       active: "active",
       amplitude: "amplitude",
       base: "base",
+      connection: "connection:",
       count: "count",
       frequency: "speed",
       offset: "offset",
