@@ -371,20 +371,20 @@
    </div>
   {/if}
   <div id="magic_square_canvas_container"
-       class="magic_square_canvas_container flex flex-col justify-around display"
+       class="magic_square_canvas_container flex flex-col justify-center display"
        class:hidden={smallScreenVal && magicSquareView !== MagicSquareView.square}>
     <canvas id="magic_square_canvas"
             class="magic_square_canvas"
             class:border_connected={psConnectedVal}
             class:border_disconnected={!psConnectedVal}/>
-    <div class="connection_message w-11/12 flex justify-end items-center">
+    <div class="w-2/3 h-0 mt-3 flex justify-end items-center">
       <span class="w-1/2 flex justify-end items-center gap-2"
             class:text-cyan-700={psConnectedVal}
             class:text-red-900={!psConnectedVal}>
-        <span class="font-mono">
-          connection:
+        <span class="font-mono text-xxs">
+          {i18n.t("connection", langVal)}
         </span>
-        <span class="text-xxs">
+        <span class="text-xxxs">
           {#if psConnectedVal}
             <Icon icon={Icons.CheckCircleSolid} />
           {:else}

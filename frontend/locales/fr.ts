@@ -125,6 +125,7 @@ export const localeFr: any = {
       active: "actif",
       amplitude: "amplitude",
       base: "base",
+      connection: "connexion:",
       count: "cuenta",
       frequency: "vitesse",
       minimum: "minimum",
