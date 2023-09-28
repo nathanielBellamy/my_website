@@ -5,7 +5,6 @@
   import { ToastColor } from '../lib/Toasty'
   import type { FeedMessage } from './../MagicSquare/ControlModules/FeedMessage'
   import MagicSquarePub from './MagicSquarePub.svelte'
-  import { FEED_LENGTH, psFeed } from '../stores/psFeed'
   import Toaster from '../lib/Toaster.svelte'
   import { ViteMode } from '../ViteMode'
   import { Icons } from '../lib/Icons'
@@ -17,7 +16,7 @@
   const unsubLang = lang.subscribe( val => langVal = val)
 
   import { psConnected } from "../stores/psConnected"
-  const unsubPsConnected = psConnected.subscribe( () => {} )
+  import { FEED_LENGTH, psFeed } from '../stores/psFeed'
 
   let clientId: number
 
@@ -39,10 +38,12 @@
       .onClose(() => {
         showDisconnected = true
         psConnected.set(false)
+        psFeed.set([])
       })
       .onError(() => {
         showConnectionError = true
         psConnected.set(false)
+        psFeed.set([])
       })
       .onMessage((_i, ev) => {
         const message: FeedMessage = JSON.parse(ev.data)
@@ -95,8 +96,8 @@
   onDestroy(() => {
     ws.close()
     psConnected.set(false)
+    psFeed.set([])
     unsubLang()
-    unsubPsConnected()
   })
 </script>
 

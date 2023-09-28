@@ -108,11 +108,11 @@
     <div  id="public_square_feed_messages"
           class="public_square_feed_messages h-fit p-2 flex flex-col items-center gap-2">
       {#if !psConnectedVal}
-        <div class="w-full text-center font-bold font-mono text-red-900">
+        <div class="w-full text-center text-sm font-bold font-mono text-red-700">
           {i18n.t("disconnected", langVal)}
         </div>
       {:else if !psFeedVal.length}
-        <div class="w-full text-center font-bold font-mono text-red-900">
+        <div class="w-full text-center text-sm font-bold font-mono text-red-700">
           {i18n.t("noMessages", langVal)}
         </div>
       {:else}
