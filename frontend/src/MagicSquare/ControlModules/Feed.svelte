@@ -2,10 +2,20 @@
   import { afterUpdate, beforeUpdate, onDestroy, onMount } from 'svelte'
   import type { FeedMessage } from './FeedMessage'
   import EmojiKeyboard from '../../lib/EmojiKeyboard.svelte'
+  
+  import { I18n, Lang } from '../../I18n'
+  import { lang } from '../../stores/lang'
+  let langVal: Lang 
+  const unsubLang = lang.subscribe(val => langVal = val)
+  let i18n = new I18n("magicSquare/feed")
 
   import { psFeed } from '../../stores/psFeed'
   let psFeedVal: FeedMessage[]
   const unsubPsFeed = psFeed.subscribe((val: FeedMessage[]) => psFeedVal = [...val])
+  
+  import { psConnected } from "../../stores/psConnected"
+  let psConnectedVal: boolean
+  const unsubPsConnected = psConnected.subscribe(val => psConnectedVal = val)
 
   export let sendFeedMessage: (body: string) => void
   export let clientIdSelf: number | null
@@ -78,6 +88,8 @@
     window.addEventListener('keydown', keyboardListener)
   })
   onDestroy(() => {
+    unsubLang()
+    unsubPsConnected()
     unsubPsFeed()
     window.removeEventListener('keydown', keyboardListener)
   })
@@ -95,9 +107,13 @@
         class="public_square_feed_messages_container h-full rounded-md overflow-y-scroll">
     <div  id="public_square_feed_messages"
           class="public_square_feed_messages h-fit p-2 flex flex-col items-center gap-2">
-      {#if !psFeedVal.length}
-        <div class="font-bold text-lg"> 
-          No New Messages
+      {#if !psConnectedVal}
+        <div class="w-full text-center font-bold font-mono text-red-900">
+          {i18n.t("disconnected", langVal)}
+        </div>
+      {:else if !psFeedVal.length}
+        <div class="w-full text-center font-bold font-mono text-red-900">
+          {i18n.t("noMessages", langVal)}
         </div>
       {:else}
         {#each psFeedVal as { clientId, body }, i} 
@@ -124,7 +140,7 @@
                   <div class="feed_message_user pl-2 pr-2 pt-4 pb-4 rounded-md text-sm font-semibold h-full flex justify-around items-center">
                     <div class="flex flex-col justify-between items-stretch">
                       <div class="w-full flex justify-around items-center"> 
-                        me 
+                        {i18n.t('me', langVal)}
                       </div>
                       <div class="w-full flex justify-around items-center text-xs"> 
                         {formatClientId(clientId, true)}
@@ -158,11 +174,11 @@
                   clr()
                 }
               }}>
-        SEND IT
+        {i18n.t('send', langVal)}
       </button>
       <button class="public_square_feed_input_buttons_clr flex justify-around items-center"
               on:click={() => clr()}>
-        CLR
+        {i18n.t('clear', langVal)}
       </button>
     </div>
   </div>

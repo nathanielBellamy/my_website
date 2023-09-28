@@ -84,6 +84,13 @@ export const localeEn: any = {
       speed: "speed",
       translate: "translate"
     },
+    feed: {
+      clear: "clear",
+      disconnected: "Disconneted. Please refresh.",
+      me: "me",
+      noMessages: "No messages",
+      send: "send",
+    },
     geometry: {
       shape: "shape",
       radius: "radius",

@@ -82,6 +82,12 @@ export const localeFr: any = {
       rotate: "tourner",
       translate: "traduir"
     },
+    feed: {
+      clear: "effacer",
+      disconnected: "Débranché. Rafraichissez, s'il vous plait.",
+      me: "moi",
+      send: "envoyer",
+    },
     geometry: {
       shape: "forme",
       radius: "rayon",

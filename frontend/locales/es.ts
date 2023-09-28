@@ -82,6 +82,13 @@ export const localeEs: any = {
       rotate: "girar",
       translate: "traslado"
     },
+    feed: {
+      clear: "borrar",
+      disconnected: "Desconectado. Porfavor refresca.",
+      me: "yo",
+      noMessages: "Ningún mensaje",
+      send: "enviar",
+    },
     geometry: {
       shape: "forma",
       radius: "radio",
