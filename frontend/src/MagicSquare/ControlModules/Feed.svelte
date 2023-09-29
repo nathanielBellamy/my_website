@@ -1,6 +1,8 @@
 <script lang="ts">
   import { afterUpdate, beforeUpdate, onDestroy, onMount } from 'svelte'
   import type { FeedMessage } from './FeedMessage'
+  import { SystemMessage } from './FeedMessage'
+
   import EmojiKeyboard from '../../lib/EmojiKeyboard.svelte'
   
   import { I18n, Lang } from '../../I18n'
@@ -82,6 +84,51 @@
     }
   }
 
+  // TODO:
+  //   - this pattern for system messages should be refactored
+  //   - message DTO sent between Go and JS should have an extra system_message:bool field
+  //   - this extra processing comes from introspecting on the body string
+  function formatSystemMessage(clientId: Number, messageBody: String, lang: Lang): String {
+    var res: String
+    console.dir({messageBody})
+    switch (messageBody) {
+      case SystemMessage.sqConnected:
+        res = `sq-${clientId}: ${i18n.t("sqConnected", lang)}`
+        break
+      case SystemMessage.sqDisconnected:
+        res = `sq-${clientId}: ${i18n.t("sqDisconnected", lang)}`
+        break
+    }
+    console.dir({res})
+    return res
+  }
+
+  function isSystemMessage(messageBody: String): Boolean {
+    const body: SystemMessage = intoSystemMessage(messageBody)
+    switch (body) {
+      case SystemMessage.none:
+        return false
+      default:
+        return true
+    }
+  }
+
+  function intoSystemMessage(messageBody: String): SystemMessage {
+    var res: SystemMessage
+    switch (messageBody) {
+      case SystemMessage.sqConnected:
+        res = SystemMessage.sqConnected
+        break
+      case SystemMessage.sqDisconnected:
+        res = SystemMessage.sqDisconnected
+        break
+      default:
+        res = SystemMessage.none
+        break
+    }
+    return res
+  }
+
   // LIFECYCLE
   onMount(() => {
     scrollFeedToBottom()
@@ -122,9 +169,9 @@
                  class:feed_message_self={clientIdSelf === clientId}
                  class:feed_message_system={clientId === 0}
                  class:feed_message_other={clientIdSelf !== clientId}>
-              {#if clientId === 0}
-                <div class="feed_message_body font-bold text-lg p-2 mr-2 rounded-md w-full break-all">
-                  {body}
+              {#if isSystemMessage(body)}
+                <div class="font-bold text-lg p-2 mr-2 rounded-md w-full col-span-2 break-all flex justify-around">
+                  {formatSystemMessage(clientId, body, langVal)}
                 </div>
               {:else if clientIdSelf !== clientId}
                 <div class="feed_message_body font-bold text-lg p-2 mr-2 rounded-md w-full break-all">

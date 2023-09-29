@@ -3,7 +3,7 @@
   import { WebsocketBuilder } from 'websocket-ts'
   import Feed from '../MagicSquare/ControlModules/Feed.svelte'
   import { ToastColor } from '../lib/Toasty'
-  import type { FeedMessage } from './../MagicSquare/ControlModules/FeedMessage'
+  import { SystemMessage, type FeedMessage } from './../MagicSquare/ControlModules/FeedMessage'
   import MagicSquarePub from './MagicSquarePub.svelte'
   import Toaster from '../lib/Toaster.svelte'
   import { ViteMode } from '../ViteMode'
@@ -37,27 +37,34 @@
       })
       .onClose(() => {
         showDisconnected = true
-        psConnected.set(false)
-        psFeed.set([])
+        cleanupStores()
       })
       .onError(() => {
         showConnectionError = true
-        psConnected.set(false)
-        psFeed.set([])
+        cleanupStores()
       })
-      .onMessage((_i, ev) => {
-        const message: FeedMessage = JSON.parse(ev.data)
-        if (message.body === "__init__connected__") {
-          clientId = message.clientId
-        } else {
-          pushToFeed(message)
-        }
-      })
+      .onMessage(handleMessage)
       .onRetry(() => {})
       .build()
 
+  function handleMessage(_: any, ev: any) {
+    const message: FeedMessage = JSON.parse(ev.data)
+    switch (message.body) {
+      case SystemMessage.init:
+        clientId = message.clientId
+        break
+      default:
+        pushToFeed(message)
+    }
+  }
+
   function sendFeedMessage(body: string) {
     ws.send(body)
+  }
+
+  function cleanupStores() {
+    psConnected.set(false)
+    psFeed.set([])
   }
 
   // alerts
@@ -95,8 +102,7 @@
 
   onDestroy(() => {
     ws.close()
-    psConnected.set(false)
-    psFeed.set([])
+    cleanupStores()
     unsubLang()
   })
 </script>

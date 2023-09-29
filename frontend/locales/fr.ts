@@ -87,6 +87,8 @@ export const localeFr: any = {
       disconnected: "Débranché. Rafraichissez, s'il vous plait.",
       me: "moi",
       send: "envoyer",
+      sqConnected: "connecté",
+      sqDisconnected: "déconnecté",
     },
     geometry: {
       shape: "forme",
@@ -195,7 +197,7 @@ export const localeFr: any = {
     main: {
       connected: "Connecté",
       connectionError: "Erreur de connexion. Rafraichissez, s'il vous plait.",
-      disconnected: "Débranché. Rafraichissez, s'il vous plait."
+      disconnected: "Débranché. Rafraichissez, s'il vous plait.",
     },
     infoGate: {
       enter: "Entrez Sur Le Carré Publique",

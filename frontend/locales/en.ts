@@ -90,6 +90,8 @@ export const localeEn: any = {
       me: "me",
       noMessages: "No messages",
       send: "send",
+      sqConnected: "connected",
+      sqDisconnected: "disconnected",
     },
     geometry: {
       shape: "shape",
@@ -197,7 +199,7 @@ export const localeEn: any = {
     main: {
       connected: "Connected",
       connectionError: "Connection error. Please refresh.",
-      disconnected: "Disconneted. Please refresh."
+      disconnected: "Disconneted. Please refresh.",
     },
     infoGate: {
       enter: "Enter The Public Square",

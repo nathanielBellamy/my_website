@@ -1,7 +1,6 @@
 package websocket
 
 import (
-  "fmt"
   "math/rand"
   "time"
   "github.com/rs/zerolog"
@@ -57,15 +56,13 @@ func (pool *Pool) StartFeed() {
             WriteMessage(client.Conn, message, pool.Log)
 
             // announce to pool
-            messageBody := fmt.Sprintf("👋 sq-%v 👋", id)
-            message = Message{ClientId: 0, Body: messageBody}
+            message = Message{ClientId: id, Body:  "__sq__connected__"}
             for client, _ := range pool.Clients {
                 WriteMessage(client.Conn, message, pool.Log)
             }
             break
         case client := <-pool.Unregister:
             id := client.ID
-            messageBody := fmt.Sprintf("🫡 sq-%v 🫡", id)
             delete(pool.Clients, client)
             pool.Log.Info().
                      Uint("uint", id).
@@ -74,7 +71,7 @@ func (pool *Pool) StartFeed() {
                      Int("int", len(pool.Clients)).
                      Msg("Size of FEED Connection Pool")
             for client, _ := range pool.Clients {
-              WriteMessage(client.Conn, Message{ClientId: 0, Body: messageBody}, pool.Log)
+              WriteMessage(client.Conn, Message{ClientId: id, Body: "__sq__disconnected__"}, pool.Log)
             }
             break
         case message := <-pool.Broadcast:
