@@ -82,6 +82,16 @@ export const localeEs: any = {
       rotate: "girar",
       translate: "traslado"
     },
+    feed: {
+      clear: "borrar",
+      disconnected: "Desconectado. Por favor refresca.",
+      me: "yo",
+      noMessages: "Ningún mensaje",
+      send: "enviar",
+      sqConnected: ": conectado",
+      sqConnectedSelf: "conectado como:",
+      sqDisconnected: ": desconectado",
+    },
     geometry: {
       shape: "forma",
       radius: "radio",
@@ -125,6 +135,7 @@ export const localeEs: any = {
       active: "activo",
       amplitude: "amplitud",
       base: "base",
+      connection: "conexión:",
       count: "cuenta",
       frequency: "velocidad",
       minimum: "mínimo",
@@ -187,8 +198,8 @@ export const localeEs: any = {
   publicSquare: {
     main: {
       connected: "Conectado",
-      connectionError: "Error de conexión. Porfavor refresca.",
-      disconnected: "Desconectado. Porfavor refresca."
+      connectionError: "Error de conexión. Por favor refresca.",
+      disconnected: "Desconectado. Por favor refresca.",
     },
     infoGate: {
       enter: "Entra En El Cuadro Público",

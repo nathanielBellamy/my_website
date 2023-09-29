@@ -3,9 +3,8 @@
   import { WebsocketBuilder } from 'websocket-ts'
   import Feed from '../MagicSquare/ControlModules/Feed.svelte'
   import { ToastColor } from '../lib/Toasty'
-  import type { FeedMessage } from './../MagicSquare/ControlModules/FeedMessage'
+  import { SystemMessage, type FeedMessage } from './../MagicSquare/ControlModules/FeedMessage'
   import MagicSquarePub from './MagicSquarePub.svelte'
-  import { FEED_LENGTH, psFeed } from '../stores/psFeed'
   import Toaster from '../lib/Toaster.svelte'
   import { ViteMode } from '../ViteMode'
   import { Icons } from '../lib/Icons'
@@ -15,6 +14,9 @@
   let i18n = new I18n("publicSquare/main")
   let langVal: Lang
   const unsubLang = lang.subscribe( val => langVal = val)
+
+  import { psConnected } from "../stores/psConnected"
+  import { FEED_LENGTH, psFeed } from '../stores/psFeed'
 
   let clientId: number
 
@@ -31,22 +33,36 @@
   const ws = new WebsocketBuilder(fullUrl)
       .onOpen(() => {
         triggerShowConnected()
+        psConnected.set(true)
       })
-      .onClose(() => showDisconnected = true)
-      .onError(() => showConnectionError = true)
-      .onMessage((_i, ev) => {
-        const message: FeedMessage = JSON.parse(ev.data)
-        if (message.body === "__init__connected__") {
-          clientId = message.clientId
-        } else {
-          pushToFeed(message)
-        }
+      .onClose(() => {
+        showDisconnected = true
+        cleanupStores()
       })
+      .onError(() => {
+        showConnectionError = true
+        cleanupStores()
+      })
+      .onMessage(handleMessage)
       .onRetry(() => {})
       .build()
 
+  function handleMessage(_: any, ev: any) {
+    const message: FeedMessage = JSON.parse(ev.data)
+    if (message.system && message.body == SystemMessage.init) {
+      clientId = message.clientId
+    } else {
+      pushToFeed(message)
+    }
+  }
+
   function sendFeedMessage(body: string) {
     ws.send(body)
+  }
+
+  function cleanupStores() {
+    psConnected.set(false)
+    psFeed.set([])
   }
 
   // alerts
@@ -84,6 +100,7 @@
 
   onDestroy(() => {
     ws.close()
+    cleanupStores()
     unsubLang()
   })
 </script>

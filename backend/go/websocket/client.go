@@ -24,6 +24,7 @@ type Client struct {
 type Message struct {
     ClientId uint `json:"clientId"`
     Body string `json:"body"`
+    System bool `json:"system"`
 }
 
 func (c *Client) ReadFeed() {
