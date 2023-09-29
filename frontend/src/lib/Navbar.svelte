@@ -48,7 +48,8 @@
       <CloseButton on:click={() => (hiddenDrawer = true)} 
                    class="mb-4 bg-black text-cyan-700 hover:bg-slate-800" />
     </div>
-    <SidebarItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+    <SidebarItem class="hover:bg-transparent flex items-center font-bold text-blue-200"
+                 spanClass="bg-red-700"
                  tabIndex="0"
                  on:click={() => hiddenDrawer = true}
                  href="/#/"
@@ -58,7 +59,7 @@
         <Icon icon={Icons.HomeOutline} />
       </svelte:fragment>
     </SidebarItem>
-    <SidebarItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+    <SidebarItem class="hover:bg-transparent flex items-center font-bold text-blue-200"
                  tabIndex="0"
                  on:click={() => hiddenDrawer = true}
                  href="/#/public-square"
@@ -68,7 +69,7 @@
         <Icon icon={Icons.UsersGroupOutline} />
       </svelte:fragment>
     </SidebarItem>
-    <SidebarItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+    <SidebarItem class="hover:bg-transparent flex items-center font-bold text-blue-200"
                  tabIndex="0"
                  on:click={() => hiddenDrawer = true}
                  href="/#/magic-square"
@@ -78,7 +79,7 @@
         <Icon icon={Icons.UserOutline} />
       </svelte:fragment>
     </SidebarItem>
-    <SidebarItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+    <SidebarItem class="hover:bg-transparent flex items-center font-bold text-blue-200"
                  tabIndex="0"
                  on:click={() => hiddenDrawer = true}
                  href="/#/give-me-a-sine"
@@ -88,7 +89,7 @@
         <Icon icon={Icons.GridOutline} />
       </svelte:fragment>
     </SidebarItem>
-    <SidebarItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+    <SidebarItem class="hover:bg-transparent flex items-center font-bold text-blue-200"
                  tabIndex="0"
                  on:click={() => hiddenDrawer = true}
                  href="/#/about"
@@ -98,7 +99,7 @@
         <Icon icon={Icons.InfoCircleOutline} />
       </svelte:fragment>
     </SidebarItem>
-    <SidebarItem class="hover:bg-transparent w-11/12 flex items-center font-bold text-blue-200"
+    <SidebarItem class="hover:bg-transparent flex items-center font-bold text-blue-200"
                  tabIndex="0"
                  on:click={() => hiddenDrawer = true}
                  href="/#/system-diagram"
