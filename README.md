@@ -1,7 +1,7 @@
 # Nate's Website
 
 ### dev environment
-- suggest using [Nix](https://nixos.org/guides/how-nix-works)
+- suggest [Nix](https://nixos.org/guides/how-nix-works)
 - [rustup](https://rustup.rs/)
 - [wasm-pack](https://rustwasm.github.io/wasm-pack/)
 - [Go](https://go.dev/)
