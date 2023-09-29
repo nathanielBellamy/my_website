@@ -15,7 +15,7 @@
 
   import { I18n, Lang } from "../I18n"
   import { lang } from "../stores/lang"
-    import { Icons } from './Icons';
+  import { Icons } from './Icons';
   let i18n = new I18n("app")
   let langVal: Lang
   const unsubLang = lang.subscribe( val => langVal = val)
