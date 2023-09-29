@@ -166,7 +166,7 @@
       <EmojiKeyboard bind:value={nextEmoji}
                      bind:valueSetIndicator={emojiSetIndicator}/>
     </div>
-    <div class="public_square_feed_input_buttons w-full grid grid-cols-2 grid-rows-1 gap-2">
+    <div class="public_square_feed_input_buttons w-full grid grid-cols-2 grid-rows-1 gap-2 text-cyan-700">
       <button class="public_square_feed_input_buttons_send"
               on:click={() => {
                 if (toSendBody.length) {

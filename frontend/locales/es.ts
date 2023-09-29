@@ -84,7 +84,7 @@ export const localeEs: any = {
     },
     feed: {
       clear: "borrar",
-      disconnected: "Desconectado. Porfavor refresca.",
+      disconnected: "Desconectado. Por favor refresca.",
       me: "yo",
       noMessages: "Ningún mensaje",
       send: "enviar",
@@ -195,8 +195,8 @@ export const localeEs: any = {
   publicSquare: {
     main: {
       connected: "Conectado",
-      connectionError: "Error de conexión. Porfavor refresca.",
-      disconnected: "Desconectado. Porfavor refresca."
+      connectionError: "Error de conexión. Por favor refresca.",
+      disconnected: "Desconectado. Por favor refresca."
     },
     infoGate: {
       enter: "Entra En El Cuadro Público",
