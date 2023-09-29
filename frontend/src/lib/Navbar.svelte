@@ -30,9 +30,9 @@
 <nav class="nav_bar bg-black mx-0 flex justify-between items-center gap-2 pt-2 pb-2 pr-4"
      data-testid="nav_bar">
   <button id="siteSectionDropdown"
-          class="dropdown_button shadow-none h-5/6 flex justify-around items-center text-xs border-transparent"
+          class="!shadow-none !p-0 border-1 border-slate-800 hover:border-slate-700 flex justify-around self-center"
           data-testid="nav_button">
-    <div class="dropdown_icon text-xl pb-2 flex justify-around items-center">
+    <div class="text-cyan-500 pb-1 pr-1 pl-1 font-mono font-bold text-2xl flex justify-around items-center">
       ☰
     </div>
   </button>
@@ -86,8 +86,7 @@
     </DropdownItem>
   </Dropdown>
 
-  <div id="user-drop"
-       class="dropdown_button border-transparent font-bold flex justify-between items-center gap-4">
+  <div class="text-cyan-500 border-transparent font-bold flex justify-between items-center gap-4">
     <div>
       Nate Schieber
     </div>
@@ -101,18 +100,9 @@
 
 <style lang="sass">
   @use "./../styles/color"
-  @use "./../styles/text"
 
   .nav_bar
     border-bottom: 5px double color.$blue-7
-
-  .dropdown_button
-    color: color.$blue-4
-
-  .dropdown_icon
-    font-size: text.$fs-l
-    font-weight: text.$fw-l
-    color: color.$blue-4
 </style>
 
 
