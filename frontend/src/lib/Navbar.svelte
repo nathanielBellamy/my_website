@@ -86,7 +86,7 @@
     </DropdownItem>
   </Dropdown>
 
-  <div class="text-cyan-500 border-transparent font-bold flex justify-between items-center gap-4">
+  <div class="text-cyan-500 font-bold flex justify-between items-center gap-4">
     <div>
       Nate Schieber
     </div>
