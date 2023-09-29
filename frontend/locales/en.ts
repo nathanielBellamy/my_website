@@ -84,6 +84,16 @@ export const localeEn: any = {
       speed: "speed",
       translate: "translate"
     },
+    feed: {
+      clear: "clear",
+      disconnected: "Disconneted. Please refresh.",
+      me: "me",
+      noMessages: "No messages",
+      send: "send",
+      sqConnected: ": connected",
+      sqConnectedSelf: "connected as:",
+      sqDisconnected: ": disconnected",
+    },
     geometry: {
       shape: "shape",
       radius: "radius",
@@ -101,6 +111,7 @@ export const localeEn: any = {
       active: "active",
       amplitude: "amplitude",
       base: "base",
+      connection: "connection:",
       count: "count",
       frequency: "speed",
       offset: "offset",
@@ -189,7 +200,7 @@ export const localeEn: any = {
     main: {
       connected: "Connected",
       connectionError: "Connection error. Please refresh.",
-      disconnected: "Disconneted. Please refresh."
+      disconnected: "Disconneted. Please refresh.",
     },
     infoGate: {
       enter: "Enter The Public Square",

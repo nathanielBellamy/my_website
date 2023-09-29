@@ -180,7 +180,7 @@
   //DesktopPcOutline,
   //DesktopPcSolid,
   //DiscordSolid,
-  //DnaOutline,
+  DnaOutline,
   //DnaSolid,
   //DollarOutline,
   //DollarSolid,
@@ -284,7 +284,7 @@
   //GlobeOutline,
   //GlobeSolid,
   //GoogleSolid,
-  //GridOutline,
+  GridOutline,
   //GridPlusOutline,
   GridPlusSolid,
   //GridSolid,
@@ -292,8 +292,8 @@
   //HeadphonesSolid,
   //HeartOutline,
   //HeartSolid,
-  //HomeOutline,
-  //HomeSolid,
+  HomeOutline,
+  HomeSolid,
   //HourglassOutline,
   //HourglassSolid,
   //ImageOutline,
@@ -302,7 +302,7 @@
   //InboxFullSolid,
   //InboxOutline,
   //InboxSolid,
-  //InfoCircleOutline,
+  InfoCircleOutline,
   InfoCircleSolid,
   //ItalicSolid,
   //KeyboardOutline,
@@ -455,16 +455,16 @@
   //UserGroupSolid,
   //UserHeadsetOutline,
   //UserHeadsetSolid,
-  //UserOutline,
+  UserOutline,
   //UserPlusSolid,
   //UserRemoveOutline,
   //UserRemoveSolid,
   //UserSettingsOutline,
   //UserSettingsSolid,
-  //UserSolid,
-  //UsersGroupOutline,
+  UserSolid,
+  UsersGroupOutline,
   //UsersOutline,
-  //UsersSolid,
+  UsersSolid,
   //VideoCameraOutline,
   //VideoSolid,
   //VolumeDownOutline,
@@ -518,6 +518,10 @@
   <ChevronRightSolid 
     tabindex="-1"
     class="!border-none"/>
+{:else if icon == Icons.DnaOutline}
+  <DnaOutline
+    tabindex="-1"
+    class="!border-none"/>
 {:else if icon == Icons.DrawSquareSolid}
   <DrawSquareSolid 
     tabindex="-1"
@@ -542,8 +546,24 @@
   <GithubSolid 
     tabindex="-1"
     class="!border-none"/>
+{:else if icon == Icons.GridOutline}
+  <GridOutline 
+    tabindex="-1"
+    class="!border-none"/>
 {:else if icon == Icons.GridPlusSolid}
   <GridPlusSolid 
+    tabindex="-1"
+    class="!border-none"/>
+{:else if icon == Icons.HomeOutline}
+  <HomeOutline
+    tabindex="-1"
+    class="!border-none"/>
+{:else if icon == Icons.HomeSolid}
+  <HomeSolid
+    tabindex="-1"
+    class="!border-none"/>
+{:else if icon == Icons.InfoCircleOutline}
+  <InfoCircleOutline
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.InfoCircleSolid}
@@ -568,6 +588,22 @@
     class="!border-none"/>
 {:else if icon == Icons.RotateOutline}
   <RotateOutline 
+    tabindex="-1"
+    class="!border-none"/>
+{:else if icon == Icons.UserOutline}
+  <UserOutline
+    tabindex="-1"
+    class="!border-none"/>
+{:else if icon == Icons.UserSolid}
+  <UserSolid 
+    tabindex="-1"
+    class="!border-none"/>
+{:else if icon == Icons.UsersSolid}
+  <UsersSolid 
+    tabindex="-1"
+    class="!border-none"/>
+{:else if icon == Icons.UsersGroupOutline}
+  <UsersGroupOutline
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.XCircleOutline}

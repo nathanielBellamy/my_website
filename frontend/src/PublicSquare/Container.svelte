@@ -33,6 +33,12 @@
     <Loading />
   {:else}
     {#if !hasPassedGate}
+    <!--  
+      swap logic to avoid recaptcha
+        - for UI work only 
+        - will not connect to websocket as client will not be validated
+    -->
+    <!-- {#if false} -->
       <InfoGate bind:hasPassedGate={hasPassedGate}/>
     {:else if !hasAcceptedWarning}
       <WarningModal bind:hasAccepted={hasAcceptedWarning}

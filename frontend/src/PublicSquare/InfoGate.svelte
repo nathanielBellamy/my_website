@@ -41,7 +41,7 @@
             {i18n.t("wow", langVal)}
           </p>
         </Popover>
-        <div class="text-3xl md:text-6xl font-extrabold text-cyan-500">
+        <div class="text-2xl md:text-6xl font-extrabold text-cyan-500">
           <p>
             ===============
           </p>
@@ -68,7 +68,7 @@
         </Popover>
       </div>
     </div>
-    <div class="h-full w-full pl-4 pr-4 flex justify-around items-center text-left text-2xl">
+    <div class="h-full w-full pl-4 pr-4 flex justify-around items-center text-left text-xl">
       <ul class="info_gate_intro w-10/12 font-bold">
         <li>
           {i18n.t("freeArt", langVal)}
