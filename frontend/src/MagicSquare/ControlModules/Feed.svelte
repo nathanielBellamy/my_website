@@ -84,8 +84,8 @@
     }
   }
 
-  function formatSystemMessage(clientId: Number, messageBody: String, lang: Lang): String {
-    var res: String
+  function formatSystemMessage(clientId: number, messageBody: string, lang: Lang): string {
+    var res: string = ""
     switch (messageBody) {
       case SystemMessage.sqConnected:
         if (clientId === clientIdSelf) {
@@ -99,6 +99,17 @@
         break
     }
     return res
+  }
+
+  function systemConnected(body: string): boolean {
+    switch (body) {
+      case SystemMessage.init:
+      case SystemMessage.sqConnected:
+        return true
+      case SystemMessage.sqDisconnected:
+      default:
+        return false
+    }
   }
 
   // LIFECYCLE
@@ -142,7 +153,9 @@
                  class:feed_message_system={clientId === 0}
                  class:feed_message_other={clientIdSelf !== clientId}>
               {#if system}
-                <div class="font-bold text-sm p-2 mr-2 rounded-md w-full col-span-2 break-all flex justify-around">
+                <div class="font-bold text-sm p-2 mr-2 rounded-md w-full col-span-2 break-all flex justify-around"
+                     class:text-red-700={!systemConnected(body)}
+                     class:text-emerald-700={systemConnected(body)}>
                   {formatSystemMessage(clientId, body, langVal)}
                 </div>
               {:else if clientIdSelf !== clientId}
