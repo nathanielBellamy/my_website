@@ -82,6 +82,15 @@ export const localeFr: any = {
       rotate: "tourner",
       translate: "traduir"
     },
+    feed: {
+      clear: "effacer",
+      disconnected: "Débranché. Rafraichissez, s'il vous plait.",
+      me: "moi",
+      send: "envoyer",
+      sqConnected: ": connecté",
+      sqConnectedSelf: "connecté en tant:",
+      sqDisconnected: ": déconnecté",
+    },
     geometry: {
       shape: "forme",
       radius: "rayon",
@@ -189,7 +198,7 @@ export const localeFr: any = {
     main: {
       connected: "Connecté",
       connectionError: "Erreur de connexion. Rafraichissez, s'il vous plait.",
-      disconnected: "Débranché. Rafraichissez, s'il vous plait."
+      disconnected: "Débranché. Rafraichissez, s'il vous plait.",
     },
     infoGate: {
       enter: "Entrez Sur Le Carré Publique",
