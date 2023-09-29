@@ -2,6 +2,7 @@
   import { onDestroy } from 'svelte'
   import realMe from '../assets/real_me.png'
   import Icon from './Icon.svelte';
+  import { Icons } from './Icons';
 
   // flowbite drawer
   import { Drawer, CloseButton, SidebarItem, Sidebar, SidebarWrapper, SidebarGroup} from 'flowbite-svelte';
@@ -15,7 +16,6 @@
 
   import { I18n, Lang } from "../I18n"
   import { lang } from "../stores/lang"
-  import { Icons } from './Icons';
   let i18n = new I18n("app")
   let langVal: Lang
   const unsubLang = lang.subscribe( val => langVal = val)
