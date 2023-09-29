@@ -90,8 +90,9 @@ export const localeEn: any = {
       me: "me",
       noMessages: "No messages",
       send: "send",
-      sqConnected: "connected",
-      sqDisconnected: "disconnected",
+      sqConnected: ": connected",
+      sqConnectedSelf: "connected as:",
+      sqDisconnected: ": disconnected",
     },
     geometry: {
       shape: "shape",

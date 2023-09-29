@@ -88,8 +88,9 @@ export const localeEs: any = {
       me: "yo",
       noMessages: "Ningún mensaje",
       send: "enviar",
-      sqConnected: "conectado",
-      sqDisconnected: "desconectado",
+      sqConnected: ": conectado",
+      sqConnectedSelf: "conectado como:",
+      sqDisconnected: ": desconectado",
     },
     geometry: {
       shape: "forma",

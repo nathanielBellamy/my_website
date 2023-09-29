@@ -49,12 +49,10 @@
 
   function handleMessage(_: any, ev: any) {
     const message: FeedMessage = JSON.parse(ev.data)
-    switch (message.body) {
-      case SystemMessage.init:
-        clientId = message.clientId
-        break
-      default:
-        pushToFeed(message)
+    if (message.system && message.body == SystemMessage.init) {
+      clientId = message.clientId
+    } else {
+      pushToFeed(message)
     }
   }
 

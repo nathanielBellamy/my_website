@@ -52,11 +52,11 @@ func (pool *Pool) StartFeed() {
                      Int("int", len(pool.Clients)).
                      Msg("Size of FEED Connection Pool")
             //send clientId back to client 
-            message := Message{ClientId: id, Body: "__init__connected__"}
+            message := Message{ClientId: id, Body: "__init__connected__", System: true}
             WriteMessage(client.Conn, message, pool.Log)
 
             // announce to pool
-            message = Message{ClientId: id, Body:  "__sq__connected__"}
+            message = Message{ClientId: id, Body:  "__sq__connected__", System: true}
             for client, _ := range pool.Clients {
                 WriteMessage(client.Conn, message, pool.Log)
             }
@@ -71,7 +71,7 @@ func (pool *Pool) StartFeed() {
                      Int("int", len(pool.Clients)).
                      Msg("Size of FEED Connection Pool")
             for client, _ := range pool.Clients {
-              WriteMessage(client.Conn, Message{ClientId: id, Body: "__sq__disconnected__"}, pool.Log)
+              WriteMessage(client.Conn, Message{ClientId: id, Body: "__sq__disconnected__", System: true}, pool.Log)
             }
             break
         case message := <-pool.Broadcast:

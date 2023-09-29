@@ -84,46 +84,18 @@
     }
   }
 
-  // TODO:
-  //   - this pattern for system messages should be refactored
-  //   - message DTO sent between Go and JS should have an extra system_message:bool field
-  //   - this extra processing comes from introspecting on the body string
   function formatSystemMessage(clientId: Number, messageBody: String, lang: Lang): String {
     var res: String
-    console.dir({messageBody})
     switch (messageBody) {
       case SystemMessage.sqConnected:
-        res = `sq-${clientId}: ${i18n.t("sqConnected", lang)}`
+        if (clientId === clientIdSelf) {
+          res = `${i18n.t("sqConnectedSelf", lang)} sq-${clientId}`
+        } else {
+          res = `sq-${clientId}${i18n.t("sqConnected", lang)}`
+        }
         break
       case SystemMessage.sqDisconnected:
-        res = `sq-${clientId}: ${i18n.t("sqDisconnected", lang)}`
-        break
-    }
-    console.dir({res})
-    return res
-  }
-
-  function isSystemMessage(messageBody: String): Boolean {
-    const body: SystemMessage = intoSystemMessage(messageBody)
-    switch (body) {
-      case SystemMessage.none:
-        return false
-      default:
-        return true
-    }
-  }
-
-  function intoSystemMessage(messageBody: String): SystemMessage {
-    var res: SystemMessage
-    switch (messageBody) {
-      case SystemMessage.sqConnected:
-        res = SystemMessage.sqConnected
-        break
-      case SystemMessage.sqDisconnected:
-        res = SystemMessage.sqDisconnected
-        break
-      default:
-        res = SystemMessage.none
+        res = `sq-${clientId}${i18n.t("sqDisconnected", lang)}`
         break
     }
     return res
@@ -163,14 +135,14 @@
           {i18n.t("noMessages", langVal)}
         </div>
       {:else}
-        {#each psFeedVal as { clientId, body }, i} 
+        {#each psFeedVal as { clientId, body, system }, i} 
           {#if !!i}
             <div class="feed_message p-2 w-full h-fit rounded-md"
                  class:feed_message_self={clientIdSelf === clientId}
                  class:feed_message_system={clientId === 0}
                  class:feed_message_other={clientIdSelf !== clientId}>
-              {#if isSystemMessage(body)}
-                <div class="font-bold text-lg p-2 mr-2 rounded-md w-full col-span-2 break-all flex justify-around">
+              {#if system}
+                <div class="font-bold text-sm p-2 mr-2 rounded-md w-full col-span-2 break-all flex justify-around">
                   {formatSystemMessage(clientId, body, langVal)}
                 </div>
               {:else if clientIdSelf !== clientId}

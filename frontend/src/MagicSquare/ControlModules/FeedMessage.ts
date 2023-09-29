@@ -1,7 +1,8 @@
 
 export interface FeedMessage {
   clientId: number,
-  body: string
+  body: string,
+  system: boolean
 }
 
 export enum SystemMessage {

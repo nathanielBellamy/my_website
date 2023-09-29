@@ -87,8 +87,9 @@ export const localeFr: any = {
       disconnected: "Débranché. Rafraichissez, s'il vous plait.",
       me: "moi",
       send: "envoyer",
-      sqConnected: "connecté",
-      sqDisconnected: "déconnecté",
+      sqConnected: ": connecté",
+      sqConnectedSelf: "connecté en tant:",
+      sqDisconnected: ": déconnecté",
     },
     geometry: {
       shape: "forme",
