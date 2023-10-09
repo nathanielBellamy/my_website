@@ -16,6 +16,15 @@ func SetupDevAuth(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Lo
   fs_auth := http.FileServer(http.Dir("auth/dev"))
   http.Handle("/auth/dev/",  LogClientIp("/auth/dev", log, http.StripPrefix("/auth/dev/", fs_auth)))
 
+  // TODO:
+  // - set up salt route
+  // - client requests salt
+  // - server sends
+  // - once client receives they can attempt login
+  // - password is hashed on both client and server
+  // - sent for comparison
+  // - validate or don't
+
   http.HandleFunc("/auth/dev/dev-auth", func(w http.ResponseWriter, r *http.Request) {
     mode := os.Getenv("MODE")
     ip := GetClientIpAddr(r)

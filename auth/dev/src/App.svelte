@@ -28,6 +28,9 @@
     })
   }
 
+  // TODO:
+  //  - async function requestSalt() {}
+
   function onInput() {
     nopeHidden = true
   }
