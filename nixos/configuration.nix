@@ -35,7 +35,7 @@
       add_header Strict-Transport-Security $hsts_header;
 
       # Enable CSP for your services.
-      add_header Content-Security-Policy "script-src 'self'; object-src 'none'; base-uri 'none';" always;
+      add_header Content-Security-Policy "script-src 'self' 'unsafe-inline' 'unsafe-eval' www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; object-src 'none'; frame-src www.google.com/recaptcha/; connect-src 'self' wss:; base-uri 'none';" always;
 
       # Minimize information leaked to other domains
       add_header 'Referrer-Policy' 'origin-when-cross-origin';
