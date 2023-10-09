@@ -3,6 +3,7 @@ package websocket
 import (
   "math/rand"
   "time"
+  "github.com/microcosm-cc/bluemonday"
   "github.com/rs/zerolog"
 )
 
@@ -74,7 +75,9 @@ func (pool *Pool) StartFeed() {
               WriteMessage(client.Conn, Message{ClientId: id, Body: "__sq__disconnected__", System: true}, pool.Log)
             }
             break
-        case message := <-pool.Broadcast:
+        case message := <-pool.Broadcast: // reflection point
+            p := bluemonday.StrictPolicy()
+            message.Body = p.Sanitize(message.Body)
             for client, _ := range pool.Clients {
                 WriteMessage(client.Conn, message, pool.Log)           
             }
