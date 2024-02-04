@@ -183,7 +183,7 @@
   DnaOutline,
   //DnaSolid,
   //DollarOutline,
-  //DollarSolid,
+  DollarSolid,
   //DotsHorizontalOutline,
   //DotsVerticalOutline,
   //DownloadOutline,
@@ -520,6 +520,10 @@
     class="!border-none"/>
 {:else if icon == Icons.DnaOutline}
   <DnaOutline
+    tabindex="-1"
+    class="!border-none"/>
+{:else if icon == Icons.DollarSolid}
+  <DollarSolid
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.DrawSquareSolid}

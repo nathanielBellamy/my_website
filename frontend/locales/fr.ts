@@ -9,6 +9,7 @@ export const localeFr: any = {
       home: "Accueil",
       about: "De moi",
       magicSquare: "Carré magique",
+      monthlyBudget: "Budget mensuel",
       publicSquare: "Carré publique",
       giveMeASine: "Graphiques triginométriques",
       none: "",
