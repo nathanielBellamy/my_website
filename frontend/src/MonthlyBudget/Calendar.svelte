@@ -54,6 +54,7 @@
           class="
             font-bold
             text-left
+            text-cyan-300
           "
           for='calendar-month-select'>
           Month
@@ -82,10 +83,12 @@
       </div>
       <div
         class="
-          flex flex-col justify-around
+          flex flex-col justify-end
+          text-left
         ">
         <label
           class="
+            text-cyan-300
             font-bold
           "
           for='calendar-year-select'>
@@ -125,8 +128,10 @@
       {#each {length: 35} as _, idx}
         <button
           class="
-           p-2 m-2
-           calendar-day
+            p-2 m-2
+            calendar-day
+            flex flex-col
+            text-left
           "
           class:current-day={currentDayIdx === idx}
           class:weekday={[1,2,3,4,5].includes(idx % 7)}
