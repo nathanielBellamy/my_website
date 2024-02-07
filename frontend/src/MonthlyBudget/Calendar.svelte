@@ -1,6 +1,5 @@
 <script lang="ts">
-  import Select from '../MagicSquare/ControlModules/Select.svelte';
-import { type Day, Days } from './Days'
+  import { type Day, Days } from './Days'
 
   let currentDayIdx = 0
   $: currentDay = Days[currentDayIdx % 7]
