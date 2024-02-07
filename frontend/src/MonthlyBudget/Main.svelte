@@ -8,13 +8,14 @@
   import Calendar from './Calendar.svelte'
 
   let currentView: Views = Views.Calendar
+  let views = Object.values(Views)
   // onMount(() => {})
 </script>
 
 <div 
   class="
     flex flex-col
-    h-[calc(100%-90px)]
+    h-[calc(100%-84px)]
   ">
   <body id="monthly_budget_container"
         class="h-full grow overscroll-none overflow-y-scroll">
@@ -22,15 +23,19 @@
       <Calendar />
     {:else if currentView === Views.PaymentEents}
       <h2>
-        PaymentEvents
+        {Views.PaymentEents}
       </h2>
     {:else if currentView === Views.RecurringPaymentEvents}
       <h2>
-        RecurringPaymentEvents
+        {Views.RecurringPaymentEvents}
+      </h2>
+    {:else if currentView === Views.Reports}
+      <h2>
+        {Views.Reports}
       </h2>
     {:else if currentView === Views.Settings}
       <h2>
-        Settings
+        {Views.Settings}
       </h2>
     {/if}
   </body>
@@ -41,26 +46,14 @@
            absolute bottom-0 
            text-emerald-700 text-xs font-mono
     ">
-   <button
-      class="grow hover:text-emerald-500 p-2"
-      on:click={() => currentView = Views.Calendar}>
-     Calendar
-   </button>
-   <button 
-      class="grow hover:text-emerald-500 p-2"
-      on:click={() => currentView = Views.PaymentEents}>
-     Payment Events
-   </button>
-   <button 
-      class="grow hover:text-emerald-500 p-2"
-      on:click={() => currentView = Views.RecurringPaymentEvents}>
-     Recurring Payment Events
-   </button>
-   <button 
-      class="grow hover:text-emerald-500 p-2"
-      on:click={() => currentView = Views.Settings}>
-     Settings
-   </button>
+  {#each Object.values(Views) as view}
+    <button
+        class="grow hover:text-emerald-500 p-2"
+        class:current={currentView == view}
+        on:click={() => currentView = view}>
+      { view }
+    </button>
+  {/each}
   </footer>
 </div>
 
@@ -68,5 +61,6 @@
   @use "./../styles/color"
 
   .current
-    background-color: color.$blue-7 
+    background-color: color.$green-7
+    color: color.$green-2
 </style>
