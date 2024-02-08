@@ -1,6 +1,8 @@
 <script lang="ts">
   import { Button, Modal, Label, Input, Radio } from 'flowbite-svelte';
-  export let show = false;
+  import { type DatedDay } from './Calendar/CalendarState'
+  export let show: boolean = false
+  export let date: DatedDay = null
 
   const paymentEventTypes: any = [
     {value:'payment', name: 'Payment'},
@@ -21,8 +23,23 @@
   ">
   <form class="flex flex-col space-y-6" action="#">
     <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
-      Create a new Pyament Event
+      Create a new Payment Event
     </h3>
+    <Label
+      class="
+        space-y-2
+        text-left
+      ">
+      <span>Date</span>
+      <Input
+        type="date"
+        name="date"
+        value={`${date.date.getFullYear()}-${date.date.getMonth()}-${date.date.getDate()}`}
+        class="
+          bg-blue-200
+        "
+        required />
+    </Label>
     <Label
       class="
         space-y-2

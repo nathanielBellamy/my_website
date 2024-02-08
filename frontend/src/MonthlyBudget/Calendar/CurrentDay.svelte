@@ -21,15 +21,40 @@
     ">
     <h2
       class="
-        flex gap-2
+        grid grid-rows-1 grid-cols-4
+        mr-2
         font-bold
         text-xl
         text-cyan-500
       ">
-      <p>{ currentDay.day.abbreviation_3 }</p>
-      <p>{ Months[currentDay.date.getMonth()].abbreviation_3 }</p>
-      <p>{ currentDay.date.getDate() }</p>
-      <p>{ currentDay.date.getFullYear() }</p>
+      <p
+        class="
+          w-full
+          text-left
+        ">
+        { currentDay.day.abbreviation_3 }
+      </p>
+      <p
+        class="
+          w-full
+          text-left
+        ">
+        { Months[currentDay.date.getMonth()].abbreviation_3 }
+      </p>
+      <p
+        class="
+          w-1/2
+          flex justify-around
+        ">
+        { currentDay.date.getDate() }
+      </p>
+      <p
+        class="
+          w-full
+          text-left
+        ">
+        { currentDay.date.getFullYear() }
+      </p>
     </h2>
     <div
       class="
@@ -68,7 +93,9 @@
     <button on:click={() => showPaymentEventModal = true}>
       Add Payment Event
     </button>
-    <PaymentEventModal bind:show={showPaymentEventModal} />
+    <PaymentEventModal bind:show={showPaymentEventModal}
+                       date={currentDay}
+    />
   </div>
   <div
     class="
