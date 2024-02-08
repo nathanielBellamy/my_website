@@ -30,7 +30,7 @@
   ">
   <form class="flex flex-col space-y-6" action="#">
     <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
-      Create a new Payment Event
+      New Payment Event
     </h3>
     <Label
       class="
@@ -60,21 +60,6 @@
         step="any"
         min="0"
         placeholder="$0.00"
-        class="
-          bg-blue-200
-        "
-        required />
-    </Label>
-    <Label
-      class="
-        space-y-2
-        text-left
-      ">
-      <span>Memo</span>
-      <Input
-        type="text"
-        name="memo"
-        placeholder="Describe this payment event"
         class="
           bg-blue-200
         "
@@ -115,6 +100,21 @@
           </Radio>
         </div>
       </div>
+    </Label>
+    <Label
+      class="
+        space-y-2
+        text-left
+      ">
+      <span>Memo</span>
+      <Input
+        type="text"
+        name="memo"
+        placeholder="Describe this payment event"
+        class="
+          bg-blue-200
+        "
+        required />
     </Label>
     <Button
       type="submit"
