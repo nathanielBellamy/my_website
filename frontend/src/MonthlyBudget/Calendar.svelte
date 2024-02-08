@@ -1,13 +1,16 @@
 <script lang="ts">
   import { type Day, Days } from './Days'
   import { type Month, Months } from './Months'
+  import { type CalendarState } from './CalendarState'
 
-  let currentDayIdx = 0
-  $: currentDay = Days[currentDayIdx % 7]
-
+  let currentDayIdx: number = 0
   let currentMonth: Month = contemporaneousMonthOnLoad()
   let currentYear: number = new Date().getFullYear()
 
+  let calendarState: CalendarState = Array(35)
+  setCalendarState()
+
+  $: currentDay = calendarState[currentDayIdx]
 
   function contemporaneousMonthOnLoad(): Month {
     const monthId = new Date().getMonth()
@@ -17,10 +20,26 @@
   function setCurrentMonth(e: any): void {
     const newMonthId = e.target.value
     currentMonth = Months[newMonthId]
+    setCalendarState()
+  }
+
+  function setCalendarState() {
+    const firstOfMonth = new Date(currentYear, currentMonth.id, 1)
+    const dayFirstOfMonth = firstOfMonth.getDay()
+    const dateLastOfMonth = new Date(currentYear, currentMonth.id, 0).getDate()
+
+    // fill in main month
+    for (let i = 0; i < 35; i++) {
+      calendarState[i] = {
+        day: Days[i % 7],
+        date: new Date(currentYear, currentMonth.id, i + 1 - dayFirstOfMonth)
+      }
+    }
   }
 
   function setCurrentYear(e: any): void {
     currentYear = parseInt(e.target.value)
+    setCalendarState()
   }
 </script>
 
@@ -125,7 +144,7 @@
           { day.abbreviation_3 }
         </div>
       {/each}
-      {#each {length: 35} as _, idx}
+      {#each calendarState as datedDay, idx}
         <button
           class="
             p-2 m-2
@@ -137,7 +156,13 @@
           class:weekday={[1,2,3,4,5].includes(idx % 7)}
           class:weekend={[0,6].includes(idx % 7)}
           on:click={() => currentDayIdx = idx}>
-          { idx }
+          <div
+            class="
+              flex
+            ">
+            <p>{ Months[datedDay.date.getMonth()].abbreviation_3 }.<p>
+            <p>{ datedDay.date.getDate() }<p>
+          </div>
         </button>
       {/each}
     </div>
@@ -157,9 +182,10 @@
           grow
           flex justify-around
         ">
-        <p>{ currentDay.abbreviation_3 }</p>
-        <p>{ currentMonth.abbreviation_3}</p>
-        <p>{ currentYear }</p>
+        <p>{ currentDay.day.abbreviation_3 }</p>
+        <p>{ Months[currentDay.date.getMonth()].abbreviation_3 }</p>
+        <p>{ currentDay.date.getDate() }</p>
+        <p>{ currentDay.date.getFullYear() }</p>
       </h1>
       <div
         class="
