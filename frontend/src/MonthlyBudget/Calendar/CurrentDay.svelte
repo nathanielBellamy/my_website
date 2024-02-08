@@ -1,10 +1,17 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte'
   import { Months } from '../Months'
   import PaymentEventModal from '../PaymentEventModal.svelte'
 
-  export let date: Date
+  import { selectedDate } from '../stores/selectedDate'
+  let selectedDateVal: Date
+  const unsubSelectedDate = selectedDate.subscribe((val: Date) => selectedDateVal = val)
 
   let showPaymentEventModal = false
+
+  onDestroy(() => {
+    unsubSelectedDate()
+  })
 </script>
 
 <div
@@ -32,28 +39,28 @@
           w-full
           text-left
         ">
-        { date.getDay() }
+        { selectedDateVal.getDay() }
       </p>
       <p
         class="
           w-full
           text-left
         ">
-        { Months[date.getMonth()].abbreviation_3 }
+        { Months[selectedDateVal.getMonth()].abbreviation_3 }
       </p>
       <p
         class="
           w-full
           text-right
         ">
-        { date.getDate() }
+        { selectedDateVal.getDate() }
       </p>
       <p
         class="
           w-full
           text-right
         ">
-        { date.getFullYear() }
+        { selectedDateVal.getFullYear() }
       </p>
     </h2>
     <div
@@ -94,8 +101,7 @@
       Add Payment Event
     </button>
     <PaymentEventModal bind:show={showPaymentEventModal}
-                       date={date}
-    />
+                       disableDatePicker={true} />
   </div>
   <div
     class="

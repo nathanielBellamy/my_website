@@ -1,14 +1,22 @@
 <script lang="ts">
-  import { Button, Modal, Label, Input, Radio } from 'flowbite-svelte';
+  import { onMount } from 'svelte'
+  import { Button, Modal, Label, Input, Radio } from 'flowbite-svelte'
+
+  import { selectedDate } from './stores/selectedDate'
+  let selectedDateVal: Date
+  const unsubSelectedDate = selectedDate.subscribe((val: Date) => selectedDateVal = val)
+
+  $: initDate = selectedDateVal.toJSON().split('T')[0]
+
   export let show: boolean = false
-  export let date: Date = new Date()
+  export let disableDatePicker: boolean = false
 
   const paymentEventTypes: any = [
     {value:'payment', name: 'Payment'},
     {value:'payment_received', name: 'Payment Received'},
   ]
 
-  let paymentTypeGroup = "payment";
+  let paymentTypeGroup = "payment"
 </script>
 
 <Modal
@@ -33,10 +41,11 @@
       <Input
         type="date"
         name="date"
-        value={`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`}
+        value={initDate}
         class="
           bg-blue-200
         "
+        disabled={disableDatePicker}
         required />
     </Label>
     <Label

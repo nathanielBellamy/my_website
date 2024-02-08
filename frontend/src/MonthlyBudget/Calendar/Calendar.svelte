@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
+  import { onMount, onDestroy } from 'svelte'
   import { type Day, Days } from '../Days'
   import { type Month, Months } from '../Months'
   import { type CalendarState, initialCalendarState, CALENDAR_STATE_LENGTH } from './CalendarState'
@@ -7,18 +7,26 @@
   import PaymentEventModal from '../PaymentEventModal.svelte'
   import CurrentDay from './CurrentDay.svelte'
 
+  import { selectedDate } from '../stores/selectedDate'
+  let selectedDateVal: Date
+  const unsubSelectedDate = selectedDate.subscribe((val: Date) => selectedDateVal = val)
+
   function contemporaneousMonthOnLoad(): Month {
     const monthId = new Date().getMonth()
     return Months[monthId]
   }
 
-  let currentDayIdx: number = 0
+  let selectedDateIdx: number = 0
   let currentMonth: Month = contemporaneousMonthOnLoad()
   let currentYear: number = new Date().getFullYear()
 
   let calendarState: CalendarState = initialCalendarState
 
-  $: currentDay = calendarState[currentDayIdx]
+  function setSelectedDate(idx: number) {
+    selectedDateIdx = idx
+    selectedDate.update(() => calendarState[idx])
+  }
+
   function setCurrentMonth(e: any): void {
     const newMonthId = e.target.value
     currentMonth = Months[newMonthId]
@@ -37,7 +45,7 @@
     //TODO: eventually this should see if the user has pre-selected a date
     const today = new Date().setHours(0,0,0,0)
     if (init) {
-      currentDayIdx = calendarState.findIndex(d => d.setHours(0,0,0,0) === today)
+      selectedDateIdx = calendarState.findIndex(d => d.setHours(0,0,0,0) === today)
     }
   }
 
@@ -48,6 +56,10 @@
 
   onMount(() => {
     setCalendarState(true)
+  })
+
+  onDestroy(() => {
+    unsubSelectedDate()
   })
 </script>
 
@@ -160,10 +172,10 @@
             flex flex-col
             text-left
           "
-          class:current-day={currentDayIdx === idx}
+          class:current-day={selectedDateIdx === idx}
           class:weekday={[1,2,3,4,5].includes(idx % 7)}
           class:weekend={[0,6].includes(idx % 7)}
-          on:click={() => currentDayIdx = idx}>
+          on:click={() => setSelectedDate(idx)}>
           <div
             class="
               w-full
@@ -175,7 +187,7 @@
       {/each}
     </div>
   </div>
-  <CurrentDay date={currentDay} />
+  <CurrentDay />
 </div>
 
 <style lang="sass">
