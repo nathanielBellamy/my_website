@@ -5,14 +5,14 @@
   // import Loading from "../lib/Loading.svelte"
   import { BottomNav, BottomNavItem } from 'flowbite-svelte'
   import { Views } from './Views'
-  import Calendar from './Calendar.svelte'
+  import Calendar from './Calendar/Calendar.svelte'
 
   let currentView: Views = Views.Calendar
   let views = Object.values(Views)
   // onMount(() => {})
 </script>
 
-<div 
+<div
   class="
     flex flex-col
     h-[calc(100%-84px)]
@@ -43,7 +43,7 @@
   <footer
     class="w-full h-fit pt-4 pb-4
            flex justify-stretch
-           absolute bottom-0 
+           absolute bottom-0
            text-emerald-700 text-xs font-mono
     ">
   {#each Object.values(Views) as view}

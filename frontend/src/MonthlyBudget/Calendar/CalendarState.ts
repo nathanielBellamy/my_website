@@ -1,5 +1,5 @@
-import { type Day } from './Days'
-import { type FixedLengthArray } from './FixedLengthArray'
+import { type Day } from '../Days'
+import { type FixedLengthArray } from '../FixedLengthArray'
 
 export interface DatedDay {
   day: Day;
