@@ -1,6 +1,7 @@
+
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { Button, Modal, Label, Input, Radio } from 'flowbite-svelte'
+  import { Button, Modal, Label, Input, Radio, Select } from 'flowbite-svelte'
 
   import { selectedDate } from './stores/selectedDate'
   let selectedDateVal: Date
@@ -11,12 +12,15 @@
   export let show: boolean = false
   export let disableDatePicker: boolean = false
 
-  const paymentEventTypes: any = [
-    {value:'payment', name: 'Payment'},
-    {value:'payment_received', name: 'Payment Received'},
+  let selectedRecurrenceEvery: any;
+  const recurrenceEvery: any = [
+    { value: 'day', name: 'Day(s)' },
+    { value: 'week', name: 'Week(s)' },
+    { value: 'month', name: 'Month(s)'},
+    { value: 'year', name: 'Year(s)' }
   ]
 
-  let paymentTypeGroup = "payment"
+  let paymentTypeGroup: string = "payment"
 </script>
 
 <Modal
@@ -30,23 +34,67 @@
   ">
   <form class="flex flex-col space-y-6" action="#">
     <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
-      New Payment Event
+      New Recurring Payment Event
     </h3>
     <Label
       class="
         space-y-2
         text-left
       ">
-      <span>Date</span>
+      <span>Start Date</span>
       <Input
         type="date"
-        name="date"
+        name="start-date"
         value={initDate}
         class="
           bg-blue-200
         "
         disabled={disableDatePicker}
         required />
+    </Label>
+    <Label
+      class="
+        space-y-2
+        text-left
+      ">
+      <span>End Date</span>
+      <Input
+        type="date"
+        name="end-date"
+        class="
+          bg-blue-200
+        "
+        optional />
+    </Label>
+    <Label
+      class="
+        space-y-2
+        text-left
+      ">
+      <span>Recurs Every</span>
+      <div
+        class="
+          flex justify-between gap-2
+        ">
+        <Input
+          type="number"
+          name="every"
+          step="any"
+          min="0"
+          placeholder="1"
+          class="
+            bg-blue-200
+          "
+          required />
+        <Select
+          name="recurrence"
+          items={recurrenceEvery}
+          bind:value={selectedRecurrenceEvery}
+          class="
+            bg-blue-200
+          "
+          required />
+      </div>
     </Label>
     <Label
       class="
@@ -122,7 +170,7 @@
         w-full
         bg-red-500 hover:bg-red-400
       ">
-      Create Payment Event
+      Create Recurring Payment Event
     </Button>
   </form>
 </Modal>

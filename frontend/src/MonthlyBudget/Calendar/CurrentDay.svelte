@@ -2,12 +2,14 @@
   import { onDestroy } from 'svelte'
   import { Months } from '../Months'
   import PaymentEventModal from '../PaymentEventModal.svelte'
+  import RecurringPaymentEventModal from '../RecurringPaymentEventModal.svelte'
 
   import { selectedDate } from '../stores/selectedDate'
   let selectedDateVal: Date
   const unsubSelectedDate = selectedDate.subscribe((val: Date) => selectedDateVal = val)
 
   let showPaymentEventModal = false
+  let showRecurringPaymentEventModal = false
 
   onDestroy(() => {
     unsubSelectedDate()
@@ -121,9 +123,11 @@
       <li> bar </li>
       <li> baz </li>
     </ol>
-    <button>
+    <button on:click={() => showRecurringPaymentEventModal = true}>
       Add Recurring Payment Event
     </button>
+    <RecurringPaymentEventModal bind:show={showRecurringPaymentEventModal}
+                                disableDatePicker={true} />
   </div>
 </div>
 
