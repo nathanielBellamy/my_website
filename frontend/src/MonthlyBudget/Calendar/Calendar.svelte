@@ -1,41 +1,43 @@
 <script lang="ts">
+  import { onMount } from 'svelte'
   import { type Day, Days } from '../Days'
   import { type Month, Months } from '../Months'
-  import { type CalendarState } from './CalendarState'
+  import { type CalendarState, initialCalendarState, CALENDAR_STATE_LENGTH } from './CalendarState'
+  import { type FixedLengthArray } from '../FixedLengthArray'
   import PaymentEventModal from '../PaymentEventModal.svelte'
   import CurrentDay from './CurrentDay.svelte'
-
-  let currentDayIdx: number = 0
-  let currentMonth: Month = contemporaneousMonthOnLoad()
-  let currentYear: number = new Date().getFullYear()
-
-  let calendarState: CalendarState = Array(35)
-  setCalendarState()
-
-  $: currentDay = calendarState[currentDayIdx]
 
   function contemporaneousMonthOnLoad(): Month {
     const monthId = new Date().getMonth()
     return Months[monthId]
   }
 
+  let currentDayIdx: number = 0
+  let currentMonth: Month = contemporaneousMonthOnLoad()
+  let currentYear: number = new Date().getFullYear()
+
+  let calendarState: CalendarState = initialCalendarState
+
+  $: currentDay = calendarState[currentDayIdx]
   function setCurrentMonth(e: any): void {
     const newMonthId = e.target.value
     currentMonth = Months[newMonthId]
     setCalendarState()
   }
 
-  function setCalendarState() {
+  function setCalendarState(init = false) {
     const firstOfMonth = new Date(currentYear, currentMonth.id, 1)
     const dayFirstOfMonth = firstOfMonth.getDay()
-    const dateLastOfMonth = new Date(currentYear, currentMonth.id, 0).getDate()
 
     // fill in main month
     for (let i = 0; i < 42; i++) {
-      calendarState[i] = {
-        day: Days[i % 7],
-        date: new Date(currentYear, currentMonth.id, i + 1 - dayFirstOfMonth)
-      }
+      calendarState[i] = new Date(currentYear, currentMonth.id, i + 1 - dayFirstOfMonth)
+    }
+
+    //TODO: eventually this should see if the user has pre-selected a date
+    const today = new Date().setHours(0,0,0,0)
+    if (init) {
+      currentDayIdx = calendarState.findIndex(d => d.setHours(0,0,0,0) === today)
     }
   }
 
@@ -43,6 +45,10 @@
     currentYear = parseInt(e.target.value)
     setCalendarState()
   }
+
+  onMount(() => {
+    setCalendarState(true)
+  })
 </script>
 
 <div
@@ -146,10 +152,10 @@
           { day.abbreviation_3 }
         </div>
       {/each}
-      {#each calendarState as datedDay, idx}
+      {#each calendarState as date, idx}
         <button
           class="
-            p-2 m-2
+            m-2
             calendar-day
             flex flex-col
             text-left
@@ -160,16 +166,16 @@
           on:click={() => currentDayIdx = idx}>
           <div
             class="
-              flex
+              w-full
+              text-left
             ">
-            <p>{ Months[datedDay.date.getMonth()].abbreviation_3 }.<p>
-            <p>{ datedDay.date.getDate() }<p>
+            <p>{ date.getDate() }<p>
           </div>
         </button>
       {/each}
     </div>
   </div>
-  <CurrentDay currentDay={currentDay} />
+  <CurrentDay date={currentDay} />
 </div>
 
 <style lang="sass">

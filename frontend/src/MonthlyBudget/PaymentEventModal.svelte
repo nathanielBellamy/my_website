@@ -1,8 +1,7 @@
 <script lang="ts">
   import { Button, Modal, Label, Input, Radio } from 'flowbite-svelte';
-  import { type DatedDay } from './Calendar/CalendarState'
   export let show: boolean = false
-  export let date: DatedDay = null
+  export let date: Date = new Date()
 
   const paymentEventTypes: any = [
     {value:'payment', name: 'Payment'},
@@ -34,7 +33,7 @@
       <Input
         type="date"
         name="date"
-        value={`${date.date.getFullYear()}-${date.date.getMonth()}-${date.date.getDate()}`}
+        value={`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`}
         class="
           bg-blue-200
         "

@@ -1,11 +1,55 @@
 import { type Day } from '../Days'
 import { type FixedLengthArray } from '../FixedLengthArray'
 
-export interface DatedDay { // TODO:
-                            // remove this type
-                            // i18n can handle abbrevs
-  day: Day;
-  date: Date;
-}
+export const CALENDAR_STATE_LENGTH = 42
+export type CalendarState = FixedLengthArray<Date, CALENDAR_STATE_LENGTH>
 
-export type CalendarState = FixedLengthArray<DatedDay, 42>
+const dummyDate = new Date()
+export const initialCalendarState: CalendarState = [
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+  dummyDate,
+
+  dummyDate,
+  dummyDate,
+]

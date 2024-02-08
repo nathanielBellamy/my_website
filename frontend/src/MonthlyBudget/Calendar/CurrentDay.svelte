@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { type DatedDay } from './CalendarState'
   import { Months } from '../Months'
   import PaymentEventModal from '../PaymentEventModal.svelte'
 
-  export let currentDay: DatedDay
+  export let date: Date
 
   let showPaymentEventModal = false
 </script>
@@ -33,28 +32,28 @@
           w-full
           text-left
         ">
-        { currentDay.day.abbreviation_3 }
+        { date.getDay() }
       </p>
       <p
         class="
           w-full
           text-left
         ">
-        { Months[currentDay.date.getMonth()].abbreviation_3 }
+        { Months[date.getMonth()].abbreviation_3 }
       </p>
       <p
         class="
           w-full
           text-right
         ">
-        { currentDay.date.getDate() }
+        { date.getDate() }
       </p>
       <p
         class="
           w-full
           text-right
         ">
-        { currentDay.date.getFullYear() }
+        { date.getFullYear() }
       </p>
     </h2>
     <div
@@ -95,7 +94,7 @@
       Add Payment Event
     </button>
     <PaymentEventModal bind:show={showPaymentEventModal}
-                       date={currentDay}
+                       date={date}
     />
   </div>
   <div
@@ -132,6 +131,7 @@
 
   .current-day-heading-grid
     grid-template-columns: 35% 65%
+    gap: 5px
 
   .current-day-display-grid
     grid-template-columns: 25% 20% 20% 35%
