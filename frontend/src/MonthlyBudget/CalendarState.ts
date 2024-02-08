@@ -6,4 +6,4 @@ export interface DatedDay {
   date: Date;
 }
 
-export type CalendarState = FixedLengthArray<DatedDay, 35>
+export type CalendarState = FixedLengthArray<DatedDay, 42>

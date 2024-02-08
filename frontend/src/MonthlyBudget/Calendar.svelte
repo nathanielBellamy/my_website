@@ -29,7 +29,7 @@
     const dateLastOfMonth = new Date(currentYear, currentMonth.id, 0).getDate()
 
     // fill in main month
-    for (let i = 0; i < 35; i++) {
+    for (let i = 0; i < 42; i++) {
       calendarState[i] = {
         day: Days[i % 7],
         date: new Date(currentYear, currentMonth.id, i + 1 - dayFirstOfMonth)
@@ -133,7 +133,7 @@
     <div
       class="
         grow h-full w-min-1/5
-        grid grid-cols-7 grid-rows-6
+        grid grid-cols-7 grid-rows-7
       ">
       {#each Object.values(Days) as day}
         <div
@@ -170,29 +170,37 @@
 
   <div
     class="
-      bg-blue-400
+      m-3
       grid grid-rows-3 grid-cols-1 curr-day-grid
     ">
     <div
       class="
+        p-3
         grid grid-rows-1 grid-cols-2
+        current-day-heading-grid
       ">
-      <h1
+      <h2
         class="
-          grow
-          flex justify-around
+          flex gap-2
+          font-bold
+          text-xl
+          text-cyan-500
         ">
         <p>{ currentDay.day.abbreviation_3 }</p>
         <p>{ Months[currentDay.date.getMonth()].abbreviation_3 }</p>
         <p>{ currentDay.date.getDate() }</p>
         <p>{ currentDay.date.getFullYear() }</p>
-      </h1>
+      </h2>
       <div
         class="
           grid grid-rows-2 grid-cols-1
           text-left
+          font-bold
         ">
-        <div>
+        <div
+          class="
+
+          ">
           Starting balance:
         </div>
         <div>
@@ -258,6 +266,9 @@
   .current-day
     background: color.$red-4 !important
 
+  .current-day-heading-grid
+    grid-template-columns: 30% 70%
+
   .weekday
     background: color.$blue-6
 
@@ -266,4 +277,6 @@
 
   .curr-day-grid
     grid-template-rows: 16% 42% 42%
+    border: 2px double color.$blue-7
+    border-radius: 5px
 </style>
