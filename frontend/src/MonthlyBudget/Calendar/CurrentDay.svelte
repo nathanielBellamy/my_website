@@ -22,7 +22,8 @@
     <h2
       class="
         grid grid-rows-1 grid-cols-4
-        mr-2
+        current-day-display-grid
+        p-2
         font-bold
         text-xl
         text-cyan-500
@@ -43,15 +44,15 @@
       </p>
       <p
         class="
-          w-1/2
-          flex justify-around
+          w-full
+          text-right
         ">
         { currentDay.date.getDate() }
       </p>
       <p
         class="
           w-full
-          text-left
+          text-right
         ">
         { currentDay.date.getFullYear() }
       </p>
@@ -130,5 +131,8 @@
     border-radius: 5px
 
   .current-day-heading-grid
-    grid-template-columns: 30% 70%
+    grid-template-columns: 35% 65%
+
+  .current-day-display-grid
+    grid-template-columns: 25% 20% 20% 35%
 </style>
