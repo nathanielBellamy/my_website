@@ -2,6 +2,7 @@
   import { type Day, Days } from './Days'
   import { type Month, Months } from './Months'
   import { type CalendarState } from './CalendarState'
+  import PaymentEventModal from './PaymentEventModal.svelte'
 
   let currentDayIdx: number = 0
   let currentMonth: Month = contemporaneousMonthOnLoad()
@@ -9,6 +10,8 @@
 
   let calendarState: CalendarState = Array(35)
   setCalendarState()
+
+  let showPaymentEventModal = false
 
   $: currentDay = calendarState[currentDayIdx]
 
@@ -225,9 +228,10 @@
         <li> bar </li>
         <li> baz </li>
       </ol>
-      <button>
+      <button on:click={() => showPaymentEventModal = true}>
         Add Payment Event
       </button>
+      <PaymentEventModal bind:show={showPaymentEventModal} />
     </div>
     <div
       class="
