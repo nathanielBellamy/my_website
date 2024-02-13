@@ -1,11 +1,9 @@
 <script lang="ts">
-  import { BottomNav, BottomNavItem } from 'flowbite-svelte'
   import { Views } from './Views'
   import Calendar from './Calendar/Calendar.svelte'
   import Main from "./Main.svelte"
 
   let currentView: Views = Views.Main
-  let views = Object.values(Views)
 </script>
 
 <body id="monthly_budget_container"
