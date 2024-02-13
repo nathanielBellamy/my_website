@@ -4,7 +4,7 @@
   import Calendar from './Calendar/Calendar.svelte'
   import Main from "./Main.svelte"
 
-  let currentView: Views = Views.Calendar
+  let currentView: Views = Views.Main
   let views = Object.values(Views)
 </script>
 
