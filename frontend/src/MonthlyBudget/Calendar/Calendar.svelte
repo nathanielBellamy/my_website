@@ -74,17 +74,10 @@
       grid grid-rows-2 grid-cols-1 calendar-grid
     ">
     <div class="
-      flex justify-around
+      flex gap-5
       w-full h-full
-      pt-2 pb-2
+      pt-2 pb-2 pl-5
     ">
-      <h1
-        class="
-          flex flex-col justify-end
-          font-mono font-bold text-cyan-500
-        ">
-        Monthly Budget
-      </h1>
       <div
         class="
           flex flex-col justify-end
