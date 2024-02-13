@@ -9,6 +9,7 @@ export const localeEn: any = {
       home: "Home",
       about: "About",
       magicSquare: "Magic square",
+      monthlyBudget: "Monthly Budget",
       publicSquare: "Public square",
       giveMeASine: "Give me a sine",
       none: "",

@@ -10,6 +10,7 @@ export enum Icons {
   ChevronRightSolid = "ChevronRightSolid",
   CheckCircleSolid = "CheckCircleSolid",
   DnaOutline = "DnaOutline",
+  DollarSolid = "DollarSolid",
   DrawSquareSolid = "DrawSquareSolid",
   ExclamationCircleOutline = "ExclamationCircleOutline",
   ExclamationCircleSolid = "ExclamationCircleSolid",

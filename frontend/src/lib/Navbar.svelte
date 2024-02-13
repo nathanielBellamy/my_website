@@ -61,6 +61,16 @@
               <Icon icon={Icons.HomeOutline} />
             </svelte:fragment>
           </SidebarItem>
+          <SidebarItem class="hover:bg-transparent !list-none flex items-center font-bold text-blue-200"
+                       tabIndex="0"
+                       on:click={() => hiddenDrawer = true}
+                       href="/#/monthly-budget"
+                       data-testid="nav_dropdown_home"
+                       label={i18n.t("nav/monthlyBudget", langVal)}>
+            <svelte:fragment slot="icon">
+              <Icon icon={Icons.DollarSolid} />
+            </svelte:fragment>
+          </SidebarItem>
           <SidebarItem class="hover:bg-transparent flex items-center font-bold text-blue-200"
                        tabIndex="0"
                        on:click={() => hiddenDrawer = true}
