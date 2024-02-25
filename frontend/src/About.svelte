@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
+  import Loading from "./lib/Loading.svelte";
 
   import { lang } from "./stores/lang"
   import { I18n, Lang } from "./I18n"
@@ -75,40 +76,55 @@
     window.open(href, '_blank');
   }
 
+  interface GithubRepoLangBreakdown { [key: String]: number }
+
   interface GithubRepo {
     created_at: Date,
     description: String,
     html_url: String,
     language: String,
+    languageBreakdown: GithubRepoLangBreakdown,
     name: String,
     pushed_at: Date,
     updated_at: Date,
   }
 
+
+  let reposReady: boolean = false
   let githubRepos: GithubRepo[] = []
   function fetchGithubRepos() {
     const url: String = "https://api.github.com/users/nathanielBellamy/repos"
     fetch(url)
       .then((res) => res.json())
-      .then((repos) => {
-        // console.dir({ json })
+      .then(async (repos) => {
+        const repoLangDict: { [key: String]: GithubRepoLangBreakdown[] } = {}
+        const languagesPromises: Promise[] = repos.map(repo => {
+          const repoLanguagesUrl = `https://api.github.com/repos/nathanielBellamy/${repo.name}/languages`
+          return fetch(repoLanguagesUrl)
+                   .then(res => res.json())
+                   .then(res => repoLangDict[repo.name] = res)
+        })
+
+        await Promise.all(languagesPromises)
+
+        // console.dir({ repoLangDict })
         githubRepos = repos.map(repo => {
           return {
             created_at: new Date(repo.created_at),
             description: repo.description,
             html_url: repo.html_url,
             language: repo.language,
+            languageBreakdown: repoLangDict[repo.name],
             name: repo.name,
             pushed_at: new Date(repo.pushed_at),
             updated_at: new Date(repo.updated_at),
           }
         })
       })
+      .then(() => { setTimeout(() => {reposReady = true}, 500) })
   }
 
-  onMount(() => {
-    fetchGithubRepos()
-  })
+  onMount(fetchGithubRepos)
   onDestroy(unsubLang)
 </script>
 
@@ -131,32 +147,36 @@
       <!--     </div> -->
       <!--   </div> -->
       <!-- {/each} -->
-      {#each githubRepos as { created_at, description, html_url, language, name, pushed_at, updated_at }}
-        <div
-          class="
-            flex justify-around
-          ">
-          <button
-            class="
-              project_title
-            "
-            title="See It On Github"
-            on:click={() => openLinkInNewTab(html_url)}>
-            {name}
-          </button>
+      {#if !reposReady}
+        <Loading />
+      {:else}
+        {#each githubRepos as { created_at, description, html_url, language, name, pushed_at, updated_at }}
           <div
             class="
-              project_description
-              flex flex-col justify-around
+              flex justify-around
             ">
-            <p>{language}</p>
-            <p>{description}<p>
-            <p> Created At: {created_at.toLocaleString()} </p>
-            <p> Pushed At: {pushed_at.toLocaleString()} </p>
-            <p> Updated At: {updated_at.toLocaleString()} </p>
+            <button
+              class="
+                project_title
+              "
+              title="See It On Github"
+              on:click={() => openLinkInNewTab(html_url)}>
+              {name}
+            </button>
+            <div
+              class="
+                project_description
+                flex flex-col justify-around
+              ">
+              <p>{language}</p>
+              <p>{description}<p>
+              <p> Created At: {created_at.toLocaleString()} </p>
+              <p> Pushed At: {pushed_at.toLocaleString()} </p>
+              <p> Updated At: {updated_at.toLocaleString()} </p>
+            </div>
           </div>
-        </div>
-      {/each}
+        {/each}
+      {/if}
     </div>
   </div>
   <div class="section grid grid-rows-10 md:grid-cols-10 gap-4">
