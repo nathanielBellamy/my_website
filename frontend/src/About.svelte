@@ -1,63 +1,11 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte'
-  
+  import { onDestroy, onMount } from 'svelte'
+
   import { lang } from "./stores/lang"
   import { I18n, Lang } from "./I18n"
   let i18n = new I18n("about")
   let langVal: Lang
   const unsubLang = lang.subscribe( val => langVal = val)
-
-  enum EmbeddedProgram {
-    giveMeASign,
-    polynomialConsoleGraph,
-    none
-  }
-
-  interface PersonalProject {
-    title: string,
-    description: string,
-    href: string,
-    program: EmbeddedProgram
-  }
-
-  let personal_projects: PersonalProject[] = [
-    {
-      title: 'my_website (this)',
-      description: 'RustWasm, Go, Typescript, NixOS, Svelte, WebGL, Tailwind, Flowbite, Sass, Vite',
-      href: 'https://github.com/users/nathanielBellamy/projects/4',
-      program: EmbeddedProgram.none
-    },
-    {
-      title: 'monthly_budget',
-      description: 'CSV Processing with Rust',
-      href: 'https://github.com/nathanielBellamy/monthly_budget',
-      program: EmbeddedProgram.none
-    },
-    {
-      title: 'rustby',
-      description: 'Inject Rust Optimizations into Ruby',
-      href: 'https://github.com/nathanielBellamy/rustby',
-      program: EmbeddedProgram.none
-    },
-    {
-      title: 'trow',
-      description: 'Multi-App React Redux Architecture in Typescript',
-      href: 'https://github.com/nathanielBellamy/trow',
-      program: EmbeddedProgram.none
-    },
-    {
-      title: 'polynomial_console_graph',
-      description: 'ASCII Graph Polynomials Using C++',
-      href: 'https://github.com/nathanielBellamy/PolynomialConsoleGraph',
-      program: EmbeddedProgram.none
-    },
-    {
-      title: 'give_me_a_sine',
-      description: 'ASCII Graph Sinusoidals Using Rust',
-      href: 'https://github.com/nathanielBellamy/give_me_a_sine',
-      program: EmbeddedProgram.giveMeASign
-    }
-  ]
 
   interface ProfessionalThing {
     title: string,
@@ -127,6 +75,40 @@
     window.open(href, '_blank');
   }
 
+  interface GithubRepo {
+    created_at: Date,
+    description: String,
+    html_url: String,
+    language: String,
+    name: String,
+    pushed_at: Date,
+    updated_at: Date,
+  }
+
+  let githubRepos: GithubRepo[] = []
+  function fetchGithubRepos() {
+    const url: String = "https://api.github.com/users/nathanielBellamy/repos"
+    fetch(url)
+      .then((res) => res.json())
+      .then((repos) => {
+        // console.dir({ json })
+        githubRepos = repos.map(repo => {
+          return {
+            created_at: new Date(repo.created_at),
+            description: repo.description,
+            html_url: repo.html_url,
+            language: repo.language,
+            name: repo.name,
+            pushed_at: new Date(repo.pushed_at),
+            updated_at: new Date(repo.updated_at),
+          }
+        })
+      })
+  }
+
+  onMount(() => {
+    fetchGithubRepos()
+  })
   onDestroy(unsubLang)
 </script>
 
@@ -137,15 +119,41 @@
       {i18n.t("personalProejects", langVal)}
     </div>
     <div class="section_body row-span-8 md:col-span-8 md:row-span-1">
-      {#each personal_projects as { title, description, href } }
-        <div class="project grid grid-rows-1 md:grid-cols-4">
-          <button class="project_title"
-                  title="See It On Github"
-                  on:click={() => openLinkInNewTab(href)}>
-            {title}
+      <!-- {#each personal_projects as { title, description, href } } -->
+      <!--   <div class="project grid grid-rows-1 md:grid-cols-4"> -->
+      <!--     <button class="project_title" -->
+      <!--             title="See It On Github" -->
+      <!--             on:click={() => openLinkInNewTab(href)}> -->
+      <!--       {title} -->
+      <!--     </button> -->
+      <!--     <div class="project_description ml-10 md:ml-0 row-span-3 md:col-span-3 md:row-span-1"> -->
+      <!--       {description} -->
+      <!--     </div> -->
+      <!--   </div> -->
+      <!-- {/each} -->
+      {#each githubRepos as { created_at, description, html_url, language, name, pushed_at, updated_at }}
+        <div
+          class="
+            flex justify-around
+          ">
+          <button
+            class="
+              project_title
+            "
+            title="See It On Github"
+            on:click={() => openLinkInNewTab(html_url)}>
+            {name}
           </button>
-          <div class="project_description ml-10 md:ml-0 row-span-3 md:col-span-3 md:row-span-1">
-            {description}
+          <div
+            class="
+              project_description
+              flex flex-col justify-around
+            ">
+            <p>{language}</p>
+            <p>{description}<p>
+            <p> Created At: {created_at.toLocaleString()} </p>
+            <p> Pushed At: {pushed_at.toLocaleString()} </p>
+            <p> Updated At: {updated_at.toLocaleString()} </p>
           </div>
         </div>
       {/each}
@@ -165,7 +173,7 @@
             {title}
           </button>
           <div class="project_description ml-10 md:ml-0 row-span-3 md:col-span-3 md:row-span-1">
-            {description} 
+            {description}
           </div>
         </div>
       {/each}
@@ -193,7 +201,7 @@
       font-size: 1.25em
       padding: 0 5px 0 5px
       color: color.$blue-4
-    
+
     &_body
       display: flex
       flex-direction: column
@@ -202,14 +210,14 @@
       color: color.$black
       flex-grow: .9
       padding: 5px 0 5px 0
-   
+
   .project
     /* display: flex */
     /* justify-content: flex-start */
     align-items: stretch
     flex-grow: 1
     border-bottom: 2px solid color.$black
-    
+
     &_title
       flex-grow: .1
       transition: background-color .25s
@@ -246,5 +254,5 @@
 
       border-radius: 5px
 
-      
+
 </style>
