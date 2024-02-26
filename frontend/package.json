@@ -36,7 +36,7 @@
     "@jaames/iro": "^5.5.2",
     "@popperjs/core": "^2.11.8",
     "@types/grecaptcha": "^3.0.4",
-    "flowbite": "^1.7.0",
+    "flowbite": "^2.3.0",
     "flowbite-svelte": "^0.44.24",
     "node-sass": "^9.0.0",
     "svelte-spa-router": "^4.0.1",
