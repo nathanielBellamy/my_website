@@ -19,7 +19,6 @@
     "build-frontend-remotedev": "npm run build-rust-wasm && npm run build-remotedev --emptyOutDir"
   },
   "devDependencies": {
-    "@rollup/plugin-wasm": "^6.1.2",
     "@sveltejs/vite-plugin-svelte": "^3.0.2",
     "@tsconfig/svelte": "^5.0.2",
     "@types/node": "^18.15.11",
