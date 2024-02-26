@@ -3,7 +3,7 @@
   import init, { GmasWasm, rust_init_message  } from '../pkg/src_rust.js'
   import Icon from './lib/Icon.svelte'
   import { Icons } from './lib/Icons.js'
-
+  
   // INIT LANG BOILER PLATE
   import { I18n, Lang } from "./I18n"
   import { lang } from './stores/lang'
@@ -21,7 +21,7 @@
   }
 
   let gmasView: GmasView = GmasView.graph
-
+  
   function setGmasView(gv: GmasView) {
     gmasView = gv
   }
@@ -45,7 +45,7 @@
 
   function colorSquareFromId (id: number): string {
     switch (id) {
-      case 0:
+      case 0: 
         return '⬛'
       case 1:
         return '⬜'
@@ -55,15 +55,15 @@
         return '🟦'
       case 4:
         return '🟩'
-      case 5:
+      case 5: 
         return '🟨'
       case 6:
         return '🟧'
       case 7:
         return '🟥'
-      case 8:
+      case 8: 
        return '🟫'
-      default:
+      default: 
         return ''
     }
   }
@@ -108,7 +108,7 @@
               class="view_select_button text-xl pt-2 pb-2 flex justify-around items-center"
               class:selected={gmasView === GmasView.control}>
         <span class="text-cyan-500">
-          <Icon icon={Icons.UserSettingsSolid} />
+          <Icon icon={Icons.GearSolid} />
         </span>
       </button>
    </div>
@@ -129,7 +129,7 @@
       <div class="give_me_a_sine_form_cell">
         <label  class="give_me_a_sine_form_cell_label"
                 for={'gmas_form_input_a'}>
-          <p>a</p>
+          <p>a</p> 
           <p>{a}</p>
         </label>
         <input id={'gmas_form_input_a'}
@@ -142,7 +142,7 @@
       <div class="give_me_a_sine_form_cell">
         <label  class="give_me_a_sine_form_cell_label"
                 for={'gmas_form_input_b'}>
-          <p>b</p>
+          <p>b</p> 
           <p>{b}</p>
         </label>
         <input id={'gmas_form_input_b'}
@@ -155,7 +155,7 @@
       <div class="give_me_a_sine_form_cell">
         <label  class="give_me_a_sine_form_cell_label"
                 for={'gmas_form_input_c'}>
-          <p>c</p>
+          <p>c</p> 
           <p>{c}</p>
         </label>
         <input id={'gmas_form_input_c'}
@@ -168,7 +168,7 @@
       <div class="give_me_a_sine_form_cell">
         <label  class="give_me_a_sine_form_cell_label"
                 for={'gmas_form_input_ep'}>
-          <p>ep</p>
+          <p>ep</p> 
           <p>{ep}</p>
         </label>
         <input id={'gmas_form_input_ep'}
@@ -181,7 +181,7 @@
       <div class="give_me_a_sine_form_cell">
         <label  class="give_me_a_sine_form_cell_label"
                 for={'gmas_form_input_height'}>
-          <p>{i18n.t("height", langVal)}</p>
+          <p>{i18n.t("height", langVal)}</p> 
           <p>{height}</p>
         </label>
         <input id={'gmas_form_input_height'}
@@ -194,7 +194,7 @@
       <div class="give_me_a_sine_form_cell">
         <label  class="give_me_a_sine_form_cell_label"
                 for={'gmas_form_input_width'}>
-          <p>{i18n.t("width", langVal)}</p>
+          <p>{i18n.t("width", langVal)}</p> 
           <p>{width}</p>
         </label>
         <input id={'gmas_form_input_width'}
@@ -207,7 +207,7 @@
       <div class="give_me_a_sine_form_cell">
         <label  class="give_me_a_sine_form_cell_label"
                 for={'gmas_form_input_above_char'}>
-          <p>{i18n.t("aboveColor", langVal)}</p>
+          <p>{i18n.t("aboveColor", langVal)}</p> 
           <p>{aboveChar}</p>
         </label>
         <input id={'gmas_form_input_above_char'}
@@ -220,7 +220,7 @@
       <div class="give_me_a_sine_form_cell">
         <label  class="give_me_a_sine_form_cell_label"
                 for={'gmas_form_input_below_char'}>
-          <p>{i18n.t("belowColor", langVal)}</p>
+          <p>{i18n.t("belowColor", langVal)}</p> 
           <p>{belowChar}</p>
         </label>
         <input id={'gmas_form_input_below_char'}
@@ -233,7 +233,7 @@
       <div class="give_me_a_sine_form_cell">
         <label  class="give_me_a_sine_form_cell_label"
                 for={'gmas_form_input_graph_char'}>
-          <p>{i18n.t("graphColor", langVal)}</p>
+          <p>{i18n.t("graphColor", langVal)}</p> 
           <p>{graphChar}</p>
         </label>
         <input id={'gmas_form_input_graph_char'}
@@ -251,7 +251,7 @@
   @use "./styles/color"
   @use "./styles/text"
 
-  @media (max-width : 700px)
+  @media (max-width : 700px) 
       .device_graph_font
         font-size: 9px
 
@@ -272,7 +272,7 @@
 
   .selected
     background-color: color.$blue-7
-
+    
   .give_me_a_sine
     flex-grow: 1
     overflow-y: scroll
@@ -304,7 +304,7 @@
       &_body
         padding: 0 30px 0 30px
         flex-grow: 1
-
+  
       &_cell
         display: flex
         flex-direction: column

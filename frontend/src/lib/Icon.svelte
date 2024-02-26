@@ -3,7 +3,7 @@
   // NOTE:
   //  this import statement should MATCH
   //  the enum in ./Icons.ts
-  import {
+  import { 
   //AddressCardSolid,
   //AdjustmentsHorizontalOutline,
   //AdjustmentsHorizontalSolid,
@@ -45,9 +45,9 @@
   ArrowUpRightFromSquareOutline,
   //ArrowUpRightSquareSolid,
   //ArrowUpSolid,
-  // ArrowsRepeat1Outline,
+  //ArrowsRepeat1Outline,
   //ArrowsRepeat1Solid,
-  ArrowsRepeatOutline,
+  //ArrowsRepeatOutline,
   //ArrowsRepeatSolid,
   //AtomOutline,
   AtomSolid,
@@ -277,7 +277,7 @@
   //ForwardSolid,
   //ForwardStepOutline,
   //ForwardStepSolid,
-  // GearSolid,
+  GearSolid,
   //GiftBoxOutline,
   //GiftBoxSolid,
   GithubSolid,
@@ -387,7 +387,7 @@
   //RestoreWindowSolid,
   //RocketOutline,
   //RocketSolid,
-  // RotateOutline,
+  RotateOutline,
   //RuleCombinedOutline,
   //RulerCombinedSolid,
   //SalePercentOutline,
@@ -460,7 +460,7 @@
   //UserRemoveOutline,
   //UserRemoveSolid,
   //UserSettingsOutline,
-  UserSettingsSolid,
+  //UserSettingsSolid,
   UserSolid,
   UsersGroupOutline,
   //UsersOutline,
@@ -495,27 +495,27 @@
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.AtomSolid}
-  <AtomSolid
+  <AtomSolid 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.ArrowUpRightFromSquareOutline}
-  <ArrowUpRightFromSquareOutline
+  <ArrowUpRightFromSquareOutline 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.BriefcaseSolid}
-  <BriefcaseSolid
+  <BriefcaseSolid 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.CheckCircleSolid}
-  <CheckCircleSolid
+  <CheckCircleSolid 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.ChevronLeftSolid}
-  <ChevronLeftSolid
+  <ChevronLeftSolid 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.ChevronRightSolid}
-  <ChevronRightSolid
+  <ChevronRightSolid 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.DnaOutline}
@@ -523,35 +523,35 @@
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.DrawSquareSolid}
-  <DrawSquareSolid
+  <DrawSquareSolid 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.ExclamationCircleOutline}
-  <ExclamationCircleOutline
+  <ExclamationCircleOutline 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.ExclamationCircleSolid}
-  <ExclamationCircleSolid
+  <ExclamationCircleSolid 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.EyeSolid}
-  <EyeSolid
+  <EyeSolid 
     tabindex="-1"
     class="!border-none"/>
-{:else if icon == Icons.UserSettingsSolid}
-  <UserSettingsSolid
+{:else if icon == Icons.GearSolid}
+  <GearSolid 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.GithubSolid}
-  <GithubSolid
+  <GithubSolid 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.GridOutline}
-  <GridOutline
+  <GridOutline 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.GridPlusSolid}
-  <GridPlusSolid
+  <GridPlusSolid 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.HomeOutline}
@@ -567,27 +567,27 @@
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.InfoCircleSolid}
-  <InfoCircleSolid
+  <InfoCircleSolid 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.LinkedinSolid}
-  <LinkedinSolid
+  <LinkedinSolid 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.MailBoxSolid}
-  <MailBoxSolid
+  <MailBoxSolid 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.MessagesOutline}
-  <MessagesOutline
+  <MessagesOutline 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.MessagesSolid}
-  <MessagesSolid
+  <MessagesSolid 
     tabindex="-1"
     class="!border-none"/>
-{:else if icon == Icons.ArrowsRepeatOutline}
-  <ArrowsRepeatOutline
+{:else if icon == Icons.RotateOutline}
+  <RotateOutline 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.UserOutline}
@@ -595,11 +595,11 @@
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.UserSolid}
-  <UserSolid
+  <UserSolid 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.UsersSolid}
-  <UsersSolid
+  <UsersSolid 
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.UsersGroupOutline}
@@ -607,7 +607,7 @@
     tabindex="-1"
     class="!border-none"/>
 {:else if icon == Icons.XCircleOutline}
-  <XCircleOutline
+  <XCircleOutline 
     tabindex="-1"
     class="!border-none"/>
 {/if}

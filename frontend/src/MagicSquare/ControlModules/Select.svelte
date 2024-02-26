@@ -7,7 +7,7 @@
   import { I18n, Lang } from '../../I18n'
   import { lang } from '../../stores/lang'
   let i18n = new I18n("magicSquare/select")
-  let langVal: Lang
+  let langVal: Lang 
   const unsubLang = lang.subscribe(val => langVal = val)
 
   import { smallScreen } from '../../stores/smallScreen'
@@ -38,12 +38,12 @@
     if (smallScreenVal && curr_mod_right === Module.color && mod === Module.color) {
       // destroy color instance in curr_mod_right
       curr_mod_right = Module.feed
-      curr_mod_left = mod
+      curr_mod_left = mod 
       return
     }
 
     if (smallScreenVal) { // only one module is displayed at a time
-      curr_mod_left = mod
+      curr_mod_left = mod 
       return
     }
     if (mod === curr_mod_left || mod === curr_mod_right) return
@@ -124,11 +124,11 @@
           </span>
         {:else if mod == Module.rotation}
           <span class="text-cyan-500">
-            <Icon icon={Icons.ArrowsRepeatOutline} />
+            <Icon icon={Icons.RotateOutline} />
           </span>
         {:else}
           <span class="font-extrabold text-xl">
-            {i18n.t(mod + "_emoji", langVal)}
+            {i18n.t(mod + "_emoji", langVal)} 
           </span>
         {/if}
       </button>
