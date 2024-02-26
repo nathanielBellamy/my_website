@@ -129,6 +129,9 @@
 </script>
 
 <div class="about_me flex flex-col justify-start items-stretch gap-2">
+  <!-- TODO
+    - fix section CSS caused by tailwind update
+  -->
   <div class="section grid grid-rows-10 md:grid-cols-10 gap-4">
     <div class="section_title text-xl font-extrabold row-span-2 md:col-span-2 md:row-span-1"
          data-testid="about_personal_projects">

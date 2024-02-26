@@ -2,6 +2,7 @@
 //  this enum should MATCH
 //  the import statement in ./Icon.svelte
 export enum Icons {
+  ArrowsRepeatOutline = "ArrowsRepeatOutline",
   ArrowUpDownSolid = "ArrowUpDownSolid",
   ArrowUpRightFromSquareOutline = "ArrowUpRightFromSquareOutline",
   AtomSolid = "AtomSolid",
@@ -15,7 +16,6 @@ export enum Icons {
   ExclamationCircleSolid = "ExclamationCircleSolid",
   EyeSolid = "EyeSolid",
   GearOutline = "GearOutline",
-  GearSolid = "GearSolid",
   GithubSolid = "GithubSolid",
   GridOutline = "GridOutline",
   GridPlusSolid = "GridPlusSolid",
@@ -27,8 +27,8 @@ export enum Icons {
   MessagesOutline = "MessagesOutline",
   MailBoxSolid = "MailBoxSolid",
   MessagesSolid = "MessagesSolid",
-  RotateOutline = "RotateOutline",
   UserOutline = "UserOutline",
+  UserSettingsSolid = "UserSettingsSolid",
   UserSolid = "UserSolid",
   UsersGroupOutline = "UsersGroupOutline",
   UsersSolid = "UsersSolid",
