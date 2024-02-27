@@ -45,7 +45,6 @@ export const localeEn: any = {
       3: "using",
       4: "So I am building this website"
     },
-    repos: "Repos",
     whatsHere: "What's here?"
   },
   loading: {
