@@ -1,4 +1,4 @@
-export const localeEs: any = {  
+export const localeEs: any = {
   about: {
     personalProejects: "Proyectos personales",
     technicalExperience: "Experiencia técnica",
@@ -13,6 +13,7 @@ export const localeEs: any = {
       giveMeASine: "Gráficas triginométricas",
       none: "",
       systemDiagram: "Diagrama de systema",
+      repos: "Repos"
     }
   },
   gmas: {
@@ -27,6 +28,7 @@ export const localeEs: any = {
     version_current: "actual:",
     version_latest_major: "último importante:",
     cookieWarning: "Este sitio utiliza cookies.",
+    repos: "Repos",
     about: "Sobre mí",
     about_1: "Lo que hago por lo general con codigo",
     about_2: "Por favor, disfrute de estas imágenes generadas por inteligencia artificial de mí en \"luz natural\"",
@@ -215,7 +217,7 @@ export const localeEs: any = {
   recaptcha: {
     verifying: "Verificando",
     failed_1: "No se puede verificar.",
-    failed_2: "Por favor, intente mas tarde", 
+    failed_2: "Por favor, intente mas tarde",
     failed_3: "o navega a",
     magicSquare: "Cuadro mágico",
   }

@@ -13,6 +13,7 @@ export const localeFr: any = {
       giveMeASine: "Graphiques triginométriques",
       none: "",
       systemDiagram: "Diagramme du système",
+      repos: "Repos",
     }
   },
   gmas: {
@@ -27,6 +28,7 @@ export const localeFr: any = {
     version_current: "actuelle:",
     version_latest_major: "dernière majeure:",
     cookieWarning: "Ce site utilise des cookies.",
+    repos: "Repos",
     about: "De moi",
     about_1: "Ce que je fait avec code",
     about_2: "S'il vous plaît, appréciez ces images de moi en \"lumière naturelle\" générées par intelligence artificielle",
@@ -214,7 +216,7 @@ export const localeFr: any = {
   recaptcha: {
     verifying: "Vérification",
     failed_1: "Impossible de vérifier.",
-    failed_2: "Veuillez réessayer plus tard", 
+    failed_2: "Veuillez réessayer plus tard",
     failed_3: "ou naviguez vers",
     magicSquare: "Carré magique",
   }

@@ -31,8 +31,8 @@
     '/': wrap({
       asyncComponent: () => import('./Home.svelte')
     }),
-    '/about': wrap({
-      asyncComponent: () => import('./About.svelte')
+    '/repos': wrap({
+      asyncComponent: () => import('./Repos.svelte')
     }),
     '/give-me-a-sine': wrap({
       asyncComponent: () => import('./GiveMeASine.svelte')
