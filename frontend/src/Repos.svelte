@@ -2,6 +2,9 @@
   import { onDestroy, onMount } from 'svelte'
   import Loading from "./lib/Loading.svelte";
 
+  import Icon from './lib/Icon.svelte'
+  import { Icons } from './lib/Icons.js'
+
   import { lang } from "./stores/lang"
   import { I18n, Lang } from "./I18n"
   let i18n = new I18n("about")
@@ -14,6 +17,15 @@
 
   interface GithubRepoLangBreakdown { [key: String]: number }
 
+  enum SortColumns {
+    PROJECT = "PROJECT",
+    LANGUAGES = "LANGUAGES",
+    DESCRIPTION = "DESCRIPTION",
+    LAST_PUSH = "LAST_PUSH",
+    UPDATED_AT = "UPDATED_AT",
+    CREATED_AT = "CREATED_AT"
+  }
+
   interface GithubRepo {
     created_at: Date,
     description: String,
@@ -24,7 +36,6 @@
     pushed_at: Date,
     updated_at: Date,
   }
-
 
   let reposReady: boolean = false
   let githubRepos: GithubRepo[] = []
@@ -67,29 +78,57 @@
 <div
   class="
     h-screen
+    w-screen
     overflow-none
+    p-5
   ">
   <div
     class="
-      my-10
       h-full w-full
-      grid grid-rows-10 grid-cols-10 gap-4
+      grid grid-rows-2 grid-cols-1 gap-4
+      section_grid
     ">
     <div
       class="
-        section_title
-        overflow-scroll
-        text-xl font-extrabold
-        row-span-10 col-span-2
+        w-full
+        text-xl
+        font-extrabold
+        grid grid-rows-1 grid-cols-2 gap-4
+        repos_banner_grid
       "
-      data-testid="about_personal_projects">
-      {i18n.t("personalProejects", langVal)}
+      data-testid="
+        repos_banner
+      ">
+      <div
+        class="
+          flex flex-col justify-around
+        ">
+        <h2>
+          {i18n.t("personalProejects", langVal)}
+        </h2>
+        <select
+          placeholder="Sort By">
+          {#each Object.values(SortColumns) as col}
+            <option
+              value={col}>
+              {col}
+            </option>
+          {/each}
+        </select>
+      </div>
+      <span
+        class="
+          bg-emerald-500
+        ">
+        Graph
+      </span>
     </div>
     <div
       class="
         border-solid border-5 border-cyan-500
         overflow-y-scroll
         row-span-10 col-span-8
+        pb-72
       ">
       {#if !reposReady}
         <Loading />
@@ -104,11 +143,38 @@
             class="
               h-16
             ">
-            <th> Project </th>
-            <th> Languages </th>
-            <th> Description </th>
-            <th> Last Push </th>
-            <th> Created At </th>
+            <th
+              class="
+                w-56
+              ">
+              Project </th>
+            <th
+              class="
+                w-16
+              ">
+              Code
+            </th>
+            <th
+              class="
+                w-72
+              ">
+              Languages
+            </th>
+            <th
+              class="
+                w-96
+              ">
+              Description
+            </th>
+            <th>
+              Last Push
+            </th>
+            <th>
+              Updated At
+            </th>
+            <th>
+              Created At
+            </th>
           </tr>
           {#each githubRepos as { created_at, description, html_url, languageBreakdown, name, pushed_at, updated_at }}
             <tr
@@ -116,23 +182,31 @@
                 h-24
                 border-4 border-cyan-500
               ">
+              <td
+                class="
+                  font-bold
+                  text-left
+                  pl-5
+                ">
+                {name}
+              </td>
               <td>
                 <button
                   class="
-                    project_title
-                    w-full h-full
+                    w-fit h-full
                   "
                   title="See It On Github"
                   on:click={() => openLinkInNewTab(html_url)}>
-                  {name}
+                  <Icon icon={Icons.GithubSolid} />
                 </button>
               </td>
               <td
                 class="
                   w-full
+                  px-5
                   overflow-hidden
                   project_description
-                  text-wrap
+                  text-left text-wrap
                 ">
                 <p>{Object.keys(languageBreakdown).join(', ')}</p>
               </td>
@@ -147,6 +221,9 @@
                 {pushed_at.toLocaleString().split(',')[0]}
               </td>
               <td>
+                {updated_at.toLocaleString().split(',')[0]}
+              </td>
+              <td>
                 {created_at.toLocaleString().split(',')[0]}
               </td>
             </tr>
@@ -159,4 +236,8 @@
 
 <style lang="sass">
   @use "./styles/color"
+  .repos_banner_grid
+    grid-template-columns: 15% 85%
+  .section_grid
+    grid-template-rows: 20% 80%
 </style>
