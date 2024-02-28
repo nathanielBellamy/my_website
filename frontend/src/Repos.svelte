@@ -18,13 +18,14 @@
   interface GithubRepoLangBreakdown { [key: String]: number }
 
   enum SortColumns {
-    PROJECT = "PROJECT",
-    LANGUAGES = "LANGUAGES",
-    DESCRIPTION = "DESCRIPTION",
-    LAST_PUSH = "LAST_PUSH",
-    UPDATED_AT = "UPDATED_AT",
-    CREATED_AT = "CREATED_AT"
+    NAME = "name",
+    LANGUAGE = "language",
+    DESCRIPTION = "description",
+    PUSHED_AT = "pushed_at",
+    UPDATED_AT = "updated_at",
+    CREATED_AT = "created_at"
   }
+  const LOWERCASE_SORT_COLUMNS = [SortColumns.NAME, SortColumns.DESCRIPTION]
 
   interface GithubRepo {
     created_at: Date,
@@ -50,6 +51,7 @@
           return fetch(repoLanguagesUrl)
                    .then(res => res.json())
                    .then(res => repoLangDict[repo.name] = res)
+                   .catch(() => troubleLoadingRepos = true)
         })
 
         await Promise.all(languagesPromises)
@@ -68,7 +70,60 @@
           }
         })
       })
-      .then(() => { setTimeout(() => {reposReady = true}, 500) })
+      .then(() => sortGithubReposBy())
+      .then(() => { setTimeout(() => {reposReady = true}, 200) })
+  }
+
+  enum SortOrder {
+    ASC = "asc",
+    DESC = "desc"
+  }
+  let sortColumn: SortColumns = SortColumns.PUSHED_AT
+  let sortOrder: SortOrder = SortOrder.DESC
+  function setSortOrder(order: String): void {
+    sortOrder = order
+    sortGithubReposBy()
+  }
+
+  function swapSortOrder(): void {
+    switch (sortOrder) {
+      case SortOrder.ASC:
+        sortOrder = SortOrder.DESC
+        break
+      case SortOrder.DESC:
+        sortOrder = SortOrder.ASC
+        break
+    }
+  }
+
+  function sortGithubReposBy(col: SortColumns|null = null): void {
+    if (col)
+    {
+      sortColumn = col
+    }
+    const lessThanReturnValue: number = sortOrder === SortOrder.ASC ? -1 : 1
+    const grtrThanReturnValue: number = sortOrder === SortOrder.ASC ? 1 : -1
+    githubRepos = [...githubRepos.sort((x: any, y: any) => {
+      let xVal = x[sortColumn]
+      let yVal = y[sortColumn]
+      if (LOWERCASE_SORT_COLUMNS.includes(sortColumn))
+      {
+        xVal = xVal.toLowerCase()
+        yVal = yVal.toLowerCase()
+      }
+      if (xVal < yVal) return lessThanReturnValue
+      if (xVal > yVal) return grtrThanReturnValue
+      return 0
+    })]
+  }
+
+  function handleHeaderClick(col: SortColumns): void {
+    swapSortOrder()
+    sortGithubReposBy(col)
+  }
+
+  function handleHeaderDblClick(col: SortColumns): void {
+    handleHeaderClick(col)
   }
 
   onMount(fetchGithubRepos)
@@ -101,20 +156,54 @@
       ">
       <div
         class="
-          flex flex-col justify-around
+          flex flex-col justify-between
         ">
-        <h2>
+        <div
+          class="
+            font-xl
+            text-left
+            text-cyan-500
+            grow
+          ">
           {i18n.t("personalProejects", langVal)}
-        </h2>
-        <select
-          placeholder="Sort By">
-          {#each Object.values(SortColumns) as col}
-            <option
-              value={col}>
-              {col}
-            </option>
-          {/each}
-        </select>
+        </div>
+        <div
+          class="
+            flex flex-col justify-around gap-2
+          ">
+          <label
+            for="repos-sort-by"
+            class="
+              text-left
+              text-blue-500
+            ">
+            Sort By:
+          </label>
+          <select
+            id="repos-sort-by"
+            data-testid="repos-sort-by"
+            value={sortColumn}
+            on:change={(e) => sortGithubReposBy(e.target.value)}>
+            {#each Object.values(SortColumns) as col}
+              <option
+                value={col}>
+                {col}
+              </option>
+            {/each}
+          </select>
+          <select
+            id="repos-sort-by"
+            data-testid="repos-sort-by"
+            value={sortOrder}
+            on:change={(e) => setSortOrder(e.target.value)}>
+            {#each Object.values(SortOrder) as order}
+              <option
+                value={order}>
+                {order}
+              </option>
+            {/each}
+          </select>
+        </div>
       </div>
       <span
         class="
@@ -147,7 +236,12 @@
               class="
                 w-56
               ">
-              Project </th>
+              <button
+                on:click={() => handleHeaderClick(SortColumns.NAME)}
+                on:dblclick={() => handleHeaderDblClick(SortColumns.NAME)}>
+                Name
+              </button>
+            </th>
             <th
               class="
                 w-16
@@ -158,22 +252,42 @@
               class="
                 w-72
               ">
-              Languages
+              <button
+                on:click={() => handleHeaderClick(SortColumns.LANGUAGE)}
+                on:dblclick={() => handleHeaderDblClick(SortColumns.LANGUAGE)}>
+                Language
+              </button>
             </th>
             <th
               class="
                 w-96
               ">
-              Description
+              <button
+                on:click={() => handleHeaderClick(SortColumns.DESCRIPTION)}
+                on:dblclick={() => handleHeaderDblClick(SortColumns.DESCRIPTION)}>
+                Description
+              </button>
             </th>
             <th>
-              Last Push
+              <button
+                on:click={() => handleHeaderClick(SortColumns.PUSHED_AT)}
+                on:dblclick={() => handleHeaderDblClick(SortColumns.PUSHED_AT)}>
+                Lastest Push
+              </button>
             </th>
             <th>
-              Updated At
+              <button
+                on:click={() => handleHeaderClick(SortColumns.UPDATED_AT)}
+                on:dblclick={() => handleHeaderDblClick(SortColumns.UPDATED_AT)}>
+                Lastest Update
+              </button>
             </th>
             <th>
-              Created At
+              <button
+                on:click={() => handleHeaderClick(SortColumns.CREATED_AT)}
+                on:dblclick={() => handleHeaderDblClick(SortColumns.CREATED_AT)}>
+                Created
+              </button>
             </th>
           </tr>
           {#each githubRepos as { created_at, description, html_url, languageBreakdown, name, pushed_at, updated_at }}
