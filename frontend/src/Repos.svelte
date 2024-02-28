@@ -12,110 +12,29 @@
   let langVal: Lang
   const unsubLang = lang.subscribe( val => langVal = val)
 
+  import { githubRepos } from "./stores/githubRepos"
+  import { type GithubRepo, type GithubRepos, GithubIntegration, SortColumns, SortOrder } from "./GithubIntegration"
+  let githubReposVal: GithubRepos
+  const unsubGithubRepos = githubRepos.subscribe((val: GithubRepos) => githubReposVal = [...val])
+
   const openLinkInNewTab = (href: string) => {
     window.open(href, '_blank');
   }
 
-  interface GithubRepoLangBreakdown { [key: String]: number }
-
-  enum SortColumns {
-    NAME = "name",
-    LANGUAGE = "language",
-    DESCRIPTION = "description",
-    PUSHED_AT = "pushed_at",
-    UPDATED_AT = "updated_at",
-    CREATED_AT = "created_at"
-  }
-  const LOWERCASE_SORT_COLUMNS = [SortColumns.NAME, SortColumns.DESCRIPTION]
-
-  interface GithubRepo {
-    created_at: Date,
-    description: String,
-    html_url: String,
-    language: String,
-    languageBreakdown: GithubRepoLangBreakdown,
-    name: String,
-    pushed_at: Date,
-    updated_at: Date,
-  }
-
-  let reposReady: boolean = false
-  let githubRepos: GithubRepo[] = []
-  function fetchGithubRepos() {
-    const url: String = "https://api.github.com/users/nathanielBellamy/repos"
-    fetch(url)
-      .then((res) => res.json())
-      .then(async (repos) => {
-        const repoLangDict: { [key: String]: GithubRepoLangBreakdown[] } = {}
-        const languagesPromises: Promise[] = repos.map(repo => {
-          const repoLanguagesUrl = `https://api.github.com/repos/nathanielBellamy/${repo.name}/languages`
-          return fetch(repoLanguagesUrl)
-                   .then(res => res.json())
-                   .then(res => repoLangDict[repo.name] = res)
-                   .catch(() => troubleLoadingRepos = true)
-        })
-
-        await Promise.all(languagesPromises)
-
-        // console.dir({ repoLangDict })
-        githubRepos = repos.map(repo => {
-          return {
-            created_at: new Date(repo.created_at),
-            description: repo.description,
-            html_url: repo.html_url,
-            language: repo.language,
-            languageBreakdown: repoLangDict[repo.name],
-            name: repo.name,
-            pushed_at: new Date(repo.pushed_at),
-            updated_at: new Date(repo.updated_at),
-          }
-        })
-      })
-      .then(() => sortGithubReposBy())
-      .then(() => { setTimeout(() => {reposReady = true}, 200) })
-  }
-
-  enum SortOrder {
-    ASC = "asc",
-    DESC = "desc"
-  }
-  let sortColumn: SortColumns = SortColumns.PUSHED_AT
-  let sortOrder: SortOrder = SortOrder.DESC
   function setSortOrder(order: String): void {
-    sortOrder = order
+    github.sortOrder = order
     sortGithubReposBy()
   }
 
   function swapSortOrder(): void {
-    switch (sortOrder) {
+    switch (github.sortOrder) {
       case SortOrder.ASC:
-        sortOrder = SortOrder.DESC
+        github.sortOrder = SortOrder.DESC
         break
       case SortOrder.DESC:
-        sortOrder = SortOrder.ASC
+        github.sortOrder = SortOrder.ASC
         break
     }
-  }
-
-  function sortGithubReposBy(col: SortColumns|null = null): void {
-    if (col)
-    {
-      sortColumn = col
-    }
-    const lessThanReturnValue: number = sortOrder === SortOrder.ASC ? -1 : 1
-    const grtrThanReturnValue: number = sortOrder === SortOrder.ASC ? 1 : -1
-    githubRepos = [...githubRepos.sort((x: any, y: any) => {
-      let xVal = x[sortColumn]
-      let yVal = y[sortColumn]
-      if (LOWERCASE_SORT_COLUMNS.includes(sortColumn))
-      {
-        xVal = xVal.toLowerCase()
-        yVal = yVal.toLowerCase()
-      }
-      if (xVal < yVal) return lessThanReturnValue
-      if (xVal > yVal) return grtrThanReturnValue
-      return 0
-    })]
   }
 
   function handleHeaderClick(col: SortColumns): void {
@@ -127,7 +46,12 @@
     handleHeaderClick(col)
   }
 
-  onMount(fetchGithubRepos)
+  let github: GithubIntegration = new GithubIntegration(githubRepos)
+
+  onMount(() => {
+    github.fetchRepos()
+  })
+
   onDestroy(unsubLang)
 </script>
 
@@ -184,8 +108,8 @@
           <select
             id="repos-sort-by"
             data-testid="repos-sort-by"
-            value={sortColumn}
-            on:change={(e) => sortGithubReposBy(e.target.value)}>
+            value={github.sortColumn}
+            on:change={(e) => github.sortGithubReposBy(e.target.value)}>
             {#each Object.values(SortColumns) as col}
               <option
                 value={col}>
@@ -196,7 +120,7 @@
           <select
             id="repos-sort-by"
             data-testid="repos-sort-by"
-            value={sortOrder}
+            value={github.sortOrder}
             on:change={(e) => setSortOrder(e.target.value)}>
             {#each Object.values(SortOrder) as order}
               <option
@@ -207,7 +131,9 @@
           </select>
         </div>
       </div>
-      <RepoChart />
+      {#if github.reposReady}
+        <RepoChart id="current"/>
+      {/if}
     </div>
     <div
       class="
@@ -216,7 +142,7 @@
         row-span-10 col-span-8
         pb-72
       ">
-      {#if !reposReady}
+      {#if !github.reposReady}
         <Loading />
       {:else}
         <table
