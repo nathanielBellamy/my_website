@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
   import Loading from "./lib/Loading.svelte";
+  import RepoChart from "./RepoChart.svelte";
 
   import Icon from './lib/Icon.svelte'
   import { Icons } from './lib/Icons.js'
@@ -160,7 +161,7 @@
         ">
         <div
           class="
-            font-xl
+            font-xxl
             text-left
             text-cyan-500
             grow
@@ -174,6 +175,7 @@
           <label
             for="repos-sort-by"
             class="
+              text-sm
               text-left
               text-blue-500
             ">
@@ -205,12 +207,7 @@
           </select>
         </div>
       </div>
-      <span
-        class="
-          bg-emerald-500
-        ">
-        Graph
-      </span>
+      <RepoChart />
     </div>
     <div
       class="
