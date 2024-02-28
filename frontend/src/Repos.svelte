@@ -39,14 +39,21 @@
 
   function handleHeaderClick(col: SortColumns): void {
     swapSortOrder()
-    sortGithubReposBy(col)
+    github.sortReposBy(col)
   }
+
+  $: [...github.reposVal]
 
   function handleHeaderDblClick(col: SortColumns): void {
     handleHeaderClick(col)
   }
 
-  let github: GithubIntegration = new GithubIntegration(githubRepos)
+  let reposReady: boolean = false
+  function updateReposReady(val: boolean): void {
+    reposReady = val
+  }
+
+  let github: GithubIntegration = new GithubIntegration(githubRepos, updateReposReady)
 
   onMount(() => {
     github.fetchRepos()
@@ -109,7 +116,7 @@
             id="repos-sort-by"
             data-testid="repos-sort-by"
             value={github.sortColumn}
-            on:change={(e) => github.sortGithubReposBy(e.target.value)}>
+            on:change={(e) => github.sortReposBy(e.target.value)}>
             {#each Object.values(SortColumns) as col}
               <option
                 value={col}>
@@ -121,7 +128,7 @@
             id="repos-sort-by"
             data-testid="repos-sort-by"
             value={github.sortOrder}
-            on:change={(e) => setSortOrder(e.target.value)}>
+            on:change={(e) => {github.sortOrder = e.target.value; github.sortReposBy()}}>
             {#each Object.values(SortOrder) as order}
               <option
                 value={order}>
@@ -131,8 +138,18 @@
           </select>
         </div>
       </div>
-      {#if github.reposReady}
-        <RepoChart id="current"/>
+      {#if reposReady}
+        <div
+          class="
+            flex justify-around
+            bg-cyan-900
+            rounded-md
+            pt-2
+          ">
+          <RepoChart idx={0}/>
+          <RepoChart idx={1}/>
+          <RepoChart idx={2}/>
+        </div>
       {/if}
     </div>
     <div
@@ -142,7 +159,7 @@
         row-span-10 col-span-8
         pb-72
       ">
-      {#if !github.reposReady}
+      {#if !reposReady}
         <Loading />
       {:else}
         <table
@@ -213,11 +230,12 @@
               </button>
             </th>
           </tr>
-          {#each githubRepos as { created_at, description, html_url, languageBreakdown, name, pushed_at, updated_at }}
+          {#each githubReposVal as { created_at, description, html_url, languageBreakdown, name, pushed_at, updated_at }}
             <tr
               class="
                 h-24
-                border-4 border-cyan-500
+                border border-dashed border-b-2 border-cyan-500
+                rounded-lg
               ">
               <td
                 class="

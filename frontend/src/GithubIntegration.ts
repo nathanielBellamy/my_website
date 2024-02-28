@@ -36,10 +36,17 @@ export class GithubIntegration {
   repos: Writeable<GithubRepos>
   reposReady: boolean = false
   reposVal: GithubRepos
+  updateReposReady: (val: boolean) => void
 
-  constructor(repos: Writeable<GithubRepos>) {
+  constructor(
+    repos: Writeable<GithubRepos>,
+    updateReposReady: (val: boolean) => void,
+    updateRepos: (val: GithubRepos) => void
+  ) {
     this.repos = repos
     this.repos.subscribe(val => this.reposVal = val)
+    this.updateReposReady = (val: boolean) => updateReposReady(val)
+    this.updateRepos = (val: boolean) => updateRepos(val)
   }
 
   languageBreakdownToData(breakdown: GithubRepoLangBreakdown|null): LanguageData|void {
@@ -74,47 +81,57 @@ export class GithubIntegration {
   }
 
   fetchRepos() {
-    const url: String = "https://api.github.com/users/nathanielellamy/repos"
-    return fetch(url)
-      .then((res) => res.json())
-      .then(async (repos) => {
-        const repoLangDict: { [key: String]: GithubRepoLangBreakdown[] } = {}
-        await this.fetchRepoLanguageBreakdowns(repos, repoLangDict);
-        this.repos.update(() => this.reposVal = repos.map(repo => {
-          return {
-            created_at: new Date(repo.created_at),
-            description: repo.description,
-            html_url: repo.html_url,
-            language: repo.language,
-            languageBreakdown: repoLangDict[repo.name],
-            languageData: this.languageBreakdownToData(repoLangDict[name]),
-            name: repo.name,
-            pushed_at: new Date(repo.pushed_at),
-            updated_at: new Date(repo.updated_at)
-          }
-        }))
-      })
-      .then(() => this.sortReposBy())
-      .then(() => { setTimeout(() => {this.reposReady = true}, 200) })
-      .catch((e) => console.error(e))
+    const url: String = "https://api.github.com/users/nathanielBellamy/repos"
+    return fetch(
+      url,
+      {
+        method: "GET",
+        headers: { Authorization: `token ${import.meta.env.VITE_GITHUB_KEY}`}
+      }
+    )
+    .then((res) => res.json())
+    .then(async (repos) => {
+      const repoLangDict: { [key: String]: GithubRepoLangBreakdown[] } = {}
+      await this.fetchRepoLanguageBreakdowns(repos, repoLangDict);
+      this.repos.update(() => this.reposVal = repos.map(repo => {
+        return {
+          created_at: new Date(repo.created_at),
+          description: repo.description,
+          html_url: repo.html_url,
+          language: repo.language,
+          languageBreakdown: repoLangDict[repo.name],
+          languageData: this.languageBreakdownToData(repoLangDict[repo.name]),
+          name: repo.name,
+          pushed_at: new Date(repo.pushed_at),
+          updated_at: new Date(repo.updated_at)
+        }
+      }))
+    })
+    .then(() => this.sortReposBy())
+    .then(() => this.updateReposReady(true))
+    .catch((e) => console.error(e))
   }
 
   async fetchRepoLanguageBreakdowns(repos: any[], repoLangDict: any): void {
     if (typeof repos !== "array") repos = reposJsonFixture
     const languagesPromises: Promise[] = repos.map(repo => {
-      const repoLanguagesUrl = `https://api.github.com/repos/nathanielellamy/${repo.name}/languages`
-      return fetch(repoLanguagesUrl)
-               .then(res => {
-                 if (typeof res.status !== 200)
-                 {
-                   throw new Error(`Trouble Fetching Language Data for ${repo.name} from Github`)
-                 }
-               })
-               .then(res => res.json())
-               .then(res => repoLangDict[repo.name] = res)
-               .catch((e) => {
-                 throw new Error(`Trouble Fetching Language Data for ${repo.name} from Github`)
-               })
+      const repoLanguagesUrl = `https://api.github.com/repos/nathanielBellamy/${repo.name}/languages`
+      return fetch(
+        repoLanguagesUrl,
+        {
+          method: "GET",
+          headers: { Authorization: `token ${import.meta.env.VITE_GITHUB_KEY}`} }
+      )
+      .then(res => {
+        if (res.status !== 200)
+        {
+          throw new Error(`Trouble Fetching Language Data for ${repo.name} from Github`)
+        }
+        return res
+      })
+      .then(res => res.json())
+      .then(res => repoLangDict[repo.name] = res)
+      .catch((e) => console.error(e))
     })
 
     return await Promise.all(languagesPromises)

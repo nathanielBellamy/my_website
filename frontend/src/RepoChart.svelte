@@ -12,14 +12,11 @@
   let githubReposVal: GithubRepos
   const unsubGithubRepos = githubRepos.subscribe((val: GithubRepos) => githubReposVal = [...val])
 
-  export let id: String
-  let name = githubReposVal[0].name
-  let idSelf: String = `repo_chart_${id}`
-
-  let data: any = githubReposVal[0].languageData
+  export let idx: String
+  let id: String = `repo_chart_${idx}`
 
   function setupChart(): void {
-    var chartDom = document.getElementById("wowzow")
+    var chartDom = document.getElementById(id)
     var myChart = echarts.init(chartDom, {height: "200px", width: "200px"})
     var option
 
@@ -28,37 +25,42 @@
       tooltip: {
         trigger: 'item'
       },
-      // legend: {
-      //   top: '5%',
-      //   left: 'center'
-      // },
+      title: {
+        text: githubReposVal[idx].name,
+        textAlign: 'left',
+        textStyle: {
+          color: "#73DACA",
+          fontWeight: "bolder",
+          fontSize: 22
+        }
+      },
       series: [
         {
-          name,
           type: 'pie',
           radius: ['40%', '70%'],
-          center: ['50%', '70%'],
+          center: ['30%', '50%'],
           // adjust the start and end angle
           startAngle: 180,
           endAngle: 360,
-          data
-          // [
-          //   { value: 1048, name: 'Search Engine' },
-          //   { value: 735, name: 'Direct' },
-          //   { value: 580, name: 'Email' },
-          //   { value: 484, name: 'Union Ads' },
-          //   { value: 300, name: 'Video Ads' }
-          // ]
+          width: 300,
+          height: 250,
+          data: githubReposVal[idx].languageData.map(obj => {
+
+            return {
+              label: {show: false},
+              labelLine: {show: false},
+              ...obj}
+          })
         }
       ]
     }
     option && myChart.setOption(option)
   }
 
-  onMount(() => {
-    // console.dir({data})
-    setupChart()
-  })
+  let mounted: boolean = false
+  $: if (mounted) [...githubReposVal] && setupChart()
+
+  onMount(() => mounted = true)
 
   onDestroy(() => {
     unsubGithubRepos()
@@ -70,13 +72,16 @@
   class="
     w-full h-full
     pl-20
-    bg-blue-200
+    overflow-hidden
   ">
-  <h1>
+  <h2
+    class="
+      text-cyan-500
+    ">
     {name}
-  </h1>
+  </h2>
   <div
-    id="wowzow"
+    id={id}
     class="
       repo-chart-dom
       ml-10
@@ -85,7 +90,6 @@
 
 <style lang="sass">
   .repo-chart-dom
-    margin-top: -20px
-    height: 150px
+    height: 300px
     width: 700px
 </style>
