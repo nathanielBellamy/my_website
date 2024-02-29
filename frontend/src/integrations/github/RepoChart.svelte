@@ -22,9 +22,6 @@
 
     // This example requires ECharts v5.5.0 or later
     option = {
-      tooltip: {
-        trigger: 'item'
-      },
       legend: {
         show: true,
         right: "10%",
@@ -55,7 +52,7 @@
           // adjust the start and end angle
           startAngle: 180,
           endAngle: 360,
-          width: 300,
+          width: 400,
           height: 250,
           data: githubReposVal[idx].languageData.map(obj => {
 

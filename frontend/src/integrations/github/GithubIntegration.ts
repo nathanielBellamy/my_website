@@ -1,4 +1,4 @@
-import githubLangColors from './colors.json'
+import colors from './colors.json'
 import reposJsonFixture from './repos.json'
 import {
   SortOrder,
@@ -35,7 +35,7 @@ export default class GithubIntegration {
       if (breakdown[langX] < breakdown[langY]) return 1
       if (breakdown[langX] > breakdown[langY]) return -1
       return 0
-    }).map(lang => githubLangColors[lang].color)
+    }).map(lang => colors[lang].color)
     return data
   }
 

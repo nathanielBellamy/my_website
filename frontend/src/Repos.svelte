@@ -1,10 +1,17 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
-  import Loading from "./lib/Loading.svelte";
-  import RepoChart from "./integrations/github/RepoChart.svelte";
-
   import Icon from './lib/Icon.svelte'
   import { Icons } from './lib/Icons.js'
+  import Loading from "./lib/Loading.svelte";
+  import RepoChart from "./integrations/github/RepoChart.svelte";
+  import {
+    type GithubRepo,
+    type GithubRepos,
+    SortColumns,
+    SortOrder
+  } from "./integrations/github/GithubTypes"
+  import GithubIntegration from "./integrations/github/GithubIntegration"
+  import ColorCircle from "./integrations/github/ColorCircle.svelte"
 
   import { lang } from "./stores/lang"
   import { I18n, Lang } from "./I18n"
@@ -13,13 +20,6 @@
   const unsubLang = lang.subscribe( val => langVal = val)
 
   import { githubRepos } from "./stores/githubRepos"
-  import {
-    type GithubRepo,
-    type GithubRepos,
-    SortColumns,
-    SortOrder
-  } from "./integrations/github/GithubTypes"
-  import GithubIntegration from "./integrations/github/GithubIntegration"
   let githubReposVal: GithubRepos
   const unsubGithubRepos = githubRepos.subscribe((val: GithubRepos) => githubReposVal = [...val])
 
@@ -155,7 +155,6 @@
           class="
             w-full
             flex flex-row justify-end
-            bg-cyan-900
             rounded-md
             pt-2
           ">
@@ -186,7 +185,7 @@
             ">
             <th
               class="
-                w-56
+                w-64
               ">
               <button
                 on:click={() => handleHeaderClick(SortColumns.NAME)}
@@ -245,7 +244,9 @@
           {#each githubReposVal as { created_at, description, html_url, languageBreakdown, name, pushed_at, updated_at }}
             <tr
               class="
-                h-24
+                h-44
+                pt-4
+                hover:bg-cyan-800
                 border border-dashed border-b-2 border-cyan-500
                 rounded-lg
               "
@@ -254,6 +255,8 @@
                 class="
                   font-bold
                   text-left
+                  text-xl
+                  text-wrap
                   pl-5
                 ">
                 {name}
@@ -270,13 +273,28 @@
               </td>
               <td
                 class="
-                  w-full
+                  w-full h-full
                   px-5
                   overflow-hidden
-                  project_description
-                  text-left text-wrap
+                  flex flex-col jusity-around
                 ">
-                <p>{Object.keys(languageBreakdown).join(', ')}</p>
+                <div
+                  class="
+                    w-full h-full
+                    mt-6
+                    flex flex-wrap gap-2
+                  ">
+                  {#each Object.keys(languageBreakdown) as lang}
+                    <span
+                      class="
+                        font-bold
+                        flex justify-between gap-2
+                      ">
+                      {lang}
+                      <ColorCircle lang={lang}/>
+                    </span>
+                  {/each}
+                </div>
               </td>
               <td
                 class="
