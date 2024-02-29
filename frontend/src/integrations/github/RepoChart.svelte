@@ -44,11 +44,14 @@
           fontSize: 22
         }
       },
+      color: githubReposVal[idx].colorData,
       series: [
         {
           type: 'pie',
           radius: ['40%', '70%'],
           center: ['30%', '50%'],
+          colorBy: 'data',
+          color: githubReposVal[idx].colorData,
           // adjust the start and end angle
           startAngle: 180,
           endAngle: 360,

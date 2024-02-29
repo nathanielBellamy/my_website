@@ -1,6 +1,9 @@
+export type ColorData = String[];
+
 export interface GithubRepoLangBreakdown { [key: String]: number }
 
 export interface GithubRepo {
+  colorData: ColorData,
   created_at: Date,
   description: String,
   html_url: String,

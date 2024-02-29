@@ -1,7 +1,9 @@
+import githubLangColors from './colors.json'
 import reposJsonFixture from './repos.json'
 import {
   SortOrder,
   SortColumns,
+  type ColorData,
   type GithubRepos,
   type GithubLangBreakdown,
   type LanguageData,
@@ -27,13 +29,20 @@ export default class GithubIntegration {
     this.updateRepos = (val: boolean) => updateRepos(val)
   }
 
-  languageBreakdownToData(breakdown: GithubRepoLangBreakdown|null|undefined): LanguageData|void {
-    if (breakdown)
-    {
-      var data: LanguageData
-      data = Object.keys(breakdown).map(k => ({name: k, value: breakdown[k]}) )
-      return data
-    }
+  languageBreakdownToColorData(breakdown: GithubRepoLangBreakdown): ColorData {
+    var data: ColorData
+    data = Object.keys(breakdown).sort((langX, langY) => {
+      if (breakdown[langX] < breakdown[langY]) return 1
+      if (breakdown[langX] > breakdown[langY]) return -1
+      return 0
+    }).map(lang => githubLangColors[lang].color)
+    return data
+  }
+
+  languageBreakdownToData(breakdown: GithubRepoLangBreakdown): LanguageData {
+    var data: LanguageData
+    data = Object.keys(breakdown).map(k => ({name: k, value: breakdown[k]}) )
+    return data
   }
 
   sortReposBy(col: SortColumns|null = null): void {
@@ -73,6 +82,7 @@ export default class GithubIntegration {
       await this.fetchRepoLanguageBreakdowns(repos, repoLangDict);
       this.repos.update(() => this.reposVal = repos.map(repo => {
         return {
+          colorData: this.languageBreakdownToColorData(repoLangDict[repo.name]),
           created_at: new Date(repo.created_at),
           description: repo.description,
           html_url: repo.html_url,
