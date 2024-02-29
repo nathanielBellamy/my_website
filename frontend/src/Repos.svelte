@@ -228,6 +228,11 @@
                 Description
               </button>
             </th>
+            <th
+              class="
+              ">
+              Recent Commits
+            </th>
             <th>
               <button
                 class="
@@ -262,7 +267,16 @@
               </button>
             </th>
           </tr>
-          {#each githubReposVal as { created_at, description, html_url, languageBreakdown, name, pushed_at, updated_at }}
+          {#each githubReposVal as {
+            commitData,
+            created_at,
+            description,
+            html_url,
+            languageBreakdown,
+            name,
+            pushed_at,
+            updated_at
+          }}
             <tr
               class="
                 h-44
@@ -333,6 +347,35 @@
                   text-left
                 ">
                 {description}
+              </td>
+              <td>
+                <div
+                  class="
+                    h-full w-full
+                    flex flex-col justify-around
+                    overflow-scroll
+                  ">
+                  {#if commitData.length}
+                    {#each commitData.slice(0,3) as commit}
+                      <ol
+                        class="
+                          h-full w-full
+                          flex flex-col justify-around
+                        ">
+                        <li
+                          class="
+                            break-words
+                          ">
+                          <a
+                            target="_blank"
+                            href={commit.html_url}>
+                            {`${commit.sha.substring(0,7)}`}
+                          </a>
+                        </li>
+                      </ol>
+                    {/each}
+                  {/if}
+                </div>
               </td>
               <td>
                 {pushed_at.toLocaleString().split(',')[0]}

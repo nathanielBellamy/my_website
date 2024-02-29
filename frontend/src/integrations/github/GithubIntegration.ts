@@ -1,5 +1,4 @@
 import colors from './colors.json'
-import reposJsonFixture from './repos.json'
 import {
   SortOrder,
   SortColumns,
@@ -9,6 +8,7 @@ import {
   type LanguageData,
   LOWERCASE_SORT_COLUMNS
 } from './GithubTypes'
+import GithubClient from './GithubClient'
 
 export default class GithubIntegration {
   sortOrder: SortOrder = SortOrder.DESC
@@ -68,67 +68,67 @@ export default class GithubIntegration {
   }
 
   fetchRepos() {
-    const url: String = "https://api.github.com/users/nathanielBellamy/repos"
-    return fetch(
-      url,
-      {
-        method: "GET",
-        headers: { Authorization: `token ${import.meta.env.VITE_GITHUB_KEY}`}
-      }
-    )
-    .then((res) => {
-      if (res.status !== 200)
-      {
-        // if live pull fails, default to snapshot
-        return reposJsonFixture
-      }
-      else
-      {
-        return res.json()
-      }
+    const client: GithubClient = new GithubClient()
+    client.fetchRepos()
+      .then(async (repos) => {
+        const repoLangDict: { [key: String]: GithubRepoLangBreakdown[] } = {}
+        const repoCommitDict: { [key: String]: any[] } = {}
+        await Promise.all([
+          this.fetchRepoLanguageBreakdowns(repos, repoLangDict),
+          this.fetchRepoCommitHistory(repos, repoCommitDict)
+        ])
+        this.repos.update(() => {
+          this.reposVal = repos.map(repo => {
+            return {
+              colorData: this.languageBreakdownToColorData(repoLangDict[repo.name]),
+              commitData: repoCommitDict[repo.name],
+              created_at: new Date(repo.created_at),
+              description: repo.description,
+              html_url: repo.html_url,
+              language: repo.language,
+              languageBreakdown: repoLangDict[repo.name],
+              languageData: this.languageBreakdownToData(repoLangDict[repo.name]),
+              name: repo.name,
+              pushed_at: new Date(repo.pushed_at),
+              updated_at: new Date(repo.updated_at)
+            }
+          })
+          return this.reposVal
+        })
+      })
+      .then(() => this.sortReposBy())
+      .then(() => this.updateReposReady(true))
+      .catch((e) => console.error(e))
+  }
+
+  async fetchRepoCommitHistory(repos: any[], repoCommitDict: any): void {
+    const client: GithubClient = new GithubClient();
+    const commitPromises: Promise[] = repos.map(repo => {
+      const repoCommitsUrl = `https://api.github.com/repos/nathanielBellamy/${repo.name}/commits`
+      return client
+         .fetchRepoData(repo.name, 'commits')
+         .then(res => res.json())
+         .then(commitsData => repoCommitDict[repo.name] = commitsData)
     })
-    .then(async (repos) => {
-      const repoLangDict: { [key: String]: GithubRepoLangBreakdown[] } = {}
-      await this.fetchRepoLanguageBreakdowns(repos, repoLangDict);
-      this.repos.update(() => this.reposVal = repos.map(repo => {
-        return {
-          colorData: this.languageBreakdownToColorData(repoLangDict[repo.name]),
-          created_at: new Date(repo.created_at),
-          description: repo.description,
-          html_url: repo.html_url,
-          language: repo.language,
-          languageBreakdown: repoLangDict[repo.name],
-          languageData: this.languageBreakdownToData(repoLangDict[repo.name]),
-          name: repo.name,
-          pushed_at: new Date(repo.pushed_at),
-          updated_at: new Date(repo.updated_at)
-        }
-      }))
-    })
-    .then(() => this.sortReposBy())
-    .then(() => this.updateReposReady(true))
-    .catch((e) => console.error(e))
+    return await Promise.all(commitPromises)
   }
 
   async fetchRepoLanguageBreakdowns(repos: any[], repoLangDict: any): void {
+    const client: GithubClient = new GithubClient();
     const languagesPromises: Promise[] = repos.map(repo => {
       const repoLanguagesUrl = `https://api.github.com/repos/nathanielBellamy/${repo.name}/languages`
-      return fetch(
-        repoLanguagesUrl,
-        {
-          method: "GET",
-          headers: { Authorization: `token ${import.meta.env.VITE_GITHUB_KEY}`} }
-      )
-      .then(res => {
-        if (res.status !== 200)
-        {
-          throw new Error(`Trouble Fetching Language Data for ${repo.name} from Github`)
-        }
-        return res
-      })
-      .then(res => res.json())
-      .then(res => repoLangDict[repo.name] = res)
-      .catch((e) => console.error(e))
+      return client
+        .fetchRepoData(repo.name, "languages")
+        .then(res => {
+          if (res.status !== 200)
+          {
+            throw new Error(`Trouble Fetching Language Data for ${repo.name} from Github`)
+          }
+          return res
+        })
+        .then(res => res.json())
+        .then(res => repoLangDict[repo.name] = res)
+        .catch((e) => console.error(e))
     })
 
     return await Promise.all(languagesPromises)

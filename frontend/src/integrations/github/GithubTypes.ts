@@ -4,6 +4,7 @@ export interface GithubRepoLangBreakdown { [key: String]: number }
 
 export interface GithubRepo {
   colorData: ColorData,
+  commitData: any,
   created_at: Date,
   description: String,
   html_url: String,
