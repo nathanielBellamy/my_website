@@ -55,6 +55,11 @@
 
   let github: GithubIntegration = new GithubIntegration(githubRepos, updateReposReady)
 
+  let chartIdx: number = 0
+  function setChartIdx(repoName: String) {
+    chartIdx = githubReposVal.findIndex(r => r.name === repoName)
+  }
+
   onMount(() => {
     github.fetchRepos()
   })
@@ -78,6 +83,7 @@
     <div
       class="
         w-full
+        h-fit
         text-xl
         font-extrabold
         grid grid-rows-1 grid-cols-2 gap-4
@@ -141,14 +147,13 @@
       {#if reposReady}
         <div
           class="
-            flex justify-around
+            w-full
+            flex flex-row justify-end
             bg-cyan-900
             rounded-md
             pt-2
           ">
-          <RepoChart idx={0}/>
-          <RepoChart idx={1}/>
-          <RepoChart idx={2}/>
+          <RepoChart bind:idx={chartIdx}/>
         </div>
       {/if}
     </div>
@@ -157,6 +162,7 @@
         border-solid border-5 border-cyan-500
         overflow-y-scroll
         row-span-10 col-span-8
+        mt-4
         pb-72
       ">
       {#if !reposReady}
@@ -236,7 +242,8 @@
                 h-24
                 border border-dashed border-b-2 border-cyan-500
                 rounded-lg
-              ">
+              "
+              on:mouseenter={() => setChartIdx(name)}>
               <td
                 class="
                   font-bold

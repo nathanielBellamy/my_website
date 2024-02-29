@@ -12,7 +12,7 @@
   let githubReposVal: GithubRepos
   const unsubGithubRepos = githubRepos.subscribe((val: GithubRepos) => githubReposVal = [...val])
 
-  export let idx: String
+  export let idx: number
   let id: String = `repo_chart_${idx}`
 
   function setupChart(): void {
@@ -24,6 +24,16 @@
     option = {
       tooltip: {
         trigger: 'item'
+      },
+      legend: {
+        show: true,
+        right: "10%",
+        bottom: 0,
+        textStyle: {
+          color: "#73DACA",
+          fontWeight: "bolder",
+          fontSize: 20
+        }
       },
       title: {
         text: githubReposVal[idx].name,
@@ -58,9 +68,12 @@
   }
 
   let mounted: boolean = false
-  $: if (mounted) [...githubReposVal] && setupChart()
+  $: if (mounted) [...githubReposVal] && idx + 1 && setupChart()
 
-  onMount(() => mounted = true)
+  onMount(() => {
+    mounted = true
+    setupChart()
+  })
 
   onDestroy(() => {
     unsubGithubRepos()
@@ -80,16 +93,14 @@
     ">
     {name}
   </h2>
-  <div
+  <canvas
     id={id}
+    height={150}
+    width={500}
     class="
-      repo-chart-dom
       ml-10
     "/>
 </div>
 
 <style lang="sass">
-  .repo-chart-dom
-    height: 300px
-    width: 700px
 </style>
