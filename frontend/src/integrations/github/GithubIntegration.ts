@@ -76,7 +76,17 @@ export default class GithubIntegration {
         headers: { Authorization: `token ${import.meta.env.VITE_GITHUB_KEY}`}
       }
     )
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.status !== 200)
+      {
+        // if live pull fails, default to snapshot
+        return reposJsonFixture
+      }
+      else
+      {
+        return res.json()
+      }
+    })
     .then(async (repos) => {
       const repoLangDict: { [key: String]: GithubRepoLangBreakdown[] } = {}
       await this.fetchRepoLanguageBreakdowns(repos, repoLangDict);
@@ -101,7 +111,6 @@ export default class GithubIntegration {
   }
 
   async fetchRepoLanguageBreakdowns(repos: any[], repoLangDict: any): void {
-    if (typeof repos !== "array") repos = reposJsonFixture
     const languagesPromises: Promise[] = repos.map(repo => {
       const repoLanguagesUrl = `https://api.github.com/repos/nathanielBellamy/${repo.name}/languages`
       return fetch(
