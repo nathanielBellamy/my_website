@@ -181,13 +181,17 @@
           ">
           <tr
             class="
+              repo-table-grid
               h-16
             ">
             <th
               class="
-                w-64
               ">
               <button
+                class="
+                  w-full
+                  border-x-0
+                "
                 on:click={() => handleHeaderClick(SortColumns.NAME)}
                 on:dblclick={() => handleHeaderDblClick(SortColumns.NAME)}>
                 Name
@@ -195,15 +199,17 @@
             </th>
             <th
               class="
-                w-16
               ">
               Code
             </th>
             <th
               class="
-                w-72
               ">
               <button
+                class="
+                  w-full
+                  border-x-0
+                "
                 on:click={() => handleHeaderClick(SortColumns.LANGUAGE)}
                 on:dblclick={() => handleHeaderDblClick(SortColumns.LANGUAGE)}>
                 Language
@@ -211,9 +217,12 @@
             </th>
             <th
               class="
-                w-96
               ">
               <button
+                class="
+                  w-full
+                  border-x-0
+                "
                 on:click={() => handleHeaderClick(SortColumns.DESCRIPTION)}
                 on:dblclick={() => handleHeaderDblClick(SortColumns.DESCRIPTION)}>
                 Description
@@ -221,6 +230,10 @@
             </th>
             <th>
               <button
+                class="
+                  w-full
+                  border-x-0
+                "
                 on:click={() => handleHeaderClick(SortColumns.PUSHED_AT)}
                 on:dblclick={() => handleHeaderDblClick(SortColumns.PUSHED_AT)}>
                 Lastest Push
@@ -228,6 +241,10 @@
             </th>
             <th>
               <button
+                class="
+                  w-full
+                  border-x-0
+                "
                 on:click={() => handleHeaderClick(SortColumns.UPDATED_AT)}
                 on:dblclick={() => handleHeaderDblClick(SortColumns.UPDATED_AT)}>
                 Lastest Update
@@ -235,6 +252,10 @@
             </th>
             <th>
               <button
+                class="
+                  w-full
+                  border-x-0
+                "
                 on:click={() => handleHeaderClick(SortColumns.CREATED_AT)}
                 on:dblclick={() => handleHeaderDblClick(SortColumns.CREATED_AT)}>
                 Created
@@ -246,9 +267,9 @@
               class="
                 h-44
                 pt-4
-                hover:bg-cyan-800
-                border border-dashed border-b-2 border-cyan-500
-                rounded-lg
+                hover:bg-slate-800 transition-colors
+                border border-dashed border-b-2 border-r-0 border-cyan-500
+                rounded-md
               "
               on:mouseenter={() => setChartIdx(name)}>
               <td
@@ -261,15 +282,25 @@
                 ">
                 {name}
               </td>
-              <td>
-                <button
+              <td
+                class="
+                  h-full w-full
+                ">
+                <div
                   class="
-                    w-fit h-full
-                  "
-                  title="See It On Github"
-                  on:click={() => openLinkInNewTab(html_url)}>
-                  <Icon icon={Icons.GithubSolid} />
-                </button>
+                    h-full w-full
+                    flex justify-around items-center
+                  ">
+                  <button
+                    class="
+                      w-1/2 h-1/2
+                      flex justify-around items-center
+                    "
+                    title="See The Code On Github"
+                    on:click={() => openLinkInNewTab(html_url)}>
+                    <Icon icon={Icons.GithubSolid} />
+                  </button>
+                </div>
               </td>
               <td
                 class="
