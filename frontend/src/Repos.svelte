@@ -14,8 +14,12 @@
 
   import { githubRepos } from "./stores/githubRepos"
   import {
-    type GithubRepo, type GithubRepos, GithubIntegration, SortColumns, SortOrder
-  } from "./integrations/github/GithubIntegration"
+    type GithubRepo,
+    type GithubRepos,
+    SortColumns,
+    SortOrder
+  } from "./integrations/github/GithubTypes"
+  import GithubIntegration from "./integrations/github/GithubIntegration"
   let githubReposVal: GithubRepos
   const unsubGithubRepos = githubRepos.subscribe((val: GithubRepos) => githubReposVal = [...val])
 

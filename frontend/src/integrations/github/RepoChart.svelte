@@ -32,7 +32,7 @@
         textStyle: {
           color: "#73DACA",
           fontWeight: "bolder",
-          fontSize: 20
+          fontSize: 15
         }
       },
       title: {
