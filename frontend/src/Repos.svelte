@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
   import Loading from "./lib/Loading.svelte";
-  import RepoChart from "./RepoChart.svelte";
+  import RepoChart from "./integrations/github/RepoChart.svelte";
 
   import Icon from './lib/Icon.svelte'
   import { Icons } from './lib/Icons.js'
@@ -13,7 +13,9 @@
   const unsubLang = lang.subscribe( val => langVal = val)
 
   import { githubRepos } from "./stores/githubRepos"
-  import { type GithubRepo, type GithubRepos, GithubIntegration, SortColumns, SortOrder } from "./GithubIntegration"
+  import {
+    type GithubRepo, type GithubRepos, GithubIntegration, SortColumns, SortOrder
+  } from "./integrations/github/GithubIntegration"
   let githubReposVal: GithubRepos
   const unsubGithubRepos = githubRepos.subscribe((val: GithubRepos) => githubReposVal = [...val])
 

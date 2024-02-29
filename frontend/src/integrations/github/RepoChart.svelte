@@ -2,13 +2,13 @@
   import { onMount, onDestroy } from 'svelte'
   import * as echarts from 'echarts'
 
-  import { lang } from "./stores/lang"
-  import { I18n, Lang } from "./I18n"
+  import { lang } from "../../stores/lang"
+  import { I18n, Lang } from "../../I18n"
   let i18n = new I18n("about")
   let langVal: Lang
   const unsubLang = lang.subscribe( val => langVal = val)
 
-  import { type GithubRepo, type GithubRepos, githubRepos } from "./stores/githubRepos"
+  import { type GithubRepo, type GithubRepos, githubRepos } from "../../stores/githubRepos"
   let githubReposVal: GithubRepos
   const unsubGithubRepos = githubRepos.subscribe((val: GithubRepos) => githubReposVal = [...val])
 
