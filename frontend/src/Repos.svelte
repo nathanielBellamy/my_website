@@ -3,7 +3,8 @@
   import Icon from './lib/Icon.svelte'
   import { Icons } from './lib/Icons.js'
   import Loading from "./lib/Loading.svelte";
-  import RepoChart from "./integrations/github/RepoChart.svelte";
+  import RepoLangChart from "./integrations/github/RepoLangChart.svelte";
+  import RepoCommitChart from "./integrations/github/RepoCommitChart.svelte";
   import {
     type GithubRepo,
     type GithubRepos,
@@ -89,7 +90,6 @@
     <div
       class="
         w-full
-        h-fit
         text-xl
         font-extrabold
         grid grid-rows-1 grid-cols-2 gap-4
@@ -154,11 +154,24 @@
         <div
           class="
             w-full
-            flex flex-row justify-end
             rounded-md
-            pt-2
+            grid grid-rows-2 grid-cols-1
+            repos-charts-grid
           ">
-          <RepoChart bind:idx={chartIdx}/>
+          <h2
+            class="
+              col-span-2
+              text-lg
+              font-bold
+              text-right
+              text-cyan-500
+            ">
+            <p>
+              {githubReposVal[chartIdx].name}
+            </p>
+          </h2>
+          <RepoLangChart bind:idx={chartIdx}/>
+          <RepoCommitChart bind:idx={chartIdx}/>
         </div>
       {/if}
     </div>
@@ -367,6 +380,7 @@
                             break-words
                           ">
                           <a
+                            title="See Commit On Github"
                             target="_blank"
                             href={commit.html_url}>
                             {`${commit.sha.substring(0,7)}`}
@@ -396,8 +410,10 @@
 
 <style lang="sass">
   @use "./styles/color"
+  .repos-charts-grid
+    grid-template-rows: 10% 90%
   .repos_banner_grid
     grid-template-columns: 15% 85%
   .section_grid
-    grid-template-rows: 20% 80%
+    grid-template-rows: max(226px, 30%) 70%
 </style>

@@ -13,27 +13,62 @@
   const unsubGithubRepos = githubRepos.subscribe((val: GithubRepos) => githubReposVal = [...val])
 
   export let idx: number
-  let id: String = `repo_chart_${idx}`
+  let id: String = `repo_commit_chart_${idx}`
+
+  function commitDataToDates(commitData: any): any {
+    return commitData.reduce((dates, commit) => {
+      const date: String = commit.commit.author.date.split('T')[0]
+      const dateIndex = dates.findIndex(d => d[0] === date)
+      if (dateIndex > -1)
+      {
+        dates[dateIndex][1] += 1
+      }
+      else
+      {
+        dates.push([date, 1])
+      }
+      return dates
+    }, [])
+  }
+
+  function formatDate(date: Date): String {
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+  }
+
+  function dateRange(commitDates: any): String[] {
+    const recent: Date = new Date(commitDates[0][0])
+    const oldest: Date = new Date(commitDates[commitDates.length-1][0])
+    return [oldest, recent].map(formatDate)
+  }
 
   function setupChart(): void {
     var chartDom = document.getElementById(id)
     var myChart = echarts.init(chartDom, {height: "200px", width: "200px"})
+    const data = commitDataToDates(githubReposVal[idx].commitData)
     var option
 
     // This example requires ECharts v5.5.0 or later
     option = {
-      legend: {
-        show: true,
-        right: "10%",
-        bottom: 0,
-        textStyle: {
-          color: "#73DACA",
-          fontWeight: "bolder",
-          fontSize: 15
+      visualMap: {
+        show: false,
+        min: -1,
+        max: 7,
+        inRange: {
+          color: ['#192F2B', '#73DACA']
+        }
+      },
+      calendar: {
+        range: dateRange(data),
+        itemStyle: {
+          color: "#000000",
+          borderWidth: 0
+        },
+        monthLabel: {
+          show: true,
         }
       },
       title: {
-        text: githubReposVal[idx].name,
+        text: "Commits",
         textAlign: 'left',
         textStyle: {
           color: "#73DACA",
@@ -41,26 +76,11 @@
           fontSize: 22
         }
       },
-      color: githubReposVal[idx].colorData,
       series: [
         {
-          type: 'pie',
-          radius: ['40%', '70%'],
-          center: ['30%', '50%'],
-          colorBy: 'data',
-          color: githubReposVal[idx].colorData,
-          // adjust the start and end angle
-          startAngle: 180,
-          endAngle: 360,
-          width: 400,
-          height: 250,
-          data: githubReposVal[idx].languageData.map(obj => {
-
-            return {
-              label: {show: false},
-              labelLine: {show: false},
-              ...obj}
-          })
+          type: 'heatmap',
+          coordinateSystem: 'calendar',
+          data
         }
       ]
     }
@@ -95,8 +115,8 @@
   </h2>
   <canvas
     id={id}
-    height={150}
-    width={500}
+    height={250}
+    width={300}
     class="
       ml-10
     "/>
