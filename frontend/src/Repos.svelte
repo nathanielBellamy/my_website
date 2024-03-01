@@ -161,8 +161,8 @@
           <h2
             class="
               col-span-2
-              text-lg
-              font-bold
+              text-xl
+              font-extrabold
               text-right
               text-cyan-500
             ">
@@ -170,8 +170,18 @@
               {githubReposVal[chartIdx].name}
             </p>
           </h2>
-          <RepoLangChart bind:idx={chartIdx}/>
-          <RepoCommitChart bind:idx={chartIdx}/>
+          <div
+            class="
+              w-full flex
+            ">
+            <RepoLangChart bind:idx={chartIdx}/>
+          </div>
+          <div
+            class="
+              w-full flex
+            ">
+            <RepoCommitChart bind:idx={chartIdx}/>
+          </div>
         </div>
       {/if}
     </div>
@@ -412,6 +422,7 @@
   @use "./styles/color"
   .repos-charts-grid
     grid-template-rows: 10% 90%
+    grid-template-columns: 50% 50%
   .repos_banner_grid
     grid-template-columns: 15% 85%
   .section_grid
