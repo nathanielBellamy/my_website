@@ -51,11 +51,14 @@
     option = {
       visualMap: {
         show: false,
-        min: -1,
+        min: -5,
         max: 7,
         inRange: {
           color: ['#192F2B', '#73DACA']
         }
+      },
+      legend: {
+        show: true,
       },
       calendar: {
         range: dateRange(data),
@@ -65,7 +68,22 @@
         },
         monthLabel: {
           show: true,
-        }
+          textStyle: {
+            color: "#73DACA",
+            fontWeight: "bolder",
+            fontSize: 15
+          }
+        },
+        yearLabel: {
+          show: true,
+          textStyle: {
+            color: "#73DACA",
+            fontWeight: "bolder",
+            fontSize: 15
+          }
+        },
+        width: 400,
+        height: 100
       },
       title: {
         text: "Commits",

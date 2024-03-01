@@ -50,8 +50,8 @@ export default class GithubIntegration {
     {
       this.sortColumn = col
     }
-    const lessThanReturnValue: number = this.sortOrder === SortOrder.ASC ? -1 : 1
-    const grtrThanReturnValue: number = -1 * lessThanReturnValue
+    let lessThanReturnValue: number = this.sortOrder === SortOrder.ASC ? 1 : -1
+    let grtrThanReturnValue: number = -1 * lessThanReturnValue
     this.repos.update(() => [...this.reposVal.sort((x: any, y: any) => {
         let xVal = x[this.sortColumn]
         let yVal = y[this.sortColumn]

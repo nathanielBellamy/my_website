@@ -29,8 +29,8 @@
   }
 
   function setSortOrder(order: String): void {
-    github.sortOrder = order
-    sortGithubReposBy()
+    github.sortOrder = order;
+    github.sortReposBy()
   }
 
   function swapSortOrder(): void {
@@ -140,7 +140,7 @@
             id="repos-sort-by"
             data-testid="repos-sort-by"
             value={github.sortOrder}
-            on:change={(e) => {github.sortOrder = e.target.value; github.sortReposBy()}}>
+            on:change={(e) => {setSortOrder(e.target.value)}}>
             {#each Object.values(SortOrder) as order}
               <option
                 value={order}>
@@ -314,7 +314,7 @@
                   font-bold
                   text-left
                   text-xl
-                  text-wrap
+                  break-words
                   pl-5
                 ">
                 {name}
@@ -349,12 +349,13 @@
                 <div
                   class="
                     w-full h-full
-                    mt-6
+                    m-2
                     flex flex-wrap gap-2
                   ">
                   {#each Object.keys(languageBreakdown) as lang}
                     <span
                       class="
+                        text-sm
                         font-bold
                         flex justify-between gap-2
                       ">

@@ -29,7 +29,7 @@
         textStyle: {
           color: "#73DACA",
           fontWeight: "bolder",
-          fontSize: 15
+          fontSize: 12
         }
       },
       title: {
@@ -46,13 +46,13 @@
         {
           type: 'pie',
           radius: ['40%', '70%'],
-          center: ['30%', '70%'],
+          center: ['30%', '60%'],
           colorBy: 'data',
           color: githubReposVal[idx].colorData,
           // adjust the start and end angle
           startAngle: 180,
           endAngle: 360,
-          width: 500,
+          width: 300,
           height: 250,
           data: githubReposVal[idx].languageData.map(obj => {
 
@@ -95,8 +95,8 @@
   </h2>
   <canvas
     id={id}
-    height={200}
-    width={500}
+    height={150}
+    width={450}
     class="
       ml-10
     "/>
