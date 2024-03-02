@@ -223,11 +223,6 @@
             <th
               class="
               ">
-              Code
-            </th>
-            <th
-              class="
-              ">
               <button
                 class="
                   w-full
@@ -317,27 +312,12 @@
                   break-words
                   pl-5
                 ">
-                {name}
-              </td>
-              <td
-                class="
-                  h-full w-full
-                ">
-                <div
-                  class="
-                    h-full w-full
-                    flex justify-around items-center
-                  ">
-                  <button
-                    class="
-                      w-1/2 h-1/2
-                      flex justify-around items-center
-                    "
-                    title="See The Code On Github"
-                    on:click={() => openLinkInNewTab(html_url)}>
-                    <Icon icon={Icons.GithubSolid} />
-                  </button>
-                </div>
+                <a
+                  title="See The Code on Github"
+                  href={html_url}
+                  target="_blank">
+                  {name}
+                </a>
               </td>
               <td
                 class="
