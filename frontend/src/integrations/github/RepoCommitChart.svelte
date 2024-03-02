@@ -63,7 +63,7 @@
       calendar: {
         range: dateRange(data),
         itemStyle: {
-          color: "#000000",
+          color: "#1C263A",
           borderWidth: 0
         },
         monthLabel: {
