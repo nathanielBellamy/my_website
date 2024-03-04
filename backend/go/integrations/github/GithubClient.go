@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
   "os"
+  "sync"
 
 	"github.com/rs/zerolog"
 )
@@ -47,14 +48,29 @@ func (gc GithubClient) FetchRepos() {
   }
   defer resp.Body.Close()
 
-  var jsonData interface{}
+  var githubRepos GithubRepos
 
-  json_err := json.NewDecoder(resp.Body).Decode(&jsonData)
+  json_err := json.NewDecoder(resp.Body).Decode(&githubRepos)
   if json_err != nil {
     gc.Log.Error().
            Err(json_err).
            Msg("Error Decoding Github Repos Payload")
   }
 
-  fmt.Printf("%+v\n", jsonData)
+  gc.FetchLanguageData(&githubRepos)
 }
+
+func (gc GithubClient) FetchLanguageData(githubRepos *GithubRepos) {
+  var wg sync.WaitGroup
+
+  for idx, _ := range *githubRepos {
+    wg.Add(1)
+    go func(idx int) {
+      defer wg.Done()
+      (*githubRepos)[idx].FetchLanguageBreakdown(gc)
+    }(idx)
+  }
+
+  wg.Wait()
+}
+
