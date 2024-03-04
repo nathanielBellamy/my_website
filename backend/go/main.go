@@ -83,11 +83,14 @@ func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *ze
 }
 
 func RegisterControllers(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
-  var cs [2]controllers.Controller
+  var cs [3]controllers.Controller
   cs[0] = controllers.RecaptchaController{Route: "recaptcha"}
   cs[1] = controllers.PublicSquareController{
     FeedWebsocketRoute: "public-square-feed-ws",
     WasmWebsocketRoute: "public-square-wasm-ws",
+  }
+  cs[2] = controllers.GithubController {
+    ReposRoute: "api/github/repos",
   }
 
   for _, c := range cs {
