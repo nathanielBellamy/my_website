@@ -72,5 +72,7 @@ func (gc GithubClient) FetchLanguageData(githubRepos *GithubRepos) {
   }
 
   wg.Wait()
+
+  fmt.Printf("\n GITHUB REPOS: %+v", githubRepos)
 }
 

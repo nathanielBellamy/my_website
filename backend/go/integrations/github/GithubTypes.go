@@ -2,7 +2,7 @@ package github
 
 type GithubRepos = []GithubRepo
 
-type GithubColorsData = []string
+type GithubColorData = []string
 
 type GithubLanguageBreakdown = map[string]int
 
