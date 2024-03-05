@@ -27,13 +27,13 @@ export enum SortOrder {
   DESC = "desc"
 }
 
-export enum SortColumns {
+export enum SortColumn {
   NAME = "name",
   LANGUAGE = "language",
   DESCRIPTION = "description",
   PUSHED_AT = "pushed_at",
-  UPDATED_AT = "updated_at",
   CREATED_AT = "created_at"
 }
 
-export const LOWERCASE_SORT_COLUMNS = [SortColumns.NAME, SortColumns.DESCRIPTION]
+export const LOWERCASE_SORT_COLUMNS: SortColumn[] = [SortColumn.NAME, SortColumn.DESCRIPTION]
+export const DATE_SORT_COLUMNS: Sortcolumn[] = [SortColumn.PUSHED_AT, SortColumn.CREATED_AT]

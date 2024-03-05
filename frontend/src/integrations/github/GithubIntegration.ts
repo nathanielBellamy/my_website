@@ -2,15 +2,16 @@ import colors from './colors.json'
 import reposFixture from './reposFixture.json'
 import {
   SortOrder,
-  SortColumns,
+  SortColumn,
   type ColorData,
   type GithubRepos,
+  DATE_SORT_COLUMNS,
   LOWERCASE_SORT_COLUMNS
 } from './GithubTypes'
 
 export default class GithubIntegration {
   sortOrder: SortOrder = SortOrder.DESC
-  sortColumn: SortColumns = SortColumns.PUSHED_AT
+  sortColumn: SortColumn = SortColumn.PUSHED_AT
   repos: Writeable<GithubRepos>
   reposReady: boolean = false
   reposVal: GithubRepos
@@ -27,12 +28,14 @@ export default class GithubIntegration {
     this.updateRepos = (val: boolean) => updateRepos(val)
   }
 
-  sortReposBy(col: SortColumns|null = null): void {
+  sortReposBy(col: SortColumn|null = null): void {
     if (col)
     {
       this.sortColumn = col
     }
     let lessThanReturnValue: number = this.sortOrder === SortOrder.ASC ? 1 : -1
+    if (DATE_SORT_COLUMNS.includes(this.sortColumn)) lessThanReturnValue *= -1
+
     let grtrThanReturnValue: number = -1 * lessThanReturnValue
     this.repos.update(() => [...this.reposVal.sort((x: any, y: any) => {
         let xVal = x[this.sortColumn]

@@ -8,7 +8,7 @@
   import {
     type GithubRepo,
     type GithubRepos,
-    SortColumns,
+    SortColumn,
     SortOrder
   } from "./integrations/github/GithubTypes"
   import GithubIntegration from "./integrations/github/GithubIntegration"
@@ -44,14 +44,14 @@
     }
   }
 
-  function handleHeaderClick(col: SortColumns): void {
-    swapSortOrder()
+  function handleHeaderClick(col: SortColumn): void {
+    if (col === github.sortColumn) swapSortOrder() // only swap if clicking already selected header
     github.sortReposBy(col)
   }
 
   $: [...github.reposVal]
 
-  function handleHeaderDblClick(col: SortColumns): void {
+  function handleHeaderDblClick(col: SortColumn): void {
     handleHeaderClick(col)
   }
 
@@ -98,14 +98,13 @@
       ">
       <div
         class="
-          flex flex-col justify-between
+          flex flex-col justify-around
         ">
         <div
           class="
             font-xxl
             text-left
             text-cyan-500
-            grow
           ">
           {i18n.t("personalProejects", langVal)}
         </div>
@@ -127,7 +126,7 @@
             data-testid="repos-sort-by"
             value={github.sortColumn}
             on:change={(e) => github.sortReposBy(e.target.value)}>
-            {#each Object.values(SortColumns) as col}
+            {#each Object.values(SortColumn) as col}
               <option
                 value={col}>
                 {col}
@@ -213,8 +212,8 @@
                   w-full
                   border-x-0
                 "
-                on:click={() => handleHeaderClick(SortColumns.NAME)}
-                on:dblclick={() => handleHeaderDblClick(SortColumns.NAME)}>
+                on:click={() => handleHeaderClick(SortColumn.NAME)}
+                on:dblclick={() => handleHeaderDblClick(SortColumn.NAME)}>
                 Name
               </button>
             </th>
@@ -226,8 +225,8 @@
                   w-full
                   border-x-0
                 "
-                on:click={() => handleHeaderClick(SortColumns.LANGUAGE)}
-                on:dblclick={() => handleHeaderDblClick(SortColumns.LANGUAGE)}>
+                on:click={() => handleHeaderClick(SortColumn.LANGUAGE)}
+                on:dblclick={() => handleHeaderDblClick(SortColumn.LANGUAGE)}>
                 Language
               </button>
             </th>
@@ -239,8 +238,8 @@
                   w-full
                   border-x-0
                 "
-                on:click={() => handleHeaderClick(SortColumns.DESCRIPTION)}
-                on:dblclick={() => handleHeaderDblClick(SortColumns.DESCRIPTION)}>
+                on:click={() => handleHeaderClick(SortColumn.DESCRIPTION)}
+                on:dblclick={() => handleHeaderDblClick(SortColumn.DESCRIPTION)}>
                 Description
               </button>
             </th>
@@ -255,9 +254,9 @@
                   w-full
                   border-x-0
                 "
-                on:click={() => handleHeaderClick(SortColumns.PUSHED_AT)}
-                on:dblclick={() => handleHeaderDblClick(SortColumns.PUSHED_AT)}>
-                Lastest Push
+                on:click={() => handleHeaderClick(SortColumn.PUSHED_AT)}
+                on:dblclick={() => handleHeaderDblClick(SortColumn.PUSHED_AT)}>
+                Latest Push
               </button>
             </th>
             <th>
@@ -266,19 +265,8 @@
                   w-full
                   border-x-0
                 "
-                on:click={() => handleHeaderClick(SortColumns.UPDATED_AT)}
-                on:dblclick={() => handleHeaderDblClick(SortColumns.UPDATED_AT)}>
-                Lastest Update
-              </button>
-            </th>
-            <th>
-              <button
-                class="
-                  w-full
-                  border-x-0
-                "
-                on:click={() => handleHeaderClick(SortColumns.CREATED_AT)}
-                on:dblclick={() => handleHeaderDblClick(SortColumns.CREATED_AT)}>
+                on:click={() => handleHeaderClick(SortColumn.CREATED_AT)}
+                on:dblclick={() => handleHeaderDblClick(SortColumn.CREATED_AT)}>
                 Created
               </button>
             </th>
@@ -292,7 +280,6 @@
             languageData,
             name,
             pushed_at,
-            updated_at
           }}
             <tr
               class="
@@ -348,6 +335,8 @@
                 class="
                   ml-2 mr-2
                   text-left
+                  text-lg
+                  font-bold
                 ">
                 {description}
               </td>
@@ -381,13 +370,22 @@
                   {/if}
                 </div>
               </td>
-              <td>
+              <td
+                class="
+                  text-cyan-600
+                  font-bold
+                  text-lg
+                "
+                >
                 {pushed_at.toLocaleString().split(',')[0]}
               </td>
-              <td>
-                {updated_at.toLocaleString().split(',')[0]}
-              </td>
-              <td>
+              <td
+                class="
+                  text-cyan-600
+                  font-bold
+                  text-lg
+                "
+                >
                 {created_at.toLocaleString().split(',')[0]}
               </td>
             </tr>
