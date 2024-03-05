@@ -3,7 +3,6 @@ package github
 import (
 	"encoding/json"
 	"fmt"
-  "os"
   "sort"
 )
 
@@ -20,7 +19,7 @@ type GithubRepo struct {
   UpdatedAt string                            `json:"updated_at"`
 }
 
-func (gr *GithubRepo) FetchLanguageBreakdown(client *GithubClient) {
+func (gr *GithubRepo) FetchLanguageBreakdown(client *GithubClient, colors *map[string]string) {
   url := fmt.Sprintf("%s/repos/%s/%s/languages", client.BaseUrl, client.Username, gr.Name)
   resp, err := client.HandleRequest(url)
   if err != nil {
@@ -40,10 +39,14 @@ func (gr *GithubRepo) FetchLanguageBreakdown(client *GithubClient) {
                Msg("Error Parsing Github JSON - /languages")
   }
 
-  gr.ProcessLanguageBreakdown(client, languageBreakdown)
+  gr.ProcessLanguageBreakdown(client, languageBreakdown, colors)
 }
 
-func (gr *GithubRepo) ProcessLanguageBreakdown(client *GithubClient, languageBreakdown GithubLanguageBreakdown) {
+func (gr *GithubRepo) ProcessLanguageBreakdown(
+  client *GithubClient,
+  languageBreakdown GithubLanguageBreakdown,
+  colors *map[string]string,
+) {
   // process language data to be ingested by Apache echarts
   var languageData GithubLanguageData
   for k, v := range languageBreakdown {
@@ -55,25 +58,9 @@ func (gr *GithubRepo) ProcessLanguageBreakdown(client *GithubClient, languageBre
   })
   gr.LanguageData = languageData
 
-  // TODO: move colors load out of loop
-  colorsRaw, loadErr := os.ReadFile("fixtures/GithubColors.json")
-  if loadErr != nil {
-    fmt.Printf("OS LOAD ERROR: %+v\n", loadErr)
-  }
-  var colors map[string]string
-  err := json.Unmarshal(colorsRaw, &colors)
-
-  if err != nil {
-    fmt.Printf("could not load colors")
-    client.Log.Error().
-               Err(err).
-               Msg("An Error Occurred Whie Parsing Colors When ProcessLanguageBreakdown")
-  }
-
   var colorData GithubColorData
   for _, githubLanguage := range languageData {
-    langName := githubLanguage.Name
-    color := colors[langName]
+    color := (*colors)[githubLanguage.Name]
     colorData = append(colorData, color)
   }
   gr.ColorData = colorData
