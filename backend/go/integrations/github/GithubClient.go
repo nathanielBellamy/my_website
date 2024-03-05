@@ -33,7 +33,7 @@ func (gc GithubClient) HandleRequest(url string) (*http.Response, error) {
   return resp, err
 }
 
-func (gc GithubClient) FetchRepos() {
+func (gc GithubClient) FetchRepos() (GithubRepos) {
   url := fmt.Sprintf("%s/%s/%s/%s",
     gc.BaseUrl,
     "users",
@@ -58,6 +58,7 @@ func (gc GithubClient) FetchRepos() {
   }
 
   gc.FetchLanguageData(&githubRepos)
+  return githubRepos
 }
 
 func (gc GithubClient) FetchLanguageData(githubRepos *GithubRepos) {
@@ -72,7 +73,5 @@ func (gc GithubClient) FetchLanguageData(githubRepos *GithubRepos) {
   }
 
   wg.Wait()
-
-  fmt.Printf("\n GITHUB REPOS: %+v", githubRepos)
 }
 

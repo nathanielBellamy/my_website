@@ -1,6 +1,7 @@
 package controllers
 
 import (
+  "encoding/json"
 	"fmt"
 	"net/http"
 
@@ -39,7 +40,16 @@ func (gc GithubController) RegisterReposRoute(
 
     client := github.GithubClient{Username: "nathanielBellamy", BaseUrl: "https://api.github.com", Log: log}
 
-    client.FetchRepos()
+    reposData := client.FetchRepos()
+    reposDataJson, err := json.Marshal(reposData)
+    if err != nil {
+      log.Error().
+          Err(err).
+          Str("caller", "GithubController#RegisterReposRoute").
+          Msg("Error JSON-ifying reposData")
+    }
+    w.Header().Set("Content-Type", "application/json")
+    w.Write(reposDataJson)
   })
 }
 
