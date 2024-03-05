@@ -14,7 +14,7 @@ type GithubRepo struct {
   Description string                          `json:"description"`
   HtmlUrl string                              `json:"html_url"`
   Language string                             `json:"language"`
-  LanguageData GithubLanguageData             `json:"langauge_data"`
+  LanguageData GithubLanguageData             `json:"language_data"`
   Name string                                 `json:"name"`
   PushedAt string                             `json:"pushed_at"`
   UpdatedAt string                            `json:"updated_at"`

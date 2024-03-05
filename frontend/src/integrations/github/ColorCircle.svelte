@@ -1,7 +1,5 @@
 <script lang="ts">
-  import colors from './colors.json'
-
-  export let lang: String
+  export let color: String
 </script>
 
 <div
@@ -9,7 +7,7 @@
     color-circle
     h-4 w-4
   "
-  style={`background-color: ${colors[lang].color}`}/>
+  style={`background-color: ${color}`}/>
 
 <style lang="sass">
   .color-circle

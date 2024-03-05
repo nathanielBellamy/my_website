@@ -67,9 +67,7 @@
     chartIdx = githubReposVal.findIndex(r => r.name === repoName)
   }
 
-  onMount(() => {
-    github.fetchRepos()
-  })
+  onMount(() => github.fetchRepos())
 
   onDestroy(unsubLang)
 </script>
@@ -286,11 +284,12 @@
             </th>
           </tr>
           {#each githubReposVal as {
+            colorData,
             commitData,
             created_at,
             description,
             html_url,
-            languageBreakdown,
+            languageData,
             name,
             pushed_at,
             updated_at
@@ -332,15 +331,15 @@
                     m-2
                     flex flex-wrap gap-2
                   ">
-                  {#each Object.keys(languageBreakdown) as lang}
+                  {#each languageData as {name}, i}
                     <span
                       class="
                         text-sm
                         font-bold
                         flex justify-between gap-2
                       ">
-                      {lang}
-                      <ColorCircle lang={lang}/>
+                      {name}
+                      <ColorCircle color={colorData[i]}/>
                     </span>
                   {/each}
                 </div>

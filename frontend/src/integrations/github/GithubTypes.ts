@@ -1,15 +1,19 @@
 export type ColorData = String[];
 
-export interface GithubRepoLangBreakdown { [key: String]: number }
+export interface GithubLanguage {
+  name: String,
+  value: String
+}
+
+export type LanguageData = GithubLanguage[]
 
 export interface GithubRepo {
   colorData: ColorData,
-  commitData: any,
+  commitData: any[],
   created_at: Date,
   description: String,
   html_url: String,
   language: String,
-  languageBreakdown: GithubRepoLangBreakdown,
   languageData: LanguageData
   name: String,
   pushed_at: Date,
