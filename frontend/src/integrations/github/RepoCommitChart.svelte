@@ -17,7 +17,7 @@
 
   function commitDataToDates(commitData: any): any {
     return commitData.reduce((dates, commit) => {
-      const date: String = commit.commit.author.date.split('T')[0]
+      const date: String = commit.date.split('T')[0]
       const dateIndex = dates.findIndex(d => d[0] === date)
       if (dateIndex > -1)
       {
@@ -36,8 +36,18 @@
   }
 
   function dateRange(commitDates: any): String[] {
-    const recent: Date = new Date(commitDates[0][0])
-    const oldest: Date = new Date(commitDates[commitDates.length-1][0])
+    let recent: Date
+    let oldest: Date
+    if (commitDates.length)
+    {
+      recent = new Date(commitDates[0][0])
+      oldest = new Date(commitDates[commitDates.length-1][0])
+    }
+    else
+    {
+      recent = new Date()
+      oldest = new Date().setYear(today.getFullYear()-1)
+    }
     return [oldest, recent].map(formatDate)
   }
 

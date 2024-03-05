@@ -68,7 +68,8 @@ func (gc GithubClient) FetchLanguageData(githubRepos *GithubRepos) {
     wg.Add(1)
     go func(idx int) {
       defer wg.Done()
-      (*githubRepos)[idx].FetchLanguageBreakdown(gc)
+      (*githubRepos)[idx].FetchLanguageBreakdown(&gc)
+      (*githubRepos)[idx].FetchCommits(&gc)
     }(idx)
   }
 

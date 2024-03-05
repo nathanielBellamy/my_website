@@ -1,4 +1,5 @@
 import colors from './colors.json'
+import reposFixture from './repos.json'
 import {
   SortOrder,
   SortColumns,
@@ -53,25 +54,37 @@ export default class GithubIntegration {
       .then((resp) => resp.json())
       .then(async (repos) => {
         this.repos.update(() => {
-          this.reposVal = repos.map(repo => {
-            return {
-              colorData: repo.color_data,
-              commitData: [],
-              created_at: new Date(repo.created_at),
-              description: repo.description,
-              html_url: repo.html_url,
-              language: repo.language,
-              languageData: repo.language_data,
-              name: repo.name,
-              pushed_at: new Date(repo.pushed_at),
-              updated_at: new Date(repo.updated_at)
-            }
-          })
+          this.reposVal = this.mapRepos(repos)
           return this.reposVal
         })
+
+        this.sortReposBy()
+        this.updateReposReady(true)
       })
-      .then(() => this.sortReposBy())
-      .then(() => this.updateReposReady(true))
-      .catch((e) => console.error(e))
+      .catch(() => {
+        // defaut to snapshot if any trouble happens along the way
+        const parsedFixture: GithubRepos = this.mapRepos(reposFixture)
+        this.reposVal = parsedFixture
+        this.repos.update(() => parsedFixture)
+        this.sortReposBy()
+        this.updateReposReady(true)
+      })
+  }
+
+  mapRepos(repos: any) {
+    return repos.map(repo => {
+      return {
+        colorData: repo.color_data,
+        commitData: repo.commit_data,
+        created_at: new Date(repo.created_at),
+        description: repo.description,
+        html_url: repo.html_url,
+        language: repo.language,
+        languageData: repo.language_data,
+        name: repo.name,
+        pushed_at: new Date(repo.pushed_at),
+        updated_at: new Date(repo.updated_at)
+      }
+    })
   }
 }
