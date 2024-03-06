@@ -40,10 +40,10 @@ type LanguageData = []GithubLanguage
 
 type UserLanguageSummary struct {
   ColorData ColorData         `json:"color_data"`
-  LanguageData LanguageData   `json:"language_data`
+  LanguageData LanguageData   `json:"language_data"`
 }
 
 type GithubReposResponse struct {
   Repos                 GithubRepos         `json:"repos"`
-  UserLanguageSummary   UserLanguageSummary `json:"user_language_summary`
+  UserLanguageSummary   UserLanguageSummary `json:"user_language_summary"`
 }

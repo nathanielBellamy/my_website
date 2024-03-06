@@ -8,54 +8,59 @@
   let langVal: Lang
   const unsubLang = lang.subscribe( val => langVal = val)
 
-  import { type GithubRepo, type GithubRepos, type GithubStore } from "./GithubTypes"
+  import {
+    type GithubRepo,
+    type GithubRepos,
+    type GithubStore
+  } from "./GithubTypes"
   import { githubStore } from "../../stores/githubStore"
-  let githubReposVal: GithubRepos
-  const unsubGithubStore = githubStore.subscribe((store: GithubStore) => githubReposVal = [...store.repos])
+  let userLanguageSummaryVal: UserLanguageSummary
+  const unsubGithubStore = githubStore.subscribe((store: GithubStore) => {
+    userLanguageSummaryVal = store.userLanguageSummary
+  })
 
-  export let idx: number
-  let id: String = `repo_lang_chart_${idx}`
+  let id: String = `user_lang_summary_chart`
 
   function setupChart(): void {
     var chartDom = document.getElementById( id )
     var myChart = echarts.init(chartDom, {height: "200px", width: "200px"})
-    const repo = (githubReposVal[idx] || {})
     var option
 
     option = {
       legend: {
         show: true,
-        right: "10%",
+        left: 0,
         bottom: 0,
+        width: 300,
         textStyle: {
           color: "#73DACA",
           fontWeight: "bolder",
           fontSize: 12
         }
       },
-      title: {
-        text: "Languages",
-        textAlign: 'left',
-        textStyle: {
-          color: "#73DACA",
-          fontWeight: "bolder",
-          fontSize: 22
-        }
-      },
-      color: repo.colorData,
+      // title: {
+      //   text: "Language Summary",
+      //   textAlign: 'left',
+      //   textStyle: {
+      //     color: "#73DACA",
+      //     fontWeight: "bolder",
+      //     fontSize: 22
+      //   }
+      // },
+      color: userLanguageSummaryVal.color_data,
       series: [
         {
           type: 'pie',
-          radius: ['40%', '70%'],
-          center: ['30%', '60%'],
+          radius: ['20%', '60%'],
+          center: ['50%', '50%'],
           colorBy: 'data',
-          color: repo.colorData,
+          color: userLanguageSummaryVal.color_data,
           // adjust the start and end angle
-          startAngle: 180,
+          startAngle: 0,
           endAngle: 360,
           width: 300,
-          height: 250,
-          data: repo.languageData.map(obj => {
+          height: 300,
+          data: userLanguageSummaryVal.language_data.map(obj => {
             return {
               label: {show: false},
               labelLine: {show: false},
@@ -69,7 +74,6 @@
   }
 
   let mounted: boolean = false
-  $: if (mounted) [...githubReposVal] && idx + 1 && setupChart()
 
   onMount(() => {
     mounted = true
@@ -85,19 +89,13 @@
 <div
   class="
     w-full h-full
-    pl-20
     overflow-hidden
+    flex justify-around
   ">
-  <h2
-    class="
-      text-cyan-500
-    ">
-    {name}
-  </h2>
   <canvas
     id={id}
-    height={150}
-    width={450}
+    height={300}
+    width={300}
     class="
       ml-10
     "/>

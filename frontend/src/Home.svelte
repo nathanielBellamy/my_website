@@ -10,7 +10,7 @@
   import { ToastColor } from "./lib/Toasty"
   import { Icons } from "./lib/Icons"
   import { intoUrl, SiteSection } from "./stores/siteSection"
-  import RepoLangChart from "./integrations/github/RepoLangChart.svelte"
+  import UserLangSummaryChart from "./integrations/github/UserLangSummaryChart.svelte"
   import Loading from "./lib/Loading.svelte"
 
   import { I18n, Lang } from "./I18n"
@@ -24,15 +24,7 @@
   const unsubInitialLoad = initialLoad.subscribe(val => initialLoadVal = val)
 
   import GithubIntegration from "./integrations/github/GithubIntegration"
-  import {
-    type GithubRepos,
-    type GithubStore
-  } from "./integrations/github/GithubTypes"
   import { githubStore } from "./stores/githubStore"
-  let githubReposVal: GithubRepos
-  const unsubGithubStore = githubStore.subscribe((store: GithubStore) => {
-    githubReposVal = [...store.repos]
-  })
 
   let reposReady: boolean = false
   function updateReposReady(val: boolean): void {
@@ -82,18 +74,12 @@
 
   let myWebsiteRepoIdx: number = 0
 
-  onMount(() => {
-    github.fetchRepos().then(() => {
-      console.dir({githubReposVal})
-      myWebsiteRepoIdx = githubReposVal.findIndex(repo => repo.name === "my_website")
-    })
-  })
+  onMount(() => github.fetchRepos())
 
   onDestroy(() => {
     initialLoad.update((_: boolean) => false)
     unsubInitialLoad()
     unsubLang()
-    unsubGithubStore()
   })
 </script>
 
@@ -252,7 +238,7 @@
             {#if !reposReady }
               <Loading />
             {:else}
-              <RepoLangChart idx={myWebsiteRepoIdx}/>
+              <UserLangSummaryChart />
             {/if}
           </div>
         </div>

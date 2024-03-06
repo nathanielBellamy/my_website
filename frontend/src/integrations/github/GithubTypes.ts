@@ -22,9 +22,14 @@ export interface GithubRepo {
 
 export type GithubRepos = GithubRepo[]
 
+export interface UserLanguageSummary {
+  languageData: LanguageData,
+  colorData: ColorData
+}
+
 export interface GithubStore {
   repos: GithubRepos,
-  userLanguageSummary: LanguageData
+  userLanguageSummary: UserLanguageSummary
 }
 
 export enum SortOrder {

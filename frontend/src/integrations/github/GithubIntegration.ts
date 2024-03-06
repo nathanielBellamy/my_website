@@ -56,10 +56,9 @@ export default class GithubIntegration {
     return await fetch("api/github/repos")
       .then((resp) => resp.json())
       .then(async (resp) => {
-        const repos = resp.repos
         this.store.update((store: GithubStore) => {
-          this.reposVal = this.mapRepos(store.repos)
-          return {...store, repos: this.reposVal}
+          this.reposVal = this.mapRepos(resp.repos)
+          return {repos: this.reposVal, userLanguageSummary: resp.user_language_summary}
         })
 
         this.sortReposBy()
@@ -67,9 +66,14 @@ export default class GithubIntegration {
       })
       .catch(() => {
         // defaut to snapshot if any trouble happens along the way
-        const parsedFixture: GithubRepos = this.mapRepos(reposFixture)
-        this.reposVal = parsedFixture
-        this.store.update((store: GithubStore) => ({...store, repos: parsedFixture}))
+        const parsedFixture: GithubStore = reposFixture
+        this.reposVal = this.mapRepos(parsedFixture.repos)
+        this.store.update((store: GithubStore) => {
+          return {
+            repos: this.reposVal,
+            userLanguageSummary: parsedFixture.user_language_summary
+          }
+        })
         this.sortReposBy()
         this.updateReposReady(true)
       })

@@ -5,6 +5,7 @@
   import Loading from "./lib/Loading.svelte";
   import RepoLangChart from "./integrations/github/RepoLangChart.svelte";
   import RepoCommitChart from "./integrations/github/RepoCommitChart.svelte";
+  import UserLangSummaryChart from "./integrations/github/UserLangSummaryChart.svelte";
   import {
     type GithubRepo,
     type GithubRepos,
@@ -155,7 +156,7 @@
           class="
             w-full
             rounded-md
-            grid grid-rows-2 grid-cols-1
+            grid grid-rows-3 grid-cols-2
             repos-charts-grid
           ">
           <h2
@@ -182,6 +183,12 @@
             ">
             <RepoCommitChart bind:idx={chartIdx}/>
           </div>
+          <!-- <div -->
+          <!--   class=" -->
+          <!--     w-full flex -->
+          <!--   "> -->
+          <!--   <UserLangSummaryChart /> -->
+          <!-- </div> -->
         </div>
       {/if}
     </div>
