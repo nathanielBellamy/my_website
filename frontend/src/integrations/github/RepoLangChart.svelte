@@ -16,11 +16,11 @@
   let id: String = `repo_lang_chart_${idx}`
 
   function setupChart(): void {
-    var chartDom = document.getElementById(id)
+    var chartDom = document.getElementById( id )
     var myChart = echarts.init(chartDom, {height: "200px", width: "200px"})
+    const repo = (githubReposVal[idx] || {})
     var option
 
-    // This example requires ECharts v5.5.0 or later
     option = {
       legend: {
         show: true,
@@ -41,25 +41,25 @@
           fontSize: 22
         }
       },
-      color: githubReposVal[idx].colorData,
+      color: repo.colorData,
       series: [
         {
           type: 'pie',
           radius: ['40%', '70%'],
           center: ['30%', '60%'],
           colorBy: 'data',
-          color: githubReposVal[idx].colorData,
+          color: repo.colorData,
           // adjust the start and end angle
           startAngle: 180,
           endAngle: 360,
           width: 300,
           height: 250,
-          data: githubReposVal[idx].languageData.map(obj => {
-
+          data: repo.languageData.map(obj => {
             return {
               label: {show: false},
               labelLine: {show: false},
-              ...obj}
+              ...obj
+            }
           })
         }
       ]

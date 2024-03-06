@@ -57,7 +57,6 @@
     const data = commitDataToDates(githubReposVal[idx].commitData)
     var option
 
-    // This example requires ECharts v5.5.0 or later
     option = {
       visualMap: {
         show: false,

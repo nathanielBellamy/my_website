@@ -8,6 +8,7 @@ export enum SiteSection {
   magicSquare = "magicSquare",
   none = "none",
   publicSquare = "publicSquare",
+  repos = "repos",
   systemDiagram = "systemDiagram",
 }
 
@@ -23,6 +24,8 @@ export function intoSiteSection(s: string | null | undefined): SiteSection {
       return SiteSection.magicSquare
     case "publicSquare":
       return SiteSection.publicSquare
+    case "repos":
+      return SiteSection.repos
     default:
       return SiteSection.none
   }
@@ -40,6 +43,8 @@ export function intoUrl(s: SiteSection) {
       return '/magic-square'
     case SiteSection.publicSquare:
       return '/public-square'
+    case SiteSection.repos:
+      return '/repos'
     case SiteSection.none:
     default:
       return '/'
