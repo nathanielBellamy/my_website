@@ -22,6 +22,7 @@ func GenerateUserLanguageSummary(githubRepos GithubRepos) UserLanguageSummary {
       for idx, lang := range languageData {
         if lang.Name == githubLanguage.Name {
           langIdx = idx
+          break
         }
       }
       if langIdx > -1 {

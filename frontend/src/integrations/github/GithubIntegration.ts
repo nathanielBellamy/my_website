@@ -1,4 +1,3 @@
-import colors from './colors.json'
 import reposFixture from './reposFixture.json'
 import {
   SortOrder,
