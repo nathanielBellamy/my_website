@@ -49,7 +49,6 @@ func (gc GithubClient) FetchRepos() (GithubRepos) {
   defer resp.Body.Close()
 
   var githubRepos GithubRepos
-
   json_err := json.NewDecoder(resp.Body).Decode(&githubRepos)
   if json_err != nil {
     gc.Log.Error().
@@ -57,34 +56,20 @@ func (gc GithubClient) FetchRepos() (GithubRepos) {
            Msg("Error Decoding Github Repos Payload")
   }
 
-  gc.FetchRefinedRepoData(&githubRepos)
+  colors := LoadGithubColors()
+  gc.FetchRefinedRepoData(&githubRepos, &colors)
+
   return githubRepos
 }
 
-func (gc GithubClient) FetchRefinedRepoData(githubRepos *GithubRepos) {
+func (gc GithubClient) FetchRefinedRepoData(githubRepos *GithubRepos, colors *map[string]string) {
   var wg sync.WaitGroup
-
-  // load language color data
-  colorsRaw, loadErr := os.ReadFile("fixtures/GithubColors.json")
-  if loadErr != nil {
-    fmt.Printf("OS LOAD ERROR: %+v\n", loadErr)
-  }
-  var colors map[string]string
-  colors_err := json.Unmarshal(colorsRaw, &colors)
-
-  if colors_err != nil {
-    fmt.Printf("could not load colors")
-    gc.Log.Error().
-           Err(colors_err).
-           Str("caller", "GithubClient#FetchRefinedRepoData").
-           Msg("An Error Occurred Whie Parsing Colors Fixture")
-  }
 
   for idx, _ := range *githubRepos {
     wg.Add(1)
     go func(idx int) {
       defer wg.Done()
-      (*githubRepos)[idx].FetchLanguageBreakdown(&gc, &colors)
+      (*githubRepos)[idx].FetchLanguageBreakdown(&gc, colors)
       (*githubRepos)[idx].FetchCommits(&gc)
     }(idx)
   }

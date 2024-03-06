@@ -40,16 +40,19 @@ func (gc GithubController) RegisterReposRoute(
 
     client := github.GithubClient{Username: "nathanielBellamy", BaseUrl: "https://api.github.com", Log: log}
 
-    reposData := client.FetchRepos()
-    reposDataJson, err := json.Marshal(reposData)
+    repos := client.FetchRepos()
+    userLanguageSummary := github.GenerateUserLanguageSummary(repos)
+
+    response := github.GithubReposResponse{Repos: repos, UserLanguageSummary: userLanguageSummary}
+    responseJSON, err := json.Marshal(response)
     if err != nil {
       log.Error().
           Err(err).
           Str("caller", "GithubController#RegisterReposRoute").
-          Msg("Error JSON-ifying reposData")
+          Msg("Error JSON-ifying GithubReposResponse")
     }
     w.Header().Set("Content-Type", "application/json")
-    w.Write(reposDataJson)
+    w.Write(responseJSON)
   })
 }
 

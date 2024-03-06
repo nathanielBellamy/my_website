@@ -57,13 +57,7 @@ func (gr *GithubRepo) ProcessLanguageBreakdown(
     return languageData[i].Value > languageData[j].Value
   })
   gr.LanguageData = languageData
-
-  var colorData GithubColorData
-  for _, githubLanguage := range languageData {
-    color := (*colors)[githubLanguage.Name]
-    colorData = append(colorData, color)
-  }
-  gr.ColorData = colorData
+  gr.ColorData = ColorDataFromLanguageData(languageData, colors)
 }
 
 func (gr *GithubRepo) FetchCommits(client *GithubClient) {

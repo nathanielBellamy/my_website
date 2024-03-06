@@ -55,7 +55,8 @@ export default class GithubIntegration {
   async fetchRepos() {
     return await fetch("api/github/repos")
       .then((resp) => resp.json())
-      .then(async (repos) => {
+      .then(async (resp) => {
+        const repos = resp.repos
         this.repos.update(() => {
           this.reposVal = this.mapRepos(repos)
           return this.reposVal

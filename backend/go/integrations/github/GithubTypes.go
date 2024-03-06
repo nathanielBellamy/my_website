@@ -27,7 +27,6 @@ type GithubCommit struct {
 }
 type GithubCommits = []GithubCommit
 
-
 type GithubLanguage struct {
   // lower cased names to match frontend usage in Apache echarts
   Name  string `json:"name"`
@@ -35,3 +34,16 @@ type GithubLanguage struct {
 }
 
 type GithubLanguageData = []GithubLanguage
+
+type ColorData = []string
+type LanguageData = []GithubLanguage
+
+type UserLanguageSummary struct {
+  ColorData ColorData         `json:"color_data"`
+  LanguageData LanguageData   `json:"language_data`
+}
+
+type GithubReposResponse struct {
+  Repos                 GithubRepos         `json:"repos"`
+  UserLanguageSummary   UserLanguageSummary `json:"user_language_summary`
+}
