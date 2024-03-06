@@ -24,15 +24,21 @@
   const unsubInitialLoad = initialLoad.subscribe(val => initialLoadVal = val)
 
   import GithubIntegration from "./integrations/github/GithubIntegration"
-  import { githubRepos } from "./stores/githubRepos"
+  import {
+    type GithubRepos,
+    type GithubStore
+  } from "./integrations/github/GithubTypes"
+  import { githubStore } from "./stores/githubStore"
   let githubReposVal: GithubRepos
-  const unsubGithubRepos = githubRepos.subscribe((val: GithubRepos) => githubReposVal = [...val])
+  const unsubGithubStore = githubStore.subscribe((store: GithubStore) => {
+    githubReposVal = [...store.repos]
+  })
 
   let reposReady: boolean = false
   function updateReposReady(val: boolean): void {
     reposReady = val
   }
-  let github: GithubIntegration = new GithubIntegration(githubRepos, updateReposReady)
+  let github: GithubIntegration = new GithubIntegration(githubStore, updateReposReady)
 
   const version_url_current: string = `https://github.com/nathanielBellamy/my_website/releases/tag/${version_current}`
   const version_url_latest_major: string = `https://github.com/nathanielBellamy/my_website/releases/tag/${version_latest_major}`
@@ -78,6 +84,7 @@
 
   onMount(() => {
     github.fetchRepos().then(() => {
+      console.dir({githubReposVal})
       myWebsiteRepoIdx = githubReposVal.findIndex(repo => repo.name === "my_website")
     })
   })
@@ -86,6 +93,7 @@
     initialLoad.update((_: boolean) => false)
     unsubInitialLoad()
     unsubLang()
+    unsubGithubStore()
   })
 </script>
 

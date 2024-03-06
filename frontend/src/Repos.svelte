@@ -8,10 +8,10 @@
   import {
     type GithubRepo,
     type GithubRepos,
+    type GithubStore,
     SortColumn,
     SortOrder
   } from "./integrations/github/GithubTypes"
-  import GithubIntegration from "./integrations/github/GithubIntegration"
   import ColorCircle from "./integrations/github/ColorCircle.svelte"
 
   import { lang } from "./stores/lang"
@@ -20,9 +20,11 @@
   let langVal: Lang
   const unsubLang = lang.subscribe( val => langVal = val)
 
-  import { githubRepos } from "./stores/githubRepos"
-  let githubReposVal: GithubRepos
-  const unsubGithubRepos = githubRepos.subscribe((val: GithubRepos) => githubReposVal = [...val])
+  import GithubIntegration from "./integrations/github/GithubIntegration"
+  import { githubStore } from "./stores/githubStore"
+  let githubReposVal: GithubRepos = []
+  const unsubGithubStore = githubStore.subscribe((store: GithubStore) => githubReposVal = [...store.repos])
+  let github: GithubIntegration = new GithubIntegration(githubStore, updateReposReady)
 
   const openLinkInNewTab = (href: string) => {
     window.open(href, '_blank');
@@ -60,8 +62,6 @@
     reposReady = val
   }
 
-  let github: GithubIntegration = new GithubIntegration(githubRepos, updateReposReady)
-
   let chartIdx: number = 0
   function setChartIdx(repoName: String) {
     chartIdx = githubReposVal.findIndex(r => r.name === repoName)
@@ -69,7 +69,10 @@
 
   onMount(() => github.fetchRepos())
 
-  onDestroy(unsubLang)
+  onDestroy(() => {
+    unsubGithubStore()
+    unsubLang()
+  })
 </script>
 
 <div

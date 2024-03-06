@@ -8,9 +8,14 @@
   let langVal: Lang
   const unsubLang = lang.subscribe( val => langVal = val)
 
-  import { type GithubRepo, type GithubRepos, githubRepos } from "../../stores/githubRepos"
+  import {
+    type GithubRepo,
+    type GithubRepos,
+    type GithubStore
+  } from "./GithubTypes"
+  import { githubStore } from "../../stores/githubStore"
   let githubReposVal: GithubRepos
-  const unsubGithubRepos = githubRepos.subscribe((val: GithubRepos) => githubReposVal = [...val])
+  const unsubGithubStore = githubStore.subscribe((store: GithubStore) => githubReposVal = [...store.repos])
 
   export let idx: number
   let id: String = `repo_commit_chart_${idx}`
@@ -123,7 +128,7 @@
   })
 
   onDestroy(() => {
-    unsubGithubRepos()
+    unsubGithubStore()
   })
 
 </script>

@@ -3,7 +3,7 @@ import {
   SortOrder,
   SortColumn,
   type ColorData,
-  type GithubRepos,
+  type GithubStore,
   DATE_SORT_COLUMNS,
   LOWERCASE_SORT_COLUMNS
 } from './GithubTypes'
@@ -11,20 +11,18 @@ import {
 export default class GithubIntegration {
   sortOrder: SortOrder = SortOrder.DESC
   sortColumn: SortColumn = SortColumn.PUSHED_AT
-  repos: Writeable<GithubRepos>
+  store: Writeable<GithubStore>
   reposReady: boolean = false
   reposVal: GithubRepos
   updateReposReady: (val: boolean) => void
 
   constructor(
-    repos: Writeable<GithubRepos>,
+    store: Writeable<GithubStore>,
     updateReposReady: (val: boolean) => void,
-    updateRepos: (val: GithubRepos) => void
   ) {
-    this.repos = repos
-    this.repos.subscribe(val => this.reposVal = val)
-    this.updateReposReady = (val: boolean) => updateReposReady(val)
-    this.updateRepos = (val: boolean) => updateRepos(val)
+    this.store = store
+    this.store.subscribe((store: GithubStore) => this.reposVal = [...store.repos])
+    this.updateReposReady = updateReposReady
   }
 
   sortReposBy(col: SortColumn|null = null): void {
@@ -36,7 +34,8 @@ export default class GithubIntegration {
     if (DATE_SORT_COLUMNS.includes(this.sortColumn)) lessThanReturnValue *= -1
 
     let grtrThanReturnValue: number = -1 * lessThanReturnValue
-    this.repos.update(() => [...this.reposVal.sort((x: any, y: any) => {
+    this.store.update((store: GithubStore) => {
+      this.reposVal.sort((x: any, y: any) => {
         let xVal = x[this.sortColumn]
         let yVal = y[this.sortColumn]
         if (LOWERCASE_SORT_COLUMNS.includes(this.sortColumn))
@@ -47,18 +46,20 @@ export default class GithubIntegration {
         if (xVal < yVal) return lessThanReturnValue
         if (xVal > yVal) return grtrThanReturnValue
         return 0
-      })]
+      })
+      return {...store, repos: this.reposVal}
+      }
     )
   }
 
-  async fetchRepos() {
+  async fetchRepos(): Promise {
     return await fetch("api/github/repos")
       .then((resp) => resp.json())
       .then(async (resp) => {
         const repos = resp.repos
-        this.repos.update(() => {
-          this.reposVal = this.mapRepos(repos)
-          return this.reposVal
+        this.store.update((store: GithubStore) => {
+          this.reposVal = this.mapRepos(store.repos)
+          return {...store, repos: this.reposVal}
         })
 
         this.sortReposBy()
@@ -68,7 +69,7 @@ export default class GithubIntegration {
         // defaut to snapshot if any trouble happens along the way
         const parsedFixture: GithubRepos = this.mapRepos(reposFixture)
         this.reposVal = parsedFixture
-        this.repos.update(() => parsedFixture)
+        this.store.update((store: GithubStore) => ({...store, repos: parsedFixture}))
         this.sortReposBy()
         this.updateReposReady(true)
       })

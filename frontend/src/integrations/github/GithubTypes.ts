@@ -22,6 +22,11 @@ export interface GithubRepo {
 
 export type GithubRepos = GithubRepo[]
 
+export interface GithubStore {
+  repos: GithubRepos,
+  userLanguageSummary: LanguageData
+}
+
 export enum SortOrder {
   ASC = "asc",
   DESC = "desc"
