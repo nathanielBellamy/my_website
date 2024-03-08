@@ -19,22 +19,23 @@
     userLanguageSummaryVal = store.userLanguageSummary
   })
 
+  export let sideLength: number
   let id: String = `user_lang_summary_chart`
 
   function setupChart(): void {
     var chartDom = document.getElementById( id )
-    var myChart = echarts.init(chartDom, {height: "200px", width: "200px"})
+    var myChart = echarts.init(chartDom, {height: `${sideLength}px`, width: `${sideLength}px`})
     var option
 
     option = {
       legend: {
         show: true,
-        left: 0,
-        bottom: 0,
-        width: 300,
+        left: "37%",
+        top: "25%",
+        width: sideLength / 1.5,
         textStyle: {
           color: "#73DACA",
-          fontWeight: "bolder",
+          fontWeight: "bold",
           fontSize: 12
         }
       },
@@ -51,15 +52,14 @@
       series: [
         {
           type: 'pie',
-          radius: ['20%', '60%'],
-          center: ['50%', '50%'],
+          radius: ['10%', '70%'],
+          center: ['37%', '50%'],
           colorBy: 'data',
-          color: userLanguageSummaryVal.color_data,
           // adjust the start and end angle
-          startAngle: 0,
-          endAngle: 360,
-          width: 300,
-          height: 300,
+          startAngle: 270,
+          endAngle: 90,
+          width: sideLength /2,
+          height: sideLength,
           data: userLanguageSummaryVal.language_data.map(obj => {
             return {
               label: {show: false},
@@ -74,6 +74,7 @@
   }
 
   let mounted: boolean = false
+  $: if (mounted) sideLength && setupChart()
 
   onMount(() => {
     mounted = true
@@ -94,8 +95,8 @@
   ">
   <canvas
     id={id}
-    height={300}
-    width={300}
+    height={sideLength}
+    width={sideLength *2}
     class="
       ml-10
     "/>

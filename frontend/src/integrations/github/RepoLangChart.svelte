@@ -49,7 +49,6 @@
           radius: ['40%', '70%'],
           center: ['30%', '60%'],
           colorBy: 'data',
-          color: repo.colorData,
           // adjust the start and end angle
           startAngle: 180,
           endAngle: 360,

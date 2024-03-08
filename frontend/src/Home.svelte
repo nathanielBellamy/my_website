@@ -238,7 +238,7 @@
             {#if !reposReady }
               <Loading />
             {:else}
-              <UserLangSummaryChart />
+              <UserLangSummaryChart bind:sideLength={imgSideLength}/>
             {/if}
           </div>
         </div>
