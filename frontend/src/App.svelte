@@ -32,7 +32,7 @@
       asyncComponent: () => import('./Home.svelte')
     }),
     '/repos': wrap({
-      asyncComponent: () => import('./Repos.svelte')
+      asyncComponent: () => import('./repos/Repos.svelte')
     }),
     '/give-me-a-sine': wrap({
       asyncComponent: () => import('./GiveMeASine.svelte')

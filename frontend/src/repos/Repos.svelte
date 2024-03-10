@@ -1,28 +1,27 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte'
-  import Icon from './lib/Icon.svelte'
-  import { Icons } from './lib/Icons.js'
-  import Loading from "./lib/Loading.svelte";
-  import RepoLangChart from "./integrations/github/RepoLangChart.svelte";
-  import RepoCommitChart from "./integrations/github/RepoCommitChart.svelte";
-  import UserLangSummaryChart from "./integrations/github/UserLangSummaryChart.svelte";
+  import Icon from '../lib/Icon.svelte'
+  import { Icons } from '../lib/Icons.js'
+  import Loading from "../lib/Loading.svelte"
+  import ReposBanner from "./ReposBanner.svelte"
+  import UserLangSummaryChart from "../integrations/github/UserLangSummaryChart.svelte"
   import {
     type GithubRepo,
     type GithubRepos,
     type GithubStore,
     SortColumn,
     SortOrder
-  } from "./integrations/github/GithubTypes"
-  import ColorCircle from "./integrations/github/ColorCircle.svelte"
+  } from "../integrations/github/GithubTypes"
+  import ColorCircle from "../integrations/github/ColorCircle.svelte"
 
-  import { lang } from "./stores/lang"
-  import { I18n, Lang } from "./I18n"
+  import { lang } from "../stores/lang"
+  import { I18n, Lang } from "../I18n"
   let i18n = new I18n("about")
   let langVal: Lang
   const unsubLang = lang.subscribe( val => langVal = val)
 
-  import GithubIntegration from "./integrations/github/GithubIntegration"
-  import { githubStore } from "./stores/githubStore"
+  import GithubIntegration from "../integrations/github/GithubIntegration"
+  import { githubStore } from "../stores/githubStore"
   let githubReposVal: GithubRepos = []
   const unsubGithubStore = githubStore.subscribe((store: GithubStore) => githubReposVal = [...store.repos])
   let github: GithubIntegration = new GithubIntegration(githubStore, updateReposReady)
@@ -83,115 +82,17 @@
     overflow-none
     p-5
   ">
+  <ReposBanner
+    bind:chartIdx={chartIdx}
+    bind:github={github}
+    bind:reposReady={reposReady}
+  />
   <div
     class="
       h-full w-full
       grid grid-rows-2 grid-cols-1 gap-4
       section_grid
     ">
-    <div
-      class="
-        w-full
-        text-xl
-        font-extrabold
-        grid grid-rows-1 grid-cols-2 gap-4
-        repos_banner_grid
-      "
-      data-testid="
-        repos_banner
-      ">
-      <div
-        class="
-          flex flex-col justify-around
-        ">
-        <div
-          class="
-            font-xxl
-            text-left
-            text-cyan-500
-          ">
-          {i18n.t("personalProejects", langVal)}
-        </div>
-        <div
-          class="
-            flex flex-col justify-around gap-2
-          ">
-          <label
-            for="repos-sort-by"
-            class="
-              text-sm
-              text-left
-              text-blue-500
-            ">
-            Sort By:
-          </label>
-          <select
-            id="repos-sort-by"
-            data-testid="repos-sort-by"
-            value={github.sortColumn}
-            on:change={(e) => github.sortReposBy(e.target.value)}>
-            {#each Object.values(SortColumn) as col}
-              <option
-                value={col}>
-                {col}
-              </option>
-            {/each}
-          </select>
-          <select
-            id="repos-sort-by"
-            data-testid="repos-sort-by"
-            value={github.sortOrder}
-            on:change={(e) => {setSortOrder(e.target.value)}}>
-            {#each Object.values(SortOrder) as order}
-              <option
-                value={order}>
-                {order}
-              </option>
-            {/each}
-          </select>
-        </div>
-      </div>
-      {#if reposReady}
-        <div
-          class="
-            w-full
-            rounded-md
-            grid grid-rows-3 grid-cols-2
-            repos-charts-grid
-          ">
-          <h2
-            class="
-              col-span-2
-              text-xl
-              font-extrabold
-              text-right
-              text-cyan-500
-            ">
-            <p>
-              {githubReposVal[chartIdx].name}
-            </p>
-          </h2>
-          <div
-            class="
-              w-full flex
-            ">
-            <RepoLangChart bind:idx={chartIdx}/>
-          </div>
-          <div
-            class="
-              w-full flex
-            ">
-            <RepoCommitChart bind:idx={chartIdx}/>
-          </div>
-          <!-- <div -->
-          <!--   class=" -->
-          <!--     w-full flex -->
-          <!--   "> -->
-          <!--   <UserLangSummaryChart /> -->
-          <!-- </div> -->
-        </div>
-      {/if}
-    </div>
     <div
       class="
         border-solid border-5 border-cyan-500
@@ -407,7 +308,7 @@
 </div>
 
 <style lang="sass">
-  @use "./styles/color"
+  @use "../styles/color"
   .repos-charts-grid
     grid-template-rows: 10% 90%
     grid-template-columns: 50% 50%

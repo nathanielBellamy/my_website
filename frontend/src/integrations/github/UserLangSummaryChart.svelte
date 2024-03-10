@@ -31,7 +31,7 @@
       legend: {
         show: true,
         left: "37%",
-        top: "25%",
+        top: `${0.2 * sideLength}px`,
         width: sideLength / 1.5,
         textStyle: {
           color: "#73DACA",
