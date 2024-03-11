@@ -4,6 +4,7 @@
   import { Icons } from '../lib/Icons.js'
   import Loading from "../lib/Loading.svelte"
   import ReposBanner from "./ReposBanner.svelte"
+  import ReposTableHeader from "./ReposTableHeader.svelte"
   import UserLangSummaryChart from "../integrations/github/UserLangSummaryChart.svelte"
   import {
     type GithubRepo,
@@ -35,27 +36,7 @@
     github.sortReposBy()
   }
 
-  function swapSortOrder(): void {
-    switch (github.sortOrder) {
-      case SortOrder.ASC:
-        github.sortOrder = SortOrder.DESC
-        break
-      case SortOrder.DESC:
-        github.sortOrder = SortOrder.ASC
-        break
-    }
-  }
-
-  function handleHeaderClick(col: SortColumn): void {
-    if (col === github.sortColumn) swapSortOrder() // only swap if clicking already selected header
-    github.sortReposBy(col)
-  }
-
   $: [...github.reposVal]
-
-  function handleHeaderDblClick(col: SortColumn): void {
-    handleHeaderClick(col)
-  }
 
   let reposReady: boolean = false
   function updateReposReady(val: boolean): void {
@@ -90,181 +71,109 @@
   <div
     class="
       h-full w-full
-      grid grid-rows-2 grid-cols-1 gap-4
-      section_grid
+      flex flex-col justify-between self-center
     ">
-    <div
-      class="
-        border-solid border-5 border-cyan-500
-        overflow-y-scroll
-        row-span-10 col-span-8
-        mt-4
-        pb-72
-      ">
-      {#if !reposReady}
-        <Loading />
-      {:else}
-        <table
-          class="
-            w-full
-            border-collapse
-            table-fixed
-          ">
-          <tr
+    <ReposTableHeader
+      bind:github={github} />
+    {#if !reposReady}
+      <Loading />
+    {:else}
+      <div
+        class="
+          grow w-full
+          overflow-y-scroll
+          mb-32 pb-72
+          flex flex-col justify-between self-center
+        ">
+        {#each githubReposVal as {
+          colorData,
+          commitData,
+          created_at,
+          description,
+          html_url,
+          languageData,
+          name,
+          pushed_at,
+        }}
+          <div
             class="
-              repo-table-grid
-              h-16
-            ">
-            <th
+              h-fit
+              pt-2 pb-2
+              grid grid-rows-1 grid-cols-6
+              hover:bg-slate-800 transition-colors
+              border border-dashed
+              border-b-2
+              border-r-0
+              border-t-0
+              border-l-0
+              border-cyan-500
+            "
+            on:mouseenter={() => setChartIdx(name)}>
+            <td
               class="
+                font-bold
+                text-left
+                text-xl
+                break-words
+                pl-5
               ">
-              <button
-                class="
-                  w-full
-                  border-x-0
-                "
-                on:click={() => handleHeaderClick(SortColumn.NAME)}
-                on:dblclick={() => handleHeaderDblClick(SortColumn.NAME)}>
-                Name
-              </button>
-            </th>
-            <th
+              <a
+                title="See The Code on Github"
+                href={html_url}
+                target="_blank">
+                {name}
+              </a>
+            </td>
+            <td
               class="
+                w-full h-full
+                px-5
+                overflow-hidden
+                flex flex-col jusity-around
               ">
-              <button
-                class="
-                  w-full
-                  border-x-0
-                "
-                on:click={() => handleHeaderClick(SortColumn.LANGUAGE)}
-                on:dblclick={() => handleHeaderDblClick(SortColumn.LANGUAGE)}>
-                Language
-              </button>
-            </th>
-            <th
-              class="
-              ">
-              <button
-                class="
-                  w-full
-                  border-x-0
-                "
-                on:click={() => handleHeaderClick(SortColumn.DESCRIPTION)}
-                on:dblclick={() => handleHeaderDblClick(SortColumn.DESCRIPTION)}>
-                Description
-              </button>
-            </th>
-            <th
-              class="
-              ">
-              Recent Commits
-            </th>
-            <th>
-              <button
-                class="
-                  w-full
-                  border-x-0
-                "
-                on:click={() => handleHeaderClick(SortColumn.PUSHED_AT)}
-                on:dblclick={() => handleHeaderDblClick(SortColumn.PUSHED_AT)}>
-                Latest Push
-              </button>
-            </th>
-            <th>
-              <button
-                class="
-                  w-full
-                  border-x-0
-                "
-                on:click={() => handleHeaderClick(SortColumn.CREATED_AT)}
-                on:dblclick={() => handleHeaderDblClick(SortColumn.CREATED_AT)}>
-                Created
-              </button>
-            </th>
-          </tr>
-          {#each githubReposVal as {
-            colorData,
-            commitData,
-            created_at,
-            description,
-            html_url,
-            languageData,
-            name,
-            pushed_at,
-          }}
-            <tr
-              class="
-                h-44
-                pt-4
-                hover:bg-slate-800 transition-colors
-                border border-dashed border-b-2 border-r-0 border-cyan-500
-                rounded-md
-              "
-              on:mouseenter={() => setChartIdx(name)}>
-              <td
-                class="
-                  font-bold
-                  text-left
-                  text-xl
-                  break-words
-                  pl-5
-                ">
-                <a
-                  title="See The Code on Github"
-                  href={html_url}
-                  target="_blank">
-                  {name}
-                </a>
-              </td>
-              <td
+              <div
                 class="
                   w-full h-full
-                  px-5
-                  overflow-hidden
-                  flex flex-col jusity-around
+                  m-2
+                  flex flex-wrap gap-2
                 ">
-                <div
-                  class="
-                    w-full h-full
-                    m-2
-                    flex flex-wrap gap-2
-                  ">
-                  {#each languageData as {name}, i}
-                    <span
-                      class="
-                        text-sm
-                        font-bold
-                        flex justify-between gap-2
-                      ">
-                      {name}
-                      <ColorCircle color={colorData[i]}/>
-                    </span>
-                  {/each}
-                </div>
-              </td>
-              <td
+                {#each languageData as {name}, i}
+                  <span
+                    class="
+                      text-sm
+                      font-bold
+                      flex justify-between gap-2
+                    ">
+                    <ColorCircle
+                      lang={name}
+                      color={colorData[i]}/>
+                  </span>
+                {/each}
+              </div>
+            </td>
+            <td
+              class="
+                ml-2 mr-2
+                text-left
+                text-lg
+                font-bold
+              ">
+              {description}
+            </td>
+            <td>
+              <div
                 class="
-                  ml-2 mr-2
-                  text-left
-                  text-lg
-                  font-bold
+                  h-full w-full
+                  flex flex-col justify-around self-center
+                  overflow-scroll
                 ">
-                {description}
-              </td>
-              <td>
-                <div
-                  class="
-                    h-full w-full
-                    flex flex-col justify-around
-                    overflow-scroll
-                  ">
-                  {#if commitData.length}
+                {#if commitData.length}
+                  <ol
+                    class="
+                      h-full w-full
+                      flex flex-col justify-around
+                    ">
                     {#each commitData.slice(0,3) as commit}
-                      <ol
-                        class="
-                          h-full w-full
-                          flex flex-col justify-around
-                        ">
                         <li
                           class="
                             break-words
@@ -276,34 +185,33 @@
                             {`${commit.sha.substring(0,7)}`}
                           </a>
                         </li>
-                      </ol>
                     {/each}
-                  {/if}
-                </div>
-              </td>
-              <td
-                class="
-                  text-cyan-600
-                  font-bold
-                  text-lg
-                "
-                >
-                {pushed_at.toLocaleString().split(',')[0]}
-              </td>
-              <td
-                class="
-                  text-cyan-600
-                  font-bold
-                  text-lg
-                "
-                >
-                {created_at.toLocaleString().split(',')[0]}
-              </td>
-            </tr>
-          {/each}
-        </table>
-      {/if}
-    </div>
+                  </ol>
+                {/if}
+              </div>
+            </td>
+            <td
+              class="
+                text-cyan-600
+                font-bold
+                text-lg
+              "
+              >
+              {pushed_at.toLocaleString().split(',')[0]}
+            </td>
+            <td
+              class="
+                text-cyan-600
+                font-bold
+                text-lg
+              "
+              >
+              {created_at.toLocaleString().split(',')[0]}
+            </td>
+          </div>
+        {/each}
+      </div>
+    {/if}
   </div>
 </div>
 
