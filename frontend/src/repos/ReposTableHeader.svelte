@@ -5,27 +5,20 @@
     SortOrder
   } from "../integrations/github/GithubTypes"
 
-  export let github: GithubIntegration
+  import GithubIntegration from "../integrations/github/GithubIntegration"
+  let github: GithubIntegration = new GithubIntegration()
+
+  import { githubStore } from "../stores/githubStore"
+  let sortColumnVal: SortOrder
+  const unsubGithubStore = githubStore.subscribe((store: GithubStore) => sortColumnVal = store.sortColumn)
 
   function handleHeaderClick(col: SortColumn): void {
-    if (col === github.sortColumn) swapSortOrder() // only swap if clicking already selected header
+    if (col === sortColumnVal) github.swapSortOrder()
     github.sortReposBy(col)
   }
 
-
   function handleHeaderDblClick(col: SortColumn): void {
     handleHeaderClick(col)
-  }
-
-  function swapSortOrder(): void {
-    switch (github.sortOrder) {
-      case SortOrder.ASC:
-        github.sortOrder = SortOrder.DESC
-        break
-      case SortOrder.DESC:
-        github.sortOrder = SortOrder.ASC
-        break
-    }
   }
 </script>
 <div

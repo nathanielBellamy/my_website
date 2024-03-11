@@ -4,78 +4,89 @@ import {
   SortColumn,
   type ColorData,
   type GithubStore,
+  type GithubRepo,
   DATE_SORT_COLUMNS,
   LOWERCASE_SORT_COLUMNS
 } from './GithubTypes'
+import { githubStore } from "../../stores/githubStore"
 
+// TODO:
+// - rename GithubStoreHandler
+// - set reference to correct GithubStore
+//   - githubStoreNS
+//   - githubStoreRando
 export default class GithubIntegration {
-  sortOrder: SortOrder = SortOrder.DESC
-  sortColumn: SortColumn = SortColumn.PUSHED_AT
-  store: Writeable<GithubStore>
-  reposReady: boolean = false
-  reposVal: GithubRepos
-  updateReposReady: (val: boolean) => void
+  setSortOrder(sortOrder: SortOrder): void {
+    githubStore.update((store: GithubStore) => ({...store, sortOrder}))
+    this.sortReposBy()
+  }
 
-  constructor(
-    store: Writeable<GithubStore>,
-    updateReposReady: (val: boolean) => void,
-  ) {
-    this.store = store
-    this.store.subscribe((store: GithubStore) => this.reposVal = [...store.repos])
-    this.updateReposReady = updateReposReady
+  swapSortOrder(): void {
+    githubStore.update((store: GithubStore) => {
+      const sortOrder: SortOrder =  store.sortOrder === SortOrder.DESC ? SortOrder.ASC : SortOrder.DESC
+      return {
+        ...store,
+        sortOrder
+      }
+    })
+    this.sortReposBy()
   }
 
   sortReposBy(col: SortColumn|null = null): void {
-    if (col)
-    {
-      this.sortColumn = col
-    }
-    let lessThanReturnValue: number = this.sortOrder === SortOrder.ASC ? 1 : -1
-    if (DATE_SORT_COLUMNS.includes(this.sortColumn)) lessThanReturnValue *= -1
+    githubStore.update((store: GithubStore) => {
+      let sortColumn: SortColumn = col ? col : store.sortColumn
 
+      store.repos.sort((x, y) => this.sortFunc(x, y, sortColumn, store.sortOrder))
+      return {...store, sortColumn}
+    })
+  }
+
+  sortFunc(x: GithubRepo, y: GithubRepo, sortColumn: SortColumn, sortOrder: SortOrder) {
+    console.dir({sortColumn})
+    let lessThanReturnValue: number = sortOrder === SortOrder.ASC ? 1 : -1
+    if (DATE_SORT_COLUMNS.includes(sortColumn)) lessThanReturnValue *= -1
     let grtrThanReturnValue: number = -1 * lessThanReturnValue
-    this.store.update((store: GithubStore) => {
-      this.reposVal.sort((x: any, y: any) => {
-        let xVal = x[this.sortColumn]
-        let yVal = y[this.sortColumn]
-        if (LOWERCASE_SORT_COLUMNS.includes(this.sortColumn))
-        {
-          xVal = xVal.toLowerCase()
-          yVal = yVal.toLowerCase()
-        }
-        if (xVal < yVal) return lessThanReturnValue
-        if (xVal > yVal) return grtrThanReturnValue
-        return 0
-      })
-      return {...store, repos: this.reposVal}
-      }
-    )
+
+    let xVal = x[sortColumn]
+    let yVal = y[sortColumn]
+    if (LOWERCASE_SORT_COLUMNS.includes(sortColumn))
+    {
+      xVal = xVal.toLowerCase()
+      yVal = yVal.toLowerCase()
+    }
+    if (xVal < yVal) return lessThanReturnValue
+    if (xVal > yVal) return grtrThanReturnValue
+    return 0
   }
 
   async fetchRepos(): Promise {
     return await fetch("api/github/repos")
       .then((resp) => resp.json())
       .then(async (resp) => {
-        this.store.update((store: GithubStore) => {
-          this.reposVal = this.mapRepos(resp.repos)
-          return {repos: this.reposVal, userLanguageSummary: resp.user_language_summary}
+        githubStore.update((store: GithubStore) => {
+          return {
+            ...store,
+            repos: this.mapRepos(resp.repos),
+            reposReady: true,
+            userLanguageSummary: resp.user_language_summary
+          }
         })
 
         this.sortReposBy()
-        this.updateReposReady(true)
       })
       .catch(() => {
         // defaut to snapshot if any trouble happens along the way
         const parsedFixture: GithubStore = reposFixture
-        this.reposVal = this.mapRepos(parsedFixture.repos)
-        this.store.update((store: GithubStore) => {
+        const repos = this.mapRepos(parsedFixture.repos)
+        githubStore.update((store: GithubStore) => {
           return {
-            repos: this.reposVal,
+            ...store,
+            repos,
+            reposReady: true,
             userLanguageSummary: parsedFixture.user_language_summary
           }
         })
         this.sortReposBy()
-        this.updateReposReady(true)
       })
   }
 

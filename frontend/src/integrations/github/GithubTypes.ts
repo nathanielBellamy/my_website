@@ -29,7 +29,10 @@ export interface UserLanguageSummary {
 
 export interface GithubStore {
   repos: GithubRepos,
-  userLanguageSummary: UserLanguageSummary
+  reposReady: boolean,
+  sortColumn: SortColumn,
+  sortOrder: SortOrder,
+  userLanguageSummary: UserLanguageSummary,
 }
 
 export enum SortOrder {

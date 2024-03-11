@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte'
   import {
     type GithubRepo,
     type GithubRepos,
@@ -8,10 +9,25 @@
   } from "../integrations/github/GithubTypes"
   import RepoLangChart from "../integrations/github/RepoLangChart.svelte"
   import RepoCommitChart from "../integrations/github/RepoCommitChart.svelte"
+  import Loading from "../lib/Loading.svelte"
+
+  import GithubIntegration from "../integrations/github/GithubIntegration"
+  import { githubStore } from "../stores/githubStore"
+  let reposReadyVal: boolean
+  let reposVal: GithubRepos
+  let sortColumnVal: SortColumn
+  let sortOrderVal: SortOrder
+  const unsubGithubStore = githubStore.subscribe((store: GithubStore) => {
+    reposReadyVal = store.reposReady
+    reposVal = [...store.repos]
+    sortColumnVal = store.sortColumn
+    sortOrderVal = store.sortOrder
+  })
+  let github: GithubIntegration = new GithubIntegration()
 
   export let chartIdx: number
-  export let github: GithubIntegration
-  export let reposReady: boolean
+
+  onDestroy(unsubGithubStore)
 </script>
 
 <div
@@ -53,7 +69,7 @@
       <select
         id="repos-sort-by"
         data-testid="repos-sort-by"
-        value={github.sortColumn}
+        value={sortColumnVal}
         on:change={(e) => github.sortReposBy(e.target.value)}>
         {#each Object.values(SortColumn) as col}
           <option
@@ -65,8 +81,8 @@
       <select
         id="repos-sort-by"
         data-testid="repos-sort-by"
-        value={github.sortOrder}
-        on:change={(e) => {setSortOrder(e.target.value)}}>
+        value={sortOrderVal}
+        on:change={(e) => github.setSortOrder(e.target.value)}>
         {#each Object.values(SortOrder) as order}
           <option
             value={order}>
@@ -76,7 +92,9 @@
       </select>
     </div>
   </div>
-  {#if reposReady}
+  {#if !reposReadyVal}
+    <Loading />
+  {:else}
     <div
       class="
         w-full
@@ -93,7 +111,7 @@
           text-cyan-500
         ">
         <p>
-          {github.reposVal[chartIdx].name}
+          {reposVal[chartIdx].name}
         </p>
       </h2>
       <div

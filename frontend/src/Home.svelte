@@ -25,12 +25,9 @@
 
   import GithubIntegration from "./integrations/github/GithubIntegration"
   import { githubStore } from "./stores/githubStore"
-
-  let reposReady: boolean = false
-  function updateReposReady(val: boolean): void {
-    reposReady = val
-  }
-  let github: GithubIntegration = new GithubIntegration(githubStore, updateReposReady)
+  let reposReadyVal: boolean = false
+  const unsubGithubStore = githubStore.subscribe((store: GithubStore) => reposReadyVal = store.reposReady)
+  let github: GithubIntegration = new GithubIntegration()
 
   const version_url_current: string = `https://github.com/nathanielBellamy/my_website/releases/tag/${version_current}`
   const version_url_latest_major: string = `https://github.com/nathanielBellamy/my_website/releases/tag/${version_latest_major}`
@@ -235,7 +232,7 @@
             </div>
           </div>
           <div class="grow flex justify-around self-center">
-            {#if !reposReady }
+            {#if !reposReadyVal }
               <Loading />
             {:else}
               <UserLangSummaryChart bind:sideLength={imgSideLength}/>
