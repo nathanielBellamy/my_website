@@ -26,10 +26,7 @@
   let chartIdx: number = 0
   onMount(() => github.fetchRepos())
 
-  onDestroy(() => {
-    unsubGithubStore()
-    unsubLang()
-  })
+  onDestroy(unsubLang)
 </script>
 
 <div

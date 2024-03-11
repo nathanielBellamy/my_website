@@ -42,7 +42,6 @@ export default class GithubIntegration {
   }
 
   sortFunc(x: GithubRepo, y: GithubRepo, sortColumn: SortColumn, sortOrder: SortOrder) {
-    console.dir({sortColumn})
     let lessThanReturnValue: number = sortOrder === SortOrder.ASC ? 1 : -1
     if (DATE_SORT_COLUMNS.includes(sortColumn)) lessThanReturnValue *= -1
     let grtrThanReturnValue: number = -1 * lessThanReturnValue
@@ -60,6 +59,7 @@ export default class GithubIntegration {
   }
 
   async fetchRepos(): Promise {
+    // TODO: if reposReady, do not make call
     return await fetch("api/github/repos")
       .then((resp) => resp.json())
       .then(async (resp) => {

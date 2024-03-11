@@ -137,6 +137,4 @@
     grid-template-columns: 50% 50%
   .repos_banner_grid
     grid-template-columns: 15% 85%
-  .section_grid
-    grid-template-rows: max(226px, 30%) 70%
 </style>
