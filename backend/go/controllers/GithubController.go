@@ -13,8 +13,6 @@ import (
 
 type GithubController struct {
   ReposRoute string
-  RepoLanguagesRoute string
-  RepoCommitsRoute string
 }
 
 func (gc GithubController) RegisterController(
@@ -22,8 +20,6 @@ func (gc GithubController) RegisterController(
   log *zerolog.Logger,
 ) {
   gc.RegisterReposRoute(cookieJar, log)
-  // gc.RepoLanguagesRoute(cookieJar, log)
-  // gc.RepoCommitsRoute(cookieJar, log)
 }
 
 func (gc GithubController) RegisterReposRoute(
@@ -40,26 +36,29 @@ func (gc GithubController) RegisterReposRoute(
 
     client := github.GithubClient{Username: "nathanielBellamy", BaseUrl: "https://api.github.com", Log: log}
 
-    repos := client.FetchRepos()
+    repos, repos_err := client.FetchRepos()
+    if repos_err != nil {
+      log.Error().
+          Err(repos_err).
+          Str("caller", "GithubController#RegisterReposRoute").
+          Msg("Error Connecting To Github")
+      w.WriteHeader(http.StatusBadGateway)
+      return
+    }
+
     userLanguageSummary := github.GenerateUserLanguageSummary(repos)
 
     response := github.GithubReposResponse{Repos: repos, UserLanguageSummary: userLanguageSummary}
-    responseJSON, err := json.Marshal(response)
-    if err != nil {
+    responseJSON, json_err := json.Marshal(response)
+    if json_err != nil {
       log.Error().
-          Err(err).
+          Err(json_err).
           Str("caller", "GithubController#RegisterReposRoute").
           Msg("Error JSON-ifying GithubReposResponse")
+      w.WriteHeader(http.StatusInternalServerError)
+      return
     }
     w.Header().Set("Content-Type", "application/json")
     w.Write(responseJSON)
   })
 }
-
-// func (gc GithubController) RepoLanguagesRoute(cookieJar, log) {
-
-// }
-
-// func (gc GithubController) RepoCommitsRoute(cookieJar, log) {
-
-// }

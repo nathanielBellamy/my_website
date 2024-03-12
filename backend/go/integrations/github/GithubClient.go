@@ -1,13 +1,13 @@
 package github
 
 import (
-	"encoding/json"
-	"fmt"
-	"net/http"
+  "encoding/json"
+  "fmt"
+  "net/http"
   "os"
   "sync"
 
-	"github.com/rs/zerolog"
+  "github.com/rs/zerolog"
 )
 
 type GithubClient struct {
@@ -28,12 +28,13 @@ func (gc GithubClient) HandleRequest(url string) (*http.Response, error) {
            Str("url", url).
            Err(err).
            Msg("GithubClient API Error When HandleRequest")
+    return nil, err
   }
 
   return resp, err
 }
 
-func (gc GithubClient) FetchRepos() (GithubRepos) {
+func (gc GithubClient) FetchRepos() (GithubRepos, error) {
   url := fmt.Sprintf("%s/%s/%s/%s",
     gc.BaseUrl,
     "users",
@@ -45,7 +46,9 @@ func (gc GithubClient) FetchRepos() (GithubRepos) {
     gc.Log.Error().
            Err(err).
            Msg("Error Contacting Github When FetchRepos")
+    return nil, err
   }
+
   defer resp.Body.Close()
 
   var githubRepos GithubRepos
@@ -54,12 +57,13 @@ func (gc GithubClient) FetchRepos() (GithubRepos) {
     gc.Log.Error().
            Err(json_err).
            Msg("Error Decoding Github Repos Payload")
+    return nil, json_err
   }
 
   colors := LoadGithubColors()
   gc.FetchRefinedRepoData(&githubRepos, &colors)
 
-  return githubRepos
+  return githubRepos, nil
 }
 
 func (gc GithubClient) FetchRefinedRepoData(githubRepos *GithubRepos, colors *map[string]string) {
