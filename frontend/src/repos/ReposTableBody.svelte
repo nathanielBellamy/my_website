@@ -24,6 +24,10 @@
     chartIdx = reposVal.findIndex(r => r.name === repoName)
   }
 
+  function formatDate(date: Date): String {
+    return date.toLocaleString().split(',')[0]
+  }
+
   onDestroy(unsubGithubStore)
 </script>
 
@@ -148,7 +152,7 @@
             text-lg
           "
           >
-          {pushed_at.toLocaleString().split(',')[0]}
+          {formatDate(pushed_at)}
         </td>
         <td
           class="
@@ -157,7 +161,7 @@
             text-lg
           "
           >
-          {created_at.toLocaleString().split(',')[0]}
+          {formatDate(created_at)}
         </td>
       </div>
     {/each}
