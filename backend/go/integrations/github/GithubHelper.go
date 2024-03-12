@@ -2,13 +2,20 @@ package github
 
 import (
   "encoding/json"
-  "fmt"
   "os"
   // "slices"
   "sort"
 )
 
-func GenerateUserLanguageSummary(githubRepos GithubRepos) UserLanguageSummary {
+type GithubHelperError struct {
+  Msg string
+}
+
+func (ghe GithubHelperError) Error() (string) {
+  return "GithubHelperError: " + ghe.Msg
+}
+
+func GenerateUserLanguageSummary(githubRepos GithubRepos) (UserLanguageSummary, error) {
   var languageData LanguageData
 
   for _, repo := range githubRepos {
@@ -37,10 +44,13 @@ func GenerateUserLanguageSummary(githubRepos GithubRepos) UserLanguageSummary {
     return languageData[i].Value > languageData[j].Value
   })
 
-  colors := LoadGithubColors()
+  colors, err := LoadGithubColors()
+  if err != nil {
+    return UserLanguageSummary{}, GithubHelperError{Msg: err.Error()}
+  }
   colorData := ColorDataFromLanguageData(languageData, &colors)
 
-  return UserLanguageSummary{ColorData: colorData, LanguageData: languageData}
+  return UserLanguageSummary{ColorData: colorData, LanguageData: languageData}, nil
 }
 
 func ColorDataFromLanguageData(languageData LanguageData, colors *map[string]string) ColorData {
@@ -52,17 +62,17 @@ func ColorDataFromLanguageData(languageData LanguageData, colors *map[string]str
   return colorData
 }
 
-func LoadGithubColors() map[string]string {
+func LoadGithubColors() (map[string]string, error) {
   // load language color data
   colorsRaw, loadErr := os.ReadFile("fixtures/GithubColors.json")
   if loadErr != nil {
-    fmt.Printf("OS LOAD ERROR: %+v\n", loadErr)
+    return nil, GithubHelperError{Msg: " LoadGithubColors: " + loadErr.Error()}
   }
   var colors map[string]string
-  colors_err := json.Unmarshal(colorsRaw, &colors)
+  jsonErr := json.Unmarshal(colorsRaw, &colors)
 
-  if colors_err != nil {
-    fmt.Printf("could not load colors")
+  if jsonErr != nil {
+    return nil, GithubHelperError{Msg: " LoadGithubColors: " + jsonErr.Error()}
   }
-  return colors
+  return colors, nil
 }

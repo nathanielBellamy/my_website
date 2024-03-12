@@ -2,17 +2,25 @@ package controllers
 
 import (
   "encoding/json"
-	"fmt"
-	"net/http"
+  "fmt"
+  "net/http"
 
-	"github.com/nathanielBellamy/my_website/backend/go/auth"
-	"github.com/nathanielBellamy/my_website/backend/go/integrations/github"
-	cmap "github.com/orcaman/concurrent-map/v2"
-	"github.com/rs/zerolog"
+  "github.com/nathanielBellamy/my_website/backend/go/auth"
+  "github.com/nathanielBellamy/my_website/backend/go/integrations/github"
+  cmap "github.com/orcaman/concurrent-map/v2"
+  "github.com/rs/zerolog"
 )
 
 type GithubController struct {
   ReposRoute string
+}
+
+type GithubControllerError struct {
+  Msg string
+}
+
+func (gce GithubControllerError) Error() (string) {
+  return "GithubControllerError: " + gce.Msg
 }
 
 func (gc GithubController) RegisterController(
@@ -38,21 +46,32 @@ func (gc GithubController) RegisterReposRoute(
 
     repos, repos_err := client.FetchRepos()
     if repos_err != nil {
+      gcErr := GithubControllerError{Msg: repos_err.Error()}
       log.Error().
-          Err(repos_err).
+          Err(gcErr).
           Str("caller", "GithubController#RegisterReposRoute").
           Msg("Error Connecting To Github")
       w.WriteHeader(http.StatusBadGateway)
       return
     }
 
-    userLanguageSummary := github.GenerateUserLanguageSummary(repos)
+    userLanguageSummary, langSumErr := github.GenerateUserLanguageSummary(repos)
+    if langSumErr != nil {
+      gcErr := GithubControllerError{Msg: langSumErr.Error()}
+      log.Error().
+          Err(gcErr).
+          Str("caller", "GithubController#RegisterReposRoute").
+          Msg("Error Generating Language Summary")
+      w.WriteHeader(http.StatusInternalServerError)
+      return
+    }
 
     response := github.GithubReposResponse{Repos: repos, UserLanguageSummary: userLanguageSummary}
     responseJSON, json_err := json.Marshal(response)
     if json_err != nil {
+      gcErr := GithubControllerError{Msg: json_err.Error()}
       log.Error().
-          Err(json_err).
+          Err(gcErr).
           Str("caller", "GithubController#RegisterReposRoute").
           Msg("Error JSON-ifying GithubReposResponse")
       w.WriteHeader(http.StatusInternalServerError)

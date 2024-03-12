@@ -19,27 +19,41 @@ type GithubRepo struct {
   UpdatedAt string                            `json:"updated_at"`
 }
 
-func (gr *GithubRepo) FetchLanguageBreakdown(client *GithubClient, colors *map[string]string) {
+type GithubRepoError struct {
+  Msg string
+}
+
+func (gre GithubRepoError) Error() (string) {
+  return "GithubRepoError: " + gre.Msg
+}
+
+func (gr *GithubRepo) FetchLanguageBreakdown(client *GithubClient, colors *map[string]string) (error) {
   url := fmt.Sprintf("%s/repos/%s/%s/languages", client.BaseUrl, client.Username, gr.Name)
   resp, err := client.HandleRequest(url)
   if err != nil {
+    greErr := GithubRepoError{Msg: err.Error()}
     client.Log.Error().
-               Err(err).
+               Err(greErr).
                Str("caller", "GithubRepo#FetchLanguageBreakdown").
                Msg("Github Api Error - /languages")
+    return greErr
   }
   defer resp.Body.Close()
 
   var languageBreakdown GithubLanguageBreakdown
   json_err := json.NewDecoder(resp.Body).Decode(&languageBreakdown)
   if json_err != nil {
+    greErr := GithubRepoError{Msg: json_err.Error()}
     client.Log.Error().
-               Err(err).
+               Err(greErr).
                Str("caller", "GithubRepo#FetchLanguageBreakdown").
                Msg("Error Parsing Github JSON - /languages")
+    return greErr
   }
 
   gr.ProcessLanguageBreakdown(client, languageBreakdown, colors)
+
+  return nil
 }
 
 func (gr *GithubRepo) ProcessLanguageBreakdown(
@@ -60,26 +74,32 @@ func (gr *GithubRepo) ProcessLanguageBreakdown(
   gr.ColorData = ColorDataFromLanguageData(languageData, colors)
 }
 
-func (gr *GithubRepo) FetchCommits(client *GithubClient) {
+func (gr *GithubRepo) FetchCommits(client *GithubClient) (error) {
   url := fmt.Sprintf("%s/repos/%s/%s/commits", client.BaseUrl, client.Username, gr.Name)
   resp, err := client.HandleRequest(url)
   if err != nil {
+    greErr := GithubRepoError{Msg: err.Error()}
     client.Log.Error().
-               Err(err).
+               Err(greErr).
                Str("caller", "GithubRepo#FetchCommits").
                Msg("Github Api Error - /commits")
+    return greErr
   }
   defer resp.Body.Close()
 
   var commits GithubCommitsRaw
   json_err := json.NewDecoder(resp.Body).Decode(&commits)
   if json_err != nil {
+    greErr :=  GithubRepoError{Msg: json_err.Error()}
     client.Log.Error().
-               Err(err).
+               Err(greErr).
                Str("caller", "GithubRepo#FetchCommits").
                Msg("Error Parsing Github JSON - /commits")
+    return greErr
   }
   gr.ProcessCommits(client, commits)
+
+  return nil
 }
 
 func (gr *GithubRepo) ProcessCommits(client *GithubClient, commitsRaw GithubCommitsRaw) {
