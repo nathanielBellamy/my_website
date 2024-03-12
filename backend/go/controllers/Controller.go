@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	cmap "github.com/orcaman/concurrent-map/v2"
-	"github.com/rs/zerolog"
+  cmap "github.com/orcaman/concurrent-map/v2"
+  "github.com/rs/zerolog"
 
-	"github.com/nathanielBellamy/my_website/backend/go/auth"
+  "github.com/nathanielBellamy/my_website/backend/go/auth"
 )
 
 type Controller interface {

@@ -1,12 +1,12 @@
 package controllers
 
 import (
-	"fmt"
-	"net/http"
+  "fmt"
+  "net/http"
 
-	"github.com/nathanielBellamy/my_website/backend/go/auth"
-	cmap "github.com/orcaman/concurrent-map/v2"
-	"github.com/rs/zerolog"
+  "github.com/nathanielBellamy/my_website/backend/go/auth"
+  cmap "github.com/orcaman/concurrent-map/v2"
+  "github.com/rs/zerolog"
 )
 
 type RecaptchaController struct {

@@ -1,15 +1,15 @@
 package controllers
 
 import (
-	"fmt"
-	"net/http"
-	"os"
+  "fmt"
+  "net/http"
+  "os"
 
-	"github.com/nathanielBellamy/my_website/backend/go/auth"
-	"github.com/nathanielBellamy/my_website/backend/go/env"
-	"github.com/nathanielBellamy/my_website/backend/go/websocket"
-	cmap "github.com/orcaman/concurrent-map/v2"
-	"github.com/rs/zerolog"
+  "github.com/nathanielBellamy/my_website/backend/go/auth"
+  "github.com/nathanielBellamy/my_website/backend/go/env"
+  "github.com/nathanielBellamy/my_website/backend/go/websocket"
+  cmap "github.com/orcaman/concurrent-map/v2"
+  "github.com/rs/zerolog"
 )
 
 type PublicSquareController struct {

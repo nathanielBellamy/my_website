@@ -1,10 +1,10 @@
 package websocket
 
 import (
-	"net/http"
+  "net/http"
 
-	"github.com/nathanielBellamy/my_website/backend/go/auth"
-	"github.com/rs/zerolog"
+  "github.com/nathanielBellamy/my_website/backend/go/auth"
+  "github.com/rs/zerolog"
 )
 
 func ServeFeedWs(pool *Pool, w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
@@ -21,7 +21,7 @@ func ServeFeedWs(pool *Pool, w http.ResponseWriter, r *http.Request, log *zerolo
         Conn: &conn,
         Pool: pool,
       }
-      
+
       log.Info().
           Str("ip", client.IP).
           Uint("client_id_feed", client.ID).

@@ -1,8 +1,8 @@
 package github
 
 import (
-	"encoding/json"
-	"fmt"
+  "encoding/json"
+  "fmt"
   "sort"
 )
 

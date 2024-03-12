@@ -1,16 +1,16 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-	"os"
+  "fmt"
+  "net/http"
+  "os"
 
-	"github.com/joho/godotenv"
-	"github.com/nathanielBellamy/my_website/backend/go/auth"
-	"github.com/nathanielBellamy/my_website/backend/go/controllers"
-	"github.com/nathanielBellamy/my_website/backend/go/env"
-	cmap "github.com/orcaman/concurrent-map/v2"
-	"github.com/rs/zerolog"
+  "github.com/joho/godotenv"
+  "github.com/nathanielBellamy/my_website/backend/go/auth"
+  "github.com/nathanielBellamy/my_website/backend/go/controllers"
+  "github.com/nathanielBellamy/my_website/backend/go/env"
+  cmap "github.com/orcaman/concurrent-map/v2"
+  "github.com/rs/zerolog"
 )
 
 // MODE=<mode> ./main

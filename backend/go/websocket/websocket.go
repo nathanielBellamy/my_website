@@ -2,13 +2,13 @@ package websocket
 
 // https://tutorialedge.net/projects/chat-system-in-go-and-react/part-4-handling-multiple-clients/
 import (
-	"encoding/json"
-	"net"
-	"net/http"
+  "encoding/json"
+  "net"
+  "net/http"
 
-	"github.com/gobwas/ws"
-	"github.com/gobwas/ws/wsutil"
-	"github.com/rs/zerolog"
+  "github.com/gobwas/ws"
+  "github.com/gobwas/ws/wsutil"
+  "github.com/rs/zerolog"
 )
 
 func Upgrade(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) (net.Conn, error) {

@@ -1,9 +1,9 @@
 package websocket
 
 import (
-	"net"
+  "net"
 
-	"github.com/gobwas/ws/wsutil"
+  "github.com/gobwas/ws/wsutil"
 )
 
 type ClientName struct {
