@@ -8,7 +8,6 @@ import (
   "github.com/joho/godotenv"
   "github.com/nathanielBellamy/my_website/backend/go/auth"
   "github.com/nathanielBellamy/my_website/backend/go/controllers"
-  "github.com/nathanielBellamy/my_website/backend/go/env"
   cmap "github.com/orcaman/concurrent-map/v2"
   "github.com/rs/zerolog"
 )
@@ -48,7 +47,7 @@ func main() {
     log.Info().
         Msg("Establishing Routes")
 
-    SetupRoutes(&cookieJar, &log)
+    RegisterControllers(&cookieJar, &log)
 
     if err := http.ListenAndServe(":8080", nil); err != nil {
       log.Fatal().
@@ -59,55 +58,29 @@ func main() {
         Msg("Now serving on 8080")
 }
 
-func SetupRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
-    mode := os.Getenv("MODE")
-    if env.IsProd(mode) {
-      SetupProdRoutes()
-    } else if env.IsRemotedev(mode) {
-      SetupRemotedevRoutes(cookieJar, log)
-    } else {
-      SetupLocalhostRoutes(cookieJar, log)
-    }
-
-    SetupBaseRoutes(cookieJar, log)
-}
-
-func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
-  mode := os.Getenv("MODE")
-  if env.IsProd(mode) {
-    fs := http.FileServer(http.Dir("frontend"))
-    http.Handle("/", auth.LogClientIp("/", log, fs) )
-  }
-
-  RegisterControllers(cookieJar, log)
-}
-
 func RegisterControllers(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
-  var cs [3]controllers.Controller
-  cs[0] = controllers.RecaptchaController{Route: "recaptcha"}
-  cs[1] = controllers.PublicSquareController{
+  var cs []controllers.Controller
+  cs = append(cs, controllers.AppController{
+    HomeRoute: "",
+  })
+  cs = append(cs, controllers.AuthController{
+    AuthRoute: "auth/dev",
+    AuthLoginRoute: "auth/dev/dev-auth",
+  })
+  cs = append(cs, controllers.RecaptchaController{
+    RecaptchaRoute: "recaptcha",
+  })
+  cs = append(cs, controllers.PublicSquareController{
     FeedWebsocketRoute: "public-square-feed-ws",
     WasmWebsocketRoute: "public-square-wasm-ws",
-  }
-  cs[2] = controllers.GithubController {
+  })
+  cs = append(cs, controllers.GithubController {
     ReposRoute: "api/github/repos",
-  }
+  })
 
   for _, c := range cs {
     c.RegisterController(cookieJar, log)
   }
-}
-
-func SetupRemotedevRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
-  auth.SetupDevAuth(cookieJar, log)
-}
-
-func SetupLocalhostRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
-  auth.SetupDevAuth(cookieJar, log)
-}
-
-func SetupProdRoutes() {
-  // TODO: maybe Set cookie when user goes through ep warning
 }
 
 func _SetHeaders(handler http.Handler) http.Handler {
