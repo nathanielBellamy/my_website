@@ -21,12 +21,20 @@
   const unsubLang = lang.subscribe( val => langVal = val)
 
   import GithubIntegration from "../integrations/github/GithubIntegration"
+  import { githubStore } from "../stores/githubStore"
+  let reposReadyVal: boolean = false
+  const unsubGithubStore = githubStore.subscribe((store: GithubStore) => reposReadyVal = store.reposReady)
   let github: GithubIntegration = new GithubIntegration()
 
   let chartIdx: number = 0
-  onMount(() => github.fetchRepos())
+  onMount(() => {
+    if (!reposReadyVal) github.fetchRepos()
+  })
 
-  onDestroy(unsubLang)
+  onDestroy(() => {
+    unsubLang()
+    unsubGithubStore()
+  })
 </script>
 
 <div
