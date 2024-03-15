@@ -10,7 +10,7 @@ import (
 )
 
 type RecaptchaController struct {
-  Route string
+  RecaptchaRoute string
 }
 
 func (rc RecaptchaController) RegisterController(
@@ -24,7 +24,7 @@ func (rc RecaptchaController) EstablishRecaptcha(
   cookieJar *cmap.ConcurrentMap[string, auth.Cookie],
   log *zerolog.Logger,
 ) {
-  route := fmt.Sprintf("/%s", rc.Route)
+  route := fmt.Sprintf("/%s", rc.RecaptchaRoute)
   http.HandleFunc(route, func (w http.ResponseWriter, r *http.Request) {
     ip := auth.GetClientIpAddr(r)
     log.Info().

@@ -11,5 +11,7 @@ type Controller interface {
   RegisterController(
     cookieJar *cmap.ConcurrentMap[string, auth.Cookie],
     log *zerolog.Logger,
-  )
+  ) // TODO: return error
+  // TODO:
+  // - FormatRoute(route string)
 }

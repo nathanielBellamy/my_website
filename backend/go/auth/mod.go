@@ -31,9 +31,9 @@ type IoPassword struct {
 }
 
 func HasValidCookie(
-  r *http.Request, 
-  cookieType CookieType, 
-  cookieJar *cmap.ConcurrentMap[string, Cookie], 
+  r *http.Request,
+  cookieType CookieType,
+  cookieJar *cmap.ConcurrentMap[string, Cookie],
   log *zerolog.Logger,
 ) bool {
   res := true
@@ -77,13 +77,17 @@ func HasValidCookie(
           Str("ip", ip).
           Int32("Type", int32(cookieType)).
           Msg("Cookie Not Found in Jar")
-      res = false
     }
     res = cookieFromJar.Valid && cookieFromJar.Type == cookieType
+    log.Error().
+        Str("ip", ip).
+        Bool("res", res).
+        Int32("Type", int32(cookieType)).
+        Msg("Cookie Valid Result")
   } else {
     // poison invalid token
     cookieJar.SetIfAbsent(
-      cookie.Value, 
+      cookie.Value,
       Cookie{ Valid: false, Type: cookieType },
     )
     res = false
@@ -98,9 +102,9 @@ func LogClientIp(url string, log *zerolog.Logger, handler http.Handler) http.Han
           Str("ip", GetClientIpAddr(r)).
           Str("url", url).
           Msg("URL HIT")
-      
+
       handler.ServeHTTP(w, r)
-      return  
+      return
   })
 }
 
