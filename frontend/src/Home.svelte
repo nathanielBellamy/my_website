@@ -1,6 +1,6 @@
 <script lang="ts">
   import { version_current, version_latest_major } from "../../version"
-  import { onDestroy } from "svelte"
+  import { onDestroy, onMount } from "svelte"
   import { push } from "svelte-spa-router"
   import Link from "./lib/Link.svelte"
   import magicSquareExampleGif from './assets/magic_square_example.gif'
@@ -10,6 +10,8 @@
   import { ToastColor } from "./lib/Toasty"
   import { Icons } from "./lib/Icons"
   import { intoUrl, SiteSection } from "./stores/siteSection"
+  import UserLangSummaryChart from "./integrations/github/UserLangSummaryChart.svelte"
+  import Loading from "./lib/Loading.svelte"
 
   import { I18n, Lang } from "./I18n"
   import { lang } from './stores/lang'
@@ -20,6 +22,12 @@
   import { initialLoad } from "./stores/initialLoad"
   let initialLoadVal: boolean
   const unsubInitialLoad = initialLoad.subscribe(val => initialLoadVal = val)
+
+  import GithubIntegration from "./integrations/github/GithubIntegration"
+  import { githubStore } from "./stores/githubStore"
+  let reposReadyVal: boolean = false
+  const unsubGithubStore = githubStore.subscribe((store: GithubStore) => reposReadyVal = store.reposReady)
+  let github: GithubIntegration = new GithubIntegration()
 
   const version_url_current: string = `https://github.com/nathanielBellamy/my_website/releases/tag/${version_current}`
   const version_url_latest_major: string = `https://github.com/nathanielBellamy/my_website/releases/tag/${version_latest_major}`
@@ -44,7 +52,7 @@
       "60px"
     }
   }
-  
+
   function computePreviewTextFontSize(ih: number, iw: number): string {
     if (iw > 767) {
       return Math.floor(Math.min(ih, iw) / 40.2).toString() + "px"
@@ -61,8 +69,15 @@
     push(intoUrl(s))
   }
 
+  let myWebsiteRepoIdx: number = 0
+
+  onMount(() => {
+    if (!reposReadyVal) github.fetchRepos()
+  })
+
   onDestroy(() => {
     initialLoad.update((_: boolean) => false)
+    unsubGithubStore()
     unsubInitialLoad()
     unsubLang()
   })
@@ -208,7 +223,7 @@
         </ul>
       </div>
     </button>
-    <button on:click={() => handlePreviewClick(SiteSection.giveMeASine)}
+    <button on:click={() => handlePreviewClick(SiteSection.repos)}
             class="preview md:flex md:flex-col md:justify-between md:items-center md:h-5/6"
             class:pga_small_grid={!showText}>
       <div class="pga_title_and_pic grow flex flex-col justify-around items-stretch">
@@ -216,17 +231,15 @@
           <div class="preview_title grow flex justify-around items-center"
                style:font-size={preview_title_font_size}>
             <div class="h-full flex justify-between items-center">
-              {i18n.t("giveMeASine", langVal)}
+              Repos
             </div>
           </div>
           <div class="grow flex justify-around self-center">
-            <div class="h-full flex justify-between items-center">
-              <img class="magic_square_img"
-                   src={giveMeASineExampleGif}
-                   style:height={imgSideLength}
-                   style:width={imgSideLength}
-                   alt="Give Me A Sine Example"/>
-            </div>
+            {#if !reposReadyVal }
+              <Loading />
+            {:else}
+              <UserLangSummaryChart bind:sideLength={imgSideLength}/>
+            {/if}
           </div>
         </div>
       </div>
@@ -256,7 +269,7 @@
     border: 5px double color.$blue-5
     padding: 5px
     margin: 5px
-    border-radius: 50% 
+    border-radius: 50%
 
   .ai_me_container
     grid-template-areas: "img"
@@ -269,14 +282,14 @@
     &_text
       grid-area: text
       height: 100%
-    
+
     &_small_grid
       height: 100%
       display: grid
       grid-template-rows: 1fr 1fr
       grid-template-columns: 1fr 1fr
       grid-template-areas: "title_and_pic text" "title_and_pic text"
-      
+
   .preview
     border-radius: 5px
     color: color.$green-7
@@ -301,5 +314,5 @@
       padding: 0 10px 0 10px
       text-align: left
       list-style-type: square
-      width: 100%      
+      width: 100%
 </style>

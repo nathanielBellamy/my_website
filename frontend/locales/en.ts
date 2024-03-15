@@ -6,12 +6,13 @@ export const localeEn: any = {
   },
   app: {
     nav: {
-      home: "Home",
       about: "About",
+      home: "Home",
       magicSquare: "Magic square",
       publicSquare: "Public square",
       giveMeASine: "Give me a sine",
       none: "",
+      repos: "Repos",
       systemDiagram: "System Diagram",
     }
   },
@@ -27,6 +28,7 @@ export const localeEn: any = {
     version_current: "current:",
     version_latest_major: "latest major:",
     cookieWarning: "This site uses cookies.",
+    repos: "Repos",
     about: "About",
     about_1: "An overview of what I do code-wise",
     about_2: "Please enjoy these AI-generated images of me in \"natural light\"",
@@ -67,7 +69,7 @@ export const localeEn: any = {
       lfo: "lfo",
       modules: "modules",
       presets: "presets",
-      radius: "radius",                               
+      radius: "radius",
       rotation: "rotation",
       translation: "translation"
     },
@@ -216,7 +218,7 @@ export const localeEn: any = {
   recaptcha: {
     verifying: "Verifying",
     failed_1: "Unable to verify.",
-    failed_2: "Please try again later", 
+    failed_2: "Please try again later",
     failed_3: "or visit",
     magicSquare: "Magic square",
   }

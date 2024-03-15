@@ -37,7 +37,7 @@ func NewPool(log *zerolog.Logger) *Pool {
 func (pool *Pool) NewClientId() (uint) {
     newId := pool.NextClientId
     pool.NextClientId += uint(randInRange(13, 389))
-  	return newId
+    return newId
 }
 
 func (pool *Pool) StartFeed() {
@@ -52,7 +52,7 @@ func (pool *Pool) StartFeed() {
             pool.Log.Info().
                      Int("int", len(pool.Clients)).
                      Msg("Size of FEED Connection Pool")
-            //send clientId back to client 
+            //send clientId back to client
             message := Message{ClientId: id, Body: "__init__connected__", System: true}
             WriteMessage(client.Conn, message, pool.Log)
 
@@ -79,7 +79,7 @@ func (pool *Pool) StartFeed() {
             p := bluemonday.StrictPolicy()
             message.Body = p.Sanitize(message.Body)
             for client, _ := range pool.Clients {
-                WriteMessage(client.Conn, message, pool.Log)           
+                WriteMessage(client.Conn, message, pool.Log)
             }
       }
     }
