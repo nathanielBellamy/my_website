@@ -71,10 +71,13 @@
 
   let myWebsiteRepoIdx: number = 0
 
-  onMount(() => github.fetchRepos())
+  onMount(() => {
+    if (!reposReadyVal) github.fetchRepos()
+  })
 
   onDestroy(() => {
     initialLoad.update((_: boolean) => false)
+    unsubGithubStore()
     unsubInitialLoad()
     unsubLang()
   })
