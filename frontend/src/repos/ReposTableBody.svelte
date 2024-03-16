@@ -34,7 +34,7 @@
 {#if !reposReadyVal}
   <Loading />
 {:else}
-  <div
+  <table
     class="
       grow w-full
       overflow-y-scroll
@@ -51,7 +51,7 @@
       name,
       pushed_at,
     }}
-      <div
+      <tr
         class="
           h-fit
           pt-2 pb-2
@@ -163,7 +163,7 @@
           >
           {formatDate(created_at)}
         </td>
-      </div>
+      </tr>
     {/each}
-  </div>
+  </table>
 {/if}
