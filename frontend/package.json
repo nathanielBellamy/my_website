@@ -1,7 +1,7 @@
 {
   "name": "my_website",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.5",
   "type": "module",
   "scripts": {
     "check": "svelte-check --tsconfig ./tsconfig.json",

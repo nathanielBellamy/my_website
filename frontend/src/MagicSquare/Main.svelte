@@ -547,8 +547,9 @@
             </div>
             <div slot="countAndSpeed"
                  class="grow flex flex-col justify-between items-stretch">
-              <div class="grow w-full flex flex-col justify-center items-stretch"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.drawPatternCount)}>
+              <button
+                class="grow w-full flex flex-col justify-center items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.drawPatternCount)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.drawPatternCount}>
                   <div> {i18n.t("count", langVal)} </div>
@@ -560,9 +561,10 @@
                        max={16}
                        bind:value={drawPatternCount}
                        step={1}/>
-              </div>
-              <div class="grow w-full flex flex-col justify-center items-stretch"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.drawPatternSpeed)}>
+              </button>
+              <button
+                class="grow w-full flex flex-col justify-center items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.drawPatternSpeed)}>
                 <label class="slider_label flex justify-between"
                        class:disabled={drawPatternType == DrawPatternType.fix}
                        for={WasmInputId.drawPatternSpeed}>
@@ -576,9 +578,10 @@
                        disabled={drawPatternType == DrawPatternType.fix}
                        bind:value={drawPatternSpeed}
                        step={1}/>
-              </div>
-              <div class="grow w-full flex flex-col justify-center items-stretch"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.drawPatternOffset)}>
+              </button>
+              <button
+                class="grow w-full flex flex-col justify-center items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.drawPatternOffset)}>
                 <label class="slider_label flex justify-between"
                        class:disabled={drawPatternType !== DrawPatternType.fix}
                        for={WasmInputId.drawPatternOffset}>
@@ -592,7 +595,7 @@
                        bind:value={drawPatternOffset}
                        disabled={drawPatternType !== DrawPatternType.fix}
                        step={1}/>
-              </div>
+              </button>
             </div>
             <div slot="hiddenInput">
               <input id={WasmInputId.drawPatternType}
@@ -615,8 +618,9 @@
             </div>
             <div  class="pl-5 pr-5 pb-5 grow flex flex-col justify-between items-stretch"
                   slot="radiusSliders">
-              <div class="w-full flex flex-col justify-between items-stretch"
-                       on:dblclick={() => handleRangeDoubleClick(WasmInputId.radiusBase)}>
+              <button
+                class="w-full flex flex-col justify-between items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.radiusBase)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.radiusBase}>
                   <div> {i18n.t("base", langVal)} </div>
@@ -628,9 +632,10 @@
                        max={1.1}
                        bind:value={radiusBase}
                        step={.01}/>
-              </div>
-              <div class="w-full flex flex-col justify-between items-stretch"
-                       on:dblclick={() => handleRangeDoubleClick(WasmInputId.radiusStep)}>
+              </button>
+              <button
+                class="w-full flex flex-col justify-between items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.radiusStep)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.radiusStep}>
                   <div> {i18n.t("step", langVal)} </div>
@@ -642,7 +647,7 @@
                        max={0.2}
                        bind:value={radiusStep}
                        step={.001}/>
-              </div>
+              </button>
             </div>
           </Geometry>
         {/if}
@@ -688,8 +693,9 @@
                     {i18n.t("active", langVal)}
                 </button>
               </div>
-              <div class="grow w-full flex flex-col justify-center items-stretch"
-                       on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo1Freq)}>
+              <button
+                class="grow w-full flex flex-col justify-center items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo1Freq)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.lfo1Freq}>
                   <div> {i18n.t("frequency", langVal)} </div>
@@ -701,9 +707,10 @@
                        max={255}
                        bind:value={lfo1Freq}
                        step={1}/>
-              </div>
-              <div class="grow w-full flex flex-col justify-center items-stretch"
-                       on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo1Amp)}>
+              </button>
+              <button
+                class="grow w-full flex flex-col justify-center items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo1Amp)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.lfo1Amp}>
                   <div> {i18n.t("amplitude", langVal)} </div>
@@ -715,9 +722,10 @@
                        max={1}
                        bind:value={lfo1Amp}
                        step={.01}/>
-              </div>
-              <div class="grow w-full flex flex-col justify-center items-stretch"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo1Phase)}>
+              </button>
+              <button
+                class="grow w-full flex flex-col justify-center items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo1Phase)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.lfo1Phase}>
                   <div> {i18n.t("phase", langVal)} </div>
@@ -729,7 +737,7 @@
                        max={3.13159}
                        bind:value={lfo1Phase}
                        step={.01}/>
-              </div>
+              </button>
             </div>
             <!-- LFO1 END-->
 
@@ -754,8 +762,9 @@
                     {i18n.t("active", langVal)}
                 </button>
               </div>
-              <div class="grow w-full flex flex-col justify-center items-stretch"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo2Freq)}>
+              <button
+                class="grow w-full flex flex-col justify-center items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo2Freq)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.lfo2Freq}>
                   <div> {i18n.t("frequency", langVal)} </div>
@@ -767,9 +776,10 @@
                        max={255}
                        bind:value={lfo2Freq}
                        step={1}/>
-              </div>
-              <div class="grow w-full flex flex-col justify-center items-stretch"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo2Amp)}>
+              </button>
+              <button
+                class="grow w-full flex flex-col justify-center items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo2Amp)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.lfo2Amp}>
                   <div> {i18n.t("amplitude", langVal)} </div>
@@ -781,9 +791,10 @@
                        max={1}
                        bind:value={lfo2Amp}
                        step={.01}/>
-              </div>
-              <div class="grow w-full flex flex-col justify-center items-stretch"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo2Phase)}>
+              </button>
+              <button
+                class="grow w-full flex flex-col justify-center items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo2Phase)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.lfo2Phase}>
                   <div> {i18n.t("phase", langVal)} </div>
@@ -795,7 +806,7 @@
                        max={3.13159}
                        bind:value={lfo2Phase}
                        step={.01}/>
-              </div>
+              </button>
             </div>
             <!-- lfo2 END-->
 
@@ -820,8 +831,9 @@
                     {i18n.t("active", langVal)}
                 </button>
               </div>
-              <div class="grow w-full flex flex-col justify-center items-stretch"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo3Freq)}>
+              <button
+                class="grow w-full flex flex-col justify-center items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo3Freq)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.lfo3Freq}>
                   <div> {i18n.t("frequency", langVal)} </div>
@@ -833,9 +845,10 @@
                        max={255}
                        bind:value={lfo3Freq}
                        step={1}/>
-              </div>
-              <div class="grow w-full flex flex-col justify-center items-stretch"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo3Amp)}>
+              </button>
+              <button
+                class="grow w-full flex flex-col justify-center items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo3Amp)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.lfo3Amp}>
                   <div> {i18n.t("amplitude", langVal)} </div>
@@ -847,9 +860,10 @@
                        max={1}
                        bind:value={lfo3Amp}
                        step={.01}/>
-              </div>
-              <div class="grow w-full flex flex-col justify-center items-stretch"
-                       on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo3Phase)}>
+              </button>
+              <button
+                class="grow w-full flex flex-col justify-center items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo3Phase)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.lfo3Phase}>
                   <div> {i18n.t("phase", langVal)} </div>
@@ -861,7 +875,7 @@
                        max={3.13159}
                        bind:value={lfo3Phase}
                        step={.01}/>
-              </div>
+              </button>
             </div>
             <!-- lfo3 END-->
 
@@ -886,8 +900,9 @@
                     {i18n.t("active", langVal)}
                 </button>
               </div>
-              <div class="grow w-full flex flex-col justify-center items-stretch"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo4Freq)}>
+              <button
+                class="grow w-full flex flex-col justify-center items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo4Freq)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.lfo4Freq}>
                   <div> {i18n.t("frequency", langVal)} </div>
@@ -899,9 +914,10 @@
                        max={255}
                        bind:value={lfo4Freq}
                        step={1}/>
-              </div>
-              <div class="grow w-full flex flex-col justify-center items-stretch"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo4Amp)}>
+              </button>
+              <button
+                class="grow w-full flex flex-col justify-center items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo4Amp)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.lfo4Amp}>
                   <div> {i18n.t("amplitude", langVal)} </div>
@@ -913,9 +929,10 @@
                        max={1}
                        bind:value={lfo4Amp}
                        step={.01}/>
-              </div>
-              <div class="grow w-full flex flex-col justify-center items-stretch"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo4Phase)}>
+              </button>
+              <button
+                class="grow w-full flex flex-col justify-center items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.lfo4Phase)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.lfo4Phase}>
                   <div> {i18n.t("phase", langVal)} </div>
@@ -927,7 +944,7 @@
                        max={3.13159}
                        bind:value={lfo4Phase}
                        step={.01}/>
-              </div>
+              </button>
             </div>
             <!-- lfo4 END-->
           </LfoContainer>
@@ -961,8 +978,9 @@
           <Translation>
             <div  class="pl-5 pr-5 grow flex flex-col justify-around items-stretch"
                   slot="xSliders">
-              <div class="w-full flex flex-col justify-between items-stretch"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.translationXBase)}>
+              <button
+                class="w-full flex flex-col justify-between items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.translationXBase)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.translationXBase}>
                   <div> {i18n.t("base", langVal)} </div>
@@ -974,9 +992,10 @@
                        max={2}
                        bind:value={translationXBase}
                        step={.01}/>
-              </div>
-              <div class="w-full flex flex-col justify-between items-stretch"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.translationXSpread)}>
+              </button>
+              <button
+                class="w-full flex flex-col justify-between items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.translationXSpread)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.translationXSpread}>
                   <div> {i18n.t("spread", langVal)} </div>
@@ -988,12 +1007,13 @@
                        max={2}
                        bind:value={translationXSpread}
                        step={.01}/>
-              </div>
+              </button>
             </div>
             <div  class="pl-5 pr-5 grow flex flex-col justify-around items-stretch"
                   slot="ySliders">
-              <div class="w-full flex flex-col justify-between items-stretch"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.translationYBase)}>
+              <button
+                class="w-full flex flex-col justify-between items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.translationYBase)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.translationYBase}>
                   <div> {i18n.t("base", langVal)} </div>
@@ -1005,9 +1025,10 @@
                        max={2}
                        bind:value={translationYBase}
                        step={.01}/>
-              </div>
-              <div class="w-full flex flex-col justify-between items-stretch"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.translationYSpread)}>
+              </button>
+              <button
+                class="w-full flex flex-col justify-between items-stretch"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.translationYSpread)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.translationYSpread}>
                   <div> {i18n.t("spread", langVal)} </div>
@@ -1019,7 +1040,7 @@
                        max={2}
                        bind:value={translationYSpread}
                        step={.01}/>
-              </div>
+              </button>
               <!-- TODO: impliment depth perspective shifting in WebGl -->
               <!-- <div class="w-full flex flex-col justify-between items-stretch"> -->
               <!--   <label class="slider_label flex justify-between"  -->
@@ -1058,8 +1079,9 @@
           <Rotation>
             <div slot="pitch"
                  class="grow flex flex-col justify-around items-stretch p-2">
-              <div class="flex flex-col"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.pitchBase)}>
+              <button
+                class="flex flex-col"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.pitchBase)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.pitchBase}>
                   <div> {i18n.t("base", langVal)} </div>
@@ -1071,9 +1093,10 @@
                        max={6.33}
                        bind:value={pitchBase}
                        step={.01}/>
-              </div>
-              <div class="flex flex-col"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.pitchSpread)}>
+              </button>
+              <button
+                class="flex flex-col"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.pitchSpread)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.pitchSpread}>
                   <div> {i18n.t("spread", langVal)} </div>
@@ -1085,9 +1108,10 @@
                        max={.33}
                        bind:value={pitchSpread}
                        step={.01}/>
-              </div>
-              <div class="flex flex-col"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.pitchX)}>
+              </button>
+              <button
+                class="flex flex-col"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.pitchX)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.pitchX}>
                   <div> {"X"} </div>
@@ -1099,9 +1123,10 @@
                        max={2}
                        bind:value={pitchX}
                        step={.01}/>
-              </div>
-              <div class="flex flex-col"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.pitchY)}>
+              </button>
+              <button
+                class="flex flex-col"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.pitchY)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.pitchY}>
                   <div> {"Y"} </div>
@@ -1113,12 +1138,13 @@
                        max={2}
                        bind:value={pitchY}
                        step={.01}/>
-              </div>
+              </button>
             </div>
             <div slot="roll"
                  class="grow flex flex-col justify-around items-stretch p-2">
-              <div class="flex flex-col"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.rollBase)}>
+              <button
+                class="flex flex-col"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.rollBase)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.rollBase}>
                   <div> {i18n.t("base", langVal)} </div>
@@ -1130,9 +1156,10 @@
                        max={6.33}
                        bind:value={rollBase}
                        step={.01}/>
-              </div>
-              <div class="flex flex-col"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.rollSpread)}>
+              </button>
+              <button
+                class="flex flex-col"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.rollSpread)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.rollSpread}>
                   <div> {i18n.t("spread", langVal)} </div>
@@ -1144,9 +1171,10 @@
                        max={.33}
                        bind:value={rollSpread}
                        step={.01}/>
-              </div>
-              <div class="flex flex-col"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.rollX)}>
+              </button>
+              <button
+                class="flex flex-col"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.rollX)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.rollX}>
                   <div> {"X"} </div>
@@ -1158,9 +1186,10 @@
                        max={2}
                        bind:value={rollX}
                        step={.01}/>
-              </div>
-              <div class="flex flex-col"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.rollY)}>
+              </button>
+              <button
+                class="flex flex-col"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.rollY)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.rollY}>
                   <div> {"Y"} </div>
@@ -1172,12 +1201,13 @@
                        max={2}
                        bind:value={rollY}
                        step={.01}/>
-              </div>
+              </button>
             </div>
             <div slot="yaw"
                  class="grow flex flex-col justify-around items-stretch p-2">
-              <div class="flex flex-col"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.yawBase)}>
+              <button
+                class="flex flex-col"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.yawBase)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.yawBase}>
                   <div> {i18n.t("base", langVal)} </div>
@@ -1189,9 +1219,10 @@
                        max={6.33}
                        bind:value={yawBase}
                        step={.01}/>
-              </div>
-              <div class="flex flex-col"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.yawSpread)}>
+              </button>
+              <button
+                class="flex flex-col"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.yawSpread)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.yawSpread}>
                   <div> {i18n.t("spread", langVal)} </div>
@@ -1203,9 +1234,10 @@
                        max={.33}
                        bind:value={yawSpread}
                        step={.01}/>
-              </div>
-              <div class="flex flex-col"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.yawX)}>
+              </button>
+              <button
+                class="flex flex-col"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.yawX)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.yawX}>
                   <div> {"X"} </div>
@@ -1217,9 +1249,10 @@
                        max={2}
                        bind:value={yawX}
                        step={.01}/>
-              </div>
-              <div class="flex flex-col"
-                   on:dblclick={() => handleRangeDoubleClick(WasmInputId.yawY)}>
+              </button>
+              <button
+                class="flex flex-col"
+                on:dblclick={() => handleRangeDoubleClick(WasmInputId.yawY)}>
                 <label class="slider_label flex justify-between"
                        for={WasmInputId.yawY}>
                   <div> {"Y"} </div>
@@ -1231,7 +1264,7 @@
                        max={2}
                        bind:value={yawY}
                        step={.01}/>
-              </div>
+              </button>
             </div>
           </Rotation>
         {/if}
