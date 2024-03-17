@@ -1,7 +1,7 @@
 {
   "name": "dev_auth",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.5",
   "type": "module",
   "proxy": "http://localhost:8080",
   "scripts": {

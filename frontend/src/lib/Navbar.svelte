@@ -35,17 +35,17 @@
       ☰
     </div>
   </button>
-  <Drawer bind:hidden={hiddenDrawer} 
+  <Drawer bind:hidden={hiddenDrawer}
           class="bg-black pl-6"
-          transitionType="fly" 
-          {transitionParams} 
+          transitionType="fly"
+          {transitionParams}
           id="navList">
     <div class="flex items-center">
-      <h3 id="drawer-navigation-label-3" 
+      <h3 id="drawer-navigation-label-3"
           class="text-base font-semibold text-gray-500 uppercase">
         Menu
       </h3>
-      <CloseButton on:click={() => (hiddenDrawer = true)} 
+      <CloseButton on:click={() => (hiddenDrawer = true)}
                    class="mb-4 bg-black text-cyan-700 hover:bg-slate-800" />
     </div>
     <Sidebar>
@@ -94,11 +94,11 @@
           <SidebarItem class="hover:bg-transparent flex items-center font-bold text-blue-200"
                        tabIndex="0"
                        on:click={() => hiddenDrawer = true}
-                       href="/#/about"
-                       data-testid="nav_dropdown_about"
-                       label={i18n.t("nav/about", langVal)}>
+                       href="/#/repos"
+                       data-testid="nav_dropdown_repos"
+                       label={i18n.t("nav/repos", langVal)}>
             <svelte:fragment slot="icon">
-              <Icon icon={Icons.InfoCircleOutline} />
+              <Icon icon={Icons.GithubSolid} />
             </svelte:fragment>
           </SidebarItem>
           <SidebarItem class="hover:bg-transparent flex items-center font-bold text-blue-200"

@@ -55,6 +55,10 @@ EOF
       exit 1
   fi
 
+  # copy go fixtures to build directory
+  rm ./../../build/fixtures/*       # remove old .env files
+  cp -r ./fixtures ./../../build/   # copy in current
+
   cd .. && cd ..
     cat << EOF
 
@@ -73,7 +77,7 @@ AUTH SPA
 
 EOF
   SPA_ENV=$1
-  cd auth && cd dev && npm run build-$SPA_ENV 
+  cd auth && cd dev && npm run build-$SPA_ENV
   cd .. && cd ..
   cat << EOF
 
@@ -101,7 +105,7 @@ FRONTEND SPA
 
 EOF
   SPA_ENV=$1
-  cd frontend && npm run build-frontend-$SPA_ENV 
+  cd frontend && npm run build-frontend-$SPA_ENV
   cd ..
   cat << EOF
 
@@ -164,7 +168,7 @@ ${TARGET_ARCH}
   ⚡  MODE:
 ${MODE}
 
-  🚀🚀🚀  
+  🚀🚀🚀
   🚀🚀🚀  Happy
   🚀🚀🚀  Coding
 

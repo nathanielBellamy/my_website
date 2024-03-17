@@ -1,16 +1,15 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-	"os"
+  "fmt"
+  "net/http"
+  "os"
 
-	"github.com/joho/godotenv"
-	"github.com/nathanielBellamy/my_website/backend/go/auth"
-	"github.com/nathanielBellamy/my_website/backend/go/env"
-	"github.com/nathanielBellamy/my_website/backend/go/websocket"
-	cmap "github.com/orcaman/concurrent-map/v2"
-	"github.com/rs/zerolog"
+  "github.com/joho/godotenv"
+  "github.com/nathanielBellamy/my_website/backend/go/auth"
+  "github.com/nathanielBellamy/my_website/backend/go/controllers"
+  cmap "github.com/orcaman/concurrent-map/v2"
+  "github.com/rs/zerolog"
 )
 
 // MODE=<mode> ./main
@@ -22,7 +21,7 @@ func main() {
     }
     log := zerolog.New(file).With().Timestamp().Logger()
 
-    // determine runtime env 
+    // determine runtime env
     mode := os.Getenv("MODE")
     if mode == "" {
       mode = "localhost"
@@ -31,7 +30,7 @@ func main() {
     // read env file
     log.Info().
         Msg("Loading ENV")
-    
+
     envErr := godotenv.Load(".env." + mode)
     if envErr != nil {
       log.Fatal().
@@ -48,7 +47,7 @@ func main() {
     log.Info().
         Msg("Establishing Routes")
 
-    SetupRoutes(&cookieJar, &log)
+    RegisterControllers(&cookieJar, &log)
 
     if err := http.ListenAndServe(":8080", nil); err != nil {
       log.Fatal().
@@ -59,140 +58,36 @@ func main() {
         Msg("Now serving on 8080")
 }
 
-func SetupRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
-    mode := os.Getenv("MODE")
-    if env.IsProd(mode) {
-      SetupProdRoutes()
-    } else if env.IsRemotedev(mode) {
-      SetupRemotedevRoutes(cookieJar, log)
-    } else {
-      SetupLocalhostRoutes(cookieJar, log)
-    }
+func RegisterControllers(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
+  var cs []controllers.Controller
+  cs = append(cs, controllers.AppController{
+    HomeRoute: "",
+  })
+  cs = append(cs, controllers.AuthController{
+    AuthRoute: "auth/dev",
+    AuthLoginRoute: "auth/dev/dev-auth",
+  })
+  cs = append(cs, controllers.RecaptchaController{
+    RecaptchaRoute: "recaptcha",
+  })
+  cs = append(cs, controllers.PublicSquareController{
+    FeedWebsocketRoute: "public-square-feed-ws",
+    WasmWebsocketRoute: "public-square-wasm-ws",
+  })
+  cs = append(cs, controllers.GithubController {
+    ReposRoute: "api/github/repos",
+  })
 
-    SetupBaseRoutes(cookieJar, log)
-}
-
-func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
-  mode := os.Getenv("MODE")
-  if env.IsProd(mode) {
-    fs := http.FileServer(http.Dir("frontend"))
-    http.Handle("/", auth.LogClientIp("/", log, fs) )
+  for _, c := range cs {
+    c.RegisterController(cookieJar, log)
   }
-
-  // setup recaptcha
-  http.HandleFunc("/recaptcha", func (w http.ResponseWriter, r *http.Request) {
-    ip := auth.GetClientIpAddr(r)
-    log.Info().
-        Str("ip", ip).
-        Msg("Recaptcha Endpoint Hit")
-
-    res := auth.ValidateRecaptcha(r, log)
-    log.Info().
-        Str("ip", ip).
-        Bool("res", res).
-        Msg("ValidateRecaptcha")
-
-    if res {
-      auth.SetRecaptchaCookieOnClient(w, cookieJar, log)
-
-      w.WriteHeader(http.StatusOK)
-      w.Write([]byte("OK"))
-    } else {
-      w.WriteHeader(http.StatusForbidden)
-      w.Write([]byte("NOT OK"))
-    }
-  })
-
-  feedPool := websocket.NewPool(log)
-  wasmPool := websocket.NewPool(log)
-  go feedPool.StartFeed()
-  go wasmPool.StartWasm()
-  http.HandleFunc("/public-square-feed-ws", func(w http.ResponseWriter, r *http.Request) {
-    ip := auth.GetClientIpAddr(r)
-    if !env.IsProd(mode) {
-      // localhost and remote dev require basic login
-      validDev := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-      validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-      log.Info().
-          Str("ip", ip).
-          Bool("validDev", validDev).
-          Bool("validRecaptcha", validRecaptcha).
-          Msg("PS FEED WS")
-
-      if validDev && validRecaptcha {
-        websocket.ServeFeedWs(feedPool, w, r, log)
-      } else {
-        auth.RedirectToDevAuth(w, r, log)
-      }
-    } else {
-      // prod is public 
-      // but protected by recaptcha
-      validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-      log.Info().
-          Str("ip", ip).
-          Bool("validRecaptcha", validRecaptcha).
-          Msg("PS FEED WS")
-
-      if validRecaptcha {
-        websocket.ServeFeedWs(feedPool, w, r, log)
-      } else {
-        auth.RedirectToHome(w, r, log)
-      }
-    }
-  })
-  http.HandleFunc("/public-square-wasm-ws", func(w http.ResponseWriter, r *http.Request) {
-    ip := auth.GetClientIpAddr(r)
-    mode := os.Getenv("MODE")
-    if !env.IsProd(mode) {
-      // localhost and remote dev require basic login
-      validDev := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-      validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-      log.Info().
-          Str("ip", ip).
-          Bool("validDev", validDev).
-          Bool("validRecaptcha", validRecaptcha).
-          Msg("PS WASM WS")
-
-      if validDev && validRecaptcha {
-        websocket.ServeWasmWs(wasmPool, w, r, log)
-      } else {
-        auth.RedirectToDevAuth(w, r, log)
-      }
-    } else {
-      // prod is public 
-      // but protected by recaptcha
-      validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-      log.Info().
-          Str("ip", ip).
-          Bool("validRecaptcha", validRecaptcha).
-          Msg("PS WASM WS")
-
-      if validRecaptcha {
-        websocket.ServeWasmWs(wasmPool, w, r, log)
-      } else {
-        auth.RedirectToHome(w, r, log)
-      }
-    }
-  })
-}
-
-func SetupRemotedevRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
-  auth.SetupDevAuth(cookieJar, log)
-}
-
-func SetupLocalhostRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
-  auth.SetupDevAuth(cookieJar, log)
-}
-
-func SetupProdRoutes() {
-  // TODO: maybe Set cookie when user goes through ep warning
 }
 
 func _SetHeaders(handler http.Handler) http.Handler {
   return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
     // this method wound up being superfluous for what we needed at the time of writing
     // but it's nice to have the infrastructure established
-    
+
     // w.Header().Set("Content-Type", "text/javascript")
     // w.Header().Set("Content-Type", "text/html, text/css")
     handler.ServeHTTP(w,r)
