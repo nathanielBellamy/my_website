@@ -1,5 +1,12 @@
 #!/bin/bash
 #
+#
+#
+# install dependencies globablly
+# nix-env -i -f ./global.nix.
+#
+# install dependencies within terminal session
+# nix-shell
 
 # Load environment variables from config.env
 if [ -f "config.env" ]; then
@@ -85,7 +92,9 @@ EOF
 AUTH SPA BUILT
 
 EOF
-
+  # TODO: debug this when building in nix-shell
+  #  - trouble finding index.html
+  #  - manually replacing in build works fine
   # Perform the regex string replacement
   sed -i '' 's/\/assets/\.\/assets/g' build/auth/dev/index.html
   cat << EOF
