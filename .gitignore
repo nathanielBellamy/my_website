@@ -1,7 +1,6 @@
 .DS_Store
 
-# env
-config.env
+# backend env
 backend/go/.env.prod
 backend/go/.env.remotedev
 
