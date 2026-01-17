@@ -1,23 +1,23 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { render, screen } from '@testing-library/angular';
 import { NavbarComponent } from './navbar.component';
 
 describe('NavbarComponent', () => {
-  let component: NavbarComponent;
-  let fixture: ComponentFixture<NavbarComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [NavbarComponent]
-    })
-    .compileComponents();
-
-    fixture = TestBed.createComponent(NavbarComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  it('should render the brand name', async () => {
+    await render(NavbarComponent);
+    screen.getByText('Nate');
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should render the navigation links', async () => {
+    await render(NavbarComponent);
+    screen.getByText('Home');
+    screen.getByText('About');
+    screen.getByText('Projects');
+  });
+
+  it('should render social links', async () => {
+    await render(NavbarComponent);
+    screen.getByTestId('navbar-mailto');
+    screen.getByTestId('navbar-linked-in');
+    screen.getByTestId('navbar-github');
   });
 });
