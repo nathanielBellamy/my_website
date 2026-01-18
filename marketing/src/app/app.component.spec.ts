@@ -8,13 +8,13 @@ describe('AppComponent', () => {
     await render(AppComponent, {
       imports: [NavbarComponent, HeaderComponent],
     });
-    screen.getByRole('navigation');
+    expect(screen.getByRole('navigation')).toBeTruthy();
   });
 
   it('should render the header', async () => {
     await render(AppComponent, {
       imports: [NavbarComponent, HeaderComponent],
     });
-    screen.getByRole('banner');
+    expect(screen.getByRole('banner')).toBeTruthy();
   });
 });

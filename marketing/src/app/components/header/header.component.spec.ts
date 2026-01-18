@@ -4,6 +4,6 @@ import { HeaderComponent } from './header.component';
 describe('HeaderComponent', () => {
   it('should render the header text', async () => {
     await render(HeaderComponent);
-    screen.getByText('Hi, my name is Nate.');
+    expect(screen.getByText('Hi, my name is Nate.')).toBeTruthy();
   });
 });
