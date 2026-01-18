@@ -4,6 +4,6 @@ import { AboutComponent } from './about.component';
 describe('AboutComponent', () => {
   it('should render about works!', async () => {
     await render(AboutComponent);
-    expect(screen.getByText('about works!')).toBeTruthy();
+    screen.getByText('about works!');
   });
 });
