@@ -1,5 +1,5 @@
 #[allow(unused)]
-// use give_me_a_sine;
+use give_me_a_sine;
 use wasm_bindgen::prelude::*; // ensure wasm-bindgen creates bindings for sub-module
 
 #[macro_use]

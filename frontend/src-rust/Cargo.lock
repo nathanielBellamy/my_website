@@ -56,6 +56,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "give_me_a_sine"
+version = "0.1.0"
+dependencies = [
+ "console_error_panic_hook",
+ "gloo-utils",
+ "js-sys",
+ "serde",
+ "serde-wasm-bindgen",
+ "the_library",
+ "wasm-bindgen",
+ "web-sys",
+]
+
+[[package]]
 name = "gloo-utils"
 version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -198,12 +212,12 @@ version = "0.1.0"
 dependencies = [
  "bytemuck",
  "console_error_panic_hook",
+ "give_me_a_sine",
  "gloo-utils",
  "js-sys",
  "serde",
  "serde-wasm-bindgen",
  "serde_json",
- "the_library",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
@@ -223,6 +237,9 @@ dependencies = [
 [[package]]
 name = "the_library"
 version = "0.1.0"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "unicode-ident"
