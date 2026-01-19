@@ -3,27 +3,21 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { HeaderComponent } from './components/header/header.component';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { CommonModule } from '@angular/common'; // Import CommonModule for *ngIf
+import { CommonModule } from '@angular/common';
 import { TrackerService } from './services/tracker.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [NavbarComponent, HeaderComponent, RouterOutlet, CommonModule], // Add CommonModule here
-  template: `
-    <app-navbar />
-    @if (showHeader) {
-      <app-header></app-header>
-    }
-    <router-outlet />
-  `,
+  imports: [NavbarComponent, HeaderComponent, RouterOutlet, CommonModule],
+  templateUrl: './app.component.html',
   styles: [],
 })
 export class AppComponent implements OnInit {
   showHeader: boolean = true;
   private readonly trackerService = inject(TrackerService);
 
-  constructor(private router: Router) {}
+  constructor(private readonly router: Router) {}
 
   ngOnInit() {
     this.trackerService.trackIp();

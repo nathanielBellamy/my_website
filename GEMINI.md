@@ -28,6 +28,7 @@ This document outlines the plan and process for developing the new Angular front
   - We will use Cypress to write an E2E test suite that can target local, dev, and production environments. 
 
   ## JavaScript/TypeScript conventions
+  - We will always prefer `Enum`s over loose strings.
 
   ## HTML Convetions
   - We will prefer tall and skinny HTML as opposed to long-lined HTML
