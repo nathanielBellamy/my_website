@@ -19,7 +19,15 @@ This document outlines the plan and process for developing the new Angular front
   - We will expand upon these build scripts so that a single, interactive script will complete a full deployment, including build, test, and release through Github Actions. 
   - We will use Cypress to write an E2E test suite that can target local, dev, and production environments. 
   - Each app, `marketing` and `admin` will exist in its own directory of the same name.
+  - We will keep all HTML in separate `foo.component.html` files
+    - that is, I should never see a `template:` param in an Angular component
+    - instead, it should always be `templateUrl: ./foo.component.html`
+  - We will prefer tall and skinny HTML as opposed to long-lined HTML
+  - Our opening and closing HTML tags will always be aligned vertically
+  - We will never explicitly set `undefined` as a value
+  - Whenever we `Inject` a service into an Angular component, it will be `private readonly`
 
+---
 
 - The first frontend app: `marketing`
   - the `marketing` frontend is the new, Angular, public-facing bundle for `my_website`
