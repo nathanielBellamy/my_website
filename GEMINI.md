@@ -5,32 +5,57 @@ This document outlines the plan and process for developing the new Angular front
 ## Project Goal
 
 - The primary objective is to create two new, simple, modern frontend apps using Angular 21: `marketing` and `admin`.
-  - We will be using signal stores.
-  - We will be using `input<T>.required()` as opposed to `@input()`
-  - We will only use the `@`-style notation for conditional HTML - that is, no `*ngIf`. 
-  - We will be using Tailwind for our CSS needs.
-  - The new app will coexist with the old Svelte frontend, with the ability to redirect to it.
-  - Although the new `marketing` and `admin` apps will be written in Angular, the goal is to keep these apps doing nothing more than standard, boring CRUD - we will thus keep all asynchronouse code as close to `Promise`s as possible.
-  - That is, whenever possible we will prefer to `await` a `Promise` as opposed to `subscribe`ing to an `Observable`.
+  - The new app will coexist with the old Svelte `frontend`, with the ability to redirect to it.
   - Both frontends will talk to a single PostgresSQL database through the Go backend running on our NixOS VM.
-  - We will be using the Angular Testing Library as our main unit test framework.
   - We will run CI/CD through Git Actions on GitHub. 
   - We already have `build.sh` and `build-dist.sh`, scripts which build the project for different targets: either the local machine or the linux (NixOS) VM respectively.
   - We will expand upon these build scripts so that a single, interactive script will complete a full deployment, including build, test, and release through Github Actions. 
-  - We will use Cypress to write an E2E test suite that can target local, dev, and production environments. 
   - Each app, `marketing` and `admin` will exist in its own directory of the same name.
+  - We will never explicitly set `undefined` as a value.
+
+  ## Angular Conventions
+  - We will be using signal stores.
+  - We will only use the `@`-style notation for conditional HTML - that is, no `*ngIf`. 
+  - We will be using `input<T>.required()` as opposed to `@input()`
   - We will keep all HTML in separate `foo.component.html` files
     - that is, I should never see a `template:` param in an Angular component
     - instead, it should always be `templateUrl: ./foo.component.html`
+  - Whenever we `Inject` a service into an Angular component, it will be `private readonly`
+  - Although the new `marketing` and `admin` apps will be written in Angular, the goal is to keep these apps doing nothing more than standard, boring CRUD - we will thus keep all asynchronouse code as close to `Promise`s as possible.
+    - That is, whenever possible we will prefer to `await` a `Promise` as opposed to `subscribe`ing to an `Observable`.
+  - We will be using the Angular Testing Library as our main unit test framework
+    - I should never see TestBed in this code
+  - We will use Cypress to write an E2E test suite that can target local, dev, and production environments. 
+
+  ## JavaScript/TypeScript conventions
+
+  ## HTML Convetions
   - We will prefer tall and skinny HTML as opposed to long-lined HTML
   - Our opening and closing HTML tags will always be aligned vertically
-  - We will never explicitly set `undefined` as a value
-  - Whenever we `Inject` a service into an Angular component, it will be `private readonly`
+  ```html
+  <div>
+    foo
+  </div>
+  ```
+  - When an HTML tag has many attributes, we will list them aligned vertically and indendented
+  ```html
+  <div 
+    class="foo bar"
+    data-testid="my-div"
+    [baz]="bound"
+    (func)="func" >
+  ```
+
+  ## CSS Convetions
+  - We will be using Tailwind for our CSS needs.
+  - For common, shared colors and spacing we will use Sass variables from within Tailwind.
+
+
 
 ---
 
-- The first frontend app: `marketing`
-  - the `marketing` frontend is the new, Angular, public-facing bundle for `my_website`
+- `marketing/`
+  - the `marketing` frontend app is the new, Angular, public-facing bundle for `my_website`
   - it will link to the old Svelte Application
   - by default, it will load a home landing page, showing some basic informationa bout me and all the necessary links to navigate the website and all of my social links
   - there will be a `blog` page so that I have somewhere to post things that is not LinkedIn.
