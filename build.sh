@@ -92,7 +92,7 @@ UPDATED ASSET PATHS IN AUTH SPA index.html
 EOF
 }
 
-# Function for main SPA build
+# Function for old-site main SPA build
 build_main_spa() {
   cat << EOF
 
@@ -107,6 +107,34 @@ EOF
 
   📣  🏁  DONE:
 FRONTEND SPA BUILT
+
+EOF
+}
+
+# Function for marketing SPA build
+build_marketing_spa() {
+  cat << EOF
+
+  📣  🏗️   BUILDING:
+MARKETING SPA
+
+EOF
+  SPA_ENV=$1
+  cd marketing && npm run build-frontend-$SPA_ENV 
+  cd ..
+  cat << EOF
+
+  📣  🏁  DONE:
+MARKETING SPA BUILT
+
+EOF
+
+  # Perform the regex string replacement
+  sed -i '' 's/\/assets/\.\/assets/g' build/marketing/index.html
+  cat << EOF
+
+  📣  🏁  DONE:
+UPDATED ASSET PATHS IN MARKETING SPA index.html
 
 EOF
 }
@@ -131,16 +159,19 @@ case $MODE in
     build_go_server "localhost"
     build_auth_dev_spa "localhost"
     build_main_spa "localhost"
+    build_marketing_spa "localhost"
     ;;
   remotedev)
     build_go_server "remotedev"
     build_auth_dev_spa "remotedev"
     build_main_spa "remotedev"
+    build_marketing_spa "remotedev"
     ;;
   prod)
     build_go_server "prod"
     build_auth_dev_spa "prod"
     build_main_spa "prod"
+    build_marketing_spa "prod"
     ;;
   *)
     echo "Invalid MODE. Choose between localhost, remotedev, or prod."

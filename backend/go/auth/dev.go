@@ -4,15 +4,42 @@ import (
 	"net/http"
 	"os"
 	"time"
+  "fmt"
 
 	"github.com/nathanielBellamy/my_website/backend/go/env"
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"github.com/rs/zerolog"
 )
 
+// correctMimeTypeMiddleware is a middleware that ensures correct MIME types for certain files.
+func correctMimeTypeMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    origin := r.Header.Get("Origin")
+
+    fmt.Println("WOWOWOWOWZA")
+    fmt.Println(origin)
+		// w.Header().Set("Access-Control-Allow-Origin", origin)
+    w.Header().Set("Vary", "Origin")
+    w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+    w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Content-Type", "application/javascript")  
+		// For other file types, the underlying http.FileServer will attempt to set Content-Type
+    // http.Redirect(w, r, "/old-site", http.StatusFound)
+    next.ServeHTTP(w,r)
+	})
+}
+
+
 func SetupDevAuth(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger) {
-  fs_frontend := http.FileServer(http.Dir("frontend"))
-  http.Handle("/", http.StripPrefix("/", LogClientIp("/", log, RequireDevAuth(cookieJar, log, fs_frontend))))
+  fs_marketing := http.FileServer(http.Dir("marketing/browser"))
+  http.Handle("/", http.StripPrefix("/", LogClientIp("/", log, RequireDevAuth(cookieJar, log, fs_marketing))))
+
+  // Apply the MIME type correction middleware to the frontend server
+  // Apply the MIME type correction middleware to the frontend server
+  fs_frontend_original := http.FileServer(http.Dir("frontend"))
+  fs_frontend_corrected := correctMimeTypeMiddleware(fs_frontend_original)
+  http.Handle("/old-site", http.StripPrefix("/old-site", LogClientIp("/old-site", log, RequireDevAuth(cookieJar, log, fs_frontend_corrected))))
+  
   fs_auth := http.FileServer(http.Dir("auth/dev"))
   http.Handle("/auth/dev/",  LogClientIp("/auth/dev", log, http.StripPrefix("/auth/dev/", fs_auth)))
 
@@ -93,6 +120,8 @@ func RequireDevAuth(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.
     })
 }
 
+
+
 func ValidateDev (w http.ResponseWriter, r *http.Request, log *zerolog.Logger) (string, bool) {
   ip := GetClientIpAddr(r)
   err := r.ParseForm()
@@ -142,4 +171,7 @@ func RedirectToHome(w http.ResponseWriter, r *http.Request, log *zerolog.Logger)
       Msg("REDIRECT To Home")
   http.Redirect(w,r,"/", http.StatusSeeOther)
 }
+
+
+
 

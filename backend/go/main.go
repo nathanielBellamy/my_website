@@ -193,7 +193,7 @@ func _SetHeaders(handler http.Handler) http.Handler {
     // this method wound up being superfluous for what we needed at the time of writing
     // but it's nice to have the infrastructure established
     
-    // w.Header().Set("Content-Type", "text/javascript")
+    w.Header().Set("Content-Type", "text/javascript")
     // w.Header().Set("Content-Type", "text/html, text/css")
     handler.ServeHTTP(w,r)
   })
