@@ -14,7 +14,7 @@
   export let transformOrder: TransformOrder
 
   function handleDrawPatternTypeChange(e: any) {
-    var input = document.getElementById(WasmInputId.drawPatternType)
+    var input = document.getElementById(WasmInputId.drawPatternType) as HTMLInputElement
     drawPatternType = e.target.value
     input.value = e.target.value
     input.dispatchEvent(new Event('input', {bubbles: true}))
@@ -22,7 +22,7 @@
 
   function handleTransformOrderClick(tr_or: TransformOrder) {
     transformOrder = tr_or
-    var input = document.getElementById(WasmInputId.transformOrder)
+    var input = document.getElementById(WasmInputId.transformOrder) as HTMLInputElement
     input.value = tr_or
     input.dispatchEvent(new Event('input', {bubbles: true}))
   }

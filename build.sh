@@ -109,6 +109,15 @@ EOF
 FRONTEND SPA BUILT
 
 EOF
+
+  # Perform the regex string replacement
+  sed -i '' -e 's/src="\/assets/src="\/old-site\/assets/g' -e 's/href="\/assets/href="\/old-site\/assets/g' build/frontend/index.html
+  cat << EOF
+
+  📣  🏁  DONE:
+UPDATED ASSET PATHS IN FRONTEND SPA index.html
+
+EOF
 }
 
 # Function for marketing SPA build

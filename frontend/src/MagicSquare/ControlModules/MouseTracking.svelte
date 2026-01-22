@@ -78,7 +78,7 @@
   function handleFormSubmit(e: any){
     e.stopPropagation()
     e.preventDefault()
-    var input = document.getElementById(hiddenInputId)
+    var input = document.getElementById(hiddenInputId) as HTMLInputElement
     input.value = option
     input.dispatchEvent(new Event('input', {bubbles: true}))
     return false // do not refresh page on submit

@@ -56,7 +56,7 @@
 
   function handleLfoDestChange(e: any, lfo: Lfo) {
     const input_id = intoDestInputId(lfo)
-    var input = document.getElementById(input_id)
+    var input = document.getElementById(input_id) as HTMLInputElement
     if (!!input) {
       input.value = e.target.value
       input.dispatchEvent(new Event('input', {bubbles: true}))
@@ -93,7 +93,7 @@
 
   function handleLfoShapeChange(e: any, lfo: Lfo) {
     const input_id = intoShapeInputId(lfo)
-    var input = document.getElementById(input_id)
+    var input = document.getElementById(input_id) as HTMLInputElement
     if (!!input) {
       input.value = e.target.value
       input.dispatchEvent(new Event('input', {bubbles: true}))

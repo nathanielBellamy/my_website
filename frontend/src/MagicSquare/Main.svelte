@@ -105,8 +105,8 @@
   }
 
   function handleRangeDoubleClick(id: WasmInputId) {
-    var input = document.getElementById(id)
-    input.value = 0
+    var input = document.getElementById(id) as HTMLInputElement
+    input.value = "0"
     input.dispatchEvent(new Event('input', {bubbles: true}))
   }
 
@@ -213,9 +213,9 @@
         break
     }
     const inputId: WasmInputId = intoLfoActiveInputId(lfo)
-    var input = document.getElementById(inputId)
+    var input = document.getElementById(inputId) as HTMLInputElement
     if (!!input) {
-      input.value = val
+      input.value = val.toString()
       input.dispatchEvent(new Event('input', {bubbles: true}))
     }
   }

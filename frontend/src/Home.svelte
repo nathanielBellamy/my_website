@@ -58,7 +58,7 @@
   }
 
   function handlePreviewClick(s: SiteSection) {
-    push(intoUrl(s))
+    push(intoUrl(s).toString())
   }
 
   onDestroy(() => {

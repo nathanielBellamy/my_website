@@ -44,7 +44,7 @@
 
   function presetAction(action: PresetAction) {
     preset = presetNext
-    var input = document.getElementById(WasmInputId.preset)
+    var input = document.getElementById(WasmInputId.preset) as HTMLInputElement
     input.value = JSON.stringify({preset, action})
     input.dispatchEvent(new Event('input', {bubbles: true}))
 

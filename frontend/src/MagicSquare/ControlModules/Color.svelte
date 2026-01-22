@@ -46,7 +46,7 @@
 
   function handleColorDirectionClick(cd: ColorDirection) {
     colorDirection = cd
-    const input = document.getElementById(WasmInputId.colorDirection)
+    const input = document.getElementById(WasmInputId.colorDirection) as HTMLInputElement
     input.value = cd
     input.dispatchEvent(new Event('input', { bubbles: true }))
   }
@@ -63,7 +63,7 @@
   function setColorGradient() {
     const width: number = idxRight - idxLeft
     if (!!width) {
-      var input = document.getElementById(WasmInputId.colors)
+      var input = document.getElementById(WasmInputId.colors) as HTMLInputElement
       let step: number = 0
       while (idxLeft + step < idxRight + 1) {
         const newColor = colorGradientAtStep(step, width)
@@ -112,7 +112,7 @@
   $: colorStrings = colors.map(x => rgbaToString(x))
   $: gradient = `linear-gradient(90deg, ${colorStrings[idxA]} 0%, ${colorStrings[idxB]} 100%)`
 
-  const colorPickerOptions = {
+  const colorPickerOptions: any = {
     width: 110,
     height: 90,
     borderWidth: 2,
@@ -185,7 +185,7 @@
 
     // get height/width for picker
     const width: number = deriveColorPickerWidth(innerWidth, innerHeight)
-    var input = document.getElementById(WasmInputId.colors)
+    var input = document.getElementById(WasmInputId.colors) as HTMLInputElement
 
     colors.forEach((color: number[], idx: number) => {
       var picker = iro.ColorPicker(`#${toIdxString(idx)}`, Object.assign(colorPickerOptions, {height: width, width}))

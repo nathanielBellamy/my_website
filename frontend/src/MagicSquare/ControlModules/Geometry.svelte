@@ -39,7 +39,7 @@
   }
 
   function setShapeSelectValue(shapeIdx: number) {
-    var sel = document.getElementById('magic_square_shape_select')
+    var sel = document.getElementById('magic_square_shape_select') as HTMLSelectElement
     sel.value = JSON.stringify({t: shapes[shapeIdx].t, c: n})
   }
 
@@ -59,7 +59,7 @@
 
   function handleShapeSelect(e: any) {
     e.stopPropagation()
-    var input = document.getElementById(WasmInputId.shapes)
+    var input = document.getElementById(WasmInputId.shapes) as HTMLInputElement
     const new_shape: Shape = JSON.parse(e.target.value)
 
     if (shapes[shapeIdx].t === ShapeTag.misc && new_shape.t === ShapeTag.ngon) { 
@@ -110,7 +110,7 @@
 
   function setRange() {
     let width: number = idxRight - idxLeft;
-    let input = document.getElementById(WasmInputId.shapes)
+    let input = document.getElementById(WasmInputId.shapes) as HTMLInputElement
     if (!!width) {
       const new_shape = shapes[shapeIdx]
       shapes.forEach((_: Shape, idx: number) => {
@@ -127,7 +127,7 @@
   function handleNInput() {
     shapes[shapeIdx].c = n
     shapes = [...shapes]
-    var input = document.getElementById(WasmInputId.shapes)
+    var input = document.getElementById(WasmInputId.shapes) as HTMLInputElement
     input.value = JSON.stringify({shape: shapes[shapeIdx], index: shapeIdx})
     input.dispatchEvent(new Event('input', {bubbles: true}))
   }

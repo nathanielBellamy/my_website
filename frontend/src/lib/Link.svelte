@@ -1,27 +1,28 @@
 <script lang="ts">
   import { link } from "svelte-spa-router"
   import { SiteSection } from "../stores/siteSection"
+  import { OldSiteUrl } from "./OldSiteUrl"
 
   export let sameOrigin:boolean = true
-  export let href: string = "/"
+  export let href: string = OldSiteUrl.Home
   export let className: string = ""
   export let title: string = "Home"
   export let onClick: any = (e:any) => {e.stopPropagation()}
 
-  function setSiteSection(href: string){
+  function setSiteSection(url: string){
     var newSection: SiteSection = SiteSection.home
 
-    switch (href) {
-      case "/about":
+    switch (url) {
+      case OldSiteUrl.About:
         newSection = SiteSection.about
         break
-      case "/magic_square":
+      case OldSiteUrl.MagicSquare:
         newSection = SiteSection.magicSquare
         break
-      case "/give_me_a_sine":
+      case OldSiteUrl.GiveMeASine:
         newSection = SiteSection.giveMeASine
         break
-      case "/":
+      case OldSiteUrl.Home:
       default:
         break
     }
@@ -31,7 +32,7 @@
 </script>
 
 {#if sameOrigin}
-  <a href={href}
+  <a href={href.toString()}
      use:link
      tabindex="0"
      on:click={(e) => {
@@ -45,7 +46,7 @@
     </button>
   </a>
 {:else}
-  <a href={href}
+  <a href={href.toString()}
      tabindex="0"
      target="_blank"
      on:click={(e) => {

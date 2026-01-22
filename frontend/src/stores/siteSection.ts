@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store'
 import type { Writable } from 'svelte/store'
+import { OldSiteUrl } from '../lib/OldSiteUrl'
 
 export enum SiteSection {
   about = "about",
@@ -28,21 +29,21 @@ export function intoSiteSection(s: string | null | undefined): SiteSection {
   }
 }
 
-export function intoUrl(s: SiteSection) {
+export function intoUrl(s: SiteSection): string {
   switch (s) {
     case SiteSection.about:
-      return '/about'
+      return OldSiteUrl.About.split('#')[1]
     case SiteSection.home:
-      return '/'
+      return OldSiteUrl.Home.split('#')[1]
     case SiteSection.giveMeASine:
-      return '/give-me-a-sine'
+      return OldSiteUrl.GiveMeASine.split('#')[1]
     case SiteSection.magicSquare:
-      return '/magic-square'
+      return OldSiteUrl.MagicSquare.split('#')[1]
     case SiteSection.publicSquare:
-      return '/public-square'
+      return OldSiteUrl.PublicSquare.split('#')[1]
     case SiteSection.none:
     default:
-      return '/'
+      return OldSiteUrl.Home.split('#')[1]
   }
 }
 
