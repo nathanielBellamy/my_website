@@ -14,8 +14,8 @@ func SetupDevAuth(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Lo
 	fs_marketing := http.FileServer(http.Dir("marketing/browser"))
 	http.Handle("/", http.StripPrefix("/", LogClientIp("/", log, RequireDevAuth(cookieJar, log, fs_marketing))))
 
-	fs_frontend := http.FileServer(http.Dir("old-site"))
-	http.Handle("/old-site/", LogClientIp("/old-site/", log, http.StripPrefix("/old-site/", fs_frontend)))
+	fs_old_site := http.FileServer(http.Dir("old-site"))
+	http.Handle("/old-site/", LogClientIp("/old-site/", log, http.StripPrefix("/old-site/", fs_old_site)))
 
 	fs_auth := http.FileServer(http.Dir("auth/dev"))
 	http.Handle("/auth/dev/", LogClientIp("/auth/dev/", log, http.StripPrefix("/auth/dev/", fs_auth)))

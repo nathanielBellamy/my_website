@@ -97,25 +97,25 @@ build_main_spa() {
   cat << EOF
 
   📣  🏗️   BUILDING:
-FRONTEND SPA
+old-site SPA
 
 EOF
   SPA_ENV=$1
-  cd frontend && npm run build-frontend-$SPA_ENV 
+  cd old-site && npm run build-old-site-$SPA_ENV 
   cd ..
   cat << EOF
 
   📣  🏁  DONE:
-FRONTEND SPA BUILT
+old-site SPA BUILT
 
 EOF
 
   # Perform the regex string replacement
-  sed -i '' -e 's/src="\/assets/src="\/old-site\/assets/g' -e 's/href="\/assets/href="\/old-site\/assets/g' build/frontend/index.html
+  sed -i '' -e 's/src="\/assets/src="\/old-site\/assets/g' -e 's/href="\/assets/href="\/old-site\/assets/g' build/old-site/index.html
   cat << EOF
 
   📣  🏁  DONE:
-UPDATED ASSET PATHS IN FRONTEND SPA index.html
+UPDATED ASSET PATHS IN old-site SPA index.html
 
 EOF
 }
@@ -129,7 +129,7 @@ MARKETING SPA
 
 EOF
   SPA_ENV=$1
-  cd marketing && npm run build-frontend-$SPA_ENV 
+  cd marketing && npm run build-marketing-$SPA_ENV 
   cd ..
   cat << EOF
 

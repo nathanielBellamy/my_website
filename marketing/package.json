@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build-localhost": "ng build",
-    "build-frontend-localhost": "npm run build-localhost",
+    "build-marketing-localhost": "npm run build-localhost",
     "test": "jest"
   },
   "private": true,

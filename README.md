@@ -7,7 +7,7 @@
 - [Go](https://go.dev/)
 - [npm](https://www.npmjs.com/)
 
-### build -- Go server, frontend SPA, auth SPA
+### build -- Go server, marketing SPA, auth SPA, and old-site SPA
 - `./build.sh`
   - outputs to `build` directory
   - reproduce a prod-like build locally
