@@ -7,52 +7,52 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func ServeFeedWs(pool *Pool, w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
-      conn, err := Upgrade(w, r, log)
-      if err != nil {
-        log.Error().
-            Err(err).
-            Msg("FEED Upgrade ERROR")
-      }
+var ServeFeedWs = func(pool *Pool, w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
+	conn, err := Upgrade(w, r, log)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("FEED Upgrade ERROR")
+	}
 
-      client := &Client{
-        ID: pool.NewClientId(),
-        IP: auth.GetClientIpAddr(r),
-        Conn: &conn,
-        Pool: pool,
-      }
-      
-      log.Info().
-          Str("ip", client.IP).
-          Uint("client_id_feed", client.ID).
-          Msg("FEED Endpoint Hit")
+	client := &Client{
+		ID:   pool.NewClientId(),
+		IP:   auth.GetClientIpAddr(r),
+		Conn: &conn,
+		Pool: pool,
+	}
 
-      WriteMessage(client.Conn, Message{ClientId: client.ID, Body: "connected"}, log)
+	log.Info().
+		Str("ip", client.IP).
+		Uint("client_id_feed", client.ID).
+		Msg("FEED Endpoint Hit")
 
-      pool.Register <- client
-      client.ReadFeed()
+	WriteMessage(client.Conn, Message{ClientId: client.ID, Body: "connected"}, log)
+
+	pool.Register <- client
+	client.ReadFeed()
 }
 
-func ServeWasmWs(pool *Pool, w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
-      conn, err := Upgrade(w, r, log)
-      if err != nil {
-        log.Error().
-            Err(err).
-            Msg("WASM Upgrade ERROR")
-      }
+var ServeWasmWs = func(pool *Pool, w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
+	conn, err := Upgrade(w, r, log)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Msg("WASM Upgrade ERROR")
+	}
 
-      client := &Client{
-        ID: pool.NewClientId(),
-        IP: auth.GetClientIpAddr(r),
-        Conn: &conn,
-        Pool: pool,
-      }
+	client := &Client{
+		ID:   pool.NewClientId(),
+		IP:   auth.GetClientIpAddr(r),
+		Conn: &conn,
+		Pool: pool,
+	}
 
-      log.Info().
-          Str("ip", client.IP).
-          Uint("client_id_wasm", client.ID).
-          Msg("WASM Endpoint Hit")
+	log.Info().
+		Str("ip", client.IP).
+		Uint("client_id_wasm", client.ID).
+		Msg("WASM Endpoint Hit")
 
-      pool.Register <- client
-      client.ReadWasm()
+	pool.Register <- client
+	client.ReadWasm()
 }

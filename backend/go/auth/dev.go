@@ -10,12 +10,11 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func SetupDevAuth(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger) {
+func SetupDevAuth(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger, oldSiteFileServer http.Handler) {
 	fs_marketing := http.FileServer(http.Dir("marketing/browser"))
 	http.Handle("/", http.StripPrefix("/", LogClientIp("/", log, RequireDevAuth(cookieJar, log, fs_marketing))))
 
-	fs_old_site := http.FileServer(http.Dir("old-site"))
-	http.Handle("/old-site/", LogClientIp("/old-site/", log, http.StripPrefix("/old-site/", fs_old_site)))
+	http.Handle("/old-site/", oldSiteFileServer)
 
 	fs_auth := http.FileServer(http.Dir("auth/dev"))
 	http.Handle("/auth/dev/", LogClientIp("/auth/dev/", log, http.StripPrefix("/auth/dev/", fs_auth)))
@@ -97,7 +96,8 @@ func RequireDevAuth(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.
 	})
 }
 
-func ValidateDev(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) (string, bool) {
+// ValidateDev is a function variable for validating dev authentication.
+var ValidateDev = func(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) (string, bool) {
 	ip := GetClientIpAddr(r)
 	err := r.ParseForm()
 	if err != nil {
@@ -133,14 +133,16 @@ func ValidateDev(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) (s
 	return sessionToken, true
 }
 
-func RedirectToDevAuth(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
+// RedirectToDevAuth is a function variable for redirecting to dev authentication.
+var RedirectToDevAuth = func(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
 	log.Warn().
 		Str("ip", GetClientIpAddr(r)).
 		Msg("REDIRECT To Dev Auth")
 	http.Redirect(w, r, "/auth/dev/", http.StatusSeeOther)
 }
 
-func RedirectToHome(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
+// RedirectToHome is a function variable for redirecting to the home page.
+var RedirectToHome = func(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
 	log.Warn().
 		Str("ip", GetClientIpAddr(r)).
 		Msg("REDIRECT To Home")

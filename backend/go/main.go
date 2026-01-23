@@ -8,6 +8,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
 	"github.com/nathanielBellamy/my_website/backend/go/env"
+	"github.com/nathanielBellamy/my_website/backend/go/old_site"
 	"github.com/nathanielBellamy/my_website/backend/go/websocket"
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"github.com/rs/zerolog"
@@ -48,7 +49,12 @@ func main() {
 	log.Info().
 		Msg("Establishing Routes")
 
-	SetupRoutes(&cookieJar, &log)
+	feedPool := websocket.NewPool(&log)
+	wasmPool := websocket.NewPool(&log)
+	go feedPool.StartFeed()
+	go wasmPool.StartWasm()
+
+	SetupRoutes(&cookieJar, &log, feedPool, wasmPool)
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal().
@@ -59,20 +65,22 @@ func main() {
 		Msg("Now serving on 8080")
 }
 
-func SetupRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
+func SetupRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, feedPool *websocket.Pool, wasmPool *websocket.Pool) {
 	mode := os.Getenv("MODE")
+	oldSiteController := old_site.NewOldSiteController(cookieJar, log, feedPool, wasmPool)
+
 	if env.IsProd(mode) {
 		SetupProdRoutes()
 	} else if env.IsRemotedev(mode) {
-		SetupRemotedevRoutes(cookieJar, log)
+		SetupRemotedevRoutes(cookieJar, log, oldSiteController)
 	} else {
-		SetupLocalhostRoutes(cookieJar, log)
+		SetupLocalhostRoutes(cookieJar, log, oldSiteController)
 	}
 
-	SetupBaseRoutes(cookieJar, log)
+	SetupBaseRoutes(cookieJar, log, oldSiteController)
 }
 
-func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
+func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController) {
 	mode := os.Getenv("MODE")
 	if env.IsProd(mode) {
 		fs := http.FileServer(http.Dir("old-site"))
@@ -80,108 +88,18 @@ func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *ze
 	}
 
 	// setup recaptcha
-	http.HandleFunc("/old-site/recaptcha", func(w http.ResponseWriter, r *http.Request) {
-		ip := auth.GetClientIpAddr(r)
-		log.Info().
-			Str("ip", ip).
-			Msg("Recaptcha Endpoint Hit")
+	http.HandleFunc("/old-site/recaptcha", oldSiteController.RecaptchaHandler)
 
-		res := auth.ValidateRecaptcha(r, log)
-		log.Info().
-			Str("ip", ip).
-			Bool("res", res).
-			Msg("ValidateRecaptcha")
-
-		if res {
-			auth.SetRecaptchaCookieOnClient(w, cookieJar, log)
-
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("OK"))
-		} else {
-			w.WriteHeader(http.StatusForbidden)
-			w.Write([]byte("NOT OK"))
-		}
-	})
-
-	feedPool := websocket.NewPool(log)
-	wasmPool := websocket.NewPool(log)
-	go feedPool.StartFeed()
-	go wasmPool.StartWasm()
-	http.HandleFunc("/old-site/public-square-feed-ws", func(w http.ResponseWriter, r *http.Request) {
-		ip := auth.GetClientIpAddr(r)
-		if !env.IsProd(mode) {
-			// localhost and remote dev require basic login
-			validDev := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-			validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-			log.Info().
-				Str("ip", ip).
-				Bool("validDev", validDev).
-				Bool("validRecaptcha", validRecaptcha).
-				Msg("PS FEED WS")
-
-			if validDev && validRecaptcha {
-				websocket.ServeFeedWs(feedPool, w, r, log)
-			} else {
-				auth.RedirectToDevAuth(w, r, log)
-			}
-		} else {
-			// prod is public
-			// but protected by recaptcha
-			validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-			log.Info().
-				Str("ip", ip).
-				Bool("validRecaptcha", validRecaptcha).
-				Msg("PS FEED WS")
-
-			if validRecaptcha {
-				websocket.ServeFeedWs(feedPool, w, r, log)
-			} else {
-				auth.RedirectToHome(w, r, log)
-			}
-		}
-	})
-	http.HandleFunc("/old-site/public-square-wasm-ws", func(w http.ResponseWriter, r *http.Request) {
-		ip := auth.GetClientIpAddr(r)
-		mode := os.Getenv("MODE")
-		if !env.IsProd(mode) {
-			// localhost and remote dev require basic login
-			validDev := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-			validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-			log.Info().
-				Str("ip", ip).
-				Bool("validDev", validDev).
-				Bool("validRecaptcha", validRecaptcha).
-				Msg("PS WASM WS")
-
-			if validDev && validRecaptcha {
-				websocket.ServeWasmWs(wasmPool, w, r, log)
-			} else {
-				auth.RedirectToDevAuth(w, r, log)
-			}
-		} else {
-			// prod is public
-			// but protected by recaptcha
-			validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-			log.Info().
-				Str("ip", ip).
-				Bool("validRecaptcha", validRecaptcha).
-				Msg("PS WASM WS")
-
-			if validRecaptcha {
-				websocket.ServeWasmWs(wasmPool, w, r, log)
-			} else {
-				auth.RedirectToHome(w, r, log)
-			}
-		}
-	})
+	http.HandleFunc("/old-site/public-square-feed-ws", oldSiteController.PublicSquareFeedWsHandler)
+	http.HandleFunc("/old-site/public-square-wasm-ws", oldSiteController.PublicSquareWasmWsHandler)
 }
 
-func SetupRemotedevRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
-	auth.SetupDevAuth(cookieJar, log)
+func SetupRemotedevRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController) {
+	auth.SetupDevAuth(cookieJar, log, oldSiteController.OldSiteFileServer())
 }
 
-func SetupLocalhostRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
-	auth.SetupDevAuth(cookieJar, log)
+func SetupLocalhostRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController) {
+	auth.SetupDevAuth(cookieJar, log, oldSiteController.OldSiteFileServer())
 }
 
 func SetupProdRoutes() {
