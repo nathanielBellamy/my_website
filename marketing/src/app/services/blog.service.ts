@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BlogPost } from '../models/blog.model';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.localhost';
 import { PaginatedResponse } from '../models/pagination.model';
 
 @Injectable({

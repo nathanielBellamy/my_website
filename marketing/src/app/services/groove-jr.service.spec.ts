@@ -1,6 +1,6 @@
 import { GrooveJrService } from './groove-jr.service';
 import { GrooveJrContent } from '../models/groove-jr.model';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.localhost';
 import { PaginatedResponse } from '../models/pagination.model';
 
 const mockGrooveJrContent: GrooveJrContent[] = [

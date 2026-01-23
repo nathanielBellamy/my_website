@@ -1,6 +1,6 @@
 import { AboutService } from './about.service';
 import { AboutContent } from '../models/about.model';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.localhost';
 import { PaginatedResponse } from '../models/pagination.model';
 
 const mockAboutContent: AboutContent[] = [

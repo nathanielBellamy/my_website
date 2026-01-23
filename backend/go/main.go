@@ -8,6 +8,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
 	"github.com/nathanielBellamy/my_website/backend/go/env"
+	"github.com/nathanielBellamy/my_website/backend/go/marketing"
 	"github.com/nathanielBellamy/my_website/backend/go/old_site"
 	"github.com/nathanielBellamy/my_website/backend/go/websocket"
 	cmap "github.com/orcaman/concurrent-map/v2"
@@ -68,6 +69,7 @@ func main() {
 func SetupRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, feedPool *websocket.Pool, wasmPool *websocket.Pool) {
 	mode := os.Getenv("MODE")
 	oldSiteController := old_site.NewOldSiteController(cookieJar, log, feedPool, wasmPool)
+	marketingController := marketing.NewMarketingController(log)
 
 	if env.IsProd(mode) {
 		SetupProdRoutes()
@@ -77,21 +79,44 @@ func SetupRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolo
 		SetupLocalhostRoutes(cookieJar, log, oldSiteController)
 	}
 
-	SetupBaseRoutes(cookieJar, log, oldSiteController)
+	SetupBaseRoutes(cookieJar, log, oldSiteController, marketingController)
 }
 
-func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController) {
+func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, marketingController *marketing.MarketingController) {
+	log.Info().
+		Msg("Setting up BaseRoutes")
 	mode := os.Getenv("MODE")
 	if env.IsProd(mode) {
 		fs := http.FileServer(http.Dir("old-site"))
 		http.Handle("/", auth.LogClientIp("/", log, fs))
 	}
 
-	// setup recaptcha
+	// old-site routes
 	http.HandleFunc("/old-site/recaptcha", oldSiteController.RecaptchaHandler)
-
 	http.HandleFunc("/old-site/public-square-feed-ws", oldSiteController.PublicSquareFeedWsHandler)
 	http.HandleFunc("/old-site/public-square-wasm-ws", oldSiteController.PublicSquareWasmWsHandler)
+
+	// marketing routes
+	// Blog
+	http.HandleFunc("/api/blog", marketingController.GetAllBlogPostsHandler)
+	http.HandleFunc("/api/blog/{id}", marketingController.GetBlogPostByIDHandler)
+	http.HandleFunc("/api/blog/tag/{tag}", marketingController.GetBlogPostsByTagHandler)
+	http.HandleFunc("/api/blog/date/{date}", marketingController.GetBlogPostsByDateHandler)
+
+	// Home
+	http.HandleFunc("/api/home", marketingController.GetAllHomeContentHandler)
+	http.HandleFunc("/api/home/{id}", marketingController.GetHomeContentByIDHandler)
+
+	// GrooveJr
+	http.HandleFunc("/api/groove-jr", marketingController.GetAllGrooveJrContentHandler)
+	http.HandleFunc("/api/groove-jr/{id}", marketingController.GetGrooveJrContentByIDHandler)
+
+	// About
+	http.HandleFunc("/api/about", marketingController.GetAllAboutContentHandler)
+	http.HandleFunc("/api/about/{id}", marketingController.GetAboutContentByIDHandler)
+
+	// Tracker
+	http.HandleFunc("/api/tracker", marketingController.PostTrackerDataHandler)
 }
 
 func SetupRemotedevRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController) {

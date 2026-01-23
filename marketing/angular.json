@@ -55,25 +55,25 @@
                 }
               ]
             },
-            "development": {
+            "localhost": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.ts"
+                  "with": "src/environments/environment.localhost.ts"
                 }
               ]
             },
-            "dev": {
+            "remotedev": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.dev.ts"
+                  "with": "src/environments/environment.remotedev.ts"
                 }
               ]
             }

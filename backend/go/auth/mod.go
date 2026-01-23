@@ -100,6 +100,5 @@ func LogClientIp(url string, log *zerolog.Logger, handler http.Handler) http.Han
 			Msg("URL HIT")
 
 		handler.ServeHTTP(w, r)
-		return
 	})
 }

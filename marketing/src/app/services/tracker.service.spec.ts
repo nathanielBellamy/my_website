@@ -1,5 +1,5 @@
 import { TrackerService } from './tracker.service';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.localhost';
 
 describe('TrackerService', () => {
   let service: TrackerService;

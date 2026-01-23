@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build-localhost": "ng build",
+    "build-localhost": "ng build --configuration=localhost",
     "build-marketing-localhost": "npm run build-localhost",
     "test": "jest"
   },
