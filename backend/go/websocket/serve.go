@@ -30,7 +30,7 @@ var ServeFeedWs = func(pool *Pool, w http.ResponseWriter, r *http.Request, log *
 	WriteMessage(client.Conn, Message{ClientId: client.ID, Body: "connected"}, log)
 
 	pool.Register <- client
-	client.ReadFeed()
+	ReadFeed(client)
 }
 
 var ServeWasmWs = func(pool *Pool, w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
@@ -54,5 +54,5 @@ var ServeWasmWs = func(pool *Pool, w http.ResponseWriter, r *http.Request, log *
 		Msg("WASM Endpoint Hit")
 
 	pool.Register <- client
-	client.ReadWasm()
+	ReadWasm(client)
 }

@@ -1,0 +1,79 @@
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"testing"
+
+	"github.com/nathanielBellamy/my_website/backend/go/auth"
+	"github.com/nathanielBellamy/my_website/backend/go/marketing"
+
+	cmap "github.com/orcaman/concurrent-map/v2"
+	"github.com/rs/zerolog"
+)
+
+// MockLogger is a mock implementation of zerolog.Logger for testing.
+type MockLogger struct {
+	Buf bytes.Buffer
+}
+
+func (m *MockLogger) Write(p []byte) (n int, err error) {
+	return m.Buf.Write(p)
+}
+
+func TestMain(m *testing.M) {
+	// Set MODE to localhost for testing purposes
+	os.Setenv("MODE", "localhost")
+	// Run tests
+	code := m.Run()
+	// Clean up
+	os.Unsetenv("MODE")
+	os.Exit(code)
+}
+
+func TestSetupBaseRoutes_MarketingBlogPosts(t *testing.T) {
+	// Mock logger
+	mockLogOutput := &MockLogger{}
+	log := zerolog.New(mockLogOutput).Level(zerolog.DebugLevel).With().Logger()
+
+	// Mock dependencies
+	cookieJar := cmap.New[auth.Cookie]()
+
+	
+	// Create an http.ServeMux to register routes
+	mux := http.NewServeMux()
+
+	// Call SetupBaseRoutes to register handlers
+	// Pass nil for oldSiteController as it's not relevant for this marketing test
+	SetupBaseRoutes(mux, &cookieJar, &log, nil, marketing.NewMarketingController(&log))
+
+	// Create a request to the marketing blog posts endpoint
+	req, err := http.NewRequest("GET", "/api/marketing/blog?page=1&limit=5", nil)
+	if err != nil {
+		t.Fatalf("Failed to create request: %v", err)
+	}
+
+	// Record the response
+	rr := httptest.NewRecorder()
+	mux.ServeHTTP(rr, req)
+
+	// Assert the status code
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Handler returned wrong status code: got %v want %v", status, http.StatusOK)
+	}
+
+	// Assert the response body (basic check for non-empty array)
+	var posts []marketing.BlogPost
+	if err := json.Unmarshal(rr.Body.Bytes(), &posts); err != nil {
+		t.Fatalf("Could not unmarshal response: %v", err)
+	}
+
+	if len(posts) == 0 {
+		t.Errorf("Expected at least one blog post, got none")
+	}
+
+	t.Logf("Log output:\n%s", mockLogOutput.Buf.String())
+}

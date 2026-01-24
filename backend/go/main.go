@@ -55,7 +55,7 @@ func main() {
 	go feedPool.StartFeed()
 	go wasmPool.StartWasm()
 
-	SetupRoutes(&cookieJar, &log, feedPool, wasmPool)
+	SetupRoutes(http.DefaultServeMux, &cookieJar, &log, feedPool, wasmPool)
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal().
@@ -66,7 +66,7 @@ func main() {
 		Msg("Now serving on 8080")
 }
 
-func SetupRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, feedPool *websocket.Pool, wasmPool *websocket.Pool) {
+func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, feedPool *websocket.Pool, wasmPool *websocket.Pool) {
 	mode := os.Getenv("MODE")
 	oldSiteController := old_site.NewOldSiteController(cookieJar, log, feedPool, wasmPool)
 	marketingController := marketing.NewMarketingController(log)
@@ -74,54 +74,54 @@ func SetupRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolo
 	if env.IsProd(mode) {
 		SetupProdRoutes()
 	} else if env.IsRemotedev(mode) {
-		SetupRemotedevRoutes(cookieJar, log, oldSiteController)
+		SetupRemotedevRoutes(mux, cookieJar, log, oldSiteController)
 	} else {
-		SetupLocalhostRoutes(cookieJar, log, oldSiteController)
+		SetupLocalhostRoutes(mux, cookieJar, log, oldSiteController)
 	}
 
-	SetupBaseRoutes(cookieJar, log, oldSiteController, marketingController)
+	SetupBaseRoutes(mux, cookieJar, log, oldSiteController, marketingController)
 }
 
-func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, marketingController *marketing.MarketingController) {
+func SetupBaseRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, marketingController *marketing.MarketingController) {
 	log.Info().
 		Msg("Setting up BaseRoutes")
 	mode := os.Getenv("MODE")
 	if env.IsProd(mode) {
 		fs := http.FileServer(http.Dir("old-site"))
-		http.Handle("/", auth.LogClientIp("/", log, fs))
+		mux.Handle("/", auth.LogClientIp("/", log, fs))
 	}
 
 	// old-site routes
-	http.HandleFunc("/old-site/recaptcha", oldSiteController.RecaptchaHandler)
-	http.HandleFunc("/old-site/public-square-feed-ws", oldSiteController.PublicSquareFeedWsHandler)
-	http.HandleFunc("/old-site/public-square-wasm-ws", oldSiteController.PublicSquareWasmWsHandler)
+	mux.HandleFunc("/old-site/recaptcha", oldSiteController.RecaptchaHandler)
+	mux.HandleFunc("/old-site/public-square-feed-ws", oldSiteController.PublicSquareFeedWsHandler)
+	mux.HandleFunc("/old-site/public-square-wasm-ws", oldSiteController.PublicSquareWasmWsHandler)
 
 	// marketing routes
 	// Blog
-	http.HandleFunc("/api/marketing/blog", marketingController.GetAllBlogPostsHandler)
-	http.HandleFunc("/api/marketing/blog/{id}", marketingController.GetBlogPostByIDHandler)
-	http.HandleFunc("/api/marketing/blog/tag/{tag}", marketingController.GetBlogPostsByTagHandler)
-	http.HandleFunc("/api/marketing/blog/date/{date}", marketingController.GetBlogPostsByDateHandler)
+	mux.HandleFunc("/api/marketing/blog", marketingController.GetAllBlogPostsHandler)
+	mux.HandleFunc("/api/marketing/blog/{id}", marketingController.GetBlogPostByIDHandler)
+	mux.HandleFunc("/api/marketing/blog/tag/{tag}", marketingController.GetBlogPostsByTagHandler)
+	mux.HandleFunc("/api/marketing/blog/date/{date}", marketingController.GetBlogPostsByDateHandler)
 
 	// Home
-	http.HandleFunc("/api/marketing/home", marketingController.GetAllHomeContentHandler)
-	http.HandleFunc("/api/marketing/home/{id}", marketingController.GetHomeContentByIDHandler)
+	mux.HandleFunc("/api/marketing/home", marketingController.GetAllHomeContentHandler)
+	mux.HandleFunc("/api/marketing/home/{id}", marketingController.GetHomeContentByIDHandler)
 
 	// GrooveJr
-	http.HandleFunc("/api/marketing/groovejr", marketingController.GetAllGrooveJrContentHandler)
-	http.HandleFunc("/api/marketing/groovejr/{id}", marketingController.GetGrooveJrContentByIDHandler)
+	mux.HandleFunc("/api/marketing/groovejr", marketingController.GetAllGrooveJrContentHandler)
+	mux.HandleFunc("/api/marketing/groovejr/{id}", marketingController.GetGrooveJrContentByIDHandler)
 
 	// About
-	http.HandleFunc("/api/marketing/about", marketingController.GetAllAboutContentHandler)
-	http.HandleFunc("/api/marketing/about/{id}", marketingController.GetAboutContentByIDHandler)
+	mux.HandleFunc("/api/marketing/about", marketingController.GetAllAboutContentHandler)
+	mux.HandleFunc("/api/marketing/about/{id}", marketingController.GetAboutContentByIDHandler)
 }
 
-func SetupRemotedevRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController) {
-	auth.SetupDevAuth(cookieJar, log, oldSiteController.OldSiteFileServer())
+func SetupRemotedevRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController) {
+	auth.SetupDevAuth(mux, cookieJar, log, oldSiteController.OldSiteFileServer())
 }
 
-func SetupLocalhostRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController) {
-	auth.SetupDevAuth(cookieJar, log, oldSiteController.OldSiteFileServer())
+func SetupLocalhostRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController) {
+	auth.SetupDevAuth(mux, cookieJar, log, oldSiteController.OldSiteFileServer())
 }
 
 func SetupProdRoutes() {

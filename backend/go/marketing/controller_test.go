@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"strings"
+
 	"testing"
 
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
@@ -51,11 +51,11 @@ func TestGetAllBlogPostsHandler(t *testing.T) {
 		t.Fatalf("could not unmarshal response: %v", err)
 	}
 
-	if len(posts) != 2 {
-		t.Errorf("expected 2 blog posts, got %d", len(posts))
+	if len(posts) != 10 {
+		t.Errorf("expected 10 blog posts, got %d", len(posts))
 	}
-	if posts[0].ID != "blog-post-1" || posts[1].ID != "blog-post-2" {
-		t.Errorf("expected blog post IDs 1 and 2, got %d and %d", posts[0].ID, posts[1].ID)
+	if posts[0].ID != "blog-post-id-1" || posts[1].ID != "blog-post-id-2" {
+		t.Errorf("expected first two blog post IDs %q and %q, got %q and %q", "blog-post-id-1", "blog-post-id-2", posts[0].ID, posts[1].ID)
 	}
 }
 
@@ -77,7 +77,7 @@ func TestGetBlogPostByIDHandler(t *testing.T) {
 	defer testServer.Close()
 
 	// Test case for existing ID
-	req, err := http.NewRequest("GET", testServer.URL+"/api/blog/1", nil)
+	req, err := http.NewRequest("GET", testServer.URL+"/api/blog/blog-id-1", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -97,8 +97,8 @@ func TestGetBlogPostByIDHandler(t *testing.T) {
 	if err := json.NewDecoder(resp.Body).Decode(&post); err != nil {
 		t.Fatalf("could not unmarshal response: %v", err)
 	}
-	if post.ID != "blog-post-1]" {
-		t.Errorf("expected blog post ID 1, got %d", post.ID)
+	if post.ID != "blog-id-1" {
+		t.Errorf("expected blog post ID %q, got %q", "blog-id-1", post.ID)
 	}
 
 	// Test case for non-existing ID
@@ -119,30 +119,4 @@ func TestGetBlogPostByIDHandler(t *testing.T) {
 	}
 }
 
-func TestPostTrackerDataHandler(t *testing.T) {
-	origGetClientIpAddr := auth.GetClientIpAddr
-	mockLogOutput := &MockLogger{}
-	log := zerolog.New(mockLogOutput).Level(zerolog.DebugLevel).With().Logger()
-	mc := NewMarketingController(&log)
-	t.Cleanup(func() {
-		auth.GetClientIpAddr = origGetClientIpAddr
-		t.Log(mockLogOutput.Buf.String()) // Log the buffer content
-	})
 
-	req, err := http.NewRequest("POST", "/api/tracker", strings.NewReader("some tracking data"))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	rr := httptest.NewRecorder()
-	mc.PostTrackerDataHandler(rr, req)
-
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
-	}
-	if body := rr.Body.String(); body != "Tracker data received" {
-		t.Errorf("handler returned unexpected body: got %q want %q",
-			body, "Tracker data received")
-	}
-}

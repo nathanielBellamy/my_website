@@ -10,14 +10,14 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func SetupDevAuth(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger, oldSiteFileServer http.Handler) {
+func SetupDevAuth(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger, oldSiteFileServer http.Handler) {
 	fs_marketing := http.FileServer(http.Dir("marketing/browser"))
-	http.Handle("/", http.StripPrefix("/", LogClientIp("/", log, RequireDevAuth(cookieJar, log, fs_marketing))))
+	mux.Handle("/", http.StripPrefix("/", LogClientIp("/", log, RequireDevAuth(cookieJar, log, fs_marketing))))
 
-	http.Handle("/old-site/", RequireDevAuth(cookieJar, log, oldSiteFileServer))
+	mux.Handle("/old-site/", RequireDevAuth(cookieJar, log, oldSiteFileServer))
 
 	fs_auth := http.FileServer(http.Dir("auth/dev"))
-	http.Handle("/auth/dev/", LogClientIp("/auth/dev/", log, http.StripPrefix("/auth/dev/", fs_auth)))
+	mux.Handle("/auth/dev/", LogClientIp("/auth/dev/", log, http.StripPrefix("/auth/dev/", fs_auth)))
 
 	// TODO:
 	// - set up salt route
@@ -28,7 +28,7 @@ func SetupDevAuth(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Lo
 	// - sent for comparison
 	// - validate or don't
 
-	http.HandleFunc("/auth/dev/dev-auth", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/auth/dev/dev-auth", func(w http.ResponseWriter, r *http.Request) {
 		mode := os.Getenv("MODE")
 		ip := GetClientIpAddr(r)
 		log.Info().

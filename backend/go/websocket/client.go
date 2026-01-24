@@ -27,7 +27,7 @@ type Message struct {
 	System   bool   `json:"system"`
 }
 
-func (c *Client) ReadFeed() {
+var ReadFeed = func(c *Client) {
 	defer func() {
 		c.Pool.Unregister <- c
 		(*c.Conn).Close()
@@ -52,7 +52,7 @@ func (c *Client) ReadFeed() {
 	}
 }
 
-func (c *Client) ReadWasm() {
+var ReadWasm = func(c *Client) {
 	defer func() {
 		c.Pool.Unregister <- c
 		(*c.Conn).Close()

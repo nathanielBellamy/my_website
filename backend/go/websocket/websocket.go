@@ -11,7 +11,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func Upgrade(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) (net.Conn, error) {
+var Upgrade = func(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) (net.Conn, error) {
 	conn, _, _, err := ws.UpgradeHTTP(r, w)
 	if err != nil {
 		log.Error().
@@ -22,7 +22,7 @@ func Upgrade(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) (net.C
 	return conn, nil
 }
 
-func WriteMessage(conn *net.Conn, msg Message, log *zerolog.Logger) {
+var WriteMessage = func(conn *net.Conn, msg Message, log *zerolog.Logger) {
 	j, err := json.Marshal(msg)
 	if err != nil {
 		log.Error().
