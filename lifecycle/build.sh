@@ -148,8 +148,28 @@ ${MODE}
 
 EOF
 
+SERVER_ONLY=false
+incl_old_site=false
+
+# Parse command-line arguments
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+    --server-only)
+      SERVER_ONLY=true
+      ;;
+    --incl-old)
+      incl_old_site=true
+      ;;
+    *)
+      echo "Unknown parameter passed: $1"
+      exit 1
+      ;;
+  esac
+  shift
+done
+
 # Check if we only want to build the Go server
-if [ "$1" == "--server-only" ]; then
+if [ "$SERVER_ONLY" = true ]; then
   build_go_server $MODE
   exit 0
 fi
@@ -159,7 +179,9 @@ case $MODE in
   localhost)
     build_go_server "localhost"
     build_auth_dev_spa "localhost"
-    build_old_site_spa "localhost"
+    if [ "$incl_old_site" = true ]; then
+      build_old_site_spa "localhost"
+    fi
     build_marketing_spa "localhost"
     ;;
   remotedev)
