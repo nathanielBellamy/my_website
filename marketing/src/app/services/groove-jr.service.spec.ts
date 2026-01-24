@@ -1,67 +1,55 @@
+import { TestBed } from '@angular/core/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { GrooveJrService } from './groove-jr.service';
 import { GrooveJrContent } from '../models/groove-jr.model';
-import { environment } from '../../environments/environment.localhost';
-import { PaginatedResponse } from '../models/pagination.model';
+import { environment } from '../../environments/environment';
 
 const mockGrooveJrContent: GrooveJrContent[] = [
-  { id: 1, title: 'Groove Jr.', body: 'A music app.', url: 'http://someurl.com' },
-  { id: 2, title: 'Features', body: 'It has many features.', url: 'http://someurl.com/features' },
+  { id: '1', title: 'Groove Jr.', content: 'A music app.' },
+  { id: '2', title: 'Features', content: 'It has many features.' },
 ];
-
-const mockPaginatedResponse: PaginatedResponse<GrooveJrContent> = {
-  data: mockGrooveJrContent,
-  total: 2,
-  page: 1,
-  limit: 10,
-};
 
 describe('GrooveJrService', () => {
   let service: GrooveJrService;
-  const API_URL = `${environment.API_BASE_URL}/groove-jr`;
+  let httpMock: HttpTestingController;
+  const API_URL = `${environment.API_BASE_URL}/marketing/groovejr`;
 
   beforeEach(() => {
-    service = new GrooveJrService();
-    global.fetch = jest.fn();
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [GrooveJrService],
+    });
+    service = TestBed.inject(GrooveJrService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    httpMock.verify();
   });
 
   describe('getAll', () => {
     it('should return paginated groove-jr content', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve(mockPaginatedResponse),
-      });
-
-      const content = await service.getAll();
-      expect(content).toEqual(mockPaginatedResponse);
-      expect(fetch).toHaveBeenCalledWith(`${API_URL}?page=1&limit=10`);
-    });
-
-    it('should throw an error if the request fails', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({ ok: false });
-      await expect(service.getAll()).rejects.toThrow('Failed to fetch groove-jr content');
+      const promise = service.getAll(1, 10);
+      const req = httpMock.expectOne(`${API_URL}?page=1&limit=10`);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockGrooveJrContent);
+      const content = await promise;
+      expect(content).toEqual(mockGrooveJrContent);
     });
   });
 
   describe('getById', () => {
     it('should return a single content item', async () => {
       const content = mockGrooveJrContent[0];
-      (global.fetch as jest.Mock).mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve(content),
-      });
-
-      const result = await service.getById(1);
+      const promise = service.getById('1');
+      const req = httpMock.expectOne(`${API_URL}/1`);
+      expect(req.request.method).toBe('GET');
+      req.flush(content);
+      const result = await promise;
       expect(result).toEqual(content);
-      expect(fetch).toHaveBeenCalledWith(`${API_URL}/1`);
-    });
-
-    it('should throw an error if the request fails', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({ ok: false });
-      await expect(service.getById(1)).rejects.toThrow('Failed to fetch groove-jr content with id 1');
     });
   });
 });

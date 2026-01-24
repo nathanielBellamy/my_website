@@ -3,27 +3,27 @@ import { GrooveJrComponent } from './groove-jr.component';
 import { GrooveJrStore } from './groove-jr.store';
 import { signal, WritableSignal } from '@angular/core';
 import { GrooveJrContent } from '../../models/groove-jr.model';
+import { RenderResult } from '@testing-library/angular';
 
 const mockGrooveJrContent: GrooveJrContent[] = [
-  { id: 1, title: 'Title 1', body: 'Body 1', url: 'http://test.com' },
-  { id: 2, title: 'Title 2', body: 'Body 2', url: 'http://test2.com' },
+  { id: '1', title: 'Title 1', content: 'Body 1' },
+  { id: '2', title: 'Title 2', content: 'Body 2' },
 ];
 
 describe('GrooveJrComponent', () => {
   let contentSignal: WritableSignal<GrooveJrContent[]>;
   let loadingSignal: WritableSignal<boolean>;
   let errorSignal: WritableSignal<string | null>;
-  let loadContentMock: jest.Mock;
+  let loadMoreMock: jest.Mock;
+  let fixture: RenderResult<GrooveJrComponent>['fixture'];
 
-  beforeEach(() => {
+  beforeEach(async () => {
     contentSignal = signal([]);
     loadingSignal = signal(false);
     errorSignal = signal(null);
-    loadContentMock = jest.fn();
-  });
+    loadMoreMock = jest.fn();
 
-  it('should call loadContent on init', async () => {
-    await render(GrooveJrComponent, {
+    const renderResult = await render(GrooveJrComponent, {
       providers: [
         {
           provide: GrooveJrStore,
@@ -31,68 +31,41 @@ describe('GrooveJrComponent', () => {
             content: contentSignal,
             loading: loadingSignal,
             error: errorSignal,
-            loadContent: loadContentMock,
+            allLoaded: signal(false),
+            loadMore: loadMoreMock,
           },
         },
       ],
     });
-    expect(loadContentMock).toHaveBeenCalled();
+    fixture = renderResult.fixture;
+  });
+
+  it('should call loadMore on init', () => {
+    expect(loadMoreMock).toHaveBeenCalled();
   });
 
   it('should render content based on store content', async () => {
     contentSignal.set(mockGrooveJrContent);
-    await render(GrooveJrComponent, {
-      providers: [
-        {
-          provide: GrooveJrStore,
-          useValue: {
-            content: contentSignal,
-            loading: loadingSignal,
-            error: errorSignal,
-            loadContent: loadContentMock,
-          },
-        },
-      ],
+    fixture.detectChanges();
+    await waitFor(() => {
+      screen.getByText('Title 1');
+      screen.getByText('Body 2');
     });
-
-    screen.getByText('Title 1');
-    screen.getByText('Body 2');
-    expect(screen.getAllByText('Learn more').length).toBe(2);
   });
 
   it('should show loading indicator when loading', async () => {
     loadingSignal.set(true);
-    await render(GrooveJrComponent, {
-      providers: [
-        {
-          provide: GrooveJrStore,
-          useValue: {
-            content: contentSignal,
-            loading: loadingSignal,
-            error: errorSignal,
-            loadContent: loadContentMock,
-          },
-        },
-      ],
+    fixture.detectChanges();
+    await waitFor(() => {
+      screen.getByText('Loading...');
     });
-    screen.getByText('Loading...');
   });
 
   it('should show error message on error', async () => {
     errorSignal.set('Test Error');
-    await render(GrooveJrComponent, {
-      providers: [
-        {
-          provide: GrooveJrStore,
-          useValue: {
-            content: contentSignal,
-            loading: loadingSignal,
-            error: errorSignal,
-            loadContent: loadContentMock,
-          },
-        },
-      ],
+    fixture.detectChanges();
+    await waitFor(() => {
+      screen.getByText('Error: Test Error');
     });
-    screen.getByText('Error: Test Error');
   });
 });

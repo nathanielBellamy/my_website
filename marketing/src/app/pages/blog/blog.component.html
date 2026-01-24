@@ -5,9 +5,10 @@
     [allLoaded]="store.allLoaded()"
     (scrolled)="onScroll()"
     [itemTemplate]="itemTmpl"
+    [error]="store.error()"
   ></app-infinite-scroll>
 </div>
 
 <ng-template #itemTmpl let-item>
-  <app-card [title]="item.Title" [content]="item.Content"></app-card>
+  <app-card [title]="item.title" [content]="item.content"></app-card>
 </ng-template>

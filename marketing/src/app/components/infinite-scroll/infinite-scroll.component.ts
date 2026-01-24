@@ -13,6 +13,7 @@ export class InfiniteScrollComponent {
   @Input() items: any[] = [];
   @Input() loading = false;
   @Input() allLoaded = false;
+  @Input() error: string | null = null;
   @Output() scrolled = new EventEmitter<void>();
 
   onScroll(event: Event) {

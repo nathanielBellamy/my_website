@@ -1,5 +1,5 @@
 export interface AboutContent {
-  id: number;
+  id: string;
   title: string;
-  body: string;
+  content: string;
 }

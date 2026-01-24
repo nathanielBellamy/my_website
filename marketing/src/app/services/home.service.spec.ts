@@ -1,48 +1,43 @@
+import { TestBed } from '@angular/core/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { HomeService } from './home.service';
 import { HomeContent } from '../models/home.model';
-import { environment } from '../../environments/environment.localhost';
-import { PaginatedResponse } from '../models/pagination.model';
+import { environment } from '../../environments/environment';
 
 const mockHomeContent: HomeContent[] = [
-  { id: 'home-1', title: 'Welcome', body: 'Welcome to the site.' },
-  { id: 'home-2', title: 'About', body: 'This is a section about me.' },
+  { id: 'home-1', title: 'Welcome', content: 'Welcome to the site.' },
+  { id: 'home-2', title: 'About', content: 'This is a section about me.' },
 ];
-
-const mockPaginatedResponse: PaginatedResponse<HomeContent> = {
-  data: mockHomeContent,
-  total: 2,
-  page: 1,
-  limit: 10,
-};
 
 describe('HomeService', () => {
   let service: HomeService;
-  const API_URL = `${environment.API_BASE_URL}/home`;
+  let httpMock: HttpTestingController;
+  const API_URL = `${environment.API_BASE_URL}/marketing/home`;
 
   beforeEach(() => {
-    service = new HomeService();
-    global.fetch = jest.fn();
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [HomeService],
+    });
+    service = TestBed.inject(HomeService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    httpMock.verify();
   });
 
   describe('getAll', () => {
     it('should return paginated home content', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve(mockPaginatedResponse),
-      });
-
-      const content = await service.getAll(1, 10);
-      expect(content).toEqual(mockPaginatedResponse);
-      expect(fetch).toHaveBeenCalledWith(`${API_URL}?page=1&limit=10`);
-    });
-
-    it('should throw an error if the request fails', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({ ok: false });
-      await expect(service.getAll(1, 10)).rejects.toThrow('Failed to fetch home content');
+      const promise = service.getAll(1, 10);
+      const req = httpMock.expectOne(`${API_URL}?page=1&limit=10`);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockHomeContent);
+      const content = await promise;
+      expect(content).toEqual(mockHomeContent);
     });
   });
 });

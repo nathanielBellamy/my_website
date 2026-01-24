@@ -6,24 +6,22 @@ import { signal, WritableSignal } from '@angular/core';
 import { HomeContent } from '../../models/home.model';
 
 const mockHomeContent: HomeContent[] = [
-  { id: 1, title: 'Title 1', body: 'Body 1' },
-  { id: 2, title: 'Title 2', body: 'Body 2' },
+  { id: '1', title: 'Title 1', content: 'Body 1' },
+  { id: '2', title: 'Title 2', content: 'Body 2' },
 ];
 
 describe('HomeComponent', () => {
   let contentSignal: WritableSignal<HomeContent[]>;
   let loadingSignal: WritableSignal<boolean>;
   let errorSignal: WritableSignal<string | null>;
-  let loadContentMock: jest.Mock;
+  let loadMoreMock: jest.Mock;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     contentSignal = signal([]);
     loadingSignal = signal(false);
     errorSignal = signal(null);
-    loadContentMock = jest.fn();
-  });
+    loadMoreMock = jest.fn();
 
-  it('should call loadContent on init', async () => {
     await render(HomeComponent, {
       imports: [CardComponent],
       providers: [
@@ -33,71 +31,39 @@ describe('HomeComponent', () => {
             content: contentSignal,
             loading: loadingSignal,
             error: errorSignal,
-            loadContent: loadContentMock,
+            allLoaded: signal(false),
+            loadMore: loadMoreMock,
           }),
         },
       ],
     });
-    expect(loadContentMock).toHaveBeenCalled();
+  });
+
+  it('should call loadMore on init', () => {
+    expect(loadMoreMock).toHaveBeenCalled();
   });
 
   it('should render cards based on store content', async () => {
     contentSignal.set(mockHomeContent);
-    await render(HomeComponent, {
-      imports: [CardComponent],
-      providers: [
-        {
-          provide: HomeStore,
-          useFactory: () => ({
-            content: contentSignal,
-            loading: loadingSignal,
-            error: errorSignal,
-            loadContent: loadContentMock,
-          }),
-        },
-      ],
-    });
 
-    expect(screen.getAllByRole('article').length).toBe(2);
-    screen.getByText('Title 1');
-    screen.getByText('Body 2');
+    await waitFor(() => {
+      expect(screen.getAllByRole('article').length).toBe(2);
+      screen.getByText('Title 1');
+      screen.getByText('Body 2');
+    });
   });
 
   it('should show loading indicator when loading', async () => {
     loadingSignal.set(true);
-    await render(HomeComponent, {
-      imports: [CardComponent],
-      providers: [
-        {
-          provide: HomeStore,
-          useFactory: () => ({
-            content: contentSignal,
-            loading: loadingSignal,
-            error: errorSignal,
-            loadContent: loadContentMock,
-          }),
-        },
-      ],
+    await waitFor(() => {
+      screen.getByText('Loading...');
     });
-    screen.getByText('Loading...');
   });
 
   it('should show error message on error', async () => {
     errorSignal.set('Test Error');
-    await render(HomeComponent, {
-      imports: [CardComponent],
-      providers: [
-        {
-          provide: HomeStore,
-          useFactory: () => ({
-            content: contentSignal,
-            loading: loadingSignal,
-            error: errorSignal,
-            loadContent: loadContentMock,
-          }),
-        },
-      ],
+    await waitFor(() => {
+      screen.getByText('Error: Test Error');
     });
-    screen.getByText('Error: Test Error');
   });
 });
