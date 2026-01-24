@@ -1,5 +1,6 @@
 #!/bin/bash
 #
+cd "$(dirname "$0")/.."
 
 # Load environment variables from config.env
 if [ -f "config.env" ]; then
@@ -18,12 +19,11 @@ fi
 # Function for Go server build
 build_go_server() {
     cat << EOF
-
   📣  🏗️   BUILDING:
 GO SERVER
-
 EOF
-  cd backend && cd go
+
+  cd backend/go
   TARGET_ARCH="LINUX"
   if [ "$MODE" != "localhost" ]; then
 
@@ -55,7 +55,7 @@ EOF
       exit 1
   fi
 
-  cd .. && cd ..
+  cd ../..
     cat << EOF
 
   📣  🏁  DONE:
@@ -73,8 +73,8 @@ AUTH SPA
 
 EOF
   SPA_ENV=$1
-  cd auth && cd dev && npm run build-$SPA_ENV 
-  cd .. && cd ..
+  cd auth/dev && npm run build-$SPA_ENV 
+  cd ../..
   cat << EOF
 
   📣  🏁  DONE:
@@ -92,14 +92,13 @@ UPDATED ASSET PATHS IN AUTH SPA index.html
 EOF
 }
 
-# Function for old-site main SPA build
-build_main_spa() {
+# Function for old-site SPA build
+build_old_site_spa() {
   cat << EOF
-
   📣  🏗️   BUILDING:
 old-site SPA
-
 EOF
+
   SPA_ENV=$1
   cd old-site && npm run build-old-site-$SPA_ENV 
   cd ..
@@ -137,16 +136,9 @@ EOF
 MARKETING SPA BUILT
 
 EOF
-
-  # Perform the regex string replacement
-  sed -i '' 's/\/assets/\.\/assets/g' build/marketing/index.html
-  cat << EOF
-
-  📣  🏁  DONE:
-UPDATED ASSET PATHS IN MARKETING SPA index.html
-
-EOF
 }
+
+######
 
 cat << EOF
 
@@ -167,19 +159,19 @@ case $MODE in
   localhost)
     build_go_server "localhost"
     build_auth_dev_spa "localhost"
-    build_main_spa "localhost"
+    build_old_site_spa "localhost"
     build_marketing_spa "localhost"
     ;;
   remotedev)
     build_go_server "remotedev"
     build_auth_dev_spa "remotedev"
-    build_main_spa "remotedev"
+    build_old_site_spa "remotedev"
     build_marketing_spa "remotedev"
     ;;
   prod)
     build_go_server "prod"
     build_auth_dev_spa "prod"
-    build_main_spa "prod"
+    build_old_site_spa "prod"
     build_marketing_spa "prod"
     ;;
   *)
