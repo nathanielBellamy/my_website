@@ -1,27 +1,27 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { AboutContent } from '../models/about.model';
-import { environment } from '../../environments/environment.localhost';
-import { PaginatedResponse } from '../models/pagination.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AboutService {
-  private readonly API_URL = `${environment.API_BASE_URL}/about`;
+  private apiUrl = `${environment.API_BASE_URL}/marketing/about`;
+  private readonly http = inject(HttpClient);
 
-  async getAll(page = 1, limit = 10): Promise<PaginatedResponse<AboutContent>> {
-    const response = await fetch(`${this.API_URL}?page=${page}&limit=${limit}`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch about content');
-    }
-    return response.json();
+  constructor() {}
+
+  getAll(page: number, limit: number): Promise<AboutContent[]> {
+    return firstValueFrom(
+      this.http.get<AboutContent[]>(`${this.apiUrl}?page=${page}&limit=${limit}`)
+    );
   }
 
-  async getById(id: number): Promise<AboutContent> {
-    const response = await fetch(`${this.API_URL}/${id}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch about content with id ${id}`);
-    }
-    return response.json();
+  getById(id: string): Promise<AboutContent[]> {
+    return firstValueFrom(
+      this.http.get<AboutContent[]>(`${this.apiUrl}/${id}`)
+    );
   }
 }

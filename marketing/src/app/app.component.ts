@@ -4,7 +4,6 @@ import { HeaderComponent } from './components/header/header.component';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
-import { TrackerService } from './services/tracker.service';
 
 @Component({
   selector: 'app-root',
@@ -15,12 +14,11 @@ import { TrackerService } from './services/tracker.service';
 })
 export class AppComponent implements OnInit {
   showHeader: boolean = true;
-  private readonly trackerService = inject(TrackerService);
+  private readonly router: Router = inject(Router);
 
-  constructor(private readonly router: Router) {}
+  constructor() {}
 
   ngOnInit() {
-    this.trackerService.trackIp();
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {

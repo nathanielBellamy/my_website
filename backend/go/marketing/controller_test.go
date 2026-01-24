@@ -54,7 +54,7 @@ func TestGetAllBlogPostsHandler(t *testing.T) {
 	if len(posts) != 2 {
 		t.Errorf("expected 2 blog posts, got %d", len(posts))
 	}
-	if posts[0].ID != 1 || posts[1].ID != 2 {
+	if posts[0].ID != "blog-post-1" || posts[1].ID != "blog-post-2" {
 		t.Errorf("expected blog post IDs 1 and 2, got %d and %d", posts[0].ID, posts[1].ID)
 	}
 }
@@ -97,7 +97,7 @@ func TestGetBlogPostByIDHandler(t *testing.T) {
 	if err := json.NewDecoder(resp.Body).Decode(&post); err != nil {
 		t.Fatalf("could not unmarshal response: %v", err)
 	}
-	if post.ID != 1 {
+	if post.ID != "blog-post-1]" {
 		t.Errorf("expected blog post ID 1, got %d", post.ID)
 	}
 

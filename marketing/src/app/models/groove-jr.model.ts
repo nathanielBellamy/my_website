@@ -1,7 +1,5 @@
-
 export interface GrooveJrContent {
-  id: number;
-  title: string;
-  body: string;
-  url: string;
+  ID: number;
+  Title: string;
+  Content: string;
 }

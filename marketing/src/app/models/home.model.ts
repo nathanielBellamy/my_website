@@ -1,6 +1,5 @@
-
 export interface HomeContent {
-  id: number;
+  id: string;
   title: string;
   body: string;
 }

@@ -1,27 +1,27 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { GrooveJrContent } from '../models/groove-jr.model';
-import { environment } from '../../environments/environment.localhost';
-import { PaginatedResponse } from '../models/pagination.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GrooveJrService {
-  private readonly API_URL = `${environment.API_BASE_URL}/groove-jr`;
+  private apiUrl = `${environment.API_BASE_URL}/marketing/groovejr`;
+  private readonly http = inject(HttpClient);
 
-  async getAll(page = 1, limit = 10): Promise<PaginatedResponse<GrooveJrContent>> {
-    const response = await fetch(`${this.API_URL}?page=${page}&limit=${limit}`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch groove-jr content');
-    }
-    return response.json();
+  constructor() {}
+
+  getAll(page: number, limit: number): Promise<GrooveJrContent[]> {
+    return firstValueFrom(
+      this.http.get<GrooveJrContent[]>(`${this.apiUrl}?page=${page}&limit=${limit}`)
+    );
   }
 
-  async getById(id: number): Promise<GrooveJrContent> {
-    const response = await fetch(`${this.API_URL}/${id}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch groove-jr content with id ${id}`);
-    }
-    return response.json();
+  getById(id: string): Promise<GrooveJrContent[]> {
+    return firstValueFrom(
+      this.http.get<GrooveJrContent[]>(`${this.apiUrl}/${id}`)
+    );
   }
 }

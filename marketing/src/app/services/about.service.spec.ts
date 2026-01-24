@@ -1,7 +1,8 @@
 import { AboutService } from './about.service';
 import { AboutContent } from '../models/about.model';
-import { environment } from '../../environments/environment.localhost';
+import { environment } from '../../environments/environment';
 import { PaginatedResponse } from '../models/pagination.model';
+import { HttpClient } from '@angular/common/http';
 
 const mockAboutContent: AboutContent[] = [
   { id: 1, title: 'About Me', body: 'I am a software engineer.' },
@@ -35,14 +36,14 @@ describe('AboutService', () => {
         json: () => Promise.resolve(mockPaginatedResponse),
       });
 
-      const content = await service.getAll();
+      const content = await service.getAll(1, 10);
       expect(content).toEqual(mockPaginatedResponse);
       expect(fetch).toHaveBeenCalledWith(`${API_URL}?page=1&limit=10`);
     });
 
     it('should throw an error if the request fails', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({ ok: false });
-      await expect(service.getAll()).rejects.toThrow('Failed to fetch about content');
+      await expect(service.getAll(1, 10)).rejects.toThrow('Failed to fetch about content');
     });
   });
 
@@ -54,14 +55,14 @@ describe('AboutService', () => {
         json: () => Promise.resolve(content),
       });
 
-      const result = await service.getById(1);
+      const result = await service.getById('about-1');
       expect(result).toEqual(content);
       expect(fetch).toHaveBeenCalledWith(`${API_URL}/1`);
     });
 
     it('should throw an error if the request fails', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({ ok: false });
-      await expect(service.getById(1)).rejects.toThrow('Failed to fetch about content with id 1');
+      await expect(service.getById('myAbout')).rejects.toThrow('Failed to fetch about content.');
     });
   });
 });

@@ -26,9 +26,12 @@ This document outlines the plan and process for developing the new Angular front
   - We will be using the Angular Testing Library as our main unit test framework
     - I should never see TestBed in this code
   - We will use Cypress to write an E2E test suite that can target local, dev, and production environments. 
+  - Never pass services into constructors. Always inject services directly: `private readonly fooService: FooService = inject(FooService);`
 
   ## JavaScript/TypeScript conventions
   - We will always prefer `Enum`s over loose strings.
+  - All object and interface field names should use camel case: `{ fooBar: string, baz: number }`
+  - On the frontend, all ids will be UUID strings, hence all interfaces with an `id` field should define `id: string`
 
   ## HTML Convetions
   - We will prefer tall and skinny HTML as opposed to long-lined HTML

@@ -1,27 +1,21 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { HomeContent } from '../models/home.model';
-import { environment } from '../../environments/environment.localhost';
-import { PaginatedResponse } from '../models/pagination.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HomeService {
-  private readonly API_URL = `${environment.API_BASE_URL}/home`;
+  private apiUrl = `${environment.API_BASE_URL}/marketing/home`;
+  private readonly http = inject(HttpClient);
 
-  async getAll(page = 1, limit = 10): Promise<PaginatedResponse<HomeContent>> {
-    const response = await fetch(`${this.API_URL}?page=${page}&limit=${limit}`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch home content');
-    }
-    return response.json();
-  }
+  constructor() {}
 
-  async getById(id: number): Promise<HomeContent> {
-    const response = await fetch(`${this.API_URL}/${id}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch home content with id ${id}`);
-    }
-    return response.json();
+  getAll(page: number, limit: number): Promise<HomeContent[]> {
+    return firstValueFrom(
+      this.http.get<HomeContent[]>(`${this.apiUrl}?page=${page}&limit=${limit}`)
+    );
   }
 }

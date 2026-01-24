@@ -1,18 +1,23 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { BlogStore } from './blog.store';
 import { CommonModule } from '@angular/common';
+import { InfiniteScrollComponent } from '../../components/infinite-scroll/infinite-scroll.component';
 import { CardComponent } from '../../components/card/card.component';
 
 @Component({
   selector: 'app-blog',
   standalone: true,
-  imports: [CommonModule, CardComponent],
+  imports: [CommonModule, InfiniteScrollComponent, CardComponent],
   templateUrl: './blog.component.html',
 })
 export class BlogComponent implements OnInit {
   readonly store = inject(BlogStore);
 
   ngOnInit() {
-    this.store.loadPosts();
+    this.store.loadMore();
+  }
+
+  onScroll() {
+    this.store.loadMore();
   }
 }

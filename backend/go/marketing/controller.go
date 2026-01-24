@@ -44,35 +44,46 @@ func getPaginationParams(r *http.Request) (int, int) {
 func (mc *MarketingController) GetAllBlogPostsHandler(w http.ResponseWriter, r *http.Request) {
 	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllBlogPostsHandler Hit")
 	page, limit := getPaginationParams(r)
-	_ = page // Dummy usage to avoid "declared and not used" error
-	_ = limit // Dummy usage to avoid "declared and not used" error
 
 	// Placeholder data
-	posts := []BlogPost{
-		{ID: 1, Title: "My First Blog Post", Content: "This is the content of my first blog post.", Author: "Nate", Tags: []string{"go", "backend"}, CreatedAt: time.Now(), UpdatedAt: time.Now()},
-		{ID: 2, Title: "My Second Blog Post", Content: "This is the content of my second blog post.", Author: "Nate", Tags: []string{"angular", "frontend"}, CreatedAt: time.Now(), UpdatedAt: time.Now()},
+	posts := make([]BlogPost, 0)
+	for i := 1; i <= 25; i++ {
+		posts = append(posts, BlogPost{
+			ID:        "blog-post-id-" + strconv.Itoa(i),
+			Title:     "Blog Post " + strconv.Itoa(i),
+			Content:   "This is the content of blog post " + strconv.Itoa(i) + ".",
+			Author:    "Nate",
+			Tags:      []string{"go", "backend", "testing"},
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		})
 	}
 
-	json.NewEncoder(w).Encode(posts)
+	start := (page - 1) * limit
+	if start > len(posts) {
+		start = len(posts)
+	}
+	end := start + limit
+	if end > len(posts) {
+		end = len(posts)
+	}
+
+	paginatedPosts := posts[start:end]
+
+	json.NewEncoder(w).Encode(paginatedPosts)
 }
 
 // GetBlogPostByIDHandler handles fetching a single blog post by ID.
 func (mc *MarketingController) GetBlogPostByIDHandler(w http.ResponseWriter, r *http.Request) {
 	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetBlogPostByIDHandler Hit")
-	idStr := r.PathValue("id") // Assuming mux or similar router that extracts path variables
-	mc.Log.Debug().Str("idStr", idStr).Msg("GetBlogPostByIDHandler: PathValue 'id'")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		mc.Log.Error().Err(err).Str("idStr", idStr).Msg("GetBlogPostByIDHandler: Error converting idStr to int")
-		http.Error(w, "Invalid blog post ID", http.StatusBadRequest)
-		return
-	}
+	id := r.PathValue("id") // Assuming mux or similar router that extracts path variables
+	mc.Log.Debug().Str("idStr", id).Msg("GetBlogPostByIDHandler: PathValue 'id'")
 
 	// Placeholder data
-	if id == 1 {
-		json.NewEncoder(w).Encode(BlogPost{ID: 1, Title: "My First Blog Post", Content: "This is the content of my first blog post.", Author: "Nate", Tags: []string{"go", "backend"}, CreatedAt: time.Now(), UpdatedAt: time.Now()})
-	} else if id == 2 {
-		json.NewEncoder(w).Encode(BlogPost{ID: 2, Title: "My Second Blog Post", Content: "This is the content of my second blog post.", Author: "Nate", Tags: []string{"angular", "frontend"}, CreatedAt: time.Now(), UpdatedAt: time.Now()})
+	if id == "blog-id-1" {
+		json.NewEncoder(w).Encode(BlogPost{ID: "blog-id-1", Title: "My First Blog Post", Content: "This is the content of my first blog post.", Author: "Nate", Tags: []string{"go", "backend"}, CreatedAt: time.Now(), UpdatedAt: time.Now()})
+	} else if id == "blog-id-2" {
+		json.NewEncoder(w).Encode(BlogPost{ID: "blog-id-2", Title: "My Second Blog Post", Content: "This is the content of my second blog post.", Author: "Nate", Tags: []string{"angular", "frontend"}, CreatedAt: time.Now(), UpdatedAt: time.Now()})
 	} else {
 		http.Error(w, "Blog post not found", http.StatusNotFound)
 	}
@@ -83,19 +94,19 @@ func (mc *MarketingController) GetBlogPostsByTagHandler(w http.ResponseWriter, r
 	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetBlogPostsByTagHandler Hit")
 	tag := r.PathValue("tag") // Assuming mux or similar router
 	page, limit := getPaginationParams(r)
-	_ = page // Dummy usage
+	_ = page  // Dummy usage
 	_ = limit // Dummy usage
-	_ = tag // Dummy usage
+	_ = tag   // Dummy usage
 
 	// Placeholder data
 	if tag == "go" {
 		posts := []BlogPost{
-			{ID: 1, Title: "My First Blog Post", Content: "This is the content of my first blog post.", Author: "Nate", Tags: []string{"go", "backend"}, CreatedAt: time.Now(), UpdatedAt: time.Now()},
+			{ID: "blog-id-1", Title: "My First Blog Post", Content: "This is the content of my first blog post.", Author: "Nate", Tags: []string{"go", "backend"}, CreatedAt: time.Now(), UpdatedAt: time.Now()},
 		}
 		json.NewEncoder(w).Encode(posts)
 	} else if tag == "angular" {
 		posts := []BlogPost{
-			{ID: 2, Title: "My Second Blog Post", Content: "This is the content of my second blog post.", Author: "Nate", Tags: []string{"angular", "frontend"}, CreatedAt: time.Now(), UpdatedAt: time.Now()},
+			{ID: "blog-id-2", Title: "My Second Blog Post", Content: "This is the content of my second blog post.", Author: "Nate", Tags: []string{"angular", "frontend"}, CreatedAt: time.Now(), UpdatedAt: time.Now()},
 		}
 		json.NewEncoder(w).Encode(posts)
 	} else {
@@ -108,15 +119,15 @@ func (mc *MarketingController) GetBlogPostsByDateHandler(w http.ResponseWriter, 
 	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetBlogPostsByDateHandler Hit")
 	dateStr := r.PathValue("date") // Assuming mux or similar router
 	page, limit := getPaginationParams(r)
-	_ = page // Dummy usage
-	_ = limit // Dummy usage
+	_ = page    // Dummy usage
+	_ = limit   // Dummy usage
 	_ = dateStr // Dummy usage
 
 	// Placeholder data
 	// For simplicity, let's hardcode a date match
 	if dateStr == "2026-01-23" {
 		posts := []BlogPost{
-			{ID: 1, Title: "My First Blog Post", Content: "This is the content of my first blog post.", Author: "Nate", Tags: []string{"go", "backend"}, CreatedAt: time.Now(), UpdatedAt: time.Now()},
+			{ID: "blog-id-1", Title: "My First Blog Post", Content: "This is the content of my first blog post.", Author: "Nate", Tags: []string{"go", "backend"}, CreatedAt: time.Now(), UpdatedAt: time.Now()},
 		}
 		json.NewEncoder(w).Encode(posts)
 	} else {
@@ -129,29 +140,39 @@ func (mc *MarketingController) GetBlogPostsByDateHandler(w http.ResponseWriter, 
 func (mc *MarketingController) GetAllHomeContentHandler(w http.ResponseWriter, r *http.Request) {
 	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllHomeContentHandler Hit")
 	page, limit := getPaginationParams(r)
-	_ = page // Dummy usage
-	_ = limit // Dummy usage
 
 	// Placeholder data
-	content := []HomeContent{
-		{ID: 1, Title: "Welcome Home", Content: "This is the content for the home page."},
+	content := make([]HomeContent, 0)
+	for i := 1; i <= 25; i++ {
+		content = append(content, HomeContent{
+			ID:      "home-id-" + strconv.Itoa(i),
+			Title:   "Home Content " + strconv.Itoa(i),
+			Content: "This is home content " + strconv.Itoa(i) + ".",
+		})
 	}
-	json.NewEncoder(w).Encode(content)
+
+	start := (page - 1) * limit
+	if start > len(content) {
+		start = len(content)
+	}
+	end := start + limit
+	if end > len(content) {
+		end = len(content)
+	}
+
+	paginatedContent := content[start:end]
+
+	json.NewEncoder(w).Encode(paginatedContent)
 }
 
 // GetHomeContentByIDHandler handles fetching home content by ID.
 func (mc *MarketingController) GetHomeContentByIDHandler(w http.ResponseWriter, r *http.Request) {
 	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetHomeContentByIDHandler Hit")
-	idStr := r.PathValue("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		http.Error(w, "Invalid home content ID", http.StatusBadRequest)
-		return
-	}
+	id := r.PathValue("id")
 
 	// Placeholder data
-	if id == 1 {
-		json.NewEncoder(w).Encode(HomeContent{ID: 1, Title: "Welcome Home", Content: "This is the content for the home page."})
+	if id == "home-id-1" {
+		json.NewEncoder(w).Encode(HomeContent{ID: "home-id-1", Title: "Welcome Home", Content: "This is the content for the home page."})
 	} else {
 		http.Error(w, "Home content not found", http.StatusNotFound)
 	}
@@ -162,29 +183,39 @@ func (mc *MarketingController) GetHomeContentByIDHandler(w http.ResponseWriter, 
 func (mc *MarketingController) GetAllGrooveJrContentHandler(w http.ResponseWriter, r *http.Request) {
 	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllGrooveJrContentHandler Hit")
 	page, limit := getPaginationParams(r)
-	_ = page // Dummy usage
-	_ = limit // Dummy usage
 
 	// Placeholder data
-	content := []GrooveJrContent{
-		{ID: 1, Title: "GrooveJr Item 1", Content: "Content for GrooveJr item 1."},
+	content := make([]GrooveJrContent, 0)
+	for i := 1; i <= 25; i++ {
+		content = append(content, GrooveJrContent{
+			ID:      "gj-content-" + strconv.Itoa(i),
+			Title:   "GrooveJr Content " + strconv.Itoa(i),
+			Content: "This is GrooveJr content " + strconv.Itoa(i) + ".",
+		})
 	}
-	json.NewEncoder(w).Encode(content)
+
+	start := (page - 1) * limit
+	if start > len(content) {
+		start = len(content)
+	}
+	end := start + limit
+	if end > len(content) {
+		end = len(content)
+	}
+
+	paginatedContent := content[start:end]
+
+	json.NewEncoder(w).Encode(paginatedContent)
 }
 
 // GetGrooveJrContentByIDHandler handles fetching groove-jr content by ID.
 func (mc *MarketingController) GetGrooveJrContentByIDHandler(w http.ResponseWriter, r *http.Request) {
 	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetGrooveJrContentByIDHandler Hit")
-	idStr := r.PathValue("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		http.Error(w, "Invalid GrooveJr content ID", http.StatusBadRequest)
-		return
-	}
+	id := r.PathValue("id")
 
 	// Placeholder data
-	if id == 1 {
-		json.NewEncoder(w).Encode(GrooveJrContent{ID: 1, Title: "GrooveJr Item 1", Content: "Content for GrooveJr item 1."})
+	if id == "gj-id-1" {
+		json.NewEncoder(w).Encode(GrooveJrContent{ID: "gj-id-1", Title: "GrooveJr Item 1", Content: "Content for GrooveJr item 1."})
 	} else {
 		http.Error(w, "GrooveJr content not found", http.StatusNotFound)
 	}
@@ -195,40 +226,40 @@ func (mc *MarketingController) GetGrooveJrContentByIDHandler(w http.ResponseWrit
 func (mc *MarketingController) GetAllAboutContentHandler(w http.ResponseWriter, r *http.Request) {
 	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllAboutContentHandler Hit")
 	page, limit := getPaginationParams(r)
-	_ = page // Dummy usage
-	_ = limit // Dummy usage
 
 	// Placeholder data
-	content := []AboutContent{
-		{ID: 1, Title: "About Me", Content: "This is the content for the about page."},
+	content := make([]AboutContent, 0)
+	for i := 1; i <= 25; i++ {
+		content = append(content, AboutContent{
+			ID:      "about-id-" + strconv.Itoa(i),
+			Title:   "About Content " + strconv.Itoa(i),
+			Content: "This is about content " + strconv.Itoa(i) + ".",
+		})
 	}
-	json.NewEncoder(w).Encode(content)
+
+	start := (page - 1) * limit
+	if start > len(content) {
+		start = len(content)
+	}
+	end := start + limit
+	if end > len(content) {
+		end = len(content)
+	}
+
+	paginatedContent := content[start:end]
+
+	json.NewEncoder(w).Encode(paginatedContent)
 }
 
 // GetAboutContentByIDHandler handles fetching about content by ID.
 func (mc *MarketingController) GetAboutContentByIDHandler(w http.ResponseWriter, r *http.Request) {
 	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAboutContentByIDHandler Hit")
-	idStr := r.PathValue("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		http.Error(w, "Invalid about content ID", http.StatusBadRequest)
-		return
-	}
+	id := r.PathValue("id")
 
 	// Placeholder data
-	if id == 1 {
-		json.NewEncoder(w).Encode(AboutContent{ID: 1, Title: "About Me", Content: "This is the content for the about page."})
+	if id == "about-id-1" {
+		json.NewEncoder(w).Encode(AboutContent{ID: "about-id-1", Title: "About Me", Content: "This is the content for the about page."})
 	} else {
 		http.Error(w, "About content not found", http.StatusNotFound)
 	}
-}
-
-// Tracker
-// PostTrackerDataHandler handles receiving tracker data.
-func (mc *MarketingController) PostTrackerDataHandler(w http.ResponseWriter, r *http.Request) {
-	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("PostTrackerDataHandler Hit")
-	// For now, just acknowledge the request.
-	// In a real scenario, you'd parse the request body and save tracking info.
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Tracker data received"))
 }

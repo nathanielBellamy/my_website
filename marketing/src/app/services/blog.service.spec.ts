@@ -35,14 +35,14 @@ describe('BlogService', () => {
         json: () => Promise.resolve(mockPaginatedResponse),
       });
 
-      const posts = await service.getAll();
+      const posts = await service.getAll(1, 10);
       expect(posts).toEqual(mockPaginatedResponse);
       expect(fetch).toHaveBeenCalledWith(`${API_URL}?page=1&limit=10`);
     });
 
     it('should throw an error if the request fails', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({ ok: false });
-      await expect(service.getAll()).rejects.toThrow('Failed to fetch blog posts');
+      await expect(service.getAll(1, 10)).rejects.toThrow('Failed to fetch blog posts');
     });
   });
 
@@ -54,14 +54,14 @@ describe('BlogService', () => {
         json: () => Promise.resolve(post),
       });
 
-      const result = await service.getById(1);
+      const result = await service.getById('blog-1');
       expect(result).toEqual(post);
       expect(fetch).toHaveBeenCalledWith(`${API_URL}/1`);
     });
 
     it('should throw an error if the request fails', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({ ok: false });
-      await expect(service.getById(1)).rejects.toThrow('Failed to fetch blog post with id 1');
+      await expect(service.getById('blog-uuid')).rejects.toThrow('Failed to fetch blog post.');
     });
   });
 
@@ -90,14 +90,14 @@ describe('BlogService', () => {
         json: () => Promise.resolve(mockPaginatedResponse),
       });
 
-      const posts = await service.getByDate('2026-01-18');
+      const posts = await service.getByDate(new Date(), new Date());
       expect(posts).toEqual(mockPaginatedResponse);
       expect(fetch).toHaveBeenCalledWith(`${API_URL}/date/2026-01-18?page=1&limit=10`);
     });
 
     it('should throw an error if the request fails', async () => {
       (global.fetch as jest.Mock).mockResolvedValue({ ok: false });
-      await expect(service.getByDate('2026-01-18')).rejects.toThrow('Failed to fetch blog posts with date 2026-01-18');
+      await expect(service.getByDate(new Date(), new Date())).rejects.toThrow('Failed to fetch blog posts.');
     });
   });
 });

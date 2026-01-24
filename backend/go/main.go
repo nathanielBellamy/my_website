@@ -98,25 +98,22 @@ func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *ze
 
 	// marketing routes
 	// Blog
-	http.HandleFunc("/api/blog", marketingController.GetAllBlogPostsHandler)
-	http.HandleFunc("/api/blog/{id}", marketingController.GetBlogPostByIDHandler)
-	http.HandleFunc("/api/blog/tag/{tag}", marketingController.GetBlogPostsByTagHandler)
-	http.HandleFunc("/api/blog/date/{date}", marketingController.GetBlogPostsByDateHandler)
+	http.HandleFunc("/api/marketing/blog", marketingController.GetAllBlogPostsHandler)
+	http.HandleFunc("/api/marketing/blog/{id}", marketingController.GetBlogPostByIDHandler)
+	http.HandleFunc("/api/marketing/blog/tag/{tag}", marketingController.GetBlogPostsByTagHandler)
+	http.HandleFunc("/api/marketing/blog/date/{date}", marketingController.GetBlogPostsByDateHandler)
 
 	// Home
-	http.HandleFunc("/api/home", marketingController.GetAllHomeContentHandler)
-	http.HandleFunc("/api/home/{id}", marketingController.GetHomeContentByIDHandler)
+	http.HandleFunc("/api/marketing/home", marketingController.GetAllHomeContentHandler)
+	http.HandleFunc("/api/marketing/home/{id}", marketingController.GetHomeContentByIDHandler)
 
 	// GrooveJr
-	http.HandleFunc("/api/groove-jr", marketingController.GetAllGrooveJrContentHandler)
-	http.HandleFunc("/api/groove-jr/{id}", marketingController.GetGrooveJrContentByIDHandler)
+	http.HandleFunc("/api/marketing/groovejr", marketingController.GetAllGrooveJrContentHandler)
+	http.HandleFunc("/api/marketing/groovejr/{id}", marketingController.GetGrooveJrContentByIDHandler)
 
 	// About
-	http.HandleFunc("/api/about", marketingController.GetAllAboutContentHandler)
-	http.HandleFunc("/api/about/{id}", marketingController.GetAboutContentByIDHandler)
-
-	// Tracker
-	http.HandleFunc("/api/tracker", marketingController.PostTrackerDataHandler)
+	http.HandleFunc("/api/marketing/about", marketingController.GetAllAboutContentHandler)
+	http.HandleFunc("/api/marketing/about/{id}", marketingController.GetAboutContentByIDHandler)
 }
 
 func SetupRemotedevRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController) {

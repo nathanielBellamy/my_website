@@ -1,0 +1,14 @@
+<div class="infinite-scroll-container" (scroll)="onScroll($event)">
+  <ng-container *ngFor="let item of items">
+    <ng-container
+      [ngTemplateOutlet]="itemTemplate"
+      [ngTemplateOutletContext]="{ $implicit: item }"
+    ></ng-container>
+  </ng-container>
+  <div *ngIf="loading" class="loading-indicator">
+    <p>Loading...</p>
+  </div>
+  <div *ngIf="allLoaded" class="all-loaded-indicator">
+    <p>All items loaded.</p>
+  </div>
+</div>

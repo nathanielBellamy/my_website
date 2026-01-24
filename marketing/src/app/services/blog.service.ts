@@ -1,43 +1,42 @@
-import { Injectable } from '@angular/core';
-import { BlogPost } from '../models/blog.model';
-import { environment } from '../../environments/environment.localhost';
-import { PaginatedResponse } from '../models/pagination.model';
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { BlogPost } from '../models/blog-post.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BlogService {
-  private readonly API_URL = `${environment.API_BASE_URL}/blog`;
+  private readonly apiUrl = `${environment.API_BASE_URL}/marketing/blog`;
+  private readonly http = inject(HttpClient);
 
-  async getAll(page = 1, limit = 10): Promise<PaginatedResponse<BlogPost>> {
-    const response = await fetch(`${this.API_URL}?page=${page}&limit=${limit}`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch blog posts');
-    }
-    return response.json();
+  constructor() {}
+
+  // TODO: add route to marketing controller in backend/go/marketing
+  getById(id: string): Promise<BlogPost> {
+    return firstValueFrom(
+      this.http.get<BlogPost>(`${this.apiUrl}/${id}`)
+    )
   }
 
-  async getById(id: number): Promise<BlogPost> {
-    const response = await fetch(`${this.API_URL}/${id}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch blog post with id ${id}`);
-    }
-    return response.json();
+  getAll(page: number, limit: number): Promise<BlogPost[]> {
+    return firstValueFrom(
+      this.http.get<BlogPost[]>(`${this.apiUrl}?page=${page}&limit=${limit}`)
+    );
   }
 
-  async getByTag(tag: string, page = 1, limit = 10): Promise<PaginatedResponse<BlogPost>> {
-    const response = await fetch(`${this.API_URL}/tag/${tag}?page=${page}&limit=${limit}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch blog posts with tag ${tag}`);
-    }
-    return response.json();
+  // TODO: add route to marketing controller in backend/go/marketing
+  getByTag(tag: string): Promise<BlogPost[]> {
+    return firstValueFrom(
+      this.http.get<BlogPost[]>(`${this.apiUrl}?tag=${tag}`)
+    );
   }
-
-  async getByDate(date: string, page = 1, limit = 10): Promise<PaginatedResponse<BlogPost>> {
-    const response = await fetch(`${this.API_URL}/date/${date}?page=${page}&limit=${limit}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch blog posts with date ${date}`);
-    }
-    return response.json();
+  
+  // TODO: add route to marketing controller in backend/go/marketing
+  getByDate(start: Date, end: Date): Promise<BlogPost[]> {
+    return firstValueFrom(
+      this.http.get<BlogPost[]>(`${this.apiUrl}?start=${start.toUTCString()}&end=${end}`)
+    );
   }
 }
