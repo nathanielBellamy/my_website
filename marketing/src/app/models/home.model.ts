@@ -3,3 +3,7 @@ export interface HomeContent {
   title: string;
   content: string;
 }
+
+export interface HomeResponse {
+  content: HomeContent[];
+}

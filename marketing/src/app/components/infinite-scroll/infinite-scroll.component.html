@@ -1,4 +1,4 @@
-<div class="infinite-scroll-container" (scroll)="onScroll($event)">
+<div class="infinite-scroll-container flex flex-wrap w-full justify-center" (scroll)="onScroll($event)">
   <ng-container *ngFor="let item of items">
     <ng-container
       [ngTemplateOutlet]="itemTemplate"
