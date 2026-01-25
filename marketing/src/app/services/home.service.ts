@@ -13,18 +13,10 @@ export class HomeService {
 
   constructor() {}
 
-  getAll(page: number, limit: number): Promise<HomeResponse> {
+  getAll(page: number, limit: number): Promise<HomeContent[]> {
     return firstValueFrom(
       this.http.get<HomeContent[]>(
         `${this.apiUrl}?page=${page}&limit=${limit}`
-      ).pipe(
-        map((response) => ({
-          content: response.map((item) => ({
-            id: item.id,
-            title: item.title,
-            content: item.content,
-          })),
-        }))
       )
     );
   }
