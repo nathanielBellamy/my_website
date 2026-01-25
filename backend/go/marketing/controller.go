@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/go-pg/pg/v10"
+	"github.com/go-pg/pg/v10" // Needed for PgxDB interface's Model method return type
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
 	"github.com/rs/zerolog"
 	_ "github.com/lib/pq"
@@ -14,11 +14,11 @@ import (
 // MarketingController holds dependencies for marketing-related handlers.
 type MarketingController struct {
 	Log *zerolog.Logger
-	DB  *pg.DB
+	DB  PgxDB // Use the interface here
 }
 
 // NewMarketingController creates and returns a new MarketingController.
-func NewMarketingController(log *zerolog.Logger, db *pg.DB) *MarketingController {
+func NewMarketingController(log *zerolog.Logger, db PgxDB) *MarketingController { // Use the interface here
 	return &MarketingController{
 		Log: log,
 		DB:  db,

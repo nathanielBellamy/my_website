@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/go-pg/pg/v10"
+	// "github.com/go-pg/pg/v10" // Removed unused import
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
 	"github.com/nathanielBellamy/my_website/backend/go/config"
 	"github.com/nathanielBellamy/my_website/backend/go/db"
@@ -47,7 +47,7 @@ func main() {
 		Str("mode", mode).
 		Msg("Runtime Env")
 
-	db, err := db.NewDBClient(cfg)
+	dbClient, err := db.NewDBClient(cfg)
 	if err != nil {
 		log.Fatal().
 			Err(err).
@@ -64,7 +64,7 @@ func main() {
 	go feedPool.StartFeed()
 	go wasmPool.StartWasm()
 
-	SetupRoutes(http.DefaultServeMux, &cookieJar, &log, feedPool, wasmPool, db)
+	SetupRoutes(http.DefaultServeMux, &cookieJar, &log, feedPool, wasmPool, db.NewPgDBAdapter(dbClient))
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal().
@@ -75,7 +75,7 @@ func main() {
 		Msg("Now serving on 8080")
 }
 
-func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, feedPool *websocket.Pool, wasmPool *websocket.Pool, db *pg.DB) {
+func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, feedPool *websocket.Pool, wasmPool *websocket.Pool, db marketing.PgxDB) {
 	mode := os.Getenv("MODE")
 	oldSiteController := old_site.NewOldSiteController(cookieJar, log, feedPool, wasmPool)
 	marketingController := marketing.NewMarketingController(log, db)
