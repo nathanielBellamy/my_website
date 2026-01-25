@@ -47,11 +47,11 @@ EOF
   fi
 
   # copy .env file to build directory
-  if [ -f ".env.$MODE" ]; then
-      rm ./../../build/.env.* # remove old .env files
-      cp ".env.$MODE" ./../../build/ # copy in current
+  if [ -f "./../../.env.$MODE" ]; then
+      rm -f ./../../build/.env.* # remove old .env files
+      cp "./../../.env.$MODE" ./../../build/ # copy in current
   else
-      echo ".env.$MODE not found!"
+      echo ".env.$MODE not found in root directory!"
       exit 1
   fi
 

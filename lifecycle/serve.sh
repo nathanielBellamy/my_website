@@ -5,6 +5,7 @@ cd "$(dirname "$0")/.."
 serve() {
   echo "🚀🚀🚀 Now serving $MODE on :8080 🚀🚀🚀"
   cd build 
+  touch log.txt
   export MODE=$MODE PW=$PW
   ./main
   cd ..

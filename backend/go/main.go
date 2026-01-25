@@ -5,8 +5,10 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/joho/godotenv"
+	"github.com/go-pg/pg/v10"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
+	"github.com/nathanielBellamy/my_website/backend/go/config"
+	"github.com/nathanielBellamy/my_website/backend/go/db"
 	"github.com/nathanielBellamy/my_website/backend/go/env"
 	"github.com/nathanielBellamy/my_website/backend/go/marketing"
 	"github.com/nathanielBellamy/my_website/backend/go/old_site"
@@ -34,16 +36,23 @@ func main() {
 	log.Info().
 		Msg("Loading ENV")
 
-	envErr := godotenv.Load(".env." + mode)
-	if envErr != nil {
+	cfg, err := config.NewConfig(mode)
+	if err != nil {
 		log.Fatal().
-			Err(envErr).
-			Msg("Error loading .env file")
+			Err(err).
+			Msg("Error loading config")
 	}
 
 	log.Info().
 		Str("mode", mode).
 		Msg("Runtime Env")
+
+	db, err := db.NewDBClient(cfg)
+	if err != nil {
+		log.Fatal().
+			Err(err).
+			Msg("Error creating DB client")
+	}
 
 	cookieJar := cmap.New[auth.Cookie]()
 
@@ -55,7 +64,7 @@ func main() {
 	go feedPool.StartFeed()
 	go wasmPool.StartWasm()
 
-	SetupRoutes(http.DefaultServeMux, &cookieJar, &log, feedPool, wasmPool)
+	SetupRoutes(http.DefaultServeMux, &cookieJar, &log, feedPool, wasmPool, db)
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal().
@@ -66,10 +75,10 @@ func main() {
 		Msg("Now serving on 8080")
 }
 
-func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, feedPool *websocket.Pool, wasmPool *websocket.Pool) {
+func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, feedPool *websocket.Pool, wasmPool *websocket.Pool, db *pg.DB) {
 	mode := os.Getenv("MODE")
 	oldSiteController := old_site.NewOldSiteController(cookieJar, log, feedPool, wasmPool)
-	marketingController := marketing.NewMarketingController(log)
+	marketingController := marketing.NewMarketingController(log, db)
 
 	if env.IsProd(mode) {
 		SetupProdRoutes()
@@ -101,7 +110,6 @@ func SetupBaseRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, a
 	mux.HandleFunc("/api/marketing/blog", marketingController.GetAllBlogPostsHandler)
 	mux.HandleFunc("/api/marketing/blog/{id}", marketingController.GetBlogPostByIDHandler)
 	mux.HandleFunc("/api/marketing/blog/tag/{tag}", marketingController.GetBlogPostsByTagHandler)
-	mux.HandleFunc("/api/marketing/blog/date/{date}", marketingController.GetBlogPostsByDateHandler)
 
 	// Home
 	mux.HandleFunc("/api/marketing/home", marketingController.GetAllHomeContentHandler)

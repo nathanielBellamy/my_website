@@ -32,19 +32,7 @@ export class BlogService {
 
   getAll(page: number, limit: number): Promise<BlogPost[]> {
     return firstValueFrom(
-      this.http.get<any[]>(`${this.apiUrl}?page=${page}&limit=${limit}`).pipe(
-        map((items) =>
-          items.map((item) => ({
-            id: item.id,
-            title: item.title,
-            content: item.content,
-            author: item.author,
-            tags: item.tags,
-            createdAt: item.createdAt,
-            updatedAt: item.updatedAt,
-          }))
-        )
-      )
+      this.http.get<BlogPost[]>(`${this.apiUrl}?page=${page}&limit=${limit}`)
     );
   }
 
