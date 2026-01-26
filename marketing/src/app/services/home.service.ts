@@ -13,9 +13,9 @@ export class HomeService {
 
   constructor() {}
 
-  getAll(page: number, limit: number): Promise<HomeContent[]> {
+  getAll(page: number, limit: number): Promise<HomeResponse> {
     return firstValueFrom(
-      this.http.get<HomeContent[]>(
+      this.http.get<HomeResponse>(
         `${this.apiUrl}?page=${page}&limit=${limit}`
       )
     );

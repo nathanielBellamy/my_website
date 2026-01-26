@@ -13,7 +13,7 @@
     "build-localhost": "vite build --mode localhost --emptyOutDir",
     "build-prod": "vite build --mode prod --emptyOutDir",
     "build-remotedev": "vite build --mode remotedev --emptyOutDir",
-    "build-rust-wasm": "cd src-rust && wasm-pack build --target web --out-dir ../pkg && cd ..",
+    "build-rust-wasm": "cd src-rust && cargo build --target wasm32-unknown-unknown && wasm-bindgen target/wasm32-unknown-unknown/debug/src_rust.wasm --out-dir ../pkg --target web && cd ..",
     "build-old-site-localhost": "npm run build-rust-wasm && npm run build-localhost --emptyOutDir",
     "build-old-site-prod": "npm run build-rust-wasm && npm run build-prod --emptyOutDir",
     "build-old-site-remotedev": "npm run build-rust-wasm && npm run build-remotedev --emptyOutDir"

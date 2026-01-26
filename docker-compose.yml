@@ -1,0 +1,38 @@
+services:
+  postgres-db:
+    image: postgres:latest
+    container_name: my_website_db
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: my_website_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD', 'pg_isready', "-q", "-d", "my_website_db", "-U", "postgres"]
+      interval: 5s
+      retries: 5
+      timeout: 5s
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: my_website_backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-db
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres-db:5432/my_website_db?sslmode=disable
+      MODE: ${MODE:-remotedev}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        
+volumes:
+  postgres_data:

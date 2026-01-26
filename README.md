@@ -3,7 +3,7 @@
 ### dev environment
 - suggest [Nix](https://nixos.org/guides/how-nix-works)
 - [rustup](https://rustup.rs/)
-- [wasm-pack](https://rustwasm.github.io/wasm-pack/)
+- [wasm-bindgen](https://github.com/wasm-bindgen/wasm-bindgen)
 - [Go](https://go.dev/)
 - [npm](https://www.npmjs.com/)
 

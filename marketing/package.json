@@ -7,6 +7,7 @@
     "build": "ng build",
     "build-localhost": "ng build --configuration=localhost",
     "build-marketing-localhost": "npm run build-localhost",
+    "build-marketing-remotedev": "ng build --configuration=remotedev",
     "test": "jest"
   },
   "private": true,
