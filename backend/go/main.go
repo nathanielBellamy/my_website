@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 
@@ -20,11 +19,7 @@ import (
 // MODE=<mode> ./main
 func main() {
 	// init log
-	file, err := os.Create("log.txt")
-	if err != nil {
-		fmt.Printf("Failed creating log file: %s", err)
-	}
-	log := zerolog.New(file).With().Timestamp().Logger()
+	log := zerolog.New(os.Stdout).With().Timestamp().Logger()
 
 	// determine runtime env
 	mode := os.Getenv("MODE")
@@ -80,6 +75,8 @@ func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.
 	oldSiteController := old_site.NewOldSiteController(cookieJar, log, feedPool, wasmPool)
 	marketingController := marketing.NewMarketingController(log, db)
 
+	SetupBaseRoutes(mux, cookieJar, log, oldSiteController, marketingController)
+
 	if env.IsProd(mode) {
 		SetupProdRoutes()
 	} else if env.IsRemotedev(mode) {
@@ -87,8 +84,6 @@ func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.
 	} else {
 		SetupLocalhostRoutes(mux, cookieJar, log, oldSiteController)
 	}
-
-	SetupBaseRoutes(mux, cookieJar, log, oldSiteController, marketingController)
 }
 
 func SetupBaseRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, marketingController *marketing.MarketingController) {

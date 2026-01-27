@@ -127,6 +127,7 @@ func (mc *MarketingController) GetAllHomeContentHandler(w http.ResponseWriter, r
 		Select()
 
 	if err != nil {
+		mc.Log.Error().Err(err).Msg("Error fetching home content")
 		http.Error(w, "Error fetching home content", http.StatusInternalServerError)
 		return
 	}

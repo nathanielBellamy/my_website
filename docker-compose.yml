@@ -8,9 +8,10 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: my_website_db
+      POSTGRES_DB: mw_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ['CMD', 'pg_isready', "-q", "-d", "my_website_db", "-U", "postgres"]
       interval: 5s
@@ -29,7 +30,7 @@ services:
       postgres-db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgres://postgres:postgres@postgres-db:5432/my_website_db?sslmode=disable
+      DATABASE_URL: postgres://postgres:postgres@postgres-db:5432/mw_db?sslmode=disable
       MODE: ${MODE:-remotedev}
     logging:
       driver: "json-file"

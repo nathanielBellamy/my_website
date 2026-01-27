@@ -1,24 +1,12 @@
 -- Create a new user and database for the marketing app
-DROP DATABASE IF EXISTS mw_db;
-
 CREATE USER marketing WITH PASSWORD 'marketing';
 CREATE USER admin WITH PASSWORD 'admin';
 
-CREATE DATABASE mw_db;
-GRANT ALL PRIVILEGES ON DATABASE mw_db TO admin;
-
 -- Grant read-only privileges to marketing user
 GRANT CONNECT ON DATABASE mw_db TO marketing;
-GRANT USAGE ON SCHEMA public TO marketing;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO marketing;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO marketing;
 
 
--- Connect to the new database
 \c mw_db;
-
--- Set the user for the following operations
-SET ROLE admin;
 
 -- Create Authors Table
 CREATE TABLE authors (

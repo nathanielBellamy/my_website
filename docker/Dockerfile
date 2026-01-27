@@ -40,7 +40,7 @@ COPY old-site ./old-site
 RUN npm run build-old-site-localhost --prefix old-site
 
 COPY marketing ./marketing
-RUN npm run build --prefix marketing
+RUN npm run build-localhost --prefix marketing
 
 # Copy the go module files and download dependencies
 COPY go.mod go.sum ./
