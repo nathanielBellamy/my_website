@@ -29,8 +29,7 @@ export const HomeStore = signalStore(
 
       patchState(store, { loading: true });
       try {
-        const response = await homeService.getAll(currentPage, pageSize);
-        const newContent = response.content;
+        const newContent: HomeContent[] = await homeService.getAll(currentPage, pageSize);
 
         patchState(store, {
           content: [...store.content(), ...newContent],

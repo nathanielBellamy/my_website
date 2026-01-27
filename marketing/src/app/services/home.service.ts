@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom, map } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { HomeContent, HomeResponse } from '../models/home.model';
+import { HomeContent } from '../models/home.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,9 +13,9 @@ export class HomeService {
 
   constructor() {}
 
-  getAll(page: number, limit: number): Promise<HomeResponse> {
+  getAll(page: number, limit: number): Promise<HomeContent[]> {
     return firstValueFrom(
-      this.http.get<HomeResponse>(
+      this.http.get<HomeContent[]>(
         `${this.apiUrl}?page=${page}&limit=${limit}`
       )
     );
