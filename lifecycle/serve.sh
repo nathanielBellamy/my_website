@@ -4,7 +4,7 @@ cd "$(dirname "$0")/.."
 echo "🚀🚀🚀 Starting services with Docker Compose... 🚀🚀🚀"
 
 # Build and start the containers in detached mode
-MODE=$MODE docker-compose up --build -d
+docker-compose up --build -d
 
 echo "✅ Services are running in the background."
 echo "➡️ Tailing logs from the backend service. Press Ctrl+C to stop tailing."

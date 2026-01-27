@@ -11,12 +11,12 @@ import (
 )
 
 func SetupDevAuth(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger, oldSiteFileServer http.Handler) {
-	fs_marketing := http.FileServer(http.Dir("marketing/browser"))
+	fs_marketing := http.FileServer(http.Dir("build/marketing"))
 	mux.Handle("/", http.StripPrefix("/", LogClientIp("/", log, RequireDevAuth(cookieJar, log, fs_marketing))))
 
 	mux.Handle("/old-site/", RequireDevAuth(cookieJar, log, oldSiteFileServer))
 
-	fs_auth := http.FileServer(http.Dir("auth/dev"))
+	fs_auth := http.FileServer(http.Dir("build/auth/dev"))
 	mux.Handle("/auth/dev/", LogClientIp("/auth/dev/", log, http.StripPrefix("/auth/dev/", fs_auth)))
 
 	// TODO:

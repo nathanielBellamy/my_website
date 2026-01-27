@@ -1,73 +1,70 @@
-# Stage 1: Frontend asset builder
-FROM ubuntu:22.04 AS builder-assets
+# Stage 1: Combined builder for frontend assets and Go backend
+FROM node:20-slim AS builder
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y ca-certificates curl gnupg build-essential
-RUN mkdir -p /etc/apt/keyrings
-RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
-RUN apt-get update && apt-get install -y nodejs
+# Install build dependencies
+RUN apt-get update && apt-get install -y ca-certificates curl gnupg build-essential wget
 
-# Install rustup and wasm target
+# Install Rustup and wasm target
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
 ENV PATH="/root/.cargo/bin:${PATH}"
 RUN rustup target add wasm32-unknown-unknown
-
 RUN cargo install wasm-bindgen-cli
 
-# Copy all package.json and package-lock.json files
-COPY package.json package-lock.json ./
-COPY auth/dev/package.json auth/dev/package-lock.json ./auth/dev/
-COPY old-site/package.json old-site/package-lock.json ./old-site/
-COPY marketing/package.json marketing/package-lock.json ./marketing/
+# Install Go for arm64
+RUN wget https://golang.org/dl/go1.24.0.linux-arm64.tar.gz
+RUN tar -C /usr/local -xzf go1.24.0.linux-arm64.tar.gz
+ENV PATH="/usr/local/go/bin:${PATH}"
 
-# Install dependencies for all frontends
+# Copy version file for old-site build
+COPY version.ts .
+
+# Install frontend dependencies
+COPY package.json package-lock.json ./
 RUN npm install
+
+COPY auth/dev/package.json auth/dev/package-lock.json ./auth/dev/
 RUN npm --prefix auth/dev install
+
+COPY old-site/package.json old-site/package-lock.json ./old-site/
 RUN npm --prefix old-site install
+
+COPY marketing/package.json marketing/package-lock.json ./marketing/
 RUN npm --prefix marketing install
 
-# Copy the rest of the source code
-COPY . .
+# Build frontend applications
+COPY auth/dev ./auth/dev
+RUN npm run build --prefix auth/dev
 
-# Build all frontend applications
-RUN cd auth/dev && npm run build-remotedev
-RUN cd old-site && npm run build-old-site-remotedev
-RUN cd marketing && npm run build-marketing-remotedev
+COPY old-site ./old-site
+RUN npm run build-old-site-localhost --prefix old-site
 
-# Fix asset paths
-RUN sed -i 's/\/assets/\.\/assets/g' build/auth/dev/index.html
-RUN sed -i -e 's/src="\/assets/src="\/old-site\/assets/g' -e 's/href="\/assets/href="\/old-site\/assets/g' build/old-site/index.html
+COPY marketing ./marketing
+RUN npm run build --prefix marketing
 
-# Stage 2: Go backend builder
-FROM golang:1.24-alpine AS builder-go
-WORKDIR /app
-
-# Copy Go module files and download dependencies
+# Copy the go module files and download dependencies
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copy the backend source code
+# Copy the backend source and build the Go application
 COPY backend/go ./backend/go
+RUN cd backend/go && CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o /app/main .
 
-# Build the Go application
-RUN cd backend/go && CGO_ENABLED=0 GOOS=linux go build -o /app/main main.go
-
-# Stage 3: Final application image
-FROM ubuntu:latest
+# Stage 2: Final application image
+FROM gcr.io/distroless/base-debian11
 WORKDIR /app
 
-# Copy the built Go binary from the Go builder stage
-COPY --from=builder-go /app/main .
+# Copy the built Go binary from the builder stage
+COPY --from=builder /app/main .
 
-# Copy the built frontend assets from the frontend builder stage
-COPY --from=builder-assets /app/build ./build
+# Copy the built frontend assets from the builder stage
+COPY --from=builder /app/build ./build
 
-# Copy the environment files
-COPY .env.* .
+# Copy the environment file
+COPY --from=builder /app/backend/go/.env.localhost .
 
 # Expose the port the backend runs on
 EXPOSE 8080
 
 # Set the command to run the backend service
-CMD ["/app/main"]
+CMD ["./main"]
