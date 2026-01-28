@@ -7,6 +7,7 @@ backend/go/.env.prod
 backend/go/.env.remotedev
 
 # Logs
+log/
 old-site/logs
 old-site/*.log
 old-site/npm-debug.log*
