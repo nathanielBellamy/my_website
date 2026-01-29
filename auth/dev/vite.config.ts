@@ -11,7 +11,8 @@ export default defineConfig({
   ],
   build: {
     outDir: '../../build/auth/dev'
-  }
+  },
+  base: '/auth/dev/'
 })
 
 
