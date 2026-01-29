@@ -14,6 +14,11 @@
 - `./lifecycle/build-dist.sh`
   - outputs to `dist` directory
   - compile locally, transfer build, run remotely
+- `./lifecycle/serve.sh`
+  - build + serve site using two docker containers: `my_website_backend` and `my_website_db`
+- `./lifecycel/teardown.sh`
+  - copies logs out of `my_website_backend` onto host machine
+  - tears down docker containers
 - Reads `MODE=` from `config.env`
 - NOTE: these scripts alter asset import paths in `index.html` files
 
