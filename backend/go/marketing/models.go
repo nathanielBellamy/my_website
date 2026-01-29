@@ -2,7 +2,6 @@ package marketing
 
 import (
 	"time"
-
 	// "github.com/go-pg/pg/v10" // Removed unused import
 )
 
@@ -36,7 +35,7 @@ type Tag struct {
 // BlogPost represents a blog post entry.
 type BlogPost struct {
 	ID        string    `json:"id"`
-	Title     string `json:"title"`
+	Title     string    `json:"title"`
 	Content   string    `json:"content"`
 	Author    *Author   `json:"author"`
 	Tags      []*Tag    `json:"tags" pg:"many2many:blog_post_tags"`

@@ -73,7 +73,8 @@ func main() {
 func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, feedPool *websocket.Pool, wasmPool *websocket.Pool, db marketing.PgxDB) {
 	mode := os.Getenv("MODE")
 	oldSiteController := old_site.NewOldSiteController(cookieJar, log, feedPool, wasmPool)
-	marketingController := marketing.NewMarketingController(log, db)
+	marketingService := marketing.NewService(db)
+	marketingController := marketing.NewMarketingController(log, marketingService)
 
 	SetupBaseRoutes(mux, cookieJar, log, oldSiteController, marketingController)
 

@@ -1,14 +1,15 @@
-package marketing
+package marketing_test
 
 import (
 	"bytes"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-
+	"strconv"
 	"testing"
 
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
+	"github.com/nathanielBellamy/my_website/backend/go/marketing"
 	"github.com/rs/zerolog"
 )
 
@@ -21,12 +22,53 @@ func (m *MockLogger) Write(p []byte) (n int, err error) {
 	return m.Buf.Write(p)
 }
 
+// MockService is a mock implementation of the Service for testing.
+type MockService struct{}
+
+func (m *MockService) GetAllBlogPosts(page, limit int) ([]marketing.BlogPost, error) {
+	var posts []marketing.BlogPost
+	for i := 1; i <= limit; i++ {
+		posts = append(posts, marketing.BlogPost{ID: "blog-post-id-" + strconv.Itoa(i)})
+	}
+	return posts, nil
+}
+
+func (m *MockService) GetBlogPostByID(id string) (*marketing.BlogPost, error) {
+	if id == "blog-id-1" {
+		return &marketing.BlogPost{ID: "blog-id-1"}, nil
+	}
+	return nil, nil
+}
+
+func (m *MockService) GetBlogPostsByTag(tag string, page, limit int) ([]marketing.BlogPost, error) {
+	return nil, nil
+}
+func (m *MockService) GetAllHomeContent(page, limit int) ([]marketing.HomeContent, error) {
+	return nil, nil
+}
+func (m *MockService) GetHomeContentByID(id string) (*marketing.HomeContent, error) {
+	return nil, nil
+}
+func (m *MockService) GetAllGrooveJrContent(page, limit int) ([]marketing.GrooveJrContent, error) {
+	return nil, nil
+}
+func (m *MockService) GetGrooveJrContentByID(id string) (*marketing.GrooveJrContent, error) {
+	return nil, nil
+}
+func (m *MockService) GetAllAboutContent(page, limit int) ([]marketing.AboutContent, error) {
+	return nil, nil
+}
+func (m *MockService) GetAboutContentByID(id string) (*marketing.AboutContent, error) {
+	return nil, nil
+}
+
 func TestGetAllBlogPostsHandler(t *testing.T) {
 	// Save original GetClientIpAddr and defer its restoration
 	origGetClientIpAddr := auth.GetClientIpAddr
 	mockLogOutput := &MockLogger{}
 	log := zerolog.New(mockLogOutput).Level(zerolog.DebugLevel).With().Logger()
-	mc := NewMarketingController(&log)
+	service := &MockService{}
+	mc := marketing.NewMarketingController(&log, service)
 
 	t.Cleanup(func() {
 		auth.GetClientIpAddr = origGetClientIpAddr
@@ -46,7 +88,7 @@ func TestGetAllBlogPostsHandler(t *testing.T) {
 			status, http.StatusOK)
 	}
 
-	var posts []BlogPost
+	var posts []marketing.BlogPost
 	if err := json.Unmarshal(rr.Body.Bytes(), &posts); err != nil {
 		t.Fatalf("could not unmarshal response: %v", err)
 	}
@@ -63,7 +105,8 @@ func TestGetBlogPostByIDHandler(t *testing.T) {
 	origGetClientIpAddr := auth.GetClientIpAddr
 	mockLogOutput := &MockLogger{}
 	log := zerolog.New(mockLogOutput).Level(zerolog.DebugLevel).With().Logger()
-	mc := NewMarketingController(&log)
+	service := &MockService{}
+	mc := marketing.NewMarketingController(&log, service)
 	t.Cleanup(func() {
 		auth.GetClientIpAddr = origGetClientIpAddr
 		t.Log(mockLogOutput.Buf.String()) // Log the buffer content
@@ -87,13 +130,12 @@ func TestGetBlogPostByIDHandler(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer resp.Body.Close()
-
 	if status := resp.StatusCode; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
 
-	var post BlogPost
+	var post marketing.BlogPost
 	if err := json.NewDecoder(resp.Body).Decode(&post); err != nil {
 		t.Fatalf("could not unmarshal response: %v", err)
 	}
@@ -118,5 +160,3 @@ func TestGetBlogPostByIDHandler(t *testing.T) {
 			status, http.StatusNotFound)
 	}
 }
-
-

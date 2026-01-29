@@ -27,7 +27,7 @@ func (m *MockLogger) Write(p []byte) (n int, err error) {
 
 // MockPgQuery for pg.Query
 type MockPgQuery struct {
-	err error
+	err       error
 	modelDest interface{} // New field to store the destination passed to Model
 }
 
@@ -109,13 +109,14 @@ func TestSetupBaseRoutes_MarketingBlogPosts(t *testing.T) {
 	// Mock dependencies
 	cookieJar := cmap.New[auth.Cookie]()
 	mockDB := NewMockPgDB()
-	
+
 	// Create an http.ServeMux to register routes
 	mux := http.NewServeMux()
 
 	// Call SetupBaseRoutes to register handlers
 	// Pass nil for oldSiteController as it's not relevant for this marketing test
-	SetupBaseRoutes(mux, &cookieJar, &log, nil, marketing.NewMarketingController(&log, mockDB))
+	marketingService := marketing.NewService(mockDB)
+	SetupBaseRoutes(mux, &cookieJar, &log, nil, marketing.NewMarketingController(&log, marketingService))
 
 	// Create a request to the marketing blog posts endpoint
 	req, err := http.NewRequest("GET", "/api/marketing/blog?page=1&limit=5", nil)
