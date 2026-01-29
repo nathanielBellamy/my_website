@@ -1,0 +1,33 @@
+# Git
+.git
+.gitignore
+.gitmodules
+
+# Node
+node_modules
+/marketing/node_modules
+/old-site/node_modules
+/auth/dev/node_modules
+npm-debug.log
+
+# Build artifacts
+dist
+build
+/marketing/dist
+/old-site/dist
+/auth/dev/dist
+
+# Nix
+result
+.direnv
+
+# Go
+/backend/go/vendor
+
+# Logs
+log
+*.log
+
+# IDE
+.vscode
+.idea
