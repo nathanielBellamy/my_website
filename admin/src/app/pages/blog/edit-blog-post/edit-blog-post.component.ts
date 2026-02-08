@@ -1,8 +1,8 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BlogFormComponent } from '../../components/blog-form/blog-form.component';
-import { BlogService } from '../../services/blog';
-import { BlogPost } from '../../models/data-models';
+import { BlogFormComponent } from '../../../components/blog-form/blog-form.component';
+import { BlogService } from '../../../services/blog.service';
+import { BlogPost } from '../../../models/data-models';
 
 @Component({
   selector: 'app-edit-blog-post',

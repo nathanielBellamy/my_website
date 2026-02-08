@@ -54,7 +54,9 @@ This document outlines the plan and process for developing the new Angular front
   - We will be using Tailwind for our CSS needs.
   - For common, shared colors and spacing we will use Sass variables from within Tailwind.
 
-
+  ## Git conventions
+  - All commits will be done manually. 
+  - Gemini should never commit anything. 
 
 ---
 

@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { BlogService } from '../../services/blog';
-import { BlogPost, Tag } from '../../models/data-models'; // Import Tag
+import { BlogService } from '../../../services/blog.service';
+import { BlogPost, Tag } from '../../../models/data-models'; // Import Tag
 import { RouterLink } from '@angular/router'; // Import RouterLink for navigation
 
 @Component({

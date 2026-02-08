@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { BlogFormComponent } from '../../components/blog-form/blog-form.component';
-import { BlogService } from '../../services/blog';
-import { BlogPost } from '../../models/data-models';
+import { BlogFormComponent } from '../../../components/blog-form/blog-form.component';
+import { BlogService } from '../../../services/blog.service';
+import { BlogPost } from '../../../models/data-models';
 
 @Component({
   selector: 'app-create-blog-post',
