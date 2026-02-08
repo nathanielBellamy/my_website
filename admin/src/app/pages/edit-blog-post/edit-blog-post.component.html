@@ -1,0 +1,8 @@
+<div>
+  <h2>Edit Blog Post</h2>
+  @if (blogPost()) {
+    <app-blog-form [post]="blogPost()" (submitForm)="updatePost($event)"></app-blog-form>
+  } @else {
+    <p>Loading blog post...</p>
+  }
+</div>

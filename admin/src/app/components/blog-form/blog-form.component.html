@@ -1,0 +1,21 @@
+<form [formGroup]="blogForm" (ngSubmit)="saveForm()">
+  <div>
+    <label for="title">Title:</label>
+    <input id="title" formControlName="title" />
+  </div>
+  <div>
+    <label for="content">Content:</label>
+    <textarea id="content" formControlName="content"></textarea>
+  </div>
+  <div formGroupName="author">
+    <label for="authorName">Author Name:</label>
+    <input id="authorName" formControlName="name" />
+  </div>
+  <div>
+    <label for="tags">Tags (comma-separated):</label>
+    <input id="tags" formControlName="tags" />
+  </div>
+  <button type="submit" [disabled]="blogForm.invalid">Save</button>
+  <p>Form Value: {{ blogForm.value | json }}</p>
+  <p>Form Valid: {{ blogForm.valid }}</p>
+</form>

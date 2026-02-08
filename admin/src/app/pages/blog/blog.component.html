@@ -1,0 +1,20 @@
+<div>
+  <h2>Blog Posts</h2>
+  <a routerLink="/blog/new">Create New Post</a>
+  <ul>
+    @for (post of blogPosts(); track post.id) {
+      <li>
+        <h3>{{ post.title }}</h3>
+        <p>{{ post.content }}</p>
+        <p>Author: {{ post.author?.name }}</p>
+        <p>Tags: {{ getTagsAsString(post.tags) }}</p>
+        <p>Created: {{ post.createdAt }}</p>
+        <p>Updated: {{ post.updatedAt }}</p>
+        <a [routerLink]="['/blog', post.id, 'edit']">Edit</a> |
+        <button (click)="deletePost(post.id)">Delete</button>
+      </li>
+    } @empty {
+      <li>No blog posts found.</li>
+    }
+  </ul>
+</div>
