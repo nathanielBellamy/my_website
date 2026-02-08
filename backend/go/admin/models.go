@@ -1,4 +1,4 @@
-package marketing
+package admin
 
 import (
 	"time"

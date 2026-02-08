@@ -1,0 +1,19 @@
+package interfaces
+
+import "github.com/go-pg/pg/v10"
+
+type PgxQuerySeter interface {
+	Relation(name string) PgxQuerySeter
+	Limit(count int) PgxQuerySeter
+	Offset(offset int) PgxQuerySeter
+	Where(query string, params ...interface{}) PgxQuerySeter
+	Join(join string, params ...interface{}) PgxQuerySeter
+	Select(dest ...interface{}) error
+	Insert(dest ...interface{}) (pg.Result, error)
+	Update(dest ...interface{}) (pg.Result, error)
+	Delete(dest ...interface{}) (pg.Result, error)
+}
+
+type PgxDB interface {
+	Model(model ...interface{}) PgxQuerySeter
+}

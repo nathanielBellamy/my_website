@@ -5,10 +5,12 @@ import (
 	"os"
 
 	// "github.com/go-pg/pg/v10" // Removed unused import
+	"github.com/nathanielBellamy/my_website/backend/go/admin"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
 	"github.com/nathanielBellamy/my_website/backend/go/config"
 	"github.com/nathanielBellamy/my_website/backend/go/db"
 	"github.com/nathanielBellamy/my_website/backend/go/env"
+	"github.com/nathanielBellamy/my_website/backend/go/interfaces"
 	"github.com/nathanielBellamy/my_website/backend/go/marketing"
 	"github.com/nathanielBellamy/my_website/backend/go/old_site"
 	"github.com/nathanielBellamy/my_website/backend/go/websocket"
@@ -70,13 +72,17 @@ func main() {
 		Msg("Now serving on 8080")
 }
 
-func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, feedPool *websocket.Pool, wasmPool *websocket.Pool, db marketing.PgxDB) {
+func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, feedPool *websocket.Pool, wasmPool *websocket.Pool, db interfaces.PgxDB) {
 	mode := os.Getenv("MODE")
 	oldSiteController := old_site.NewOldSiteController(cookieJar, log, feedPool, wasmPool)
+
 	marketingService := marketing.NewService(db)
 	marketingController := marketing.NewMarketingController(log, marketingService)
 
-	SetupBaseRoutes(mux, cookieJar, log, oldSiteController, marketingController)
+	adminService := admin.NewService(db)
+	adminController := admin.NewAdminController(log, adminService)
+
+	SetupBaseRoutes(mux, cookieJar, log, oldSiteController, marketingController, adminController)
 
 	if env.IsProd(mode) {
 		SetupProdRoutes()
@@ -87,7 +93,7 @@ func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.
 	}
 }
 
-func SetupBaseRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, marketingController *marketing.MarketingController) {
+func SetupBaseRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, marketingController *marketing.MarketingController, adminController *admin.AdminController) {
 	log.Info().
 		Msg("Setting up BaseRoutes")
 	mode := os.Getenv("MODE")
@@ -103,21 +109,51 @@ func SetupBaseRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, a
 
 	// marketing routes
 	// Blog
-	mux.HandleFunc("/api/marketing/blog", marketingController.GetAllBlogPostsHandler)
-	mux.HandleFunc("/api/marketing/blog/{id}", marketingController.GetBlogPostByIDHandler)
-	mux.HandleFunc("/api/marketing/blog/tag/{tag}", marketingController.GetBlogPostsByTagHandler)
+	mux.HandleFunc("GET /api/marketing/blog", marketingController.GetAllBlogPostsHandler)
+	mux.HandleFunc("GET /api/marketing/blog/{id}", marketingController.GetBlogPostByIDHandler)
+	mux.HandleFunc("GET /api/marketing/blog/tag/{tag}", marketingController.GetBlogPostsByTagHandler)
 
 	// Home
-	mux.HandleFunc("/api/marketing/home", marketingController.GetAllHomeContentHandler)
-	mux.HandleFunc("/api/marketing/home/{id}", marketingController.GetHomeContentByIDHandler)
+	mux.HandleFunc("GET /api/marketing/home", marketingController.GetAllHomeContentHandler)
+	mux.HandleFunc("GET /api/marketing/home/{id}", marketingController.GetHomeContentByIDHandler)
 
 	// GrooveJr
-	mux.HandleFunc("/api/marketing/groovejr", marketingController.GetAllGrooveJrContentHandler)
-	mux.HandleFunc("/api/marketing/groovejr/{id}", marketingController.GetGrooveJrContentByIDHandler)
+	mux.HandleFunc("GET /api/marketing/groovejr", marketingController.GetAllGrooveJrContentHandler)
+	mux.HandleFunc("GET /api/marketing/groovejr/{id}", marketingController.GetGrooveJrContentByIDHandler)
 
 	// About
-	mux.HandleFunc("/api/marketing/about", marketingController.GetAllAboutContentHandler)
-	mux.HandleFunc("/api/marketing/about/{id}", marketingController.GetAboutContentByIDHandler)
+	mux.HandleFunc("GET /api/marketing/about", marketingController.GetAllAboutContentHandler)
+	mux.HandleFunc("GET /api/marketing/about/{id}", marketingController.GetAboutContentByIDHandler)
+
+	// admin routes
+	// Blog
+	mux.Handle("GET /api/admin/blog", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.GetAllBlogPostsHandler)))
+	mux.Handle("GET /api/admin/blog/{id}", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.GetBlogPostByIDHandler)))
+	mux.Handle("GET /api/admin/blog/tag/{tag}", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.GetBlogPostsByTagHandler)))
+	mux.Handle("POST /api/admin/blog", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.CreateBlogPostHandler)))
+	mux.Handle("PUT /api/admin/blog/{id}", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.UpdateBlogPostHandler)))
+	mux.Handle("DELETE /api/admin/blog/{id}", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.DeleteBlogPostHandler)))
+
+	// Home
+	mux.Handle("GET /api/admin/home", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.GetAllHomeContentHandler)))
+	mux.Handle("GET /api/admin/home/{id}", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.GetHomeContentByIDHandler)))
+	mux.Handle("POST /api/admin/home", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.CreateHomeContentHandler)))
+	mux.Handle("PUT /api/admin/home/{id}", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.UpdateHomeContentHandler)))
+	mux.Handle("DELETE /api/admin/home/{id}", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.DeleteHomeContentHandler)))
+
+	// GrooveJr
+	mux.Handle("GET /api/admin/groovejr", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.GetAllGrooveJrContentHandler)))
+	mux.Handle("GET /api/admin/groovejr/{id}", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.GetGrooveJrContentByIDHandler)))
+	mux.Handle("POST /api/admin/groovejr", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.CreateGrooveJrContentHandler)))
+	mux.Handle("PUT /api/admin/groovejr/{id}", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.UpdateGrooveJrContentHandler)))
+	mux.Handle("DELETE /api/admin/groovejr/{id}", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.DeleteGrooveJrContentHandler)))
+
+	// About
+	mux.Handle("GET /api/admin/about", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.GetAllAboutContentHandler)))
+	mux.Handle("GET /api/admin/about/{id}", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.GetAboutContentByIDHandler)))
+	mux.Handle("POST /api/admin/about", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.CreateAboutContentHandler)))
+	mux.Handle("PUT /api/admin/about/{id}", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.UpdateAboutContentHandler)))
+	mux.Handle("DELETE /api/admin/about/{id}", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.DeleteAboutContentHandler)))
 }
 
 func SetupRemotedevRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController) {

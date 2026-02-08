@@ -8,7 +8,7 @@ test_go_server() {
   📣  🧪   TESTING:
 GO SERVER
 EOF
-  go test ./backend/go
+  go test ./backend/go/...
   cat << EOF
   📣  🏁  DONE:
 GO SERVER TESTED
