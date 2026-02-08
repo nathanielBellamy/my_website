@@ -3,20 +3,12 @@
     <div class="container mx-auto flex justify-between items-center">
       <h1 class="text-2xl font-bold">Admin Panel</h1>
       <nav>
-        <ul class="flex space-x-4">
-          <li>
-            <a routerLink="/home" class="hover:text-gray-300">Home Content</a>
-          </li>
-          <li>
-            <a routerLink="/groovejr" class="hover:text-gray-300">GrooveJr Content</a>
-          </li>
-          <li>
-            <a routerLink="/about" class="hover:text-gray-300">About Content</a>
-          </li>
-          <li>
-            <a routerLink="/blog" class="hover:text-gray-300">Blog Posts</a>
-          </li>
-        </ul>
+        <div class="flex gap-2">
+          <a href="/home">Home</a>
+          <a routerLink="/groovejr">GrooveJr</a>
+          <a routerLink="/about">About</a>
+          <a routerLink="/blog">Blog</a>
+        </div>
       </nav>
     </div>
   </header>

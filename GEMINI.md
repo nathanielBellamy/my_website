@@ -24,9 +24,10 @@ This document outlines the plan and process for developing the new Angular front
   - Although the new `marketing` and `admin` apps will be written in Angular, the goal is to keep these apps doing nothing more than standard, boring CRUD - we will thus keep all asynchronouse code as close to `Promise`s as possible.
     - That is, whenever possible we will prefer to `await` a `Promise` as opposed to `subscribe`ing to an `Observable`.
   - We will be using the Angular Testing Library as our main unit test framework
-    - I should never see TestBed in this code
+    - I should never see `TestBed` in this code
   - We will use Cypress to write an E2E test suite that can target local, dev, and production environments. 
   - Never pass services into constructors. Always inject services directly: `private readonly fooService: FooService = inject(FooService);`
+  
 
   ## JavaScript/TypeScript conventions
   - We will always prefer `Enum`s over loose strings.
@@ -55,8 +56,10 @@ This document outlines the plan and process for developing the new Angular front
   - For common, shared colors and spacing we will use Sass variables from within Tailwind.
 
   ## Git conventions
-  - All commits will be done manually. 
-  - Gemini should never commit anything. 
+  - All commits will be done manually by humans. 
+  - Gemini will never commit anything.
+  - Gemini will never call `git add` - all adding will be done manually by humans.
+  - Gemini has readonly access to git.
 
 ---
 

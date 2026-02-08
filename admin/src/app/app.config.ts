@@ -5,9 +5,5 @@ import { provideHttpClient } from '@angular/common/http'; // Import provideHttpC
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
-    provideHttpClient() // Add provideHttpClient here
-  ]
+  providers: [provideRouter(routes)]
 };

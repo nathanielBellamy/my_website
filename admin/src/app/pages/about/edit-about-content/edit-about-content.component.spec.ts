@@ -8,7 +8,6 @@ import { of } from 'rxjs';
 import { AboutContent } from '../../../models/data-models';
 
 describe('EditAboutContentComponent', () => {
-describe('EditAboutContentComponent', () => {
   let mockAboutService: Partial<AboutService>;
   let mockActivatedRoute: Partial<ActivatedRoute>;
   let mockRouter: Partial<Router>;

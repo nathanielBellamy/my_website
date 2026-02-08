@@ -7,7 +7,6 @@ import { FormsModule } from '@angular/forms';
 import { AboutContent } from '../../../models/data-models';
 
 describe('CreateAboutContentComponent', () => {
-describe('CreateAboutContentComponent', () => {
   let mockAboutService: Partial<AboutService>;
   let mockRouter: Partial<Router>;
 
