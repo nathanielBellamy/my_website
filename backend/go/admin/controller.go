@@ -358,3 +358,9 @@ func (ac *AdminController) DeleteAboutContentHandler(w http.ResponseWriter, r *h
 
 	w.WriteHeader(http.StatusNoContent)
 }
+
+// AdminFileServer serves static files for the admin site.
+func (ac *AdminController) AdminFileServer() http.Handler {
+	fsAdmin := http.FileServer(http.Dir("build/admin/browser"))
+	return http.StripPrefix("/admin/", auth.LogClientIp("/admin/", ac.Log, fsAdmin))
+}

@@ -6,7 +6,11 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "jest"
+    "test": "jest",
+    "build-localhost": "npm run build-admin-localhost",
+    "build-admin-localhost": "ng build --configuration localhost --base-href /admin/",
+    "build-admin-remotedev": "ng build --configuration remotedev",
+    "build-admin-prod": "ng build --configuration production"
   },
   "private": true,
   "dependencies": {

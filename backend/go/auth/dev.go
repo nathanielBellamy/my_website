@@ -10,14 +10,16 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func SetupDevAuth(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger, oldSiteFileServer http.Handler) {
-	fs_marketing := http.FileServer(http.Dir("build/marketing/browser"))
-	mux.Handle("/", http.StripPrefix("/", LogClientIp("/", log, RequireDevAuth(cookieJar, log, fs_marketing))))
-
+func SetupDevAuth(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger, oldSiteFileServer http.Handler, adminFileServer http.Handler) {
 	mux.Handle("/old-site/", RequireDevAuth(cookieJar, log, oldSiteFileServer))
+
+	mux.Handle("/admin/", RequireDevAuth(cookieJar, log, adminFileServer))
 
 	fs_auth := http.FileServer(http.Dir("build/auth/dev"))
 	mux.Handle("/auth/dev/", LogClientIp("/auth/dev/", log, http.StripPrefix("/auth/dev/", fs_auth)))
+
+	fs_marketing := http.FileServer(http.Dir("build/marketing/browser"))
+	mux.Handle("/", http.StripPrefix("/", LogClientIp("/", log, RequireDevAuth(cookieJar, log, fs_marketing))))
 
 	// TODO:
 	// - set up salt route

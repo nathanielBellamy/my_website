@@ -138,6 +138,25 @@ MARKETING SPA BUILT
 EOF
 }
 
+# Function for admin SPA build
+build_admin_spa() {
+  cat << EOF
+
+  📣  🏗️   BUILDING:
+ADMIN SPA
+
+EOF
+  SPA_ENV=$1
+  cd admin && npm run build-admin-$SPA_ENV 
+  cd ..
+  cat << EOF
+
+  📣  🏁  DONE:
+ADMIN SPA BUILT
+
+EOF
+}
+
 ######
 
 cat << EOF
@@ -183,18 +202,21 @@ case $MODE in
       build_old_site_spa "localhost"
     fi
     build_marketing_spa "localhost"
+    build_admin_spa "localhost"
     ;;
   remotedev)
     build_go_server "remotedev"
     build_auth_dev_spa "remotedev"
     build_old_site_spa "remotedev"
     build_marketing_spa "remotedev"
+    build_admin_spa "remotedev"
     ;;
   prod)
     build_go_server "prod"
     build_auth_dev_spa "prod"
     build_old_site_spa "prod"
     build_marketing_spa "prod"
+    build_admin_spa "prod"
     ;;
   *)
     echo "Invalid MODE. Choose between localhost, remotedev, or prod."

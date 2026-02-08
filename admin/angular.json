@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": "../build/admin",
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
@@ -35,6 +36,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/admin/",
               "budgets": [
                 {
                   "type": "initial",
@@ -50,6 +52,13 @@
               "outputHashing": "all"
             },
             "development": {
+              "baseHref": "/admin/",
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            },
+            "localhost": {
+              "baseHref": "/admin/",
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true

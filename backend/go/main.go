@@ -87,9 +87,9 @@ func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.
 	if env.IsProd(mode) {
 		SetupProdRoutes()
 	} else if env.IsRemotedev(mode) {
-		SetupRemotedevRoutes(mux, cookieJar, log, oldSiteController)
+		SetupRemotedevRoutes(mux, cookieJar, log, oldSiteController, adminController)
 	} else {
-		SetupLocalhostRoutes(mux, cookieJar, log, oldSiteController)
+		SetupLocalhostRoutes(mux, cookieJar, log, oldSiteController, adminController)
 	}
 }
 
@@ -156,12 +156,12 @@ func SetupBaseRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, a
 	mux.Handle("DELETE /api/admin/about/{id}", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.DeleteAboutContentHandler)))
 }
 
-func SetupRemotedevRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController) {
-	auth.SetupDevAuth(mux, cookieJar, log, oldSiteController.OldSiteFileServer())
+func SetupRemotedevRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, adminController *admin.AdminController) {
+	auth.SetupDevAuth(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer())
 }
 
-func SetupLocalhostRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController) {
-	auth.SetupDevAuth(mux, cookieJar, log, oldSiteController.OldSiteFileServer())
+func SetupLocalhostRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, adminController *admin.AdminController) {
+	auth.SetupDevAuth(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer())
 }
 
 func SetupProdRoutes() {
