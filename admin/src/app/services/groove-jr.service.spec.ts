@@ -33,7 +33,7 @@ describe('GrooveJrService', () => {
     expect(req.request.method).toEqual('GET');
     req.flush(mockContent);
 
-    await expectAsync(promise).toBeResolvedTo(mockContent);
+    await expect(promise).resolves.toEqual(mockContent);
   });
 
   it('should retrieve GrooveJr content by ID', async () => {
@@ -45,7 +45,7 @@ describe('GrooveJrService', () => {
     expect(req.request.method).toEqual('GET');
     req.flush(mockContent);
 
-    await expectAsync(promise).toBeResolvedTo(mockContent);
+    await expect(promise).resolves.toEqual(mockContent);
   });
 
   it('should create GrooveJr content', async () => {
@@ -59,7 +59,7 @@ describe('GrooveJrService', () => {
     expect(req.request.body).toEqual(newContent);
     req.flush(mockResponse);
 
-    await expectAsync(promise).toBeResolvedTo(mockResponse);
+    await expect(promise).resolves.toEqual(mockResponse);
   });
 
   it('should update GrooveJr content', async () => {
@@ -73,7 +73,7 @@ describe('GrooveJrService', () => {
     expect(req.request.body).toEqual(updatedContent);
     req.flush(mockResponse);
 
-    await expectAsync(promise).toBeResolvedTo(mockResponse);
+    await expect(promise).resolves.toEqual(mockResponse);
   });
 
   it('should delete GrooveJr content', async () => {
@@ -83,6 +83,5 @@ describe('GrooveJrService', () => {
     expect(req.request.method).toEqual('DELETE');
     req.flush(null);
 
-    await expectAsync(promise).toBeResolvedTo(undefined);
-  });
+    await expect(promise).resolves.toBeNull();
 });

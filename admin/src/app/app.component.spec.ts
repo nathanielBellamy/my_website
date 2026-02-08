@@ -8,6 +8,6 @@ describe('AppComponent', () => {
       imports: [],
       providers: appConfig.providers,
     });
-    expect(screen.getByText('admin')).toBeInTheDocument();
+    expect(screen.getByText('Admin Panel')).toBeInTheDocument();
   });
 });

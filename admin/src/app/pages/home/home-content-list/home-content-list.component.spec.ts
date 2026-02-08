@@ -1,60 +1,65 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { render, screen, fireEvent, waitFor } from '@testing-library/angular';
 import { HomeContentListComponent } from './home-content-list.component';
-import { HomeService } from '../../services/home.service';
+import { HomeService } from 'app/services/home.service';
 import { of } from 'rxjs';
 import { HomeContent } from '../../models/data-models';
 
-describe('HomeContentListComponent', () => {
-  let component: HomeContentListComponent;
-  let fixture: ComponentFixture<HomeContentListComponent>;
-  let mockHomeService: Partial<HomeService>;
 
+describe('HomeContentListComponent', () => {
+  let mockHomeService: Partial<HomeService>;
   const mockHomeContent: HomeContent[] = [
     { id: '1', title: 'Home 1', content: 'Content 1' },
     { id: '2', title: 'Home 2', content: 'Content 2' },
   ];
-
-  beforeEach(async () => {
+  beforeEach(() => {
     mockHomeService = {
-      getAllHomeContent: jasmine.createSpy('getAllHomeContent').and.returnValue(Promise.resolve(mockHomeContent)),
-      deleteHomeContent: jasmine.createSpy('deleteHomeContent').and.returnValue(Promise.resolve()),
+      getAllHomeContent: jest.fn().mockReturnValue(Promise.resolve(mockHomeContent)),
+      deleteHomeContent: jest.fn().mockReturnValue(Promise.resolve()),
     };
-
-    await TestBed.configureTestingModule({
-      imports: [HomeContentListComponent],
-      providers: [{ provide: HomeService, useValue: mockHomeService }]
-    })
-    .compileComponents();
-
-    fixture = TestBed.createComponent(HomeContentListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create', async () => {
+    await render(HomeContentListComponent, {
+      providers: [{ provide: HomeService, useValue: mockHomeService }],
+
+    });
+    expect(screen.getByText('Home Content')).toBeInTheDocument();
   });
 
   it('should fetch home content on ngOnInit', async () => {
-    // Wait for the promise to resolve
-    await fixture.whenStable();
+    await render(HomeContentListComponent, {
+      providers: [{ provide: HomeService, useValue: mockHomeService }],
+
+    });
 
     expect(mockHomeService.getAllHomeContent).toHaveBeenCalled();
-    expect(component.homeContent()).toEqual(mockHomeContent);
+    // Use waitFor to wait for the content to appear
+    await waitFor(() => {
+      expect(screen.getByText('Home 1')).toBeInTheDocument();
+      expect(screen.getByText('Home 2')).toBeInTheDocument();
+    });
   });
 
   it('should delete home content and refresh the list', async () => {
-    // Initial fetch
-    await fixture.whenStable();
-    expect(component.homeContent()).toEqual(mockHomeContent);
+    await render(HomeContentListComponent, {
+      providers: [{ provide: HomeService, useValue: mockHomeService }],
 
-    // Call delete
-    component.deleteContent('1');
+    });
 
-    // Wait for delete promise to resolve and then the refresh promise
-    await fixture.whenStable();
+    // Wait for initial content to be present
+    await waitFor(() => {
+      expect(screen.getByText('Home 1')).toBeInTheDocument();
+    });
+
+    // Simulate clicking the delete button for 'Home 1'
+    const deleteButton = screen.getByTestId('delete-button-1');
+
+    await fireEvent.click(deleteButton);
 
     expect(mockHomeService.deleteHomeContent).toHaveBeenCalledWith('1');
-    expect(mockHomeService.getAllHomeContent).toHaveBeenCalledTimes(2); // Initial fetch + refresh
+    // Wait for the list to refresh (getAllHomeContent called again)
+    await waitFor(() => {
+      expect(mockHomeService.getAllHomeContent).toHaveBeenCalledTimes(2); // Initial fetch + refresh
+    });
   });
 });

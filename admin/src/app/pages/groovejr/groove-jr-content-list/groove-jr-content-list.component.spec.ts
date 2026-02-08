@@ -1,12 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { render, screen, fireEvent, waitFor } from '@testing-library/angular';
 import { GrooveJrContentListComponent } from './groove-jr-content-list.component';
-import { GrooveJrService } from '../../services/groove-jr.service';
-import { of } from 'rxjs';
+import { GrooveJrService } from 'app/services/groove-jr.service';
 import { GrooveJrContent } from '../../models/data-models';
 
+
 describe('GrooveJrContentListComponent', () => {
-  let component: GrooveJrContentListComponent;
-  let fixture: ComponentFixture<GrooveJrContentListComponent>;
   let mockGrooveJrService: Partial<GrooveJrService>;
 
   const mockGrooveJrContent: GrooveJrContent[] = [
@@ -14,43 +12,50 @@ describe('GrooveJrContentListComponent', () => {
     { id: '2', title: 'GrooveJr 2', content: 'Content 2' },
   ];
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockGrooveJrService = {
-      getAllGrooveJrContent: jasmine.createSpy('getAllGrooveJrContent').and.returnValue(Promise.resolve(mockGrooveJrContent)),
-      deleteGrooveJrContent: jasmine.createSpy('deleteGrooveJrContent').and.returnValue(Promise.resolve()),
+      getAllGrooveJrContent: jest.fn().mockReturnValue(Promise.resolve(mockGrooveJrContent)),
+      deleteGrooveJrContent: jest.fn().mockReturnValue(Promise.resolve()),
     };
-
-    await TestBed.configureTestingModule({
-      imports: [GrooveJrContentListComponent],
-      providers: [{ provide: GrooveJrService, useValue: mockGrooveJrService }]
-    })
-    .compileComponents();
-
-    fixture = TestBed.createComponent(GrooveJrContentListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create', async () => {
+    await render(GrooveJrContentListComponent, {
+      providers: [{ provide: GrooveJrService, useValue: mockGrooveJrService }],
+
+    });
+    expect(screen.getByText('GrooveJr Content')).toBeInTheDocument();
   });
 
   it('should fetch GrooveJr content on ngOnInit', async () => {
-    await fixture.whenStable();
+    await render(GrooveJrContentListComponent, {
+      providers: [{ provide: GrooveJrService, useValue: mockGrooveJrService }],
+
+    });
 
     expect(mockGrooveJrService.getAllGrooveJrContent).toHaveBeenCalled();
-    expect(component.grooveJrContent()).toEqual(mockGrooveJrContent);
+    await waitFor(() => {
+      expect(screen.getByText('GrooveJr 1')).toBeInTheDocument();
+      expect(screen.getByText('GrooveJr 2')).toBeInTheDocument();
+    });
   });
 
   it('should delete GrooveJr content and refresh the list', async () => {
-    await fixture.whenStable();
-    expect(component.grooveJrContent()).toEqual(mockGrooveJrContent);
+    await render(GrooveJrContentListComponent, {
+      providers: [{ provide: GrooveJrService, useValue: mockGrooveJrService }],
 
-    component.deleteContent('1');
+    });
 
-    await fixture.whenStable();
+    await waitFor(() => {
+      expect(screen.getByText('GrooveJr 1')).toBeInTheDocument();
+    });
+
+    const deleteButton = screen.getByTestId('delete-button-1');
+    await fireEvent.click(deleteButton);
 
     expect(mockGrooveJrService.deleteGrooveJrContent).toHaveBeenCalledWith('1');
-    expect(mockGrooveJrService.getAllGrooveJrContent).toHaveBeenCalledTimes(2);
+    await waitFor(() => {
+      expect(mockGrooveJrService.getAllGrooveJrContent).toHaveBeenCalledTimes(2);
+    });
   });
 });

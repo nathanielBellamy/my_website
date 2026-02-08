@@ -38,7 +38,7 @@ describe('HomeService', () => {
     req.flush(mockContent);
 
     // Await the promise and assert the result
-    await expectAsync(promise).toBeResolvedTo(mockContent);
+    await expect(promise).resolves.toEqual(mockContent);
   });
 
   it('should retrieve home content by ID', async () => {
@@ -50,7 +50,7 @@ describe('HomeService', () => {
     expect(req.request.method).toEqual('GET');
     req.flush(mockContent);
 
-    await expectAsync(promise).toBeResolvedTo(mockContent);
+    await expect(promise).resolves.toEqual(mockContent);
   });
 
   it('should create home content', async () => {
@@ -64,7 +64,7 @@ describe('HomeService', () => {
     expect(req.request.body).toEqual(newContent);
     req.flush(mockResponse);
 
-    await expectAsync(promise).toBeResolvedTo(mockResponse);
+    await expect(promise).resolves.toEqual(mockResponse);
   });
 
   it('should update home content', async () => {
@@ -78,7 +78,7 @@ describe('HomeService', () => {
     expect(req.request.body).toEqual(updatedContent);
     req.flush(mockResponse);
 
-    await expectAsync(promise).toBeResolvedTo(mockResponse);
+    await expect(promise).resolves.toEqual(mockResponse);
   });
 
   it('should delete home content', async () => {
@@ -88,6 +88,5 @@ describe('HomeService', () => {
     expect(req.request.method).toEqual('DELETE');
     req.flush(null);
 
-    await expectAsync(promise).toBeResolvedTo(undefined);
-  });
+    await expect(promise).resolves.toBeNull();
 });

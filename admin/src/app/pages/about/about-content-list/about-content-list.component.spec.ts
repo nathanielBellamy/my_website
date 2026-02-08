@@ -1,12 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { render, screen, fireEvent, waitFor } from '@testing-library/angular';
 import { AboutContentListComponent } from './about-content-list.component';
-import { AboutService } from '../../services/about.service';
-import { of } from 'rxjs';
+import { AboutService } from 'app/services/about.service';
 import { AboutContent } from '../../models/data-models';
 
+
 describe('AboutContentListComponent', () => {
-  let component: AboutContentListComponent;
-  let fixture: ComponentFixture<AboutContentListComponent>;
   let mockAboutService: Partial<AboutService>;
 
   const mockAboutContent: AboutContent[] = [
@@ -14,43 +12,50 @@ describe('AboutContentListComponent', () => {
     { id: '2', title: 'About 2', content: 'Content 2' },
   ];
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockAboutService = {
-      getAllAboutContent: jasmine.createSpy('getAllAboutContent').and.returnValue(Promise.resolve(mockAboutContent)),
-      deleteAboutContent: jasmine.createSpy('deleteAboutContent').and.returnValue(Promise.resolve()),
+      getAllAboutContent: jest.fn().mockReturnValue(Promise.resolve(mockAboutContent)),
+      deleteAboutContent: jest.fn().mockReturnValue(Promise.resolve()),
     };
-
-    await TestBed.configureTestingModule({
-      imports: [AboutContentListComponent],
-      providers: [{ provide: AboutService, useValue: mockAboutService }]
-    })
-    .compileComponents();
-
-    fixture = TestBed.createComponent(AboutContentListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create', async () => {
+    await render(AboutContentListComponent, {
+      providers: [{ provide: AboutService, useValue: mockAboutService }],
+
+    });
+    expect(screen.getByText('About Content')).toBeInTheDocument();
   });
 
   it('should fetch about content on ngOnInit', async () => {
-    await fixture.whenStable();
+    await render(AboutContentListComponent, {
+      providers: [{ provide: AboutService, useValue: mockAboutService }],
+
+    });
 
     expect(mockAboutService.getAllAboutContent).toHaveBeenCalled();
-    expect(component.aboutContent()).toEqual(mockAboutContent);
+    await waitFor(() => {
+      expect(screen.getByText('About 1')).toBeInTheDocument();
+      expect(screen.getByText('About 2')).toBeInTheDocument();
+    });
   });
 
   it('should delete about content and refresh the list', async () => {
-    await fixture.whenStable();
-    expect(component.aboutContent()).toEqual(mockAboutContent);
+    await render(AboutContentListComponent, {
+      providers: [{ provide: AboutService, useValue: mockAboutService }],
 
-    component.deleteContent('1');
+    });
 
-    await fixture.whenStable();
+    await waitFor(() => {
+      expect(screen.getByText('About 1')).toBeInTheDocument();
+    });
+
+    const deleteButton = screen.getByTestId('delete-button-1');
+    await fireEvent.click(deleteButton);
 
     expect(mockAboutService.deleteAboutContent).toHaveBeenCalledWith('1');
-    expect(mockAboutService.getAllAboutContent).toHaveBeenCalledTimes(2);
+    await waitFor(() => {
+      expect(mockAboutService.getAllAboutContent).toHaveBeenCalledTimes(2);
+    });
   });
 });
