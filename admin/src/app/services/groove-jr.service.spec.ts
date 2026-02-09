@@ -29,7 +29,7 @@ describe('GrooveJrService', () => {
 
     const promise = service.getAllGrooveJrContent();
 
-    const req = httpTestingController.expectOne('http://localhost:8080/admin/groovejr');
+    const req = httpTestingController.expectOne('http://localhost:8080/api/admin/groovejr');
     expect(req.request.method).toEqual('GET');
     req.flush(mockContent);
 
@@ -41,7 +41,7 @@ describe('GrooveJrService', () => {
 
     const promise = service.getGrooveJrContentById('1');
 
-    const req = httpTestingController.expectOne('http://localhost:8080/admin/groovejr/1');
+    const req = httpTestingController.expectOne('http://localhost:8080/api/admin/groovejr/1');
     expect(req.request.method).toEqual('GET');
     req.flush(mockContent);
 
@@ -54,7 +54,7 @@ describe('GrooveJrService', () => {
 
     const promise = service.createGrooveJrContent(newContent);
 
-    const req = httpTestingController.expectOne('http://localhost:8080/admin/groovejr');
+    const req = httpTestingController.expectOne('http://localhost:8080/api/admin/groovejr');
     expect(req.request.method).toEqual('POST');
     expect(req.request.body).toEqual(newContent);
     req.flush(mockResponse);
@@ -68,7 +68,7 @@ describe('GrooveJrService', () => {
 
     const promise = service.updateGrooveJrContent(updatedContent);
 
-    const req = httpTestingController.expectOne('http://localhost:8080/admin/groovejr/1');
+    const req = httpTestingController.expectOne('http://localhost:8080/api/admin/groovejr/1');
     expect(req.request.method).toEqual('PUT');
     expect(req.request.body).toEqual(updatedContent);
     req.flush(mockResponse);
@@ -79,7 +79,7 @@ describe('GrooveJrService', () => {
   it('should delete GrooveJr content', async () => {
     const promise = service.deleteGrooveJrContent('1');
 
-    const req = httpTestingController.expectOne('http://localhost:8080/admin/groovejr/1');
+    const req = httpTestingController.expectOne('http://localhost:8080/api/admin/groovejr/1');
     expect(req.request.method).toEqual('DELETE');
     req.flush(null);
 

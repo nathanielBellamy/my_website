@@ -7,7 +7,7 @@ import { BlogPost } from '../models/data-models';
 })
 export class BlogService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/admin/blog'; // Adjust as per your backend URL
+  private readonly apiUrl = 'http://localhost:8080/api/admin/blog'; // Adjust as per your backend URL
 
   getAllBlogPosts(): Promise<BlogPost[]> {
     return this.http.get<BlogPost[]>(this.apiUrl).toPromise() as Promise<BlogPost[]>;

@@ -7,7 +7,7 @@ import { AboutContent } from '../models/data-models';
 })
 export class AboutService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/admin/about'; // Adjust as per your backend URL
+  private readonly apiUrl = 'http://localhost:8080/api/admin/about'; // Adjust as per your backend URL
 
   getAllAboutContent(): Promise<AboutContent[]> {
     return this.http.get<AboutContent[]>(this.apiUrl).toPromise() as Promise<AboutContent[]>;

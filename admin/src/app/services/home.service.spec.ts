@@ -31,7 +31,7 @@ describe('HomeService', () => {
     const promise = service.getAllHomeContent();
 
     // Expect a GET request to the API URL
-    const req = httpTestingController.expectOne('http://localhost:8080/admin/home');
+    const req = httpTestingController.expectOne('http://localhost:8080/api/admin/home');
     expect(req.request.method).toEqual('GET');
 
     // Respond to the request with mock data
@@ -46,7 +46,7 @@ describe('HomeService', () => {
 
     const promise = service.getHomeContentById('1');
 
-    const req = httpTestingController.expectOne('http://localhost:8080/admin/home/1');
+    const req = httpTestingController.expectOne('http://localhost:8080/api/admin/home/1');
     expect(req.request.method).toEqual('GET');
     req.flush(mockContent);
 
@@ -59,7 +59,7 @@ describe('HomeService', () => {
 
     const promise = service.createHomeContent(newContent);
 
-    const req = httpTestingController.expectOne('http://localhost:8080/admin/home');
+    const req = httpTestingController.expectOne('http://localhost:8080/api/admin/home');
     expect(req.request.method).toEqual('POST');
     expect(req.request.body).toEqual(newContent);
     req.flush(mockResponse);
@@ -73,7 +73,7 @@ describe('HomeService', () => {
 
     const promise = service.updateHomeContent(updatedContent);
 
-    const req = httpTestingController.expectOne('http://localhost:8080/admin/home/1');
+    const req = httpTestingController.expectOne('http://localhost:8080/api/admin/home/1');
     expect(req.request.method).toEqual('PUT');
     expect(req.request.body).toEqual(updatedContent);
     req.flush(mockResponse);
@@ -84,7 +84,7 @@ describe('HomeService', () => {
   it('should delete home content', async () => {
     const promise = service.deleteHomeContent('1');
 
-    const req = httpTestingController.expectOne('http://localhost:8080/admin/home/1');
+    const req = httpTestingController.expectOne('http://localhost:8080/api/admin/home/1');
     expect(req.request.method).toEqual('DELETE');
     req.flush(null);
 

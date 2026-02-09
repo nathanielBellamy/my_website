@@ -7,7 +7,7 @@ import { HomeContent } from '../models/data-models';
 })
 export class HomeService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/admin/home'; // Adjust as per your backend URL
+  private readonly apiUrl = 'http://localhost:8080/api/admin/home'; // Adjust as per your backend URL
 
   getAllHomeContent(): Promise<HomeContent[]> {
     return this.http.get<HomeContent[]>(this.apiUrl).toPromise() as Promise<HomeContent[]>;

@@ -7,7 +7,7 @@ import { GrooveJrContent } from '../models/data-models';
 })
 export class GrooveJrService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/admin/groovejr'; // Adjust as per your backend URL
+  private readonly apiUrl = 'http://localhost:8080/api/admin/groovejr'; // Adjust as per your backend URL
 
   getAllGrooveJrContent(): Promise<GrooveJrContent[]> {
     return this.http.get<GrooveJrContent[]>(this.apiUrl).toPromise() as Promise<GrooveJrContent[]>;
