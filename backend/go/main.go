@@ -79,28 +79,26 @@ func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.
 	marketingService := marketing.NewService(db)
 	marketingController := marketing.NewMarketingController(log, marketingService)
 
+
+
 	adminService := admin.NewService(db)
 	adminController := admin.NewAdminController(log, adminService)
 
 	SetupBaseRoutes(mux, cookieJar, log, oldSiteController, marketingController, adminController)
 
 	if env.IsProd(mode) {
-		SetupProdRoutes()
+		SetupProdRoutes(mux, cookieJar, log, marketingController, adminController, oldSiteController)
 	} else if env.IsRemotedev(mode) {
-		SetupRemotedevRoutes(mux, cookieJar, log, oldSiteController, adminController)
+		SetupRemotedevRoutes(mux, cookieJar, log, oldSiteController, adminController, marketing.GetMarketingFileServerNoAuth())
 	} else {
-		SetupLocalhostRoutes(mux, cookieJar, log, oldSiteController, adminController)
+		SetupLocalhostRoutes(mux, cookieJar, log, oldSiteController, adminController, marketing.GetMarketingFileServerNoAuth())
 	}
 }
 
 func SetupBaseRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, marketingController *marketing.MarketingController, adminController *admin.AdminController) {
 	log.Info().
 		Msg("Setting up BaseRoutes")
-	mode := os.Getenv("MODE")
-	if env.IsProd(mode) {
-		fs := http.FileServer(http.Dir("old-site"))
-		mux.Handle("/", auth.LogClientIp("/", log, fs))
-	}
+
 
 	// old-site routes
 	mux.HandleFunc("/old-site/recaptcha", oldSiteController.RecaptchaHandler)
@@ -156,16 +154,26 @@ func SetupBaseRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, a
 	mux.Handle("DELETE /api/admin/about/{id}", auth.RequireDevAuth(cookieJar, log, http.HandlerFunc(adminController.DeleteAboutContentHandler)))
 }
 
-func SetupRemotedevRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, adminController *admin.AdminController) {
-	auth.SetupDevAuth(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer())
+func SetupRemotedevRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, adminController *admin.AdminController, marketingFileServer http.Handler) {
+	auth.SetupDevAuth(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer(), marketingFileServer)
 }
 
-func SetupLocalhostRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, adminController *admin.AdminController) {
-	auth.SetupDevAuth(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer())
+func SetupLocalhostRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, adminController *admin.AdminController, marketingFileServer http.Handler) {
+	auth.SetupDevAuth(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer(), marketingFileServer)
 }
 
-func SetupProdRoutes() {
-	// TODO: maybe Set cookie when user goes through ep warning
+func SetupProdRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, marketingController *marketing.MarketingController, adminController *admin.AdminController, oldSiteController *old_site.OldSiteController) {
+	log.Info().
+		Msg("Setting up ProdRoutes")
+	
+	// Admin App (auth-protected, /admin/ prefix)
+	mux.Handle("/admin/", auth.RequireDevAuth(cookieJar, log, adminController.AdminFileServer()))
+
+	// Old Site (/old-site/ prefix)
+	mux.Handle("/old-site/", oldSiteController.OldSiteFileServer())
+
+	// Marketing App (public, root) - this needs to be last to act as catch-all
+	mux.Handle("/", auth.LogClientIp("/", log, marketing.GetMarketingFileServerNoAuth()))
 }
 
 func _SetHeaders(handler http.Handler) http.Handler {

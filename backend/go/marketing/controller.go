@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"os"
+
 	_ "github.com/lib/pq"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
 	"github.com/rs/zerolog"
@@ -203,4 +205,19 @@ func (mc *MarketingController) GetAboutContentByIDHandler(w http.ResponseWriter,
 	}
 
 	json.NewEncoder(w).Encode(content)
+}
+
+func GetMarketingFileServerNoAuth() http.Handler {
+	root := http.Dir("build/marketing/browser")
+	fs := http.FileServer(root)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Check if the file exists
+		if _, err := root.Open(r.URL.Path); os.IsNotExist(err) {
+			// If not, serve index.html
+			http.ServeFile(w, r, "build/marketing/browser/index.html")
+			return
+		}
+		// Otherwise, serve the file
+		fs.ServeHTTP(w, r)
+	})
 }
