@@ -82,7 +82,7 @@ func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.
 	marketingService := marketing.NewService(db)
 	marketingController := marketing.NewMarketingController(log, marketingService)
 
-	adminService := admin.NewService(db)
+	adminService := admin.NewService(db, log)
 	adminController := admin.NewAdminController(log, adminService)
 
 	SetupBaseRoutes(mux, cookieJar, log, oldSiteController, marketingController, adminController)

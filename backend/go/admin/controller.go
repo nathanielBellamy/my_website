@@ -1,7 +1,9 @@
 package admin
 
 import (
+	"bytes"
 	"encoding/json"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -11,10 +13,27 @@ import (
 	"github.com/rs/zerolog"
 )
 
+
 type AdminController struct {
 	Log     *zerolog.Logger
 	Service Service
 }
+
+type AuthorDTO struct {
+	Name string `json:"name"`
+}
+
+type TagDTO struct {
+	Name string `json:"name"`
+}
+
+type CreateBlogPostDTO struct {
+	Title   string      `json:"title"`
+	Content string      `json:"content"`
+	Author  *AuthorDTO  `json:"author"`
+	Tags    []*TagDTO   `json:"tags"`
+}
+
 
 func NewAdminController(log *zerolog.Logger, service Service) *AdminController {
 	return &AdminController{
@@ -85,15 +104,57 @@ func (ac *AdminController) GetBlogPostsByTagHandler(w http.ResponseWriter, r *ht
 	json.NewEncoder(w).Encode(posts)
 }
 
+
+type AuthorDTO struct {
+	Name string `json:"name"`
+}
+
+type TagDTO struct {
+	Name string `json:"name"`
+}
+
+type CreateBlogPostDTO struct {
+	Title   string      `json:"title"`
+	Content string      `json:"content"`
+	Author  *AuthorDTO  `json:"author"`
+	Tags    []*TagDTO   `json:"tags"`
+}
+
 func (ac *AdminController) CreateBlogPostHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateBlogPostHandler Hit")
-	var post models.BlogPost
-	if err := json.NewDecoder(r.Body).Decode(&post); err != nil {
+
+	var dto CreateBlogPostDTO
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		ac.Log.Error().Err(err).Msg("Error reading request body")
+		http.Error(w, "Error reading request body", http.StatusInternalServerError)
+		return
+	}
+	defer r.Body.Close()
+
+	decoder := json.NewDecoder(bytes.NewReader(bodyBytes))
+	if err := decoder.Decode(&dto); err != nil {
+		ac.Log.Error().Err(err).RawJSON("body", bodyBytes).Msg("Invalid request body")
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	newPost, err := ac.Service.CreateBlogPost(&post)
+	// Map DTO to model
+	post := &models.BlogPost{
+		Title:   dto.Title,
+		Content: dto.Content,
+	}
+	if dto.Author != nil {
+		post.Author = &models.Author{Name: dto.Author.Name}
+	}
+	if len(dto.Tags) > 0 {
+		post.Tags = make([]*models.Tag, len(dto.Tags))
+		for i, tagDTO := range dto.Tags {
+			post.Tags[i] = &models.Tag{Name: tagDTO.Name}
+		}
+	}
+
+	newPost, err := ac.Service.CreateBlogPost(post)
 	if err != nil {
 		http.Error(w, "Error creating blog post", http.StatusInternalServerError)
 		return
@@ -101,6 +162,7 @@ func (ac *AdminController) CreateBlogPostHandler(w http.ResponseWriter, r *http.
 
 	json.NewEncoder(w).Encode(newPost)
 }
+
 
 func (ac *AdminController) UpdateBlogPostHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateBlogPostHandler Hit")
@@ -369,3 +431,4 @@ func (ac *AdminController) AdminFileServer() http.Handler {
 	fsAdmin := http.FileServer(http.Dir("build/admin/browser"))
 	return http.StripPrefix("/admin/", auth.LogClientIp("/admin/", ac.Log, fsAdmin))
 }
+

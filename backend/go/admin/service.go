@@ -3,6 +3,7 @@ package admin
 import (
 	"github.com/nathanielBellamy/my_website/backend/go/interfaces"
 	"github.com/nathanielBellamy/my_website/backend/go/models"
+	"github.com/rs/zerolog"
 )
 
 type Service interface {
@@ -37,11 +38,12 @@ type Service interface {
 }
 
 type service struct {
-	DB interfaces.PgxDB
+	DB  interfaces.PgxDB
+	Log *zerolog.Logger
 }
 
-func NewService(db interfaces.PgxDB) Service {
-	return &service{DB: db}
+func NewService(db interfaces.PgxDB, log *zerolog.Logger) Service {
+	return &service{DB: db, Log: log}
 }
 
 // Blog
@@ -84,21 +86,111 @@ func (s *service) GetBlogPostsByTag(tag string, page, limit int) ([]models.BlogP
 }
 
 func (s *service) CreateBlogPost(post *models.BlogPost) (*models.BlogPost, error) {
+	s.Log.Info().Interface("post", post).Msg("Initial post")
+
+	// 1. Handle Author
+	if post.Author != nil {
+		// If author has an ID, try to find it. If not, create it.
+		if post.Author.ID == "" {
+			// Check if author with this name already exists
+			var existingAuthor models.Author
+			err := s.DB.Model(&existingAuthor).Where("name = ?", post.Author.Name).Select()
+			if err == nil {
+				post.Author = &existingAuthor
+			} else {
+				_, err := s.DB.Model(post.Author).Insert()
+				if err != nil {
+					s.Log.Error().Err(err).Msg("Error inserting author")
+					return nil, err
+				}
+			}
+		}
+		post.AuthorID = post.Author.ID
+	}
+	s.Log.Info().Interface("post", post).Msg("Post after author handling")
+
+	// 2. Insert the BlogPost itself to generate the ID.
 	_, err := s.DB.Model(post).Insert()
-	return post, err
+	if err != nil {
+		s.Log.Error().Err(err).Msg("Error inserting blog post")
+		return nil, err
+	}
+	s.Log.Info().Interface("post", post).Msg("Post after insert")
+
+
+	// 3. Handle Tags
+	if len(post.Tags) > 0 {
+		var newTags []*models.Tag
+		for _, tag := range post.Tags {
+			var existingTag models.Tag
+			err := s.DB.Model(&existingTag).Where("name = ?", tag.Name).Select()
+			if err == nil {
+				newTags = append(newTags, &existingTag)
+			} else {
+				newTag := models.Tag{Name: tag.Name}
+				_, err := s.DB.Model(&newTag).Insert()
+				if err != nil {
+					s.Log.Error().Err(err).Msg("Error inserting tag")
+					return nil, err
+				}
+				newTags = append(newTags, &newTag)
+			}
+		}
+		post.Tags = newTags
+		s.Log.Info().Interface("post", post).Msg("Post after tag handling")
+
+
+		// 4. Create new tag associations.
+		if len(post.Tags) > 0 {
+			var blogPostTags []models.BlogPostTag
+			for _, tag := range post.Tags {
+				blogPostTags = append(blogPostTags, models.BlogPostTag{
+					BlogPostID: post.ID,
+					TagID:      tag.ID,
+				})
+			}
+			s.Log.Info().Interface("tags", blogPostTags).Msg("BlogPostTags to insert")
+			_, err = s.DB.Model(&blogPostTags).Insert()
+			if err != nil {
+				s.Log.Error().Err(err).Msg("Error inserting blog post tags")
+				return nil, err
+			}
+		}
+	}
+
+	return post, nil
 }
 
 func (s *service) UpdateBlogPost(post *models.BlogPost) (*models.BlogPost, error) {
-	// 1. Update the BlogPost itself (title, content, author_id).
+	// 1. Handle Author
+	if post.Author != nil {
+		// If author has an ID, try to find it. If not, create it.
+		if post.Author.ID == "" {
+			// Check if author with this name already exists
+			var existingAuthor models.Author
+			err := s.DB.Model(&existingAuthor).Where("name = ?", post.Author.Name).Select()
+			if err == nil {
+				post.Author = &existingAuthor
+			} else {
+				_, err := s.DB.Model(post.Author).Insert()
+				if err != nil {
+					return nil, err
+				}
+			}
+		}
+		post.AuthorID = post.Author.ID
+	}
+
+	// 2. Update the BlogPost itself (title, content, author_id, updated_at).
 	_, err := s.DB.Model(post).
-		Column("title", "content", "author_id").
+		Column("title", "content", "author_id", "updated_at").
 		Where("id = ?", post.ID).
 		Update()
 	if err != nil {
 		return nil, err
 	}
 
-	// 2. Delete existing tag associations.
+	// 3. Delete existing tag associations.
 	_, err = s.DB.Model((*models.BlogPostTag)(nil)).
 		Where("blog_post_id = ?", post.ID).
 		Delete()
@@ -106,8 +198,26 @@ func (s *service) UpdateBlogPost(post *models.BlogPost) (*models.BlogPost, error
 		return nil, err
 	}
 
-	// 3. Create new tag associations.
+	// 4. Handle Tags
 	if len(post.Tags) > 0 {
+		var newTags []*models.Tag
+		for _, tag := range post.Tags {
+			var existingTag models.Tag
+			err := s.DB.Model(&existingTag).Where("name = ?", tag.Name).Select()
+			if err == nil {
+				newTags = append(newTags, &existingTag)
+			} else {
+				newTag := models.Tag{Name: tag.Name}
+				_, err := s.DB.Model(&newTag).Insert()
+				if err != nil {
+					return nil, err
+				}
+				newTags = append(newTags, &newTag)
+			}
+		}
+		post.Tags = newTags
+
+		// 5. Create new tag associations.
 		var blogPostTags []models.BlogPostTag
 		for _, tag := range post.Tags {
 			blogPostTags = append(blogPostTags, models.BlogPostTag{
