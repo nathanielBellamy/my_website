@@ -2,18 +2,19 @@ package marketing
 
 import (
 	"github.com/nathanielBellamy/my_website/backend/go/interfaces"
+	"github.com/nathanielBellamy/my_website/backend/go/models"
 )
 
 type Service interface {
-	GetAllBlogPosts(page, limit int) ([]BlogPost, error)
-	GetBlogPostByID(id string) (*BlogPost, error)
-	GetBlogPostsByTag(tag string, page, limit int) ([]BlogPost, error)
-	GetAllHomeContent(page, limit int) ([]HomeContent, error)
-	GetHomeContentByID(id string) (*HomeContent, error)
-	GetAllGrooveJrContent(page, limit int) ([]GrooveJrContent, error)
-	GetGrooveJrContentByID(id string) (*GrooveJrContent, error)
-	GetAllAboutContent(page, limit int) ([]AboutContent, error)
-	GetAboutContentByID(id string) (*AboutContent, error)
+	GetAllBlogPosts(page, limit int) ([]models.BlogPost, error)
+	GetBlogPostByID(id string) (*models.BlogPost, error)
+	GetBlogPostsByTag(tag string, page, limit int) ([]models.BlogPost, error)
+	GetAllHomeContent(page, limit int) ([]models.HomeContent, error)
+	GetHomeContentByID(id string) (*models.HomeContent, error)
+	GetAllGrooveJrContent(page, limit int) ([]models.GrooveJrContent, error)
+	GetGrooveJrContentByID(id string) (*models.GrooveJrContent, error)
+	GetAllAboutContent(page, limit int) ([]models.AboutContent, error)
+	GetAboutContentByID(id string) (*models.AboutContent, error)
 }
 
 type service struct {
@@ -24,8 +25,8 @@ func NewService(db interfaces.PgxDB) Service {
 	return &service{DB: db}
 }
 
-func (s *service) GetAllBlogPosts(page, limit int) ([]BlogPost, error) {
-	var posts []BlogPost
+func (s *service) GetAllBlogPosts(page, limit int) ([]models.BlogPost, error) {
+	var posts []models.BlogPost
 	err := s.DB.Model(&posts).
 		Relation("Author").
 		Relation("Tags").
@@ -35,8 +36,8 @@ func (s *service) GetAllBlogPosts(page, limit int) ([]BlogPost, error) {
 	return posts, err
 }
 
-func (s *service) GetBlogPostByID(id string) (*BlogPost, error) {
-	var post BlogPost
+func (s *service) GetBlogPostByID(id string) (*models.BlogPost, error) {
+	var post models.BlogPost
 	err := s.DB.Model(&post).
 		Where("id = ?", id).
 		Relation("Author").
@@ -48,8 +49,8 @@ func (s *service) GetBlogPostByID(id string) (*BlogPost, error) {
 	return &post, nil
 }
 
-func (s *service) GetBlogPostsByTag(tag string, page, limit int) ([]BlogPost, error) {
-	var posts []BlogPost
+func (s *service) GetBlogPostsByTag(tag string, page, limit int) ([]models.BlogPost, error) {
+	var posts []models.BlogPost
 	err := s.DB.Model(&posts).
 		Relation("Author").
 		Relation("Tags").
@@ -62,8 +63,8 @@ func (s *service) GetBlogPostsByTag(tag string, page, limit int) ([]BlogPost, er
 	return posts, err
 }
 
-func (s *service) GetAllHomeContent(page, limit int) ([]HomeContent, error) {
-	var content []HomeContent
+func (s *service) GetAllHomeContent(page, limit int) ([]models.HomeContent, error) {
+	var content []models.HomeContent
 	err := s.DB.Model(&content).
 		Limit(limit).
 		Offset((page - 1) * limit).
@@ -71,19 +72,19 @@ func (s *service) GetAllHomeContent(page, limit int) ([]HomeContent, error) {
 	return content, err
 }
 
-func (s *service) GetHomeContentByID(id string) (*HomeContent, error) {
-	var content HomeContent
+func (s *service) GetHomeContentByID(id string) (*models.HomeContent, error) {
+	var content models.HomeContent
 	err := s.DB.Model(&content).
 		Where("id = ?", id).
 		Select()
 	if err != nil {
 		return nil, err
 	}
-	return &content, err
+	return &content, nil
 }
 
-func (s *service) GetAllGrooveJrContent(page, limit int) ([]GrooveJrContent, error) {
-	var content []GrooveJrContent
+func (s *service) GetAllGrooveJrContent(page, limit int) ([]models.GrooveJrContent, error) {
+	var content []models.GrooveJrContent
 	err := s.DB.Model(&content).
 		Limit(limit).
 		Offset((page - 1) * limit).
@@ -91,19 +92,19 @@ func (s *service) GetAllGrooveJrContent(page, limit int) ([]GrooveJrContent, err
 	return content, err
 }
 
-func (s *service) GetGrooveJrContentByID(id string) (*GrooveJrContent, error) {
-	var content GrooveJrContent
+func (s *service) GetGrooveJrContentByID(id string) (*models.GrooveJrContent, error) {
+	var content models.GrooveJrContent
 	err := s.DB.Model(&content).
 		Where("id = ?", id).
 		Select()
 	if err != nil {
 		return nil, err
 	}
-	return &content, err
+	return &content, nil
 }
 
-func (s *service) GetAllAboutContent(page, limit int) ([]AboutContent, error) {
-	var content []AboutContent
+func (s *service) GetAllAboutContent(page, limit int) ([]models.AboutContent, error) {
+	var content []models.AboutContent
 	err := s.DB.Model(&content).
 		Limit(limit).
 		Offset((page - 1) * limit).
@@ -111,13 +112,13 @@ func (s *service) GetAllAboutContent(page, limit int) ([]AboutContent, error) {
 	return content, err
 }
 
-func (s *service) GetAboutContentByID(id string) (*AboutContent, error) {
-	var content AboutContent
+func (s *service) GetAboutContentByID(id string) (*models.AboutContent, error) {
+	var content models.AboutContent
 	err := s.DB.Model(&content).
 		Where("id = ?", id).
 		Select()
 	if err != nil {
 		return nil, err
 	}
-	return &content, err
+	return &content, nil
 }

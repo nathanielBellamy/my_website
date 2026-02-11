@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"os"
 
-	// "github.com/go-pg/pg/v10" // Removed unused import
 	"github.com/nathanielBellamy/my_website/backend/go/admin"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
 	"github.com/nathanielBellamy/my_website/backend/go/config"
@@ -12,10 +11,12 @@ import (
 	"github.com/nathanielBellamy/my_website/backend/go/env"
 	"github.com/nathanielBellamy/my_website/backend/go/interfaces"
 	"github.com/nathanielBellamy/my_website/backend/go/marketing"
+	"github.com/nathanielBellamy/my_website/backend/go/models"
 	"github.com/nathanielBellamy/my_website/backend/go/old_site"
 	"github.com/nathanielBellamy/my_website/backend/go/websocket"
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"github.com/rs/zerolog"
+	"github.com/go-pg/pg/v10/orm"
 )
 
 // MODE=<mode> ./main
@@ -51,6 +52,8 @@ func main() {
 			Msg("Error creating DB client")
 	}
 
+	orm.RegisterTable((*models.BlogPostTag)(nil))
+
 	cookieJar := cmap.New[auth.Cookie]()
 
 	log.Info().
@@ -79,8 +82,6 @@ func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.
 	marketingService := marketing.NewService(db)
 	marketingController := marketing.NewMarketingController(log, marketingService)
 
-
-
 	adminService := admin.NewService(db)
 	adminController := admin.NewAdminController(log, adminService)
 
@@ -98,7 +99,6 @@ func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.
 func SetupBaseRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, marketingController *marketing.MarketingController, adminController *admin.AdminController) {
 	log.Info().
 		Msg("Setting up BaseRoutes")
-
 
 	// old-site routes
 	mux.HandleFunc("/old-site/recaptcha", oldSiteController.RecaptchaHandler)
@@ -165,7 +165,7 @@ func SetupLocalhostRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[stri
 func SetupProdRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, marketingController *marketing.MarketingController, adminController *admin.AdminController, oldSiteController *old_site.OldSiteController) {
 	log.Info().
 		Msg("Setting up ProdRoutes")
-	
+
 	// Admin App (auth-protected, /admin/ prefix)
 	mux.Handle("/admin/", auth.RequireDevAuth(cookieJar, log, adminController.AdminFileServer()))
 

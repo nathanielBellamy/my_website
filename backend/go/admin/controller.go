@@ -7,6 +7,7 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
+	"github.com/nathanielBellamy/my_website/backend/go/models"
 	"github.com/rs/zerolog"
 )
 
@@ -82,7 +83,7 @@ func (ac *AdminController) GetBlogPostsByTagHandler(w http.ResponseWriter, r *ht
 
 func (ac *AdminController) CreateBlogPostHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateBlogPostHandler Hit")
-	var post BlogPost
+	var post models.BlogPost
 	if err := json.NewDecoder(r.Body).Decode(&post); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
@@ -100,7 +101,7 @@ func (ac *AdminController) CreateBlogPostHandler(w http.ResponseWriter, r *http.
 func (ac *AdminController) UpdateBlogPostHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateBlogPostHandler Hit")
 	id := r.PathValue("id")
-	var post BlogPost
+	var post models.BlogPost
 	if err := json.NewDecoder(r.Body).Decode(&post); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
@@ -159,7 +160,7 @@ func (ac *AdminController) GetHomeContentByIDHandler(w http.ResponseWriter, r *h
 
 func (ac *AdminController) CreateHomeContentHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateHomeContentHandler Hit")
-	var content HomeContent
+	var content models.HomeContent
 	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
@@ -177,7 +178,7 @@ func (ac *AdminController) CreateHomeContentHandler(w http.ResponseWriter, r *ht
 func (ac *AdminController) UpdateHomeContentHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateHomeContentHandler Hit")
 	id := r.PathValue("id")
-	var content HomeContent
+	var content models.HomeContent
 	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
@@ -236,7 +237,7 @@ func (ac *AdminController) GetGrooveJrContentByIDHandler(w http.ResponseWriter, 
 
 func (ac *AdminController) CreateGrooveJrContentHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateGrooveJrContentHandler Hit")
-	var content GrooveJrContent
+	var content models.GrooveJrContent
 	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
@@ -254,7 +255,7 @@ func (ac *AdminController) CreateGrooveJrContentHandler(w http.ResponseWriter, r
 func (ac *AdminController) UpdateGrooveJrContentHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateGrooveJrContentHandler Hit")
 	id := r.PathValue("id")
-	var content GrooveJrContent
+	var content models.GrooveJrContent
 	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
@@ -313,7 +314,7 @@ func (ac *AdminController) GetAboutContentByIDHandler(w http.ResponseWriter, r *
 
 func (ac *AdminController) CreateAboutContentHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateAboutContentHandler Hit")
-	var content AboutContent
+	var content models.AboutContent
 	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
@@ -331,7 +332,7 @@ func (ac *AdminController) CreateAboutContentHandler(w http.ResponseWriter, r *h
 func (ac *AdminController) UpdateAboutContentHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateAboutContentHandler Hit")
 	id := r.PathValue("id")
-	var content AboutContent
+	var content models.AboutContent
 	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return

@@ -1,4 +1,4 @@
-package marketing
+package models
 
 import (
 	"time"
@@ -21,10 +21,16 @@ type BlogPost struct {
 	ID        string    `json:"id"`
 	Title     string    `json:"title"`
 	Content   string    `json:"content"`
+	AuthorID  string    `pg:"author_id"`
 	Author    *Author   `json:"author"`
 	Tags      []*Tag    `json:"tags" pg:"many2many:blog_post_tags"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+type BlogPostTag struct {
+	BlogPostID string `json:"blogPostId"`
+	TagID      string `json:"tagId"`
 }
 
 // HomeContent represents content for the home page.
