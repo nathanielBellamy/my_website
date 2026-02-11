@@ -3,6 +3,7 @@ package interfaces
 import "github.com/go-pg/pg/v10"
 
 type PgxQuerySeter interface {
+	Column(columns ...string) PgxQuerySeter
 	Relation(name string) PgxQuerySeter
 	Limit(count int) PgxQuerySeter
 	Offset(offset int) PgxQuerySeter

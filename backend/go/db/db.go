@@ -15,6 +15,10 @@ func (pqa *PgQueryAdapter) Relation(name string) interfaces.PgxQuerySeter {
 	return &PgQueryAdapter{pqa.Query.Relation(name)}
 }
 
+func (pqa *PgQueryAdapter) Column(columns ...string) interfaces.PgxQuerySeter {
+	return &PgQueryAdapter{pqa.Query.Column(columns...)}
+}
+
 func (pqa *PgQueryAdapter) Limit(count int) interfaces.PgxQuerySeter {
 	return &PgQueryAdapter{pqa.Query.Limit(count)}
 }

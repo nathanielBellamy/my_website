@@ -53,17 +53,21 @@ func (ac *AdminController) GetAllBlogPostsHandler(w http.ResponseWriter, r *http
 func (ac *AdminController) GetBlogPostByIDHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetBlogPostByIDHandler Hit")
 	id := r.PathValue("id")
+	ac.Log.Info().Str("id", id).Msg("Fetching blog post by ID")
 	post, err := ac.Service.GetBlogPostByID(id)
 	if err != nil {
+		ac.Log.Error().Err(err).Str("id", id).Msg("Error fetching blog post")
 		http.Error(w, "Error fetching blog post", http.StatusInternalServerError)
 		return
 	}
 
 	if post == nil {
+		ac.Log.Warn().Str("id", id).Msg("Blog post not found")
 		http.Error(w, "Blog post not found", http.StatusNotFound)
 		return
 	}
 
+	ac.Log.Info().Str("id", id).Interface("post", post).Msg("Successfully fetched blog post")
 	json.NewEncoder(w).Encode(post)
 }
 

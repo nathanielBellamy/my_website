@@ -59,9 +59,9 @@ func (s *service) GetAllBlogPosts(page, limit int) ([]models.BlogPost, error) {
 func (s *service) GetBlogPostByID(id string) (*models.BlogPost, error) {
 	var post models.BlogPost
 	err := s.DB.Model(&post).
-		Where("id = ?", id).
 		Relation("Author").
 		Relation("Tags").
+		Where("blog_post.id = ?", id).
 		Select()
 	if err != nil {
 		return nil, err
@@ -89,8 +89,39 @@ func (s *service) CreateBlogPost(post *models.BlogPost) (*models.BlogPost, error
 }
 
 func (s *service) UpdateBlogPost(post *models.BlogPost) (*models.BlogPost, error) {
-	_, err := s.DB.Model(post).Where("id = ?", post.ID).Update()
-	return post, err
+	// 1. Update the BlogPost itself (title, content, author_id).
+	_, err := s.DB.Model(post).
+		Column("title", "content", "author_id").
+		Where("id = ?", post.ID).
+		Update()
+	if err != nil {
+		return nil, err
+	}
+
+	// 2. Delete existing tag associations.
+	_, err = s.DB.Model((*models.BlogPostTag)(nil)).
+		Where("blog_post_id = ?", post.ID).
+		Delete()
+	if err != nil {
+		return nil, err
+	}
+
+	// 3. Create new tag associations.
+	if len(post.Tags) > 0 {
+		var blogPostTags []models.BlogPostTag
+		for _, tag := range post.Tags {
+			blogPostTags = append(blogPostTags, models.BlogPostTag{
+				BlogPostID: post.ID,
+				TagID:      tag.ID,
+			})
+		}
+		_, err = s.DB.Model(&blogPostTags).Insert()
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return post, nil
 }
 
 func (s *service) DeleteBlogPost(id string) error {
