@@ -19,22 +19,6 @@ type AdminController struct {
 	Service Service
 }
 
-type AuthorDTO struct {
-	Name string `json:"name"`
-}
-
-type TagDTO struct {
-	Name string `json:"name"`
-}
-
-type CreateBlogPostDTO struct {
-	Title   string      `json:"title"`
-	Content string      `json:"content"`
-	Author  *AuthorDTO  `json:"author"`
-	Tags    []*TagDTO   `json:"tags"`
-}
-
-
 func NewAdminController(log *zerolog.Logger, service Service) *AdminController {
 	return &AdminController{
 		Log:     log,
@@ -104,26 +88,10 @@ func (ac *AdminController) GetBlogPostsByTagHandler(w http.ResponseWriter, r *ht
 	json.NewEncoder(w).Encode(posts)
 }
 
-
-type AuthorDTO struct {
-	Name string `json:"name"`
-}
-
-type TagDTO struct {
-	Name string `json:"name"`
-}
-
-type CreateBlogPostDTO struct {
-	Title   string      `json:"title"`
-	Content string      `json:"content"`
-	Author  *AuthorDTO  `json:"author"`
-	Tags    []*TagDTO   `json:"tags"`
-}
-
 func (ac *AdminController) CreateBlogPostHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateBlogPostHandler Hit")
 
-	var dto CreateBlogPostDTO
+	var dto models.CreateBlogPostDTO
 	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		ac.Log.Error().Err(err).Msg("Error reading request body")
