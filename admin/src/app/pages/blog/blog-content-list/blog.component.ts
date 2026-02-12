@@ -2,11 +2,12 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { BlogService } from '../../../services/blog.service';
 import { BlogPost, Tag } from '../../../models/data-models'; // Import Tag
 import { RouterLink } from '@angular/router'; // Import RouterLink for navigation
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-blog',
   standalone: true,
-  imports: [RouterLink], // Removed AsyncPipe
+  imports: [RouterLink, CommonModule], // Removed AsyncPipe
   templateUrl: './blog.component.html',
   styleUrl: './blog.component.css',
 })

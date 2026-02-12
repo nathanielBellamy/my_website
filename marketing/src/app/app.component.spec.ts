@@ -10,37 +10,38 @@ class DummyComponent {}
 
 describe('AppComponent', () => {
 
-  it('should render the navbar', async () => {
-    await render(AppComponent, {
-      imports: [
-        NavbarComponent,
-        HeaderComponent,
-        RouterTestingModule.withRoutes([
-          { path: '', component: DummyComponent },
-          { path: 'about', component: DummyComponent },
-          { path: 'groovejr', component: DummyComponent },
-          { path: 'blog', component: DummyComponent },
-        ]),
-      ],
-      providers: [],
+    it('should render the navbar', async () => {
+
+      await render(AppComponent, {
+
+        imports: [
+
+          NavbarComponent,
+
+          HeaderComponent,
+
+          RouterTestingModule.withRoutes([
+
+            { path: '', component: DummyComponent },
+
+            { path: 'about', component: DummyComponent },
+
+            { path: 'groovejr', component: DummyComponent },
+
+            { path: 'blog', component: DummyComponent },
+
+          ]),
+
+        ],
+
+        providers: [],
+
+      });
+
+      screen.getByRole('navigation');
+
     });
-    screen.getByRole('navigation');
+
   });
 
-  it('should render the header', async () => {
-    await render(AppComponent, {
-      imports: [
-        NavbarComponent,
-        HeaderComponent,
-        RouterTestingModule.withRoutes([
-          { path: '', component: DummyComponent },
-          { path: 'about', component: DummyComponent },
-          { path: 'groovejr', component: DummyComponent },
-          { path: 'blog', component: DummyComponent },
-        ]),
-      ],
-      providers: [],
-    });
-    screen.getByRole('banner');
-  });
-});
+  

@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/angular';
+import { provideMarkdown } from 'ngx-markdown';
 import { CardComponent } from './card.component';
 
 describe('CardComponent', () => {
@@ -8,6 +9,7 @@ describe('CardComponent', () => {
         title: 'Test Title',
         content: 'Test Content',
       },
+      providers: [provideMarkdown()],
     });
 
     expect(screen.getByText('Test Title')).toBeTruthy();
@@ -21,6 +23,7 @@ describe('CardComponent', () => {
         content: 'Test Content',
         tags: ['tag1', 'tag2'],
       },
+      providers: [provideMarkdown()],
     });
 
     expect(screen.getByText('#tag1')).toBeTruthy();
@@ -33,6 +36,7 @@ describe('CardComponent', () => {
         title: 'Test Title',
         content: 'Test Content',
       },
+      providers: [provideMarkdown()],
     });
 
     expect(screen.queryByText(/#/)).toBeNull();

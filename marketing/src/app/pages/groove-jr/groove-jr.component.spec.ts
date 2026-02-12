@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/angular';
+import { provideMarkdown } from 'ngx-markdown';
 import { GrooveJrComponent } from './groove-jr.component';
 import { GrooveJrStore } from './groove-jr.store';
 import { signal, WritableSignal } from '@angular/core';
@@ -25,6 +26,7 @@ describe('GrooveJrComponent', () => {
 
     const renderResult = await render(GrooveJrComponent, {
       providers: [
+        provideMarkdown(),
         {
           provide: GrooveJrStore,
           useValue: {
