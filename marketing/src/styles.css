@@ -10,6 +10,9 @@
   --color-cmyk-m: #FF00FF;
   --color-cmyk-y: #FFFF00;
   --color-card: #1E293B;
+  --color-vibrant-yellow: #FACC15;
+  --color-vibrant-green: #4ADE80;
+  --color-vibrant-orange: #FB923C;
 
   --font-sans: "Work Sans", ui-sans-serif, system-ui, sans-serif;
   --font-heading: "Outfit", ui-sans-serif, system-ui, sans-serif;
@@ -40,11 +43,46 @@
     left: -20rem;
   }
 
-  body::after {
-    background-color: theme('colors.secondary-accent');
-    width: 40rem;
-    height: 40rem;
-    bottom: -20rem;
-    right: -20rem;
+    body::after {
+
+      background-color: theme('colors.secondary-accent');
+
+      width: 40rem;
+
+      height: 40rem;
+
+      bottom: -20rem;
+
+      right: -20rem;
+
+    }
+
+  
+
+    .bg-blob-3 {
+
+      position: absolute;
+
+      z-index: -1;
+
+      border-radius: 50%;
+
+      filter: blur(100px);
+
+      opacity: 0.1;
+
+      background-color: theme('colors.vibrant-orange');
+
+      width: 25rem;
+
+      height: 25rem;
+
+      top: 40%;
+
+      right: -10rem;
+
+    }
+
   }
-}
+
+  
