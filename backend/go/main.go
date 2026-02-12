@@ -88,7 +88,7 @@ func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.
 	SetupBaseRoutes(mux, cookieJar, log, oldSiteController, marketingController, adminController)
 
 	if env.IsProd(mode) {
-		SetupProdRoutes(mux, cookieJar, log, marketingController, adminController, oldSiteController)
+		SetupProdRoutes(mux, cookieJar, log, marketingController, adminController, oldSiteController, marketing.GetMarketingFileServerNoAuth())
 	} else if env.IsRemotedev(mode) {
 		SetupRemotedevRoutes(mux, cookieJar, log, oldSiteController, adminController, marketing.GetMarketingFileServerNoAuth())
 	} else {
@@ -162,17 +162,13 @@ func SetupLocalhostRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[stri
 	auth.SetupAdminAuth(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer(), marketingFileServer)
 }
 
-func SetupProdRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, marketingController *marketing.MarketingController, adminController *admin.AdminController, oldSiteController *old_site.OldSiteController) {
+func SetupProdRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, marketingController *marketing.MarketingController, adminController *admin.AdminController, oldSiteController *old_site.OldSiteController, marketingFileServer http.Handler) {
 	log.Info().
 		Msg("Setting up ProdRoutes")
 
-	// Admin App (auth-protected, /admin/ prefix) is handled by SetupAdminAuth now
-
-	// Old Site (/old-site/ prefix)
-	mux.Handle("/old-site/", oldSiteController.OldSiteFileServer())
-
-	// Marketing App (public, root) - this needs to be last to act as catch-all
-	mux.Handle("/", auth.LogClientIp("/", log, marketing.GetMarketingFileServerNoAuth()))
+	// Admin App (auth-protected, /admin/ prefix), Old Site (/old-site/), and Marketing App (/)
+	// are all handled by SetupAdminAuth for consistency across environments.
+	auth.SetupAdminAuth(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer(), auth.LogClientIp("/", log, marketingFileServer))
 }
 
 func _SetHeaders(handler http.Handler) http.Handler {

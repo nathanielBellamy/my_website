@@ -1,6 +1,8 @@
 package admin
 
 import (
+	"github.com/rs/zerolog"
+	"github.com/nathanielBellamy/my_website/backend/go/models"
 	"errors" // Import errors package
 	"fmt"
 	"testing"
@@ -12,18 +14,18 @@ import (
 func TestAdminGetAllBlogPosts(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*[]BlogPost); ok {
-				*v = []BlogPost{{ID: "1", Title: "Test Post"}}
+			if v, ok := modelDest.(*[]models.BlogPost); ok {
+				*v = []models.BlogPost{{ID: "1", Title: "Test Post"}}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*[]BlogPost); ok {
-					*v = []BlogPost{{ID: "1", Title: "Test Post"}}
+				if v, ok := dest[0].(*[]models.BlogPost); ok {
+					*v = []models.BlogPost{{ID: "1", Title: "Test Post"}}
 				}
 			}
 			return nil
 		},
 	}
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
-	service := NewService(mockDB)
+	service := NewService(mockDB, &zerolog.Logger{})
 
 	posts, err := service.GetAllBlogPosts(1, 10)
 	if err != nil {
@@ -38,18 +40,18 @@ func TestAdminGetBlogPostByID(t *testing.T) {
 	// Test case: Blog post found
 	foundMockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*BlogPost); ok {
-				*v = BlogPost{ID: "1", Title: "Test Post"}
+			if v, ok := modelDest.(*models.BlogPost); ok {
+				*v = models.BlogPost{ID: "1", Title: "Test Post"}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*BlogPost); ok {
-					*v = BlogPost{ID: "1", Title: "Test Post"}
+				if v, ok := dest[0].(*models.BlogPost); ok {
+					*v = models.BlogPost{ID: "1", Title: "Test Post"}
 				}
 			}
 			return nil
 		},
 	}
 	foundMockDB := &testutils.MockPgDB{MockQuery: foundMockQuery}
-	foundService := NewService(foundMockDB)
+	foundService := NewService(foundMockDB, &zerolog.Logger{})
 
 	post, err := foundService.GetBlogPostByID("1")
 	if err != nil {
@@ -65,7 +67,7 @@ func TestAdminGetBlogPostByID(t *testing.T) {
 	// Test case: Blog post not found
 	notFoundMockQuery := &testutils.MockPgQuery{} // SelectFunc can be nil, default behavior handles ErrNoRows
 	notFoundMockDB := &testutils.MockPgDB{MockQuery: notFoundMockQuery}
-	notFoundService := NewService(notFoundMockDB)
+	notFoundService := NewService(notFoundMockDB, &zerolog.Logger{})
 
 	post, err = notFoundService.GetBlogPostByID("not-found")
 	fmt.Printf("TEST: TestAdminGetBlogPostByID - err from service: %v\n", err)
@@ -80,18 +82,18 @@ func TestAdminGetBlogPostByID(t *testing.T) {
 func TestAdminGetBlogPostsByTag(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*[]BlogPost); ok {
-				*v = []BlogPost{{ID: "1", Title: "Test Tagged Post"}}
+			if v, ok := modelDest.(*[]models.BlogPost); ok {
+				*v = []models.BlogPost{{ID: "1", Title: "Test Tagged Post"}}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*[]BlogPost); ok {
-					*v = []BlogPost{{ID: "1", Title: "Test Tagged Post"}}
+				if v, ok := dest[0].(*[]models.BlogPost); ok {
+					*v = []models.BlogPost{{ID: "1", Title: "Test Tagged Post"}}
 				}
 			}
 			return nil
 		},
 	}
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
-	service := NewService(mockDB)
+	service := NewService(mockDB, &zerolog.Logger{})
 
 	posts, err := service.GetBlogPostsByTag("test-tag", 1, 10)
 	if err != nil {
@@ -108,7 +110,7 @@ func TestAdminGetBlogPostsByTag(t *testing.T) {
 func TestAdminCreateBlogPost(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		InsertFunc: func(modelDest any, dest ...interface{}) (pg.Result, error) {
-			            if v, ok := modelDest.(*BlogPost); ok {
+			            if v, ok := modelDest.(*models.BlogPost); ok {
 			                // Simulate database setting an ID
 			                v.ID = "3"
 			            }
@@ -116,8 +118,8 @@ func TestAdminCreateBlogPost(t *testing.T) {
 			        },
 			    }
 			    mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
-			    service := NewService(mockDB)
-	post := &BlogPost{Title: "New Post"} // ID will be set by the mock InsertFunc
+			    service := NewService(mockDB, &zerolog.Logger{})
+	post := &models.BlogPost{Title: "New Post"} // ID will be set by the mock InsertFunc
 	newPost, err := service.CreateBlogPost(post)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
@@ -130,15 +132,15 @@ func TestAdminCreateBlogPost(t *testing.T) {
 func TestAdminUpdateBlogPost(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		UpdateFunc: func(modelDest any, dest ...interface{}) (pg.Result, error) {
-			if v, ok := modelDest.(*BlogPost); ok {
+			if v, ok := modelDest.(*models.BlogPost); ok {
 				// Simulate database returning the updated object
-							                *v = BlogPost{ID: v.ID, Title: v.Title} // The passed 'post' already has the updated title
+							                *v = models.BlogPost{ID: v.ID, Title: v.Title} // The passed 'post' already has the updated title
 							            }
 							            return &testutils.MockPgResult{NumRowsAffected: 1}, nil
 							        },	}
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
-	service := NewService(mockDB)
-	post := &BlogPost{ID: "1", Title: "Updated Post"}
+	service := NewService(mockDB, &zerolog.Logger{})
+	post := &models.BlogPost{ID: "1", Title: "Updated Post"}
 	updatedPost, err := service.UpdateBlogPost(post)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
@@ -150,7 +152,7 @@ func TestAdminUpdateBlogPost(t *testing.T) {
 
 func TestAdminDeleteBlogPost(t *testing.T) {
 	mockDB := &testutils.MockPgDB{}
-	service := NewService(mockDB)
+	service := NewService(mockDB, &zerolog.Logger{})
 
 	err := service.DeleteBlogPost("1")
 	if err != nil {
@@ -161,18 +163,18 @@ func TestAdminDeleteBlogPost(t *testing.T) {
 func TestAdminGetAllHomeContent(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*[]HomeContent); ok {
-				*v = []HomeContent{{ID: "1", Title: "Test Home Content"}}
+			if v, ok := modelDest.(*[]models.HomeContent); ok {
+				*v = []models.HomeContent{{ID: "1", Title: "Test Home Content"}}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*[]HomeContent); ok {
-					*v = []HomeContent{{ID: "1", Title: "Test Home Content"}}
+				if v, ok := dest[0].(*[]models.HomeContent); ok {
+					*v = []models.HomeContent{{ID: "1", Title: "Test Home Content"}}
 				}
 			}
 			return nil
 		},
 	}
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
-	service := NewService(mockDB)
+	service := NewService(mockDB, &zerolog.Logger{})
 
 	content, err := service.GetAllHomeContent(1, 10)
 	if err != nil {
@@ -187,18 +189,18 @@ func TestAdminGetHomeContentByID(t *testing.T) {
 	// Test case: Home content found
 	foundMockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*HomeContent); ok {
-				*v = HomeContent{ID: "1", Title: "Test Home Content"}
+			if v, ok := modelDest.(*models.HomeContent); ok {
+				*v = models.HomeContent{ID: "1", Title: "Test Home Content"}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*HomeContent); ok {
-					*v = HomeContent{ID: "1", Title: "Test Home Content"}
+				if v, ok := dest[0].(*models.HomeContent); ok {
+					*v = models.HomeContent{ID: "1", Title: "Test Home Content"}
 				}
 			}
 			return nil
 		},
 	}
 	foundMockDB := &testutils.MockPgDB{MockQuery: foundMockQuery}
-	foundService := NewService(foundMockDB)
+	foundService := NewService(foundMockDB, &zerolog.Logger{})
 
 	content, err := foundService.GetHomeContentByID("1")
 	if err != nil {
@@ -214,7 +216,7 @@ func TestAdminGetHomeContentByID(t *testing.T) {
 	// Test case: Home content not found
 	notFoundMockQuery := &testutils.MockPgQuery{} // SelectFunc can be nil, default behavior handles ErrNoRows
 	notFoundMockDB := &testutils.MockPgDB{MockQuery: notFoundMockQuery}
-	notFoundService := NewService(notFoundMockDB)
+	notFoundService := NewService(notFoundMockDB, &zerolog.Logger{})
 
 	content, err = notFoundService.GetHomeContentByID("not-found")
 	fmt.Printf("TEST: TestAdminGetHomeContentByID - err from service: %v\n", err)
@@ -229,7 +231,7 @@ func TestAdminGetHomeContentByID(t *testing.T) {
 func TestAdminCreateHomeContent(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		InsertFunc: func(modelDest any, dest ...interface{}) (pg.Result, error) {
-			if v, ok := modelDest.(*HomeContent); ok {
+			if v, ok := modelDest.(*models.HomeContent); ok {
 				// Simulate database setting an ID
 				v.ID = "3"
 			}
@@ -237,9 +239,9 @@ func TestAdminCreateHomeContent(t *testing.T) {
 		},
 	}
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
-	service := NewService(mockDB)
+	service := NewService(mockDB, &zerolog.Logger{})
 
-	content := &HomeContent{Title: "New Home Content"} // ID will be set by the mock InsertFunc
+	content := &models.HomeContent{Title: "New Home Content"} // ID will be set by the mock InsertFunc
 	newContent, err := service.CreateHomeContent(content)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
@@ -252,17 +254,17 @@ func TestAdminCreateHomeContent(t *testing.T) {
 func TestAdminUpdateHomeContent(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		UpdateFunc: func(modelDest any, dest ...interface{}) (pg.Result, error) {
-			if v, ok := modelDest.(*HomeContent); ok {
+			if v, ok := modelDest.(*models.HomeContent); ok {
 				// Simulate database returning the updated object
-				*v = HomeContent{ID: v.ID, Title: v.Title} // The passed 'content' already has the updated title
+				*v = models.HomeContent{ID: v.ID, Title: v.Title} // The passed 'content' already has the updated title
 			}
 			return &testutils.MockPgResult{NumRowsAffected: 1}, nil
 		},
 	}
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
-	service := NewService(mockDB)
+	service := NewService(mockDB, &zerolog.Logger{})
 
-	content := &HomeContent{ID: "1", Title: "Updated Home Content"}
+	content := &models.HomeContent{ID: "1", Title: "Updated Home Content"}
 	updatedContent, err := service.UpdateHomeContent(content)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
@@ -274,7 +276,7 @@ func TestAdminUpdateHomeContent(t *testing.T) {
 
 func TestAdminDeleteHomeContent(t *testing.T) {
 	mockDB := &testutils.MockPgDB{}
-	service := NewService(mockDB)
+	service := NewService(mockDB, &zerolog.Logger{})
 
 	err := service.DeleteHomeContent("1")
 	if err != nil {
@@ -285,18 +287,18 @@ func TestAdminDeleteHomeContent(t *testing.T) {
 func TestAdminGetAllGrooveJrContent(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*[]GrooveJrContent); ok {
-				*v = []GrooveJrContent{{ID: "1", Title: "Test GrooveJr Content"}}
+			if v, ok := modelDest.(*[]models.GrooveJrContent); ok {
+				*v = []models.GrooveJrContent{{ID: "1", Title: "Test GrooveJr Content"}}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*[]GrooveJrContent); ok {
-					*v = []GrooveJrContent{{ID: "1", Title: "Test GrooveJr Content"}}
+				if v, ok := dest[0].(*[]models.GrooveJrContent); ok {
+					*v = []models.GrooveJrContent{{ID: "1", Title: "Test GrooveJr Content"}}
 				}
 			}
 			return nil
 		},
 	}
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
-	service := NewService(mockDB)
+	service := NewService(mockDB, &zerolog.Logger{})
 
 	content, err := service.GetAllGrooveJrContent(1, 10)
 	if err != nil {
@@ -311,18 +313,18 @@ func TestAdminGetGrooveJrContentByID(t *testing.T) {
 	// Test case: GrooveJr content found
 	foundMockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*GrooveJrContent); ok {
-				*v = GrooveJrContent{ID: "1", Title: "Test GrooveJr Content"}
+			if v, ok := modelDest.(*models.GrooveJrContent); ok {
+				*v = models.GrooveJrContent{ID: "1", Title: "Test GrooveJr Content"}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*GrooveJrContent); ok {
-					*v = GrooveJrContent{ID: "1", Title: "Test GrooveJr Content"}
+				if v, ok := dest[0].(*models.GrooveJrContent); ok {
+					*v = models.GrooveJrContent{ID: "1", Title: "Test GrooveJr Content"}
 				}
 			}
 			return nil
 		},
 	}
 	foundMockDB := &testutils.MockPgDB{MockQuery: foundMockQuery}
-	foundService := NewService(foundMockDB)
+	foundService := NewService(foundMockDB, &zerolog.Logger{})
 
 	content, err := foundService.GetGrooveJrContentByID("1")
 	if err != nil {
@@ -338,7 +340,7 @@ func TestAdminGetGrooveJrContentByID(t *testing.T) {
 	// Test case: GrooveJr content not found
 	notFoundMockQuery := &testutils.MockPgQuery{} // SelectFunc can be nil, default behavior handles ErrNoRows
 	notFoundMockDB := &testutils.MockPgDB{MockQuery: notFoundMockQuery}
-	notFoundService := NewService(notFoundMockDB)
+	notFoundService := NewService(notFoundMockDB, &zerolog.Logger{})
 
 	content, err = notFoundService.GetGrooveJrContentByID("not-found")
 	fmt.Printf("TEST: TestAdminGetGrooveJrContentByID - err from service: %v\n", err)
@@ -353,7 +355,7 @@ func TestAdminGetGrooveJrContentByID(t *testing.T) {
 func TestAdminCreateGrooveJrContent(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		InsertFunc: func(modelDest any, dest ...interface{}) (pg.Result, error) {
-			if v, ok := modelDest.(*GrooveJrContent); ok {
+			if v, ok := modelDest.(*models.GrooveJrContent); ok {
 				// Simulate database setting an ID
 				v.ID = "3"
 			}
@@ -361,8 +363,8 @@ func TestAdminCreateGrooveJrContent(t *testing.T) {
 		},
 	}
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
-	service := NewService(mockDB)
-	content := &GrooveJrContent{Title: "New GrooveJr Content"} // ID will be set by the mock InsertFunc
+	service := NewService(mockDB, &zerolog.Logger{})
+	content := &models.GrooveJrContent{Title: "New GrooveJr Content"} // ID will be set by the mock InsertFunc
 	newContent, err := service.CreateGrooveJrContent(content)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
@@ -375,16 +377,16 @@ func TestAdminCreateGrooveJrContent(t *testing.T) {
 func TestAdminUpdateGrooveJrContent(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		UpdateFunc: func(modelDest any, dest ...interface{}) (pg.Result, error) {
-			if v, ok := modelDest.(*GrooveJrContent); ok {
+			if v, ok := modelDest.(*models.GrooveJrContent); ok {
 				// Simulate database returning the updated object
-				*v = GrooveJrContent{ID: v.ID, Title: v.Title} // The passed 'content' already has the updated title
+				*v = models.GrooveJrContent{ID: v.ID, Title: v.Title} // The passed 'content' already has the updated title
 			}
 			return &testutils.MockPgResult{NumRowsAffected: 1}, nil
 		},
 	}
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
-	service := NewService(mockDB)
-	content := &GrooveJrContent{ID: "1", Title: "Updated GrooveJr Content"}
+	service := NewService(mockDB, &zerolog.Logger{})
+	content := &models.GrooveJrContent{ID: "1", Title: "Updated GrooveJr Content"}
 	updatedContent, err := service.UpdateGrooveJrContent(content)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
@@ -396,7 +398,7 @@ func TestAdminUpdateGrooveJrContent(t *testing.T) {
 
 func TestAdminDeleteGrooveJrContent(t *testing.T) {
 	mockDB := &testutils.MockPgDB{}
-	service := NewService(mockDB)
+	service := NewService(mockDB, &zerolog.Logger{})
 
 	err := service.DeleteGrooveJrContent("1")
 	if err != nil {
@@ -407,18 +409,18 @@ func TestAdminDeleteGrooveJrContent(t *testing.T) {
 func TestAdminGetAllAboutContent(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*[]AboutContent); ok {
-				*v = []AboutContent{{ID: "1", Title: "Test About Content"}}
+			if v, ok := modelDest.(*[]models.AboutContent); ok {
+				*v = []models.AboutContent{{ID: "1", Title: "Test About Content"}}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*[]AboutContent); ok {
-					*v = []AboutContent{{ID: "1", Title: "Test About Content"}}
+				if v, ok := dest[0].(*[]models.AboutContent); ok {
+					*v = []models.AboutContent{{ID: "1", Title: "Test About Content"}}
 				}
 			}
 			return nil
 		},
 	}
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
-	service := NewService(mockDB)
+	service := NewService(mockDB, &zerolog.Logger{})
 
 	content, err := service.GetAllAboutContent(1, 10)
 	if err != nil {
@@ -433,18 +435,18 @@ func TestAdminGetAboutContentByID(t *testing.T) {
 	// Test case: About content found
 	foundMockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*AboutContent); ok {
-				*v = AboutContent{ID: "1", Title: "Test About Content"}
+			if v, ok := modelDest.(*models.AboutContent); ok {
+				*v = models.AboutContent{ID: "1", Title: "Test About Content"}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*AboutContent); ok {
-					*v = AboutContent{ID: "1", Title: "Test About Content"}
+				if v, ok := dest[0].(*models.AboutContent); ok {
+					*v = models.AboutContent{ID: "1", Title: "Test About Content"}
 				}
 			}
 			return nil
 		},
 	}
 	foundMockDB := &testutils.MockPgDB{MockQuery: foundMockQuery}
-	foundService := NewService(foundMockDB)
+	foundService := NewService(foundMockDB, &zerolog.Logger{})
 
 	content, err := foundService.GetAboutContentByID("1")
 	if err != nil {
@@ -460,7 +462,7 @@ func TestAdminGetAboutContentByID(t *testing.T) {
 	// Test case: About content not found
 	notFoundMockQuery := &testutils.MockPgQuery{} // SelectFunc can be nil, default behavior handles ErrNoRows
 	notFoundMockDB := &testutils.MockPgDB{MockQuery: notFoundMockQuery}
-	notFoundService := NewService(notFoundMockDB)
+	notFoundService := NewService(notFoundMockDB, &zerolog.Logger{})
 
 	content, err = notFoundService.GetAboutContentByID("not-found")
 	fmt.Printf("TEST: TestAdminGetAboutContentByID - err from service: %v\n", err)
@@ -475,7 +477,7 @@ func TestAdminGetAboutContentByID(t *testing.T) {
 func TestAdminCreateAboutContent(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		InsertFunc: func(modelDest any, dest ...interface{}) (pg.Result, error) {
-			if v, ok := modelDest.(*AboutContent); ok {
+			if v, ok := modelDest.(*models.AboutContent); ok {
 				// Simulate database setting an ID
 				v.ID = "3"
 			}
@@ -483,9 +485,9 @@ func TestAdminCreateAboutContent(t *testing.T) {
 		},
 	}
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
-	service := NewService(mockDB)
+	service := NewService(mockDB, &zerolog.Logger{})
 
-	content := &AboutContent{Title: "New About Content"} // ID will be set by the mock InsertFunc
+	content := &models.AboutContent{Title: "New About Content"} // ID will be set by the mock InsertFunc
 	newContent, err := service.CreateAboutContent(content)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
@@ -498,17 +500,17 @@ func TestAdminCreateAboutContent(t *testing.T) {
 func TestAdminUpdateAboutContent(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		UpdateFunc: func(modelDest any, dest ...interface{}) (pg.Result, error) {
-			if v, ok := modelDest.(*AboutContent); ok {
+			if v, ok := modelDest.(*models.AboutContent); ok {
 				// Simulate database returning the updated object
-				*v = AboutContent{ID: v.ID, Title: v.Title} // The passed 'content' already has the updated title
+				*v = models.AboutContent{ID: v.ID, Title: v.Title} // The passed 'content' already has the updated title
 			}
 			return &testutils.MockPgResult{NumRowsAffected: 1}, nil
 		},
 	}
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
-	service := NewService(mockDB)
+	service := NewService(mockDB, &zerolog.Logger{})
 
-	content := &AboutContent{ID: "1", Title: "Updated About Content"}
+	content := &models.AboutContent{ID: "1", Title: "Updated About Content"}
 	updatedContent, err := service.UpdateAboutContent(content)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
@@ -520,7 +522,7 @@ func TestAdminUpdateAboutContent(t *testing.T) {
 
 func TestAdminDeleteAboutContent(t *testing.T) {
 	mockDB := &testutils.MockPgDB{}
-	service := NewService(mockDB)
+	service := NewService(mockDB, &zerolog.Logger{})
 
 	err := service.DeleteAboutContent("1")
 	if err != nil {

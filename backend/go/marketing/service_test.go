@@ -1,6 +1,7 @@
 package marketing
 
 import (
+	"github.com/nathanielBellamy/my_website/backend/go/models"
 	"errors" // Import errors package
 	"fmt"
 	"testing"
@@ -12,11 +13,11 @@ import (
 func TestGetAllBlogPosts(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*[]BlogPost); ok {
-				*v = []BlogPost{{ID: "1", Title: "Test Post"}}
+			if v, ok := modelDest.(*[]models.BlogPost); ok {
+				*v = []models.BlogPost{{ID: "1", Title: "Test Post"}}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*[]BlogPost); ok {
-					*v = []BlogPost{{ID: "1", Title: "Test Post"}}
+				if v, ok := dest[0].(*[]models.BlogPost); ok {
+					*v = []models.BlogPost{{ID: "1", Title: "Test Post"}}
 				}
 			}
 			return nil
@@ -39,11 +40,11 @@ func TestGetBlogPostByID(t *testing.T) {
 	var foundMockQuery *testutils.MockPgQuery // Declare first
 	foundMockQuery = &testutils.MockPgQuery{ // Initialize
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*BlogPost); ok {
-				*v = BlogPost{ID: foundMockQuery.WhereID, Title: "Test Post " + foundMockQuery.WhereID}
+			if v, ok := modelDest.(*models.BlogPost); ok {
+				*v = models.BlogPost{ID: foundMockQuery.WhereID, Title: "Test Post " + foundMockQuery.WhereID}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*BlogPost); ok {
-					*v = BlogPost{ID: foundMockQuery.WhereID, Title: "Test Post " + foundMockQuery.WhereID}
+				if v, ok := dest[0].(*models.BlogPost); ok {
+					*v = models.BlogPost{ID: foundMockQuery.WhereID, Title: "Test Post " + foundMockQuery.WhereID}
 				}
 			}
 			return nil
@@ -81,11 +82,11 @@ func TestGetBlogPostByID(t *testing.T) {
 func TestGetBlogPostsByTag(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*[]BlogPost); ok {
-				*v = []BlogPost{{ID: "1", Title: "Tagged Post"}}
+			if v, ok := modelDest.(*[]models.BlogPost); ok {
+				*v = []models.BlogPost{{ID: "1", Title: "Tagged Post"}}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*[]BlogPost); ok {
-					*v = []BlogPost{{ID: "1", Title: "Tagged Post"}}
+				if v, ok := dest[0].(*[]models.BlogPost); ok {
+					*v = []models.BlogPost{{ID: "1", Title: "Tagged Post"}}
 				}
 			}
 			return nil
@@ -106,11 +107,11 @@ func TestGetBlogPostsByTag(t *testing.T) {
 func TestGetAllHomeContent(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*[]HomeContent); ok {
-				*v = []HomeContent{{ID: "1", Title: "Test Home"}}
+			if v, ok := modelDest.(*[]models.HomeContent); ok {
+				*v = []models.HomeContent{{ID: "1", Title: "Test Home"}}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*[]HomeContent); ok {
-					*v = []HomeContent{{ID: "1", Title: "Test Home"}}
+				if v, ok := dest[0].(*[]models.HomeContent); ok {
+					*v = []models.HomeContent{{ID: "1", Title: "Test Home"}}
 				}
 			}
 			return nil
@@ -133,11 +134,11 @@ func TestGetHomeContentByID(t *testing.T) {
 	var foundMockQuery *testutils.MockPgQuery // Declare first
 	foundMockQuery = &testutils.MockPgQuery{ // Initialize
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*HomeContent); ok {
-				*v = HomeContent{ID: foundMockQuery.WhereID, Title: "Test Home " + foundMockQuery.WhereID}
+			if v, ok := modelDest.(*models.HomeContent); ok {
+				*v = models.HomeContent{ID: foundMockQuery.WhereID, Title: "Test Home " + foundMockQuery.WhereID}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*HomeContent); ok {
-					*v = HomeContent{ID: foundMockQuery.WhereID, Title: "Test Home " + foundMockQuery.WhereID}
+				if v, ok := dest[0].(*models.HomeContent); ok {
+					*v = models.HomeContent{ID: foundMockQuery.WhereID, Title: "Test Home " + foundMockQuery.WhereID}
 				}
 			}
 			return nil
@@ -175,11 +176,11 @@ func TestGetHomeContentByID(t *testing.T) {
 func TestGetAllGrooveJrContent(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*[]GrooveJrContent); ok {
-				*v = []GrooveJrContent{{ID: "1", Title: "Test GrooveJr"}}
+			if v, ok := modelDest.(*[]models.GrooveJrContent); ok {
+				*v = []models.GrooveJrContent{{ID: "1", Title: "Test GrooveJr"}}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*[]GrooveJrContent); ok {
-					*v = []GrooveJrContent{{ID: "1", Title: "Test GrooveJr"}}
+				if v, ok := dest[0].(*[]models.GrooveJrContent); ok {
+					*v = []models.GrooveJrContent{{ID: "1", Title: "Test GrooveJr"}}
 				}
 			}
 			return nil
@@ -202,11 +203,11 @@ func TestGetGrooveJrContentByID(t *testing.T) {
 	var foundMockQuery *testutils.MockPgQuery // Declare first
 	foundMockQuery = &testutils.MockPgQuery{ // Initialize
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*GrooveJrContent); ok {
-				*v = GrooveJrContent{ID: foundMockQuery.WhereID, Title: "Test GrooveJr " + foundMockQuery.WhereID}
+			if v, ok := modelDest.(*models.GrooveJrContent); ok {
+				*v = models.GrooveJrContent{ID: foundMockQuery.WhereID, Title: "Test GrooveJr " + foundMockQuery.WhereID}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*GrooveJrContent); ok {
-					*v = GrooveJrContent{ID: foundMockQuery.WhereID, Title: "Test GrooveJr " + foundMockQuery.WhereID}
+				if v, ok := dest[0].(*models.GrooveJrContent); ok {
+					*v = models.GrooveJrContent{ID: foundMockQuery.WhereID, Title: "Test GrooveJr " + foundMockQuery.WhereID}
 				}
 			}
 			return nil
@@ -244,11 +245,11 @@ func TestGetGrooveJrContentByID(t *testing.T) {
 func TestGetAllAboutContent(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*[]AboutContent); ok {
-				*v = []AboutContent{{ID: "1", Title: "Test About"}}
+			if v, ok := modelDest.(*[]models.AboutContent); ok {
+				*v = []models.AboutContent{{ID: "1", Title: "Test About"}}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*[]AboutContent); ok {
-					*v = []AboutContent{{ID: "1", Title: "Test About"}}
+				if v, ok := dest[0].(*[]models.AboutContent); ok {
+					*v = []models.AboutContent{{ID: "1", Title: "Test About"}}
 				}
 			}
 			return nil
@@ -271,11 +272,11 @@ func TestGetAboutContentByID(t *testing.T) {
 	var foundMockQuery *testutils.MockPgQuery // Declare first
 	foundMockQuery = &testutils.MockPgQuery{ // Initialize
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*AboutContent); ok {
-				*v = AboutContent{ID: foundMockQuery.WhereID, Title: "Test About " + foundMockQuery.WhereID}
+			if v, ok := modelDest.(*models.AboutContent); ok {
+				*v = models.AboutContent{ID: foundMockQuery.WhereID, Title: "Test About " + foundMockQuery.WhereID}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*AboutContent); ok {
-					*v = AboutContent{ID: foundMockQuery.WhereID, Title: "Test About " + foundMockQuery.WhereID}
+				if v, ok := dest[0].(*models.AboutContent); ok {
+					*v = models.AboutContent{ID: foundMockQuery.WhereID, Title: "Test About " + foundMockQuery.WhereID}
 				}
 			}
 			return nil

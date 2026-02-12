@@ -8,6 +8,7 @@ import (
 	"testing"
 	"errors"
 
+	"github.com/nathanielBellamy/my_website/backend/go/models"
 	"github.com/rs/zerolog"
 )
 
@@ -21,87 +22,87 @@ func (m *MockLogger) Write(p []byte) (n int, err error) {
 }
 
 type MockAdminService struct {
-	GetAllBlogPostsFunc      func(page, limit int) ([]BlogPost, error)
-	GetBlogPostByIDFunc      func(id string) (*BlogPost, error)
-	GetBlogPostsByTagFunc    func(tag string, page, limit int) ([]BlogPost, error)
-	CreateBlogPostFunc       func(post *BlogPost) (*BlogPost, error)
-	UpdateBlogPostFunc       func(post *BlogPost) (*BlogPost, error)
+	GetAllBlogPostsFunc      func(page, limit int) ([]models.BlogPost, error)
+	GetBlogPostByIDFunc      func(id string) (*models.BlogPost, error)
+	GetBlogPostsByTagFunc    func(tag string, page, limit int) ([]models.BlogPost, error)
+	CreateBlogPostFunc       func(post *models.BlogPost) (*models.BlogPost, error)
+	UpdateBlogPostFunc       func(post *models.BlogPost) (*models.BlogPost, error)
 	DeleteBlogPostFunc       func(id string) error
-	GetAllHomeContentFunc    func(page, limit int) ([]HomeContent, error)
-	GetHomeContentByIDFunc   func(id string) (*HomeContent, error)
-	CreateHomeContentFunc    func(content *HomeContent) (*HomeContent, error)
-	UpdateHomeContentFunc    func(content *HomeContent) (*HomeContent, error)
+	GetAllHomeContentFunc    func(page, limit int) ([]models.HomeContent, error)
+	GetHomeContentByIDFunc   func(id string) (*models.HomeContent, error)
+	CreateHomeContentFunc    func(content *models.HomeContent) (*models.HomeContent, error)
+	UpdateHomeContentFunc    func(content *models.HomeContent) (*models.HomeContent, error)
 	DeleteHomeContentFunc    func(id string) error
-	GetAllGrooveJrContentFunc func(page, limit int) ([]GrooveJrContent, error)
-	GetGrooveJrContentByIDFunc func(id string) (*GrooveJrContent, error)
-	CreateGrooveJrContentFunc func(content *GrooveJrContent) (*GrooveJrContent, error)
-	UpdateGrooveJrContentFunc func(content *GrooveJrContent) (*GrooveJrContent, error)
+	GetAllGrooveJrContentFunc func(page, limit int) ([]models.GrooveJrContent, error)
+	GetGrooveJrContentByIDFunc func(id string) (*models.GrooveJrContent, error)
+	CreateGrooveJrContentFunc func(content *models.GrooveJrContent) (*models.GrooveJrContent, error)
+	UpdateGrooveJrContentFunc func(content *models.GrooveJrContent) (*models.GrooveJrContent, error)
 	DeleteGrooveJrContentFunc func(id string) error
-	GetAllAboutContentFunc   func(page, limit int) ([]AboutContent, error)
-	GetAboutContentByIDFunc  func(id string) (*AboutContent, error)
-	CreateAboutContentFunc   func(content *AboutContent) (*AboutContent, error)
-	UpdateAboutContentFunc   func(content *AboutContent) (*AboutContent, error)
+	GetAllAboutContentFunc   func(page, limit int) ([]models.AboutContent, error)
+	GetAboutContentByIDFunc  func(id string) (*models.AboutContent, error)
+	CreateAboutContentFunc   func(content *models.AboutContent) (*models.AboutContent, error)
+	UpdateAboutContentFunc   func(content *models.AboutContent) (*models.AboutContent, error)
 	DeleteAboutContentFunc   func(id string) error
 }
 
-func (m *MockAdminService) GetAllBlogPosts(page, limit int) ([]BlogPost, error) {
+func (m *MockAdminService) GetAllBlogPosts(page, limit int) ([]models.BlogPost, error) {
 	return m.GetAllBlogPostsFunc(page, limit)
 }
-func (m *MockAdminService) GetBlogPostByID(id string) (*BlogPost, error) {
+func (m *MockAdminService) GetBlogPostByID(id string) (*models.BlogPost, error) {
 	return m.GetBlogPostByIDFunc(id)
 }
-func (m *MockAdminService) GetBlogPostsByTag(tag string, page, limit int) ([]BlogPost, error) {
+func (m *MockAdminService) GetBlogPostsByTag(tag string, page, limit int) ([]models.BlogPost, error) {
 	return m.GetBlogPostsByTagFunc(tag, page, limit)
 }
-func (m *MockAdminService) CreateBlogPost(post *BlogPost) (*BlogPost, error) {
+func (m *MockAdminService) CreateBlogPost(post *models.BlogPost) (*models.BlogPost, error) {
 	return m.CreateBlogPostFunc(post)
 }
-func (m *MockAdminService) UpdateBlogPost(post *BlogPost) (*BlogPost, error) {
+func (m *MockAdminService) UpdateBlogPost(post *models.BlogPost) (*models.BlogPost, error) {
 	return m.UpdateBlogPostFunc(post)
 }
 func (m *MockAdminService) DeleteBlogPost(id string) error {
 	return m.DeleteBlogPostFunc(id)
 }
-func (m *MockAdminService) GetAllHomeContent(page, limit int) ([]HomeContent, error) {
+func (m *MockAdminService) GetAllHomeContent(page, limit int) ([]models.HomeContent, error) {
 	return m.GetAllHomeContentFunc(page, limit)
 }
-func (m *MockAdminService) GetHomeContentByID(id string) (*HomeContent, error) {
+func (m *MockAdminService) GetHomeContentByID(id string) (*models.HomeContent, error) {
 	return m.GetHomeContentByIDFunc(id)
 }
-func (m *MockAdminService) CreateHomeContent(content *HomeContent) (*HomeContent, error) {
+func (m *MockAdminService) CreateHomeContent(content *models.HomeContent) (*models.HomeContent, error) {
 	return m.CreateHomeContentFunc(content)
 }
-func (m *MockAdminService) UpdateHomeContent(content *HomeContent) (*HomeContent, error) {
+func (m *MockAdminService) UpdateHomeContent(content *models.HomeContent) (*models.HomeContent, error) {
 	return m.UpdateHomeContentFunc(content)
 }
 func (m *MockAdminService) DeleteHomeContent(id string) error {
 	return m.DeleteHomeContentFunc(id)
 }
-func (m *MockAdminService) GetAllGrooveJrContent(page, limit int) ([]GrooveJrContent, error) {
+func (m *MockAdminService) GetAllGrooveJrContent(page, limit int) ([]models.GrooveJrContent, error) {
 	return m.GetAllGrooveJrContentFunc(page, limit)
 }
-func (m *MockAdminService) GetGrooveJrContentByID(id string) (*GrooveJrContent, error) {
+func (m *MockAdminService) GetGrooveJrContentByID(id string) (*models.GrooveJrContent, error) {
 	return m.GetGrooveJrContentByIDFunc(id)
 }
-func (m *MockAdminService) CreateGrooveJrContent(content *GrooveJrContent) (*GrooveJrContent, error) {
+func (m *MockAdminService) CreateGrooveJrContent(content *models.GrooveJrContent) (*models.GrooveJrContent, error) {
 	return m.CreateGrooveJrContentFunc(content)
 }
-func (m *MockAdminService) UpdateGrooveJrContent(content *GrooveJrContent) (*GrooveJrContent, error) {
+func (m *MockAdminService) UpdateGrooveJrContent(content *models.GrooveJrContent) (*models.GrooveJrContent, error) {
 	return m.UpdateGrooveJrContentFunc(content)
 }
 func (m *MockAdminService) DeleteGrooveJrContent(id string) error {
 	return m.DeleteGrooveJrContentFunc(id)
 }
-func (m *MockAdminService) GetAllAboutContent(page, limit int) ([]AboutContent, error) {
+func (m *MockAdminService) GetAllAboutContent(page, limit int) ([]models.AboutContent, error) {
 	return m.GetAllAboutContentFunc(page, limit)
 }
-func (m *MockAdminService) GetAboutContentByID(id string) (*AboutContent, error) {
+func (m *MockAdminService) GetAboutContentByID(id string) (*models.AboutContent, error) {
 	return m.GetAboutContentByIDFunc(id)
 }
-func (m *MockAdminService) CreateAboutContent(content *AboutContent) (*AboutContent, error) {
+func (m *MockAdminService) CreateAboutContent(content *models.AboutContent) (*models.AboutContent, error) {
 	return m.CreateAboutContentFunc(content)
 }
-func (m *MockAdminService) UpdateAboutContent(content *AboutContent) (*AboutContent, error) {
+func (m *MockAdminService) UpdateAboutContent(content *models.AboutContent) (*models.AboutContent, error) {
 	return m.UpdateAboutContentFunc(content)
 }
 func (m *MockAdminService) DeleteAboutContent(id string) error {
@@ -110,8 +111,8 @@ func (m *MockAdminService) DeleteAboutContent(id string) error {
 
 func TestAdminGetAllBlogPostsHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		GetAllBlogPostsFunc: func(page, limit int) ([]BlogPost, error) {
-			return []BlogPost{{ID: "1", Title: "Test Post Admin"}}, nil
+		GetAllBlogPostsFunc: func(page, limit int) ([]models.BlogPost, error) {
+			return []models.BlogPost{{ID: "1", Title: "Test Post Admin"}}, nil
 		},
 	}
 	mockLogOutput := &MockLogger{}
@@ -133,7 +134,7 @@ func TestAdminGetAllBlogPostsHandler(t *testing.T) {
 			status, http.StatusOK)
 	}
 
-	var posts []BlogPost
+	var posts []models.BlogPost
 	if err := json.Unmarshal(rr.Body.Bytes(), &posts); err != nil {
 		t.Fatal(err)
 	}
@@ -144,9 +145,9 @@ func TestAdminGetAllBlogPostsHandler(t *testing.T) {
 
 func TestAdminGetBlogPostByIDHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		GetBlogPostByIDFunc: func(id string) (*BlogPost, error) {
+		GetBlogPostByIDFunc: func(id string) (*models.BlogPost, error) {
 			if id == "1" {
-				return &BlogPost{ID: "1", Title: "Test Post"}, nil
+				return &models.BlogPost{ID: "1", Title: "Test Post"}, nil
 			}
 			return nil, nil // Controller expects nil, nil for not found
 		},
@@ -167,7 +168,7 @@ func TestAdminGetBlogPostByIDHandler(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var post BlogPost
+	var post models.BlogPost
 	json.Unmarshal(rr.Body.Bytes(), &post)
 	if post.ID != "1" {
 		t.Errorf("expected post ID 1, got %s", post.ID)
@@ -185,11 +186,11 @@ func TestAdminGetBlogPostByIDHandler(t *testing.T) {
 
 func TestAdminGetBlogPostsByTagHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		GetBlogPostsByTagFunc: func(tag string, page, limit int) ([]BlogPost, error) {
+		GetBlogPostsByTagFunc: func(tag string, page, limit int) ([]models.BlogPost, error) {
 			if tag == "test" {
-				return []BlogPost{{ID: "1", Title: "Tagged Post"}}, nil
+				return []models.BlogPost{{ID: "1", Title: "Tagged Post"}}, nil
 			}
-			return []BlogPost{}, nil
+			return []models.BlogPost{}, nil
 		},
 	}
 	mockLogOutput := &MockLogger{}
@@ -207,7 +208,7 @@ func TestAdminGetBlogPostsByTagHandler(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var posts []BlogPost
+	var posts []models.BlogPost
 	json.Unmarshal(rr.Body.Bytes(), &posts)
 	if len(posts) != 1 {
 		t.Errorf("expected 1 tagged post, got %d", len(posts))
@@ -216,7 +217,7 @@ func TestAdminGetBlogPostsByTagHandler(t *testing.T) {
 
 func TestAdminCreateBlogPostHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		CreateBlogPostFunc: func(post *BlogPost) (*BlogPost, error) {
+		CreateBlogPostFunc: func(post *models.BlogPost) (*models.BlogPost, error) {
 			post.ID = "new-id"
 			return post, nil
 		},
@@ -225,7 +226,7 @@ func TestAdminCreateBlogPostHandler(t *testing.T) {
 	log := zerolog.New(mockLogOutput)
 	controller := NewAdminController(&log, mockService)
 
-	postData := BlogPost{Title: "New Post"}
+	postData := models.BlogPost{Title: "New Post"}
 	jsonBody, _ := json.Marshal(postData)
 	req, _ := http.NewRequest("POST", "/api/admin/blog", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
@@ -235,7 +236,7 @@ func TestAdminCreateBlogPostHandler(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var newPost BlogPost
+	var newPost models.BlogPost
 	json.Unmarshal(rr.Body.Bytes(), &newPost)
 	if newPost.ID != "new-id" {
 		t.Errorf("expected new post ID 'new-id', got %s", newPost.ID)
@@ -244,7 +245,7 @@ func TestAdminCreateBlogPostHandler(t *testing.T) {
 
 func TestAdminUpdateBlogPostHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		UpdateBlogPostFunc: func(post *BlogPost) (*BlogPost, error) {
+		UpdateBlogPostFunc: func(post *models.BlogPost) (*models.BlogPost, error) {
 			if post.ID == "1" {
 				post.Title = "Updated Title"
 				return post, nil
@@ -260,7 +261,7 @@ func TestAdminUpdateBlogPostHandler(t *testing.T) {
 	testMux := http.NewServeMux()
 	testMux.HandleFunc("/api/admin/blog/{id}", controller.UpdateBlogPostHandler)
 
-	postData := BlogPost{ID: "1", Title: "Updated Post"}
+	postData := models.BlogPost{ID: "1", Title: "Updated Post"}
 	jsonBody, _ := json.Marshal(postData)
 	req, _ := http.NewRequest("PUT", "/api/admin/blog/1", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
@@ -270,7 +271,7 @@ func TestAdminUpdateBlogPostHandler(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var updatedPost BlogPost
+	var updatedPost models.BlogPost
 	json.Unmarshal(rr.Body.Bytes(), &updatedPost)
 	if updatedPost.Title != "Updated Title" {
 		t.Errorf("expected updated title 'Updated Title', got %s", updatedPost.Title)
@@ -305,8 +306,8 @@ func TestAdminDeleteBlogPostHandler(t *testing.T) {
 
 func TestAdminGetAllHomeContentHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		GetAllHomeContentFunc: func(page, limit int) ([]HomeContent, error) {
-			return []HomeContent{{ID: "1", Title: "Test Home Admin"}}, nil
+		GetAllHomeContentFunc: func(page, limit int) ([]models.HomeContent, error) {
+			return []models.HomeContent{{ID: "1", Title: "Test Home Admin"}}, nil
 		},
 	}
 	mockLogOutput := &MockLogger{}
@@ -320,7 +321,7 @@ func TestAdminGetAllHomeContentHandler(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var content []HomeContent
+	var content []models.HomeContent
 	json.Unmarshal(rr.Body.Bytes(), &content)
 	if len(content) != 1 {
 		t.Errorf("expected 1 home content, got %d", len(content))
@@ -329,9 +330,9 @@ func TestAdminGetAllHomeContentHandler(t *testing.T) {
 
 func TestAdminGetHomeContentByIDHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		GetHomeContentByIDFunc: func(id string) (*HomeContent, error) {
+		GetHomeContentByIDFunc: func(id string) (*models.HomeContent, error) {
 			if id == "1" {
-				return &HomeContent{ID: "1", Title: "Test Home"}, nil
+				return &models.HomeContent{ID: "1", Title: "Test Home"}, nil
 			}
 			return nil, nil
 		},
@@ -351,7 +352,7 @@ func TestAdminGetHomeContentByIDHandler(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var content HomeContent
+	var content models.HomeContent
 	json.Unmarshal(rr.Body.Bytes(), &content)
 	if content.ID != "1" {
 		t.Errorf("expected home content ID 1, got %s", content.ID)
@@ -368,7 +369,7 @@ func TestAdminGetHomeContentByIDHandler(t *testing.T) {
 
 func TestAdminCreateHomeContentHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		CreateHomeContentFunc: func(content *HomeContent) (*HomeContent, error) {
+		CreateHomeContentFunc: func(content *models.HomeContent) (*models.HomeContent, error) {
 			content.ID = "new-id-home"
 			return content, nil
 		},
@@ -377,7 +378,7 @@ func TestAdminCreateHomeContentHandler(t *testing.T) {
 	log := zerolog.New(mockLogOutput)
 	controller := NewAdminController(&log, mockService)
 
-	contentData := HomeContent{Title: "New Home Content"}
+	contentData := models.HomeContent{Title: "New Home Content"}
 	jsonBody, _ := json.Marshal(contentData)
 	req, _ := http.NewRequest("POST", "/api/admin/home", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
@@ -387,7 +388,7 @@ func TestAdminCreateHomeContentHandler(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var newContent HomeContent
+	var newContent models.HomeContent
 	json.Unmarshal(rr.Body.Bytes(), &newContent)
 	if newContent.ID != "new-id-home" {
 		t.Errorf("expected new home content ID 'new-id-home', got %s", newContent.ID)
@@ -396,7 +397,7 @@ func TestAdminCreateHomeContentHandler(t *testing.T) {
 
 func TestAdminUpdateHomeContentHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		UpdateHomeContentFunc: func(content *HomeContent) (*HomeContent, error) {
+		UpdateHomeContentFunc: func(content *models.HomeContent) (*models.HomeContent, error) {
 			if content.ID == "1" {
 				content.Title = "Updated Home Title"
 				return content, nil
@@ -412,7 +413,7 @@ func TestAdminUpdateHomeContentHandler(t *testing.T) {
 	testMux := http.NewServeMux()
 	testMux.HandleFunc("/api/admin/home/{id}", controller.UpdateHomeContentHandler)
 
-	contentData := HomeContent{ID: "1", Title: "Updated Home Content"}
+	contentData := models.HomeContent{ID: "1", Title: "Updated Home Content"}
 	jsonBody, _ := json.Marshal(contentData)
 	req, _ := http.NewRequest("PUT", "/api/admin/home/1", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
@@ -422,7 +423,7 @@ func TestAdminUpdateHomeContentHandler(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var updatedContent HomeContent
+	var updatedContent models.HomeContent
 	json.Unmarshal(rr.Body.Bytes(), &updatedContent)
 	if updatedContent.Title != "Updated Home Title" {
 		t.Errorf("expected updated title 'Updated Home Title', got %s", updatedContent.Title)
@@ -457,8 +458,8 @@ func TestAdminDeleteHomeContentHandler(t *testing.T) {
 
 func TestAdminGetAllGrooveJrContentHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		GetAllGrooveJrContentFunc: func(page, limit int) ([]GrooveJrContent, error) {
-			return []GrooveJrContent{{ID: "1", Title: "Test GrooveJr Admin"}}, nil
+		GetAllGrooveJrContentFunc: func(page, limit int) ([]models.GrooveJrContent, error) {
+			return []models.GrooveJrContent{{ID: "1", Title: "Test GrooveJr Admin"}}, nil
 		},
 	}
 	mockLogOutput := &MockLogger{}
@@ -472,7 +473,7 @@ func TestAdminGetAllGrooveJrContentHandler(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var content []GrooveJrContent
+	var content []models.GrooveJrContent
 	json.Unmarshal(rr.Body.Bytes(), &content)
 	if len(content) != 1 {
 		t.Errorf("expected 1 GrooveJr content, got %d", len(content))
@@ -481,9 +482,9 @@ func TestAdminGetAllGrooveJrContentHandler(t *testing.T) {
 
 func TestAdminGetGrooveJrContentByIDHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		GetGrooveJrContentByIDFunc: func(id string) (*GrooveJrContent, error) {
+		GetGrooveJrContentByIDFunc: func(id string) (*models.GrooveJrContent, error) {
 			if id == "1" {
-				return &GrooveJrContent{ID: "1", Title: "Test GrooveJr"}, nil
+				return &models.GrooveJrContent{ID: "1", Title: "Test GrooveJr"}, nil
 			}
 			return nil, nil
 		},
@@ -503,7 +504,7 @@ func TestAdminGetGrooveJrContentByIDHandler(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var content GrooveJrContent
+	var content models.GrooveJrContent
 	json.Unmarshal(rr.Body.Bytes(), &content)
 	if content.ID != "1" {
 		t.Errorf("expected GrooveJr content ID 1, got %s", content.ID)
@@ -520,7 +521,7 @@ func TestAdminGetGrooveJrContentByIDHandler(t *testing.T) {
 
 func TestAdminCreateGrooveJrContentHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		CreateGrooveJrContentFunc: func(content *GrooveJrContent) (*GrooveJrContent, error) {
+		CreateGrooveJrContentFunc: func(content *models.GrooveJrContent) (*models.GrooveJrContent, error) {
 			content.ID = "new-id-groovejr"
 			return content, nil
 		},
@@ -529,7 +530,7 @@ func TestAdminCreateGrooveJrContentHandler(t *testing.T) {
 	log := zerolog.New(mockLogOutput)
 	controller := NewAdminController(&log, mockService)
 
-	contentData := GrooveJrContent{Title: "New GrooveJr Content"}
+	contentData := models.GrooveJrContent{Title: "New GrooveJr Content"}
 	jsonBody, _ := json.Marshal(contentData)
 	req, _ := http.NewRequest("POST", "/api/admin/groovejr", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
@@ -539,7 +540,7 @@ func TestAdminCreateGrooveJrContentHandler(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var newContent GrooveJrContent
+	var newContent models.GrooveJrContent
 	json.Unmarshal(rr.Body.Bytes(), &newContent)
 	if newContent.ID != "new-id-groovejr" {
 		t.Errorf("expected new GrooveJr content ID 'new-id-groovejr', got %s", newContent.ID)
@@ -548,7 +549,7 @@ func TestAdminCreateGrooveJrContentHandler(t *testing.T) {
 
 func TestAdminUpdateGrooveJrContentHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		UpdateGrooveJrContentFunc: func(content *GrooveJrContent) (*GrooveJrContent, error) {
+		UpdateGrooveJrContentFunc: func(content *models.GrooveJrContent) (*models.GrooveJrContent, error) {
 			if content.ID == "1" {
 				content.Title = "Updated GrooveJr Title"
 				return content, nil
@@ -564,7 +565,7 @@ func TestAdminUpdateGrooveJrContentHandler(t *testing.T) {
 	testMux := http.NewServeMux()
 	testMux.HandleFunc("/api/admin/groovejr/{id}", controller.UpdateGrooveJrContentHandler)
 
-	contentData := GrooveJrContent{ID: "1", Title: "Updated GrooveJr Content"}
+	contentData := models.GrooveJrContent{ID: "1", Title: "Updated GrooveJr Content"}
 	jsonBody, _ := json.Marshal(contentData)
 	req, _ := http.NewRequest("PUT", "/api/admin/groovejr/1", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
@@ -574,7 +575,7 @@ func TestAdminUpdateGrooveJrContentHandler(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var updatedContent GrooveJrContent
+	var updatedContent models.GrooveJrContent
 	json.Unmarshal(rr.Body.Bytes(), &updatedContent)
 	if updatedContent.Title != "Updated GrooveJr Title" {
 		t.Errorf("expected updated title 'Updated GrooveJr Title', got %s", updatedContent.Title)
@@ -608,8 +609,8 @@ func TestAdminDeleteGrooveJrContentHandler(t *testing.T) {
 }
 func TestAdminGetAllAboutContentHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		GetAllAboutContentFunc: func(page, limit int) ([]AboutContent, error) {
-			return []AboutContent{{ID: "1", Title: "Test About Admin"}}, nil
+		GetAllAboutContentFunc: func(page, limit int) ([]models.AboutContent, error) {
+			return []models.AboutContent{{ID: "1", Title: "Test About Admin"}}, nil
 		},
 	}
 	mockLogOutput := &MockLogger{}
@@ -623,7 +624,7 @@ func TestAdminGetAllAboutContentHandler(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var content []AboutContent
+	var content []models.AboutContent
 	json.Unmarshal(rr.Body.Bytes(), &content)
 	if len(content) != 1 {
 		t.Errorf("expected 1 About content, got %d", len(content))
@@ -632,9 +633,9 @@ func TestAdminGetAllAboutContentHandler(t *testing.T) {
 
 func TestAdminGetAboutContentByIDHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		GetAboutContentByIDFunc: func(id string) (*AboutContent, error) {
+		GetAboutContentByIDFunc: func(id string) (*models.AboutContent, error) {
 			if id == "1" {
-				return &AboutContent{ID: "1", Title: "Test About"}, nil
+				return &models.AboutContent{ID: "1", Title: "Test About"}, nil
 			}
 			return nil, nil
 		},
@@ -654,7 +655,7 @@ func TestAdminGetAboutContentByIDHandler(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var content AboutContent
+	var content models.AboutContent
 	json.Unmarshal(rr.Body.Bytes(), &content)
 	if content.ID != "1" {
 		t.Errorf("expected About content ID 1, got %s", content.ID)
@@ -671,7 +672,7 @@ func TestAdminGetAboutContentByIDHandler(t *testing.T) {
 
 func TestAdminCreateAboutContentHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		CreateAboutContentFunc: func(content *AboutContent) (*AboutContent, error) {
+		CreateAboutContentFunc: func(content *models.AboutContent) (*models.AboutContent, error) {
 			content.ID = "new-id-about"
 			return content, nil
 		},
@@ -680,7 +681,7 @@ func TestAdminCreateAboutContentHandler(t *testing.T) {
 	log := zerolog.New(mockLogOutput)
 	controller := NewAdminController(&log, mockService)
 
-	contentData := AboutContent{Title: "New About Content"}
+	contentData := models.AboutContent{Title: "New About Content"}
 	jsonBody, _ := json.Marshal(contentData)
 	req, _ := http.NewRequest("POST", "/api/admin/about", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
@@ -690,7 +691,7 @@ func TestAdminCreateAboutContentHandler(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var newContent AboutContent
+	var newContent models.AboutContent
 	json.Unmarshal(rr.Body.Bytes(), &newContent)
 	if newContent.ID != "new-id-about" {
 		t.Errorf("expected new About content ID 'new-id-about', got %s", newContent.ID)
@@ -699,7 +700,7 @@ func TestAdminCreateAboutContentHandler(t *testing.T) {
 
 func TestAdminUpdateAboutContentHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		UpdateAboutContentFunc: func(content *AboutContent) (*AboutContent, error) {
+		UpdateAboutContentFunc: func(content *models.AboutContent) (*models.AboutContent, error) {
 			if content.ID == "1" {
 				content.Title = "Updated About Title"
 				return content, nil
@@ -715,7 +716,7 @@ func TestAdminUpdateAboutContentHandler(t *testing.T) {
 	testMux := http.NewServeMux()
 	testMux.HandleFunc("/api/admin/about/{id}", controller.UpdateAboutContentHandler)
 
-	contentData := AboutContent{ID: "1", Title: "Updated About Content"}
+	contentData := models.AboutContent{ID: "1", Title: "Updated About Content"}
 	jsonBody, _ := json.Marshal(contentData)
 	req, _ := http.NewRequest("PUT", "/api/admin/about/1", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
@@ -725,7 +726,7 @@ func TestAdminUpdateAboutContentHandler(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var updatedContent AboutContent
+	var updatedContent models.AboutContent
 	json.Unmarshal(rr.Body.Bytes(), &updatedContent)
 	if updatedContent.Title != "Updated About Title" {
 		t.Errorf("expected updated title 'Updated About Title', got %s", updatedContent.Title)

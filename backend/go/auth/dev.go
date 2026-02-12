@@ -17,6 +17,8 @@ func SetupAdminAuth(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, Co
 	fs_auth := http.FileServer(http.Dir("build/auth/dev"))
 	mux.Handle("/auth/dev/", LogClientIp("/auth/dev/", log, http.StripPrefix("/auth/dev/", fs_auth)))
 
+	mux.Handle("/old-site/", oldSiteFileServer)
+
 	mux.Handle("/", marketingFileServer)
 
 	// TODO:

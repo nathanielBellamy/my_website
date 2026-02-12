@@ -9,6 +9,7 @@ import (
 
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
 	"github.com/nathanielBellamy/my_website/backend/go/marketing"
+	"github.com/nathanielBellamy/my_website/backend/go/models"
 	"github.com/nathanielBellamy/my_website/backend/go/testutils" // Import the new testutils package
 
 	cmap "github.com/orcaman/concurrent-map/v2"
@@ -37,11 +38,11 @@ func TestSetupBaseRoutes_MarketingBlogPosts(t *testing.T) {
 	// Configure mock DB to return a sample blog post
 	mockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*[]marketing.BlogPost); ok {
-				*v = []marketing.BlogPost{{ID: "1", Title: "Sample Blog Post"}}
+			if v, ok := modelDest.(*[]models.BlogPost); ok {
+				*v = []models.BlogPost{{ID: "1", Title: "Sample Blog Post"}}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*[]marketing.BlogPost); ok {
-					*v = []marketing.BlogPost{{ID: "1", Title: "Sample Blog Post"}}
+				if v, ok := dest[0].(*[]models.BlogPost); ok {
+					*v = []models.BlogPost{{ID: "1", Title: "Sample Blog Post"}}
 				}
 			}
 			return nil
@@ -73,7 +74,7 @@ func TestSetupBaseRoutes_MarketingBlogPosts(t *testing.T) {
 	}
 
 	// Assert the response body (basic check for non-empty array)
-	var posts []marketing.BlogPost
+	var posts []models.BlogPost
 	if err := json.Unmarshal(rr.Body.Bytes(), &posts); err != nil {
 		t.Fatalf("Could not unmarshal response: %v", err)
 	}

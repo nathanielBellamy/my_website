@@ -48,6 +48,10 @@ func (r *MockPgResult) Model() orm.Model {
 	return nil
 }
 
+func (mq *MockPgQuery) Column(columns ...string) interfaces.PgxQuerySeter {
+	return mq
+}
+
 func (mq *MockPgQuery) Relation(name string) interfaces.PgxQuerySeter {
 	return mq
 }
@@ -61,7 +65,7 @@ func (mq *MockPgQuery) Offset(offset int) interfaces.PgxQuerySeter {
 }
 
 func (mq *MockPgQuery) Where(query string, params ...interface{}) interfaces.PgxQuerySeter {
-	if query == "id = ?" && len(params) > 0 {
+	if (query == "id = ?" || query == "blog_post.id = ?") && len(params) > 0 {
 		if id, ok := params[0].(string); ok {
 			mq.WhereID = id
 		}
