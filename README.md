@@ -80,4 +80,24 @@ cd spec && npx cypress open && cd ..
   - [ticket for e2e testing](https://github.com/users/nathanielBellamy/projects/4?pane=issue&itemId=33246560)
   - [ticket for unit/component testing](https://github.com/users/nathanielBellamy/projects/4?pane=issue&itemId=39606773)
 
+### CI/CD
+
+GitHub Actions workflows run automatically on pull requests:
+
+- **Backend Tests**: Runs Go tests for all backend packages
+  - Tests the main backend, auth, env, marketing, and old_site controllers
+  - Uses Go 1.20
+  
+- **Marketing Build & Test**: Builds and tests the Angular marketing app
+  - Runs Jest unit tests (Angular Testing Library)
+  - Builds the production bundle
+  - Uses Node.js 20
+
+- **Docker Build**: Builds the complete Docker image
+  - Includes backend (Go), marketing (Angular), old-site (Svelte), and auth SPAs
+  - Uses multi-stage build for optimized image size
+  - Platform: linux/arm64
+
+All workflows must pass before a PR can be merged.
+
 ### Made with: RustWasm, Go, Typescript, NixOS, Angular, Svelte, WebGL, Tailwind, Flowbite, Sass, Vite, Cypress
