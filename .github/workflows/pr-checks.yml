@@ -70,44 +70,6 @@ jobs:
         run: npm run build-localhost
         working-directory: ./marketing
 
-  old-site-build:
-    name: Old Site Build
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      
-      - name: Set up Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
-      
-      - name: Install wasm-bindgen-cli
-        run: cargo install wasm-bindgen-cli
-      
-      - name: Cache npm dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-old-site-${{ hashFiles('old-site/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-old-site-
-      
-      - name: Install dependencies
-        run: npm ci
-        working-directory: ./old-site
-      
-      - name: Build old-site
-        run: npm run build-old-site-localhost
-        working-directory: ./old-site
-
   docker-build:
     name: Docker Build
     runs-on: ubuntu-latest
