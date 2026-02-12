@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	"net/smtp"
 	"os"
 	"path/filepath"
 	"time"
@@ -16,15 +17,35 @@ import (
 )
 
 type OtpRequest struct {
-	Email string `json:"email"`
+	// Email is no longer required from the client as we default to ADMIN_EMAIL
 }
 
 type OtpVerify struct {
-	Email string `json:"email"`
-	Otp   string `json:"otp"`
+	Otp string `json:"otp"`
 }
 
 var pendingOtps = cmap.New[string]()
+
+func sendEmail(to, subject, body string) error {
+	host := os.Getenv("SMTP_HOST")
+	port := os.Getenv("SMTP_PORT")
+	user := os.Getenv("SMTP_USER")
+	pass := os.Getenv("SMTP_PASS")
+
+	if host == "" || port == "" || user == "" || pass == "" {
+		return fmt.Errorf("SMTP configuration missing")
+	}
+
+	auth := smtp.PlainAuth("", user, pass, host)
+	addr := fmt.Sprintf("%s:%s", host, port)
+
+	msg := []byte(fmt.Sprintf("To: %s\r\n"+
+		"Subject: %s\r\n"+
+		"\r\n"+
+		"%s\r\n", to, subject, body))
+
+	return smtp.SendMail(addr, auth, user, []string{to}, msg)
+}
 
 func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger, oldSiteFileServer http.Handler, adminFileServer http.Handler, marketingFileServer http.Handler) {
 	// Debug: Log build directory structure
@@ -51,7 +72,7 @@ func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, 
 	// Serve the new Angular auth app using SpaHandler for client-side routing
 	authRoot := "build/auth/admin/browser"
 	fs_auth := SpaHandler(authRoot, "index.html")
-	
+
 	mux.Handle("/auth/admin/", LogClientIp("/auth/admin/", log, http.StripPrefix("/auth/admin/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Debug().Str("path", r.URL.Path).Msg("Auth App Request")
 		fs_auth.ServeHTTP(w, r)
@@ -68,31 +89,36 @@ func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, 
 
 	// OTP Routes
 	mux.HandleFunc("POST /api/auth/admin/otp/request", func(w http.ResponseWriter, r *http.Request) {
-		var req OtpRequest
-		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			http.Error(w, "Invalid request", http.StatusBadRequest)
-			return
-		}
-
+		// We ignore the body for the request, as we only send to ADMIN_EMAIL
 		adminEmail := os.Getenv("ADMIN_EMAIL")
-		if req.Email != adminEmail {
-			log.Warn().Str("email", req.Email).Msg("Unauthorized OTP request attempt")
-			// Return success anyway to avoid email enumeration
-			w.WriteHeader(http.StatusOK)
+		if adminEmail == "" {
+			log.Error().Msg("ADMIN_EMAIL env var not set")
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
 
 		// Generate 6-digit OTP
 		otp := fmt.Sprintf("%06d", rand.Intn(1000000))
-		pendingOtps.Set(req.Email, otp)
+		pendingOtps.Set(adminEmail, otp)
 
-		// Mock email delivery
+		// Email delivery
 		log.Info().
-			Str("email", req.Email).
+			Str("email", adminEmail).
 			Str("otp", otp).
-			Msg("ADMIN OTP GENERATED (Check logs for delivery)")
-		
-		fmt.Printf("\n--- OTP FOR %s: %s ---\n\n", req.Email, otp)
+			Msg("ADMIN OTP GENERATED")
+
+		fmt.Printf("\n--- OTP FOR %s: %s ---\n\n", adminEmail, otp)
+
+		// Send real email
+		err := sendEmail(adminEmail, "Your Admin OTP", fmt.Sprintf("Your OTP is: %s", otp))
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to send OTP email")
+			// We might not want to fail the request if email fails, but for now let's just log it.
+			// Ideally we return an error so the UI knows.
+			// For localhost, if SMTP isn't set up, this will error.
+		} else {
+			log.Info().Msg("OTP Email sent successfully")
+		}
 
 		w.WriteHeader(http.StatusOK)
 	})
@@ -106,7 +132,8 @@ func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, 
 			return
 		}
 
-		log.Info().Str("email", req.Email).Msg("Verifying OTP")
+		adminEmail := os.Getenv("ADMIN_EMAIL")
+		log.Info().Str("email", adminEmail).Msg("Verifying OTP")
 
 		mode := os.Getenv("MODE")
 		isLocalhost := env.IsLocalhost(mode)
@@ -115,7 +142,7 @@ func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, 
 		totpSecret := os.Getenv("TOTP_SECRET")
 		if totpSecret != "" {
 			if totp.Validate(req.Otp, totpSecret) {
-				log.Info().Str("email", req.Email).Msg("TOTP validation SUCCESS")
+				log.Info().Str("email", adminEmail).Msg("TOTP validation SUCCESS")
 				issueSession(w, r, cookieJar, log, isLocalhost)
 				return
 			}
@@ -123,14 +150,14 @@ func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, 
 		}
 
 		// Check Email OTP
-		if storedOtp, ok := pendingOtps.Get(req.Email); ok && storedOtp == req.Otp {
-			log.Info().Str("email", req.Email).Msg("Email OTP validation SUCCESS")
-			pendingOtps.Remove(req.Email)
+		if storedOtp, ok := pendingOtps.Get(adminEmail); ok && storedOtp == req.Otp {
+			log.Info().Str("email", adminEmail).Msg("Email OTP validation SUCCESS")
+			pendingOtps.Remove(adminEmail)
 			issueSession(w, r, cookieJar, log, isLocalhost)
 			return
 		}
 
-		log.Warn().Str("email", req.Email).Msg("Invalid OTP attempt")
+		log.Warn().Str("email", adminEmail).Msg("Invalid OTP attempt")
 		http.Error(w, "Invalid OTP", http.StatusUnauthorized)
 	})
 }

@@ -8,15 +8,15 @@ import { firstValueFrom } from 'rxjs';
 export class AuthService {
   private readonly http = inject(HttpClient);
 
-  async requestOtp(email: string): Promise<void> {
+  async requestOtp(): Promise<void> {
     await firstValueFrom(
-      this.http.post<void>('/api/auth/admin/otp/request', { email })
+      this.http.post<void>('/api/auth/admin/otp/request', {})
     );
   }
 
-  async verifyOtp(email: string, otp: string): Promise<void> {
+  async verifyOtp(otp: string): Promise<void> {
     await firstValueFrom(
-      this.http.post<void>('/api/auth/admin/otp/verify', { email, otp })
+      this.http.post<void>('/api/auth/admin/otp/verify', { otp })
     );
   }
 }

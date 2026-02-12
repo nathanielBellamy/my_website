@@ -10,31 +10,19 @@
       </div>
     }
 
-    @if (step() === 'email') {
-      <form (submit)="requestOtp(); $event.preventDefault()">
-        <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
-            Email Address
-          </label>
-          <input
-            id="email"
-            type="email"
-            [(ngModel)]="email"
-            name="email"
-            class="w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="admin@example.com"
-            required
-            [disabled]="loading()"
-          />
-        </div>
+    @if (step() === 'request') {
+      <div class="mb-4">
+        <p class="text-gray-600 mb-4 text-center">
+          Click the button below to send an authentication code to the administrator email on file.
+        </p>
         <button
-          type="submit"
-          [disabled]="loading() || !email()"
+          (click)="requestOtp()"
+          [disabled]="loading()"
           class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
         >
-          {{ loading() ? 'Sending...' : 'Send OTP' }}
+          {{ loading() ? 'Sending...' : 'Send Admin OTP' }}
         </button>
-      </form>
+      </div>
     } @else {
       <form (submit)="login(); $event.preventDefault()">
         <div class="mb-4">
@@ -62,10 +50,10 @@
         </button>
         <button
           type="button"
-          (click)="step.set('email')"
+          (click)="step.set('request')"
           class="w-full mt-4 text-sm text-blue-600 hover:underline"
         >
-          Back to Email
+          Back
         </button>
       </form>
     }

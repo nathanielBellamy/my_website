@@ -13,9 +13,8 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent {
   private readonly authService = inject(AuthService);
 
-  email = signal('');
   otp = signal('');
-  step = signal<'email' | 'otp'>('email');
+  step = signal<'request' | 'verify'>('request');
   error = signal<string | null>(null);
   loading = signal(false);
 
@@ -23,8 +22,8 @@ export class LoginComponent {
     this.loading.set(true);
     this.error.set(null);
     try {
-      await this.authService.requestOtp(this.email());
-      this.step.set('otp');
+      await this.authService.requestOtp();
+      this.step.set('verify');
     } catch (err: any) {
       this.error.set(err.message || 'Failed to request OTP');
     } finally {
@@ -36,7 +35,7 @@ export class LoginComponent {
     this.loading.set(true);
     this.error.set(null);
     try {
-      await this.authService.verifyOtp(this.email(), this.otp());
+      await this.authService.verifyOtp(this.otp());
       const returnTo = new URLSearchParams(window.location.search).get('return_to') || '/admin/';
       window.location.href = returnTo;
     } catch (err: any) {
