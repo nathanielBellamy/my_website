@@ -2,18 +2,7 @@ package websocket
 
 import (
 	"bytes"
-	"errors"
-	"net"
-	"net/http"
-	"net/http/httptest"
-	"os"
-	"strings"
 	"sync"
-	"testing"
-	"time"
-
-	"github.com/nathanielBellamy/my_website/backend/go/auth"
-	"github.com/rs/zerolog"
 )
 
 // MockLogger is a mock implementation of zerolog.Logger for testing.
@@ -33,4 +22,3 @@ type MockNetConn struct {
 	Closed   bool
 	once     sync.Once
 }
-

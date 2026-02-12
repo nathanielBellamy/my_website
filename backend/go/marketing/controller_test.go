@@ -8,6 +8,7 @@ import (
 
 	"testing"
 
+	"github.com/go-pg/pg/v10"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
 	"github.com/rs/zerolog"
 )
@@ -21,12 +22,98 @@ func (m *MockLogger) Write(p []byte) (n int, err error) {
 	return m.Buf.Write(p)
 }
 
+// MockPgQuery for pg.Query
+type MockPgQuery struct {
+	err       error
+	modelDest interface{}
+	whereID   string // Track the ID from Where clause
+}
+
+// MockPgDB for pg.DB
+type MockPgDB struct{}
+
+// NewMockPgDB returns a new MockPgDB instance.
+func NewMockPgDB() *MockPgDB {
+	return &MockPgDB{}
+}
+
+// Model returns a new MockPgQuery
+func (m *MockPgDB) Model(model ...interface{}) PgxQuerySeter {
+	return &MockPgQuery{modelDest: model[0]}
+}
+
+func (mq *MockPgQuery) Relation(name string) PgxQuerySeter {
+	return mq
+}
+
+func (mq *MockPgQuery) Limit(count int) PgxQuerySeter {
+	return mq
+}
+
+func (mq *MockPgQuery) Offset(offset int) PgxQuerySeter {
+	return mq
+}
+
+func (mq *MockPgQuery) Where(query string, params ...interface{}) PgxQuerySeter {
+	// Track the ID parameter for blog post queries
+	if len(params) > 0 {
+		if id, ok := params[0].(string); ok {
+			mq.whereID = id
+		}
+	}
+	return mq
+}
+
+func (mq *MockPgQuery) Join(join string, params ...interface{}) PgxQuerySeter {
+	return mq
+}
+
+func (mq *MockPgQuery) Select(dest ...interface{}) error {
+	if mq.err != nil {
+		return mq.err
+	}
+
+	targetDest := mq.modelDest
+
+	if len(dest) > 0 {
+		targetDest = dest[0]
+	}
+
+	if targetDest != nil {
+		if posts, ok := targetDest.(*[]BlogPost); ok {
+			// Generate 10 mock blog posts for pagination tests
+			*posts = make([]BlogPost, 10)
+			for i := 0; i < 10; i++ {
+				(*posts)[i] = BlogPost{
+					ID:      "blog-post-id-" + string(rune('1'+i)),
+					Title:   "Test Post",
+					Content: "Content",
+				}
+			}
+		} else if post, ok := targetDest.(*BlogPost); ok {
+			// Single blog post - check if ID exists in our mock data
+			if mq.whereID == "" || mq.whereID == "blog-id-1" {
+				*post = BlogPost{
+					ID:      "blog-id-1",
+					Title:   "Test Post",
+					Content: "Content",
+				}
+			} else {
+				// Import pg package to use ErrNoRows
+				return pg.ErrNoRows
+			}
+		}
+	}
+	return nil
+}
+
 func TestGetAllBlogPostsHandler(t *testing.T) {
 	// Save original GetClientIpAddr and defer its restoration
 	origGetClientIpAddr := auth.GetClientIpAddr
 	mockLogOutput := &MockLogger{}
 	log := zerolog.New(mockLogOutput).Level(zerolog.DebugLevel).With().Logger()
-	mc := NewMarketingController(&log)
+	mockDB := NewMockPgDB()
+	mc := NewMarketingController(&log, mockDB)
 
 	t.Cleanup(func() {
 		auth.GetClientIpAddr = origGetClientIpAddr
@@ -63,7 +150,8 @@ func TestGetBlogPostByIDHandler(t *testing.T) {
 	origGetClientIpAddr := auth.GetClientIpAddr
 	mockLogOutput := &MockLogger{}
 	log := zerolog.New(mockLogOutput).Level(zerolog.DebugLevel).With().Logger()
-	mc := NewMarketingController(&log)
+	mockDB := NewMockPgDB()
+	mc := NewMarketingController(&log, mockDB)
 	t.Cleanup(func() {
 		auth.GetClientIpAddr = origGetClientIpAddr
 		t.Log(mockLogOutput.Buf.String()) // Log the buffer content
