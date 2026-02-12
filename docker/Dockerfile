@@ -23,8 +23,8 @@ COPY version.ts .
 COPY package.json package-lock.json ./
 RUN npm install
 
-COPY auth/dev/package.json auth/dev/package-lock.json ./auth/dev/
-RUN npm --prefix auth/dev install
+COPY auth/admin/package.json auth/admin/package-lock.json ./auth/admin/
+RUN npm --prefix auth/admin install
 
 COPY old-site/package.json old-site/package-lock.json ./old-site/
 RUN npm --prefix old-site install
@@ -36,8 +36,8 @@ COPY marketing/package.json marketing/package-lock.json ./marketing/
 RUN npm --prefix marketing install
 
 # Build frontend applications
-COPY auth/dev ./auth/dev
-RUN npm run build --prefix auth/dev
+COPY auth/admin ./auth/admin
+RUN npm run build-localhost --prefix auth/admin
 
 COPY old-site ./old-site
 RUN npm run build-old-site-localhost --prefix old-site

@@ -7,7 +7,8 @@
 node_modules
 /marketing/node_modules
 /old-site/node_modules
-/auth/dev/node_modules
+/auth/admin/node_modules
+/admin/node_modules
 npm-debug.log
 
 # Build artifacts
@@ -15,7 +16,8 @@ dist
 build
 /marketing/dist
 /old-site/dist
-/auth/dev/dist
+/auth/admin/dist
+/admin/dist
 
 # Nix
 result

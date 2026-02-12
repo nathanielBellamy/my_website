@@ -28,6 +28,7 @@ func main() {
 	mode := os.Getenv("MODE")
 	if mode == "" {
 		mode = "localhost"
+		os.Setenv("MODE", mode)
 	}
 
 	// read env file
@@ -125,41 +126,41 @@ func SetupBaseRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, a
 
 	// admin routes
 	// Blog
-	mux.Handle("GET /api/admin/blog", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.GetAllBlogPostsHandler)))
-	mux.Handle("GET /api/admin/blog/{id}", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.GetBlogPostByIDHandler)))
-	mux.Handle("GET /api/admin/blog/tag/{tag}", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.GetBlogPostsByTagHandler)))
-	mux.Handle("POST /api/admin/blog", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.CreateBlogPostHandler)))
-	mux.Handle("PUT /api/admin/blog/{id}", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.UpdateBlogPostHandler)))
-	mux.Handle("DELETE /api/admin/blog/{id}", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.DeleteBlogPostHandler)))
+	mux.Handle("GET /api/admin/blog", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllBlogPostsHandler)))
+	mux.Handle("GET /api/admin/blog/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetBlogPostByIDHandler)))
+	mux.Handle("GET /api/admin/blog/tag/{tag}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetBlogPostsByTagHandler)))
+	mux.Handle("POST /api/admin/blog", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateBlogPostHandler)))
+	mux.Handle("PUT /api/admin/blog/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateBlogPostHandler)))
+	mux.Handle("DELETE /api/admin/blog/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteBlogPostHandler)))
 
 	// Home
-	mux.Handle("GET /api/admin/home", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.GetAllHomeContentHandler)))
-	mux.Handle("GET /api/admin/home/{id}", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.GetHomeContentByIDHandler)))
-	mux.Handle("POST /api/admin/home", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.CreateHomeContentHandler)))
-	mux.Handle("PUT /api/admin/home/{id}", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.UpdateHomeContentHandler)))
-	mux.Handle("DELETE /api/admin/home/{id}", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.DeleteHomeContentHandler)))
+	mux.Handle("GET /api/admin/home", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllHomeContentHandler)))
+	mux.Handle("GET /api/admin/home/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetHomeContentByIDHandler)))
+	mux.Handle("POST /api/admin/home", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateHomeContentHandler)))
+	mux.Handle("PUT /api/admin/home/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateHomeContentHandler)))
+	mux.Handle("DELETE /api/admin/home/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteHomeContentHandler)))
 
 	// GrooveJr
-	mux.Handle("GET /api/admin/groovejr", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.GetAllGrooveJrContentHandler)))
-	mux.Handle("GET /api/admin/groovejr/{id}", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.GetGrooveJrContentByIDHandler)))
-	mux.Handle("POST /api/admin/groovejr", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.CreateGrooveJrContentHandler)))
-	mux.Handle("PUT /api/admin/groovejr/{id}", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.UpdateGrooveJrContentHandler)))
-	mux.Handle("DELETE /api/admin/groovejr/{id}", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.DeleteGrooveJrContentHandler)))
+	mux.Handle("GET /api/admin/groovejr", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllGrooveJrContentHandler)))
+	mux.Handle("GET /api/admin/groovejr/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetGrooveJrContentByIDHandler)))
+	mux.Handle("POST /api/admin/groovejr", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateGrooveJrContentHandler)))
+	mux.Handle("PUT /api/admin/groovejr/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateGrooveJrContentHandler)))
+	mux.Handle("DELETE /api/admin/groovejr/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteGrooveJrContentHandler)))
 
 	// About
-	mux.Handle("GET /api/admin/about", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.GetAllAboutContentHandler)))
-	mux.Handle("GET /api/admin/about/{id}", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.GetAboutContentByIDHandler)))
-	mux.Handle("POST /api/admin/about", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.CreateAboutContentHandler)))
-	mux.Handle("PUT /api/admin/about/{id}", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.UpdateAboutContentHandler)))
-	mux.Handle("DELETE /api/admin/about/{id}", auth.RequireAdminAuth(cookieJar, log, http.HandlerFunc(adminController.DeleteAboutContentHandler)))
+	mux.Handle("GET /api/admin/about", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllAboutContentHandler)))
+	mux.Handle("GET /api/admin/about/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAboutContentByIDHandler)))
+	mux.Handle("POST /api/admin/about", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateAboutContentHandler)))
+	mux.Handle("PUT /api/admin/about/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateAboutContentHandler)))
+	mux.Handle("DELETE /api/admin/about/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteAboutContentHandler)))
 }
 
 func SetupRemotedevRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, adminController *admin.AdminController, marketingFileServer http.Handler) {
-	auth.SetupAdminAuth(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer(), marketingFileServer)
+	auth.SetupAdminAuthV2(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer(), marketingFileServer)
 }
 
 func SetupLocalhostRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, adminController *admin.AdminController, marketingFileServer http.Handler) {
-	auth.SetupAdminAuth(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer(), marketingFileServer)
+	auth.SetupAdminAuthV2(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer(), marketingFileServer)
 }
 
 func SetupProdRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, marketingController *marketing.MarketingController, adminController *admin.AdminController, oldSiteController *old_site.OldSiteController, marketingFileServer http.Handler) {
@@ -168,7 +169,7 @@ func SetupProdRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, a
 
 	// Admin App (auth-protected, /admin/ prefix), Old Site (/old-site/), and Marketing App (/)
 	// are all handled by SetupAdminAuth for consistency across environments.
-	auth.SetupAdminAuth(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer(), auth.LogClientIp("/", log, marketingFileServer))
+	auth.SetupAdminAuthV2(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer(), auth.LogClientIp("/", log, marketingFileServer))
 }
 
 func _SetHeaders(handler http.Handler) http.Handler {

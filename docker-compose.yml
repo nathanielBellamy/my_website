@@ -32,6 +32,7 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:postgres@postgres-db:5432/mw_db?sslmode=disable
       MODE: ${MODE:-remotedev}
+      ENABLE_AUTH_LOCAL: ${ENABLE_AUTH_LOCAL:-false}
     logging:
       driver: "json-file"
       options:
