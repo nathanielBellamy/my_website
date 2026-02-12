@@ -1,0 +1,126 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  backend-tests:
+    name: Backend Go Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.20'
+      
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      
+      - name: Download dependencies
+        run: go mod download
+        working-directory: ./backend/go
+      
+      - name: Run tests
+        run: go test -v ./...
+        working-directory: ./backend/go
+        env:
+          MODE: localhost
+
+  marketing-build-test:
+    name: Marketing App Build & Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-marketing-${{ hashFiles('marketing/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-marketing-
+      
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./marketing
+      
+      - name: Run tests
+        run: npm test
+        working-directory: ./marketing
+      
+      - name: Build marketing app
+        run: npm run build-localhost
+        working-directory: ./marketing
+
+  old-site-build:
+    name: Old Site Build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Set up Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+      
+      - name: Install wasm-bindgen-cli
+        run: cargo install wasm-bindgen-cli
+      
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-old-site-${{ hashFiles('old-site/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-old-site-
+      
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./old-site
+      
+      - name: Build old-site
+        run: npm run build-old-site-localhost
+        working-directory: ./old-site
+
+  docker-build:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Build Docker image
+        run: docker build -f docker/Dockerfile -t my_website:test .
+      
+      - name: Verify Docker image
+        run: docker images | grep my_website
