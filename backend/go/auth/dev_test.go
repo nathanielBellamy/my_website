@@ -39,7 +39,7 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func TestSetupDevAuth_DevAuthHandler(t *testing.T) {
+func TestSetupAdminAuth_AdminAuthHandler(t *testing.T) {
 	// Mock logger
 	mockLogOutput := &MockLogger{}
 	log := zerolog.New(mockLogOutput).Level(zerolog.DebugLevel).With().Logger()
@@ -50,35 +50,43 @@ func TestSetupDevAuth_DevAuthHandler(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, "old site content")
 	})
+	mockAdminFileServer := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, "admin content")
+	})
+	mockMarketingFileServer := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, "marketing content")
+	})
 
-	// Temporarily override ValidateDev and RedirectToDevAuth for isolation
+	// Temporarily override ValidateDev and RedirectToAdminAuth for isolation
 	originalValidateDev := ValidateDev
-	originalRedirectToDevAuth := RedirectToDevAuth
+	originalRedirectToAdminAuth := RedirectToAdminAuth
 	defer func() {
 		ValidateDev = originalValidateDev
-		RedirectToDevAuth = originalRedirectToDevAuth
+		RedirectToAdminAuth = originalRedirectToAdminAuth
 	}()
 
 	// Mock ValidateDev for successful login
 	ValidateDev = func(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) (string, bool) {
 		return "test_session_token", true
 	}
-	// Mock RedirectToDevAuth to just write a status for testing purposes
-	RedirectToDevAuth = func(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
+	// Mock RedirectToAdminAuth to just write a status for testing purposes
+	RedirectToAdminAuth = func(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
 		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Fprint(w, "Redirected to Dev Auth")
+		fmt.Fprint(w, "Redirected to Admin Auth")
 	}
 
 	// Create a new ServeMux for testing
 	testMux := http.NewServeMux()
 
-	// Call SetupDevAuth to register handlers
-	SetupDevAuth(testMux, &cookieJar, &log, mockOldSiteFileServer)
+	// Call SetupAdminAuth to register handlers
+	SetupAdminAuth(testMux, &cookieJar, &log, mockOldSiteFileServer, mockAdminFileServer, mockMarketingFileServer)
 
 	t.Run("successful login", func(t *testing.T) {
 		form := url.Values{}
 		form.Add("pw", "testpassword")
-		req := httptest.NewRequest("POST", "/auth/dev/dev-auth", strings.NewReader(form.Encode()))
+		req := httptest.NewRequest("POST", "/auth/dev/dev-auth?return_to=/admin/", strings.NewReader(form.Encode()))
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 		rr := httptest.NewRecorder()
 
@@ -87,8 +95,8 @@ func TestSetupDevAuth_DevAuthHandler(t *testing.T) {
 		if status := rr.Code; status != http.StatusFound { // Should redirect on success
 			t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusFound)
 		}
-		if location := rr.Header().Get("Location"); location != "/" {
-			t.Errorf("handler returned wrong redirect location: got %q want %q", location, "/")
+		if location := rr.Header().Get("Location"); location != "/admin/" {
+			t.Errorf("handler returned wrong redirect location: got %q want %q", location, "/admin/")
 		}
 		// Check if cookie is set
 		cookies := rr.Result().Cookies()
@@ -133,7 +141,7 @@ func TestSetupDevAuth_DevAuthHandler(t *testing.T) {
 	})
 }
 
-func TestRequireDevAuth(t *testing.T) {
+func TestRequireAdminAuth(t *testing.T) {
 	// Mock logger
 	mockLogOutput := &MockLogger{}
 	log := zerolog.New(mockLogOutput).Level(zerolog.DebugLevel).With().Logger()
@@ -141,25 +149,25 @@ func TestRequireDevAuth(t *testing.T) {
 	// Mock dependencies
 	cookieJar := cmap.New[Cookie]()
 	
-	// Create a dummy handler that RequireDevAuth will protect
+	// Create a dummy handler that RequireAdminAuth will protect
 	protectedHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, "Protected content")
 	})
 
-	// Temporarily override RedirectToDevAuth
-	originalRedirectToDevAuth := RedirectToDevAuth
+	// Temporarily override RedirectToAdminAuth
+	originalRedirectToAdminAuth := RedirectToAdminAuth
 	defer func() {
-		RedirectToDevAuth = originalRedirectToDevAuth
+		RedirectToAdminAuth = originalRedirectToAdminAuth
 	}()
-	RedirectToDevAuth = func(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
-		w.WriteHeader(http.StatusFound) // StatusFound (302) is what RedirectToDevAuth uses
+	RedirectToAdminAuth = func(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
+		w.WriteHeader(http.StatusFound) // StatusFound (302) is what RedirectToAdminAuth uses
 		w.Header().Set("Location", "/auth/dev/")
-		fmt.Fprint(w, "Redirected to Dev Auth")
+		fmt.Fprint(w, "Redirected to Admin Auth")
 	}
 
 	// Create the middleware
-	middleware := RequireDevAuth(&cookieJar, &log, protectedHandler)
+	middleware := RequireAdminAuth(&cookieJar, &log, protectedHandler)
 
 	// Create a test server to handle requests through the middleware
 	testMux := http.NewServeMux()
@@ -171,7 +179,7 @@ func TestRequireDevAuth(t *testing.T) {
 		cookieJar.Set(sessionToken, Cookie{Valid: true, Type: CTDEV})
 
 		req := httptest.NewRequest("GET", "/protected", nil)
-		req.AddCookie(&http.Cookie{Name: "nbs-dev", Value: sessionToken}) // Use "nbs-dev" as per SetupDevAuth
+		req.AddCookie(&http.Cookie{Name: "nbs-dev", Value: sessionToken}) // Use "nbs-dev" as per SetupAdminAuth
 		rr := httptest.NewRecorder()
 
 		testMux.ServeHTTP(rr, req) // Use the testMux
@@ -275,17 +283,17 @@ func TestRedirectFunctions(t *testing.T) {
 	mockLogOutput := &MockLogger{}
 	log := zerolog.New(mockLogOutput).Level(zerolog.DebugLevel).With().Logger()
 
-	t.Run("RedirectToDevAuth", func(t *testing.T) {
+	t.Run("RedirectToAdminAuth", func(t *testing.T) {
 		req := httptest.NewRequest("GET", "/somepath", nil)
 		rr := httptest.NewRecorder()
 
-		RedirectToDevAuth(rr, req, &log)
+		RedirectToAdminAuth(rr, req, &log)
 
 		if status := rr.Code; status != http.StatusSeeOther {
 			t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusSeeOther)
 		}
-		if location := rr.Header().Get("Location"); location != "/auth/dev/" {
-			t.Errorf("handler returned wrong redirect location: got %q want %q", location, "/auth/dev/")
+		if location := rr.Header().Get("Location"); location != "/auth/dev/?return_to=/somepath" {
+			t.Errorf("handler returned wrong redirect location: got %q want %q", location, "/auth/dev/?return_to=/somepath")
 		}
 		t.Logf("Log output:\n%s", mockLogOutput.Buf.String())
 		mockLogOutput.Buf.Reset()

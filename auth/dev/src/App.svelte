@@ -12,6 +12,9 @@
   let password: string
 
   async function authorize(password: string) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const returnTo = urlParams.get('return_to') || '/admin/';
+
     await fetch('dev-auth', {
       method: 'POST',
       headers: {
@@ -21,7 +24,7 @@
     })
     .then((res) => {
       if (res.ok) {
-        window.location.href = "/"
+        window.location.href = returnTo
       } else {
         nopeHidden = false
       }

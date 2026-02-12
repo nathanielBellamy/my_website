@@ -74,7 +74,7 @@ func (osc *OldSiteController) PublicSquareFeedWsHandler(w http.ResponseWriter, r
 		if validDev && validRecaptcha {
 			websocket.ServeFeedWs(osc.FeedPool, w, r, osc.Log)
 		} else {
-			auth.RedirectToDevAuth(w, r, osc.Log)
+			auth.RedirectToAdminAuth(w, r, osc.Log)
 		}
 	} else {
 		// prod is public
@@ -114,7 +114,7 @@ func (osc *OldSiteController) PublicSquareWasmWsHandler(w http.ResponseWriter, r
 		if validDev && validRecaptcha {
 			websocket.ServeWasmWs(osc.WasmPool, w, r, osc.Log)
 		} else {
-			auth.RedirectToDevAuth(w, r, osc.Log)
+			auth.RedirectToAdminAuth(w, r, osc.Log)
 		}
 	} else {
 		// prod is public

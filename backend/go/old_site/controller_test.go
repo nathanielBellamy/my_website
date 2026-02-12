@@ -100,14 +100,14 @@ func TestRecaptchaHandler(t *testing.T) {
 func TestPublicSquareFeedWsHandler(t *testing.T) {
 	// Save original functions and defer their restoration
 	origHasValidCookie := auth.HasValidCookie
-	origRedirectToDevAuth := auth.RedirectToDevAuth
+	origRedirectToAdminAuth := auth.RedirectToAdminAuth
 	origRedirectToHome := auth.RedirectToHome
 	origServeFeedWs := websocket.ServeFeedWs
 	mockLogOutput := &MockLogger{}
 	log := zerolog.New(mockLogOutput).With().Logger().Level(zerolog.DebugLevel)
 	t.Cleanup(func() {
 		auth.HasValidCookie = origHasValidCookie
-		auth.RedirectToDevAuth = origRedirectToDevAuth
+		auth.RedirectToAdminAuth = origRedirectToAdminAuth
 		auth.RedirectToHome = origRedirectToHome
 		websocket.ServeFeedWs = origServeFeedWs
 		t.Log(mockLogOutput.Buf.String()) // Log the buffer content
@@ -122,7 +122,7 @@ func TestPublicSquareFeedWsHandler(t *testing.T) {
 		return true
 	}
 	redirectCalled := false
-	auth.RedirectToDevAuth = func(w http.ResponseWriter, r *http.Request, l *zerolog.Logger) { redirectCalled = true }
+	auth.RedirectToAdminAuth = func(w http.ResponseWriter, r *http.Request, l *zerolog.Logger) { redirectCalled = true }
 	auth.RedirectToHome = func(w http.ResponseWriter, r *http.Request, l *zerolog.Logger) { redirectCalled = true }
 	serveWsCalled := false
 	websocket.ServeFeedWs = func(p *websocket.Pool, w http.ResponseWriter, r *http.Request, l *zerolog.Logger) {
@@ -134,7 +134,7 @@ func TestPublicSquareFeedWsHandler(t *testing.T) {
 	osc.PublicSquareFeedWsHandler(rr, req)
 
 	if redirectCalled {
-		t.Errorf("Non-prod, valid dev/recaptcha: RedirectToDevAuth or RedirectToHome unexpectedly called")
+		t.Errorf("Non-prod, valid dev/recaptcha: RedirectToAdminAuth or RedirectToHome unexpectedly called")
 	}
 	if !serveWsCalled {
 		t.Errorf("Non-prod, valid dev/recaptcha: ServeFeedWs not called")
@@ -153,7 +153,7 @@ func TestPublicSquareFeedWsHandler(t *testing.T) {
 	osc.PublicSquareFeedWsHandler(rr, req)
 
 	if !redirectCalled {
-		t.Errorf("Non-prod, invalid dev: RedirectToDevAuth not called")
+		t.Errorf("Non-prod, invalid dev: RedirectToAdminAuth not called")
 	}
 	if serveWsCalled {
 		t.Errorf("Non-prod, invalid dev: ServeFeedWs unexpectedly called")
@@ -201,14 +201,14 @@ func TestPublicSquareFeedWsHandler(t *testing.T) {
 func TestPublicSquareWasmWsHandler(t *testing.T) {
 	// Save original functions and defer their restoration
 	origHasValidCookie := auth.HasValidCookie
-	origRedirectToDevAuth := auth.RedirectToDevAuth
+	origRedirectToAdminAuth := auth.RedirectToAdminAuth
 	origRedirectToHome := auth.RedirectToHome
 	origServeWasmWs := websocket.ServeWasmWs
 	mockLogOutput := &MockLogger{}
 	log := zerolog.New(mockLogOutput).With().Logger().Level(zerolog.DebugLevel)
 	t.Cleanup(func() {
 		auth.HasValidCookie = origHasValidCookie
-		auth.RedirectToDevAuth = origRedirectToDevAuth
+		auth.RedirectToAdminAuth = origRedirectToAdminAuth
 		auth.RedirectToHome = origRedirectToHome
 		websocket.ServeWasmWs = origServeWasmWs
 		t.Log(mockLogOutput.Buf.String()) // Log the buffer content
@@ -223,7 +223,7 @@ func TestPublicSquareWasmWsHandler(t *testing.T) {
 		return true
 	}
 	redirectCalled := false
-	auth.RedirectToDevAuth = func(w http.ResponseWriter, r *http.Request, l *zerolog.Logger) { redirectCalled = true }
+	auth.RedirectToAdminAuth = func(w http.ResponseWriter, r *http.Request, l *zerolog.Logger) { redirectCalled = true }
 	auth.RedirectToHome = func(w http.ResponseWriter, r *http.Request, l *zerolog.Logger) { redirectCalled = true }
 	serveWsCalled := false
 	websocket.ServeWasmWs = func(p *websocket.Pool, w http.ResponseWriter, r *http.Request, l *zerolog.Logger) {
@@ -235,7 +235,7 @@ func TestPublicSquareWasmWsHandler(t *testing.T) {
 	osc.PublicSquareWasmWsHandler(rr, req)
 
 	if redirectCalled {
-		t.Errorf("Non-prod, valid dev/recaptcha: RedirectToDevAuth or RedirectToHome unexpectedly called")
+		t.Errorf("Non-prod, valid dev/recaptcha: RedirectToAdminAuth or RedirectToHome unexpectedly called")
 	}
 	if !serveWsCalled {
 		t.Errorf("Non-prod, valid dev/recaptcha: ServeWasmWs not called")
@@ -254,7 +254,7 @@ func TestPublicSquareWasmWsHandler(t *testing.T) {
 	osc.PublicSquareWasmWsHandler(rr, req)
 
 	if !redirectCalled {
-		t.Errorf("Non-prod, invalid dev: RedirectToDevAuth not called")
+		t.Errorf("Non-prod, invalid dev: RedirectToAdminAuth not called")
 	}
 	if serveWsCalled {
 		t.Errorf("Non-prod, invalid dev: ServeWasmWs unexpectedly called")

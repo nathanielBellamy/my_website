@@ -11,10 +11,8 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func SetupDevAuth(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger, oldSiteFileServer http.Handler, adminFileServer http.Handler, marketingFileServer http.Handler) {
-	mux.Handle("/old-site/", RequireDevAuth(cookieJar, log, oldSiteFileServer))
-
-	mux.Handle("/admin/", RequireDevAuth(cookieJar, log, adminFileServer))
+func SetupAdminAuth(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger, oldSiteFileServer http.Handler, adminFileServer http.Handler, marketingFileServer http.Handler) {
+	mux.Handle("/admin/", RequireAdminAuth(cookieJar, log, adminFileServer))
 
 	fs_auth := http.FileServer(http.Dir("build/auth/dev"))
 	mux.Handle("/auth/dev/", LogClientIp("/auth/dev/", log, http.StripPrefix("/auth/dev/", fs_auth)))
@@ -70,7 +68,11 @@ func SetupDevAuth(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, Cook
 			//  - naive time.Sleep didn't solve it 100% so it's not worth it
 			//  - for now, we'll eat some polluted logs due to redirect loop
 
-			http.Redirect(w, r, "/", http.StatusFound)
+			returnTo := r.URL.Query().Get("return_to")
+			if returnTo == "" {
+				returnTo = "/admin/"
+			}
+			http.Redirect(w, r, returnTo, http.StatusFound)
 			return
 		} else {
 			log.Warn().
@@ -82,7 +84,7 @@ func SetupDevAuth(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, Cook
 	})
 }
 
-func RequireDevAuth(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger, handler http.Handler) http.Handler {
+func RequireAdminAuth(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger, handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if HasValidCookie(r, CTDEV, cookieJar, log) {
 			handler.ServeHTTP(w, r)
@@ -92,7 +94,7 @@ func RequireDevAuth(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.
 			log.Warn().
 				Str("ip", GetClientIpAddr(r)).
 				Msg("Valid Cookie NOT FOUND")
-			RedirectToDevAuth(w, r, log)
+			RedirectToAdminAuth(w, r, log)
 			return
 		}
 	})
@@ -135,12 +137,12 @@ var ValidateDev = func(w http.ResponseWriter, r *http.Request, log *zerolog.Logg
 	return sessionToken, true
 }
 
-// RedirectToDevAuth is a function variable for redirecting to dev authentication.
-var RedirectToDevAuth = func(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
+// RedirectToAdminAuth is a function variable for redirecting to dev authentication.
+var RedirectToAdminAuth = func(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {
 	log.Warn().
 		Str("ip", GetClientIpAddr(r)).
 		Msg("REDIRECT To Dev Auth")
-	http.Redirect(w, r, "/auth/dev/", http.StatusSeeOther)
+	http.Redirect(w, r, "/auth/dev/?return_to="+r.URL.Path, http.StatusSeeOther)
 }
 
 // RedirectToHome is a function variable for redirecting to the home page.
