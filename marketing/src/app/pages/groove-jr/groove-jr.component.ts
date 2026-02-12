@@ -11,7 +11,7 @@ import { CardComponent } from '../../components/card/card.component';
   templateUrl: './groove-jr.component.html',
 })
 export class GrooveJrComponent implements OnInit {
-  readonly store = inject(GrooveJrStore);
+  protected readonly store = inject(GrooveJrStore);
 
   ngOnInit() {
     this.store.loadMore();

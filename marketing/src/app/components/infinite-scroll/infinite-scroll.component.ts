@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
+import { Component, input, output, TemplateRef } from '@angular/core';
 
 @Component({
   selector: 'app-infinite-scroll',
@@ -9,17 +9,17 @@ import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/co
   styleUrls: ['./infinite-scroll.component.css'],
 })
 export class InfiniteScrollComponent {
-  @Input() itemTemplate!: TemplateRef<any>;
-  @Input() items: any[] = [];
-  @Input() loading = false;
-  @Input() allLoaded = false;
-  @Input() error: string | null = null;
-  @Output() scrolled = new EventEmitter<void>();
+  itemTemplate = input.required<TemplateRef<any>>();
+  items = input<any[]>([]);
+  loading = input<boolean>(false);
+  allLoaded = input<boolean>(false);
+  error = input<string | null>(null);
+  scrolled = output<void>();
 
   onScroll(event: Event) {
     const element = event.target as HTMLElement;
     if (element.scrollHeight - element.scrollTop <= element.clientHeight + 100) {
-      if (!this.loading && !this.allLoaded) {
+      if (!this.loading() && !this.allLoaded()) {
         this.scrolled.emit();
       }
     }

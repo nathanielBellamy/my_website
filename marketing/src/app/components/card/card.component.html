@@ -1,20 +1,20 @@
-<div 
-  role="article" 
-  class="max-w-sm rounded overflow-hidden shadow-lg bg-white dark:bg-gray-800 m-4"
+<div
+  role="article"
+  class="bg-card border border-white/10 rounded-lg p-6 m-4 transition-colors duration-300 hover:border-primary-accent/50 cursor-pointer"
 >
   <div class="px-6 py-4">
-    <div class="font-bold text-xl mb-2 text-gray-900 dark:text-white">
+    <div class="font-heading text-2xl font-bold mb-2 text-heading-text">
       {{ title() }}
     </div>
-    <div class="prose dark:prose-invert">
+    <div class="prose prose-invert max-w-none">
       <markdown [data]="content()"></markdown>
     </div>
   </div>
   @if (tags()) {
     <div class="px-6 pt-4 pb-2">
       @for (tag of tags(); track tag) {
-        <span 
-          class="inline-block bg-gray-200 dark:bg-gray-700 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 dark:text-gray-200 mr-2 mb-2"
+        <span
+          class="inline-block bg-primary-accent/10 text-primary-accent rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2"
         >
           #{{ tag }}
         </span>

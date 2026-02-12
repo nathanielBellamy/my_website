@@ -1,14 +1,45 @@
-<div class="h-full">
-  <app-infinite-scroll
-    [items]="store.content()"
-    [loading]="store.loading()"
-    [allLoaded]="store.allLoaded()"
-    (scrolled)="onScroll()"
-    [itemTemplate]="itemTmpl"
-    [error]="store.error()"
-  ></app-infinite-scroll>
-</div>
+<main class="flex-col min-h-screen">
+  <!-- Hero Section -->
+  <section class="flex flex-col items-center justify-center h-screen text-center">
+    <div class="max-w-4xl mx-auto px-4">
+      <h1 class="font-heading text-6xl md:text-8xl font-bold text-heading-text">
+        Nate Schieber
+      </h1>
+      <h2 class="font-sans text-2xl md:text-4xl text-primary-accent mt-4">
+        Clean Coding, Code Cleaning, Software Builder
+      </h2>
+      <p class="font-sans text-lg md:text-xl text-body-text mt-8 max-w-2xl mx-auto">
+        Logic. Language. Love.
+      </p>
+      <a
+        href="mailto:nbschieber@gmail.com"
+        class="mt-12 inline-block font-sans text-lg font-semibold text-white bg-gradient-to-r from-primary-accent to-secondary-accent py-4 px-8 rounded-lg shadow-lg hover:brightness-110 transition-all duration-300"
+      >
+        Get In Touch
+      </a>
+    </div>
+  </section>
 
-<ng-template #itemTmpl let-item>
-  <app-card [title]="item.title" [content]="item.content"></app-card>
-</ng-template>
+  <!-- Content Feed Section -->
+  <section id="content-feed" class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h3 class="font-heading text-4xl font-bold text-center text-heading-text mb-12">
+        Latest Posts
+      </h3>
+      <div class="h-full">
+        <app-infinite-scroll
+          [items]="store.content()"
+          [loading]="store.loading()"
+          [allLoaded]="store.allLoaded()"
+          (scrolled)="onScroll()"
+          [itemTemplate]="itemTmpl"
+          [error]="store.error()"
+        ></app-infinite-scroll>
+      </div>
+
+      <ng-template #itemTmpl let-item>
+        <app-card [title]="item.title" [content]="item.content"></app-card>
+      </ng-template>
+    </div>
+  </section>
+</main>

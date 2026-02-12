@@ -27,6 +27,7 @@ This document outlines the plan and process for developing the new Angular front
     - I should never see `TestBed` in this code
   - We will use Cypress to write an E2E test suite that can target local, dev, and production environments. 
   - Never pass services into constructors. Always inject services directly: `private readonly fooService: FooService = inject(FooService);`
+  - We will not use `Observable.prototype.toPromise()` as it is deprecated. Rather we will wrap these Observables in the rxjs method `firstValueFrom()` in order to convert one-shot Observables into Promises
   
 
   ## JavaScript/TypeScript conventions
@@ -54,12 +55,19 @@ This document outlines the plan and process for developing the new Angular front
   ## CSS Convetions
   - We will be using Tailwind for our CSS needs.
   - For common, shared colors and spacing we will use Sass variables from within Tailwind.
+  - FOR THE LOVE OF GOD - to import Tailwind in `styles.css` it is just `import 'tailwindcss';`
 
   ## Git conventions
   - All commits will be done manually by humans. 
   - Gemini will never commit anything.
   - Gemini will never call `git add` - all adding will be done manually by humans.
   - Gemini has readonly access to git.
+
+  ## backend/go
+  - We will log an ungodly amount.
+  - At every opportunity, log.
+  - Catch and log all errors with full stack straces.
+  - We will going to log so goddamn much, as it helps you debug.
 
 ---
 
