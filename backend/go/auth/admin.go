@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"math/rand"
@@ -10,9 +12,11 @@ import (
 	"path/filepath"
 	"time"
 
+	crand "crypto/rand"
+
 	"github.com/nathanielBellamy/my_website/backend/go/env"
-	"github.com/pquerna/otp/totp"
 	cmap "github.com/orcaman/concurrent-map/v2"
+	"github.com/pquerna/otp/totp"
 	"github.com/rs/zerolog"
 )
 
@@ -25,6 +29,8 @@ type OtpVerify struct {
 }
 
 var pendingOtps = cmap.New[string]()
+var pendingChallenges = cmap.New[string]()
+var validPreAuthTokens = cmap.New[string]()
 
 func sendEmail(to, subject, body string) error {
 	host := os.Getenv("SMTP_HOST")
@@ -87,9 +93,120 @@ func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, 
 	// Marketing site
 	mux.Handle("/", marketingFileServer)
 
+	// Challenge Endpoint
+	mux.HandleFunc("GET /api/auth/admin/challenge", func(w http.ResponseWriter, r *http.Request) {
+		b := make([]byte, 32)
+		if _, err := crand.Read(b); err != nil {
+			http.Error(w, "Internal Error", http.StatusInternalServerError)
+			return
+		}
+		challenge := hex.EncodeToString(b)
+
+		idBytes := make([]byte, 16)
+		if _, err := crand.Read(idBytes); err != nil {
+			http.Error(w, "Internal Error", http.StatusInternalServerError)
+			return
+		}
+		challengeID := hex.EncodeToString(idBytes)
+
+		pendingChallenges.Set(challengeID, challenge)
+
+		http.SetCookie(w, &http.Cookie{
+			Name:     "nbs-auth-challenge",
+			Value:    challengeID,
+			Path:     "/api/auth/admin",
+			HttpOnly: true,
+			Secure:   !env.IsLocalhost(os.Getenv("MODE")),
+			SameSite: http.SameSiteStrictMode,
+			MaxAge:   300, // 5 minutes
+		})
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]string{"challenge": challenge})
+	})
+
+	// Password Validation Endpoint
+	mux.HandleFunc("POST /api/auth/admin/password", func(w http.ResponseWriter, r *http.Request) {
+		var req struct {
+			Hash string `json:"hash"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			http.Error(w, "Bad Request", http.StatusBadRequest)
+			return
+		}
+
+		cookie, err := r.Cookie("nbs-auth-challenge")
+		if err != nil {
+			http.Error(w, "Missing Challenge Cookie", http.StatusBadRequest)
+			return
+		}
+
+		challenge, ok := pendingChallenges.Get(cookie.Value)
+		if !ok {
+			http.Error(w, "Invalid or Expired Challenge", http.StatusBadRequest)
+			return
+		}
+		pendingChallenges.Remove(cookie.Value) // One-time use
+
+		adminPw := os.Getenv("ADMIN_PW")
+		if adminPw == "" {
+			log.Error().Msg("ADMIN_PW not set")
+			http.Error(w, "Configuration Error", http.StatusInternalServerError)
+			return
+		}
+
+		// Expected: SHA256(ADMIN_PW + challenge)
+		hasher := sha256.New()
+		hasher.Write([]byte(adminPw + challenge))
+		expected := hex.EncodeToString(hasher.Sum(nil))
+
+		if req.Hash != expected {
+			log.Warn().Str("ip", GetClientIpAddr(r)).Msg("Password validation failed")
+			http.Error(w, "Invalid Password", http.StatusUnauthorized)
+			return
+		}
+
+		// Success - Set Pre-Auth Cookie
+		preAuthToken := make([]byte, 16)
+		if _, err := crand.Read(preAuthToken); err != nil {
+			log.Error().Err(err).Msg("Failed to generate pre-auth token")
+			http.Error(w, "Internal Error", http.StatusInternalServerError)
+			return
+		}
+		tokenStr := hex.EncodeToString(preAuthToken)
+
+		validPreAuthTokens.Set(tokenStr, "valid")
+
+		http.SetCookie(w, &http.Cookie{
+			Name:     "nbs-pre-auth",
+			Value:    tokenStr,
+			Path:     "/api/auth/admin",
+			HttpOnly: true,
+			Secure:   !env.IsLocalhost(os.Getenv("MODE")),
+			SameSite: http.SameSiteStrictMode,
+			MaxAge:   300, // 5 minutes
+		})
+
+		w.WriteHeader(http.StatusOK)
+	})
+
 	// OTP Routes
 	mux.HandleFunc("POST /api/auth/admin/otp/request", func(w http.ResponseWriter, r *http.Request) {
+		// Verify Pre-Auth
+		cookie, err := r.Cookie("nbs-pre-auth")
+		if err != nil {
+			log.Warn().Str("ip", GetClientIpAddr(r)).Msg("OTP Request Missing Pre-Auth")
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+		if _, ok := validPreAuthTokens.Get(cookie.Value); !ok {
+			log.Warn().Str("ip", GetClientIpAddr(r)).Msg("OTP Request Invalid Pre-Auth")
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+
 		// We ignore the body for the request, as we only send to ADMIN_EMAIL
+
 		adminEmail := os.Getenv("ADMIN_EMAIL")
 		if adminEmail == "" {
 			log.Error().Msg("ADMIN_EMAIL env var not set")
@@ -110,7 +227,7 @@ func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, 
 		fmt.Printf("\n--- OTP FOR %s: %s ---\n\n", adminEmail, otp)
 
 		// Send real email
-		err := sendEmail(adminEmail, "Your Admin OTP", fmt.Sprintf("Your OTP is: %s", otp))
+		err = sendEmail(adminEmail, "Your Admin OTP", fmt.Sprintf("Your OTP is: %s", otp))
 		if err != nil {
 			log.Error().Err(err).Msg("Failed to send OTP email")
 			// We might not want to fail the request if email fails, but for now let's just log it.

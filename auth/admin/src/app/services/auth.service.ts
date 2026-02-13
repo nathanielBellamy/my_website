@@ -8,6 +8,19 @@ import { firstValueFrom } from 'rxjs';
 export class AuthService {
   private readonly http = inject(HttpClient);
 
+  async getChallenge(): Promise<string> {
+    const res = await firstValueFrom(
+      this.http.get<{ challenge: string }>('/api/auth/admin/challenge')
+    );
+    return res.challenge;
+  }
+
+  async validatePassword(hash: string): Promise<void> {
+    await firstValueFrom(
+      this.http.post<void>('/api/auth/admin/password', { hash })
+    );
+  }
+
   async requestOtp(): Promise<void> {
     await firstValueFrom(
       this.http.post<void>('/api/auth/admin/otp/request', {})

@@ -10,7 +10,33 @@
       </div>
     }
 
-    @if (step() === 'request') {
+    @if (step() === 'password') {
+      <form (submit)="submitPassword(); $event.preventDefault()">
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+            Admin Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            [(ngModel)]="password"
+            name="password"
+            class="w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter Admin Password"
+            required
+            [disabled]="loading()"
+            autofocus
+          />
+        </div>
+        <button
+          type="submit"
+          [disabled]="loading() || !password()"
+          class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+        >
+          {{ loading() ? 'Validating...' : 'Next' }}
+        </button>
+      </form>
+    } @else if (step() === 'request') {
       <div class="mb-4">
         <p class="text-gray-600 mb-4 text-center">
           Click the button below to send an authentication code to the administrator email on file.

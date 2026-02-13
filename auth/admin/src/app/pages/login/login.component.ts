@@ -13,10 +13,37 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent {
   private readonly authService = inject(AuthService);
 
+  password = signal('');
   otp = signal('');
-  step = signal<'request' | 'verify'>('request');
+  step = signal<'password' | 'request' | 'verify'>('password');
   error = signal<string | null>(null);
   loading = signal(false);
+
+  async sha256(message: string): Promise<string> {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async submitPassword() {
+    this.loading.set(true);
+    this.error.set(null);
+    try {
+      const challenge = await this.authService.getChallenge();
+      // SHA256(password + challenge)
+      // Note: Backend expects ADMIN_PW + challenge.
+      // So checking matches.
+      const hash = await this.sha256(this.password() + challenge);
+      await this.authService.validatePassword(hash);
+      this.step.set('request');
+    } catch (err: any) {
+      console.error(err);
+      this.error.set('Invalid Password');
+    } finally {
+      this.loading.set(false);
+    }
+  }
 
   async requestOtp() {
     this.loading.set(true);
