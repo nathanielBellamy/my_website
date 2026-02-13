@@ -67,7 +67,7 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
       { id: 'blog', path: 'blog' },
     ];
 
-    const scrollPosition = window.scrollY + (window.innerHeight / 3); // Active point 1/3 down the screen
+    const scrollPosition = window.scrollY + (window.innerHeight / 2); // Active point center of the screen
 
     let activeSection = sections[0];
 
