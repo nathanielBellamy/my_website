@@ -11,18 +11,24 @@ GRANT CONNECT ON DATABASE mw_db TO marketing;
 -- Create Authors Table
 CREATE TABLE authors (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    activated_at TIMESTAMPTZ,
+    deactivated_at TIMESTAMPTZ,
     name VARCHAR(255) NOT NULL
 );
 
 -- Create Tags Table
 CREATE TABLE tags (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    activated_at TIMESTAMPTZ,
+    deactivated_at TIMESTAMPTZ,
     name VARCHAR(255) NOT NULL UNIQUE
 );
 
 -- Create Blog Posts Table
 CREATE TABLE blog_posts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    activated_at TIMESTAMPTZ,
+    deactivated_at TIMESTAMPTZ,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     author_id UUID REFERENCES authors(id),
@@ -40,6 +46,8 @@ CREATE TABLE blog_post_tags (
 -- Create Home Content Table
 CREATE TABLE home_contents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    activated_at TIMESTAMPTZ,
+    deactivated_at TIMESTAMPTZ,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL
 );
@@ -47,6 +55,8 @@ CREATE TABLE home_contents (
 -- Create GrooveJr Content Table
 CREATE TABLE groove_jr_contents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    activated_at TIMESTAMPTZ,
+    deactivated_at TIMESTAMPTZ,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL
 );
@@ -54,6 +64,8 @@ CREATE TABLE groove_jr_contents (
 -- Create About Content Table
 CREATE TABLE about_contents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    activated_at TIMESTAMPTZ,
+    deactivated_at TIMESTAMPTZ,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL
 );

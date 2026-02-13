@@ -21,8 +21,17 @@ export class CreateGrooveJrContentComponent {
     content: '',
   };
 
+  activatedAtInput: string = '';
+  deactivatedAtInput: string = '';
+
   async createContent() {
     try {
+      if (this.activatedAtInput) {
+        this.grooveJrContent.activatedAt = new Date(this.activatedAtInput).toISOString();
+      }
+      if (this.deactivatedAtInput) {
+        this.grooveJrContent.deactivatedAt = new Date(this.deactivatedAtInput).toISOString();
+      }
       await this.grooveJrService.createGrooveJrContent(this.grooveJrContent);
       this.router.navigate(['/groovejr']); // Navigate back to the list after creation
     } catch (error) {

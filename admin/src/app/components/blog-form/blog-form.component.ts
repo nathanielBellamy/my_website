@@ -1,5 +1,5 @@
 import { Component, input, output, EventEmitter, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { BlogPost } from '../../models/data-models';
 import { JsonPipe } from '@angular/common'; // Import JsonPipe for debugging
 import { MarkdownComponent } from 'ngx-markdown';
@@ -30,7 +30,9 @@ export class BlogFormComponent implements OnInit {
       tags: [this.post()?.tags?.map(tag => tag.name).join(', ') || ''], // Assuming tags are comma-separated strings for input
       createdAt: [this.post()?.createdAt || ''],
       updatedAt: [this.post()?.updatedAt || ''],
-    });
+      activatedAt: [this.formatDateForInput(this.post()?.activatedAt)],
+      deactivatedAt: [this.formatDateForInput(this.post()?.deactivatedAt)],
+    }, { validators: this.dateRangeValidator });
   }
 
   saveForm() {
@@ -39,8 +41,26 @@ export class BlogFormComponent implements OnInit {
       const blogPost: BlogPost = {
         ...formValue,
         tags: formValue.tags.split(',').map((name: string) => ({ id: '', name: name.trim() })), // Convert back to Tag array
+        activatedAt: formValue.activatedAt ? new Date(formValue.activatedAt).toISOString() : null,
+        deactivatedAt: formValue.deactivatedAt ? new Date(formValue.deactivatedAt).toISOString() : null,
       };
       this.submitForm.emit(blogPost);
     }
+  }
+
+  private formatDateForInput(dateStr?: string | null): string {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 16);
+  }
+
+  private dateRangeValidator(group: AbstractControl): ValidationErrors | null {
+    const start = group.get('activatedAt')?.value;
+    const end = group.get('deactivatedAt')?.value;
+    if (start && end && new Date(start) >= new Date(end)) {
+      return { dateRangeInvalid: true };
+    }
+    return null;
   }
 }

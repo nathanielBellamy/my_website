@@ -21,8 +21,17 @@ export class CreateHomeContentComponent {
     content: '',
   };
 
+  activatedAtInput: string = '';
+  deactivatedAtInput: string = '';
+
   async createContent() {
     try {
+      if (this.activatedAtInput) {
+        this.homeContent.activatedAt = new Date(this.activatedAtInput).toISOString();
+      }
+      if (this.deactivatedAtInput) {
+        this.homeContent.deactivatedAt = new Date(this.deactivatedAtInput).toISOString();
+      }
       await this.homeService.createHomeContent(this.homeContent);
       this.router.navigate(['/home']); // Navigate back to the list after creation
     } catch (error) {

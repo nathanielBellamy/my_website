@@ -17,6 +17,8 @@ export class EditAboutContentComponent implements OnInit {
   private readonly router = inject(Router);
 
   aboutContent = signal<AboutContent | undefined>(undefined);
+  activatedAtInput: string = '';
+  deactivatedAtInput: string = '';
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -24,6 +26,8 @@ export class EditAboutContentComponent implements OnInit {
       if (id) {
         this.aboutService.getAboutContentById(id).then(content => {
           this.aboutContent.set(content);
+          this.activatedAtInput = this.formatDateForInput(content.activatedAt);
+          this.deactivatedAtInput = this.formatDateForInput(content.deactivatedAt);
         }).catch(error => {
           console.error('Error fetching about content:', error);
         });
@@ -33,8 +37,11 @@ export class EditAboutContentComponent implements OnInit {
 
   async updateContent() {
     if (this.aboutContent()) {
+      const content = { ...this.aboutContent()! };
+      content.activatedAt = this.activatedAtInput ? new Date(this.activatedAtInput).toISOString() : null;
+      content.deactivatedAt = this.deactivatedAtInput ? new Date(this.deactivatedAtInput).toISOString() : null;
       try {
-        await this.aboutService.updateAboutContent(this.aboutContent() as AboutContent);
+        await this.aboutService.updateAboutContent(content);
         this.router.navigate(['/about']); // Navigate back to the list after update
       } catch (error) {
         console.error('Error updating about content:', error);
@@ -44,5 +51,12 @@ export class EditAboutContentComponent implements OnInit {
 
   goBack() {
     this.router.navigate(['/about']);
+  }
+
+  private formatDateForInput(dateStr?: string | null): string {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 16);
   }
 }

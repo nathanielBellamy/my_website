@@ -36,6 +36,8 @@ This document outlines the plan and process for developing the new Angular front
   - On the frontend, all ids will be UUID strings, hence all interfaces with an `id` field should define `id: string`
 
   ## HTML Convetions
+  - Any element that the user might interact with directly (e.g. hover over, click, highlight, ...) will be given a unique data-testid so as to be easily selectible programatically.
+  - All HTML will follow accessibility compliance, include full aria properties, and be easily readable. 
   - We will prefer tall and skinny HTML as opposed to long-lined HTML
   - Our opening and closing HTML tags will always be aligned vertically
   ```html

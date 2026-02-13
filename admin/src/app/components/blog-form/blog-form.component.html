@@ -73,13 +73,44 @@
               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
           </div>
         </div>
+
+        <div class="sm:col-span-3">
+          <label for="activatedAt" class="block text-sm font-medium text-gray-700">
+            Activation Time
+          </label>
+          <div class="mt-1">
+            <input
+              type="datetime-local"
+              id="activatedAt"
+              formControlName="activatedAt"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+          </div>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label for="deactivatedAt" class="block text-sm font-medium text-gray-700">
+            Deactivation Time
+          </label>
+          <div class="mt-1">
+            <input
+              type="datetime-local"
+              id="deactivatedAt"
+              formControlName="deactivatedAt"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="pt-5">
     <div class="flex justify-end">
-      @if (blogForm.invalid) {
+      @if (blogForm.errors?.['dateRangeInvalid']) {
+        <p class="text-red-500 text-sm mr-4">
+          Deactivation time must be after activation time.
+        </p>
+      }
+      @if (blogForm.invalid && !blogForm.errors?.['dateRangeInvalid']) {
         <p class="text-red-500 text-sm mr-4">
           Please fill out all required fields.
         </p>

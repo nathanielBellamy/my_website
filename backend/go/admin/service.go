@@ -181,9 +181,9 @@ func (s *service) UpdateBlogPost(post *models.BlogPost) (*models.BlogPost, error
 		post.AuthorID = post.Author.ID
 	}
 
-	// 2. Update the BlogPost itself (title, content, author_id, updated_at).
+	// 2. Update the BlogPost itself (title, content, author_id, updated_at, activated_at, deactivated_at).
 	_, err := s.DB.Model(post).
-		Column("title", "content", "author_id", "updated_at").
+		Column("title", "content", "author_id", "updated_at", "activated_at", "deactivated_at").
 		Where("id = ?", post.ID).
 		Update()
 	if err != nil {

@@ -21,8 +21,17 @@ export class CreateAboutContentComponent {
     content: '',
   };
 
+  activatedAtInput: string = '';
+  deactivatedAtInput: string = '';
+
   async createContent() {
     try {
+      if (this.activatedAtInput) {
+        this.aboutContent.activatedAt = new Date(this.activatedAtInput).toISOString();
+      }
+      if (this.deactivatedAtInput) {
+        this.aboutContent.deactivatedAt = new Date(this.deactivatedAtInput).toISOString();
+      }
       await this.aboutService.createAboutContent(this.aboutContent);
       this.router.navigate(['/about']); // Navigate back to the list after creation
     } catch (error) {
