@@ -12,7 +12,7 @@ describe('EditGrooveJrContentComponent', () => {
   let mockActivatedRoute: Partial<ActivatedRoute>;
   let mockRouter: Partial<Router>;
 
-  const mockGrooveJrContent: GrooveJrContent = { id: '1', title: 'Existing GrooveJr', content: 'Existing Content' };
+  const mockGrooveJrContent: GrooveJrContent = { id: '1', title: 'Existing GrooveJr', content: 'Existing Content', activatedAt: null, deactivatedAt: null };
 
   beforeEach(async () => {
     mockGrooveJrService = {
@@ -59,7 +59,7 @@ describe('EditGrooveJrContentComponent', () => {
 
     await Promise.resolve(); // Allow promise to resolve for content update and navigation
 
-    expect(mockGrooveJrService.updateGrooveJrContent).toHaveBeenCalledWith({ ...mockGrooveJrContent, title: updatedTitle, content: updatedContent });
+    expect(mockGrooveJrService.updateGrooveJrContent).toHaveBeenCalledWith({ ...mockGrooveJrContent, title: updatedTitle, content: updatedContent, activatedAt: null, deactivatedAt: null });
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/groovejr']);
   });
 

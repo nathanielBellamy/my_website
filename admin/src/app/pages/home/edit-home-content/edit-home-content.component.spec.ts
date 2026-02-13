@@ -11,7 +11,7 @@ describe('EditHomeContentComponent', () => {
   let mockActivatedRoute: Partial<ActivatedRoute>;
   let mockRouter: Partial<Router>;
 
-  const mockHomeContent: HomeContent = { id: '1', title: 'Existing Home', content: 'Existing Content' };
+  const mockHomeContent: HomeContent = { id: '1', title: 'Existing Home', content: 'Existing Content', activatedAt: null, deactivatedAt: null };
 
   beforeEach(() => {
     mockHomeService = {
@@ -88,7 +88,7 @@ describe('EditHomeContentComponent', () => {
     // Directly call the component's method
     await fixture.componentInstance.updateContent();
 
-    const updatedHomeContent: HomeContent = { id: '1', title: 'Updated Title', content: 'Updated Content' };
+    const updatedHomeContent: HomeContent = { id: '1', title: 'Updated Title', content: 'Updated Content', activatedAt: null, deactivatedAt: null };
 
     expect(mockHomeService.updateHomeContent).toHaveBeenCalledWith(updatedHomeContent);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/home']);

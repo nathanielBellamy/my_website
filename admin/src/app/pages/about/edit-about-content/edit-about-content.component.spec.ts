@@ -12,7 +12,7 @@ describe('EditAboutContentComponent', () => {
   let mockActivatedRoute: Partial<ActivatedRoute>;
   let mockRouter: Partial<Router>;
 
-  const mockAboutContent: AboutContent = { id: '1', title: 'Existing About', content: 'Existing Content' };
+  const mockAboutContent: AboutContent = { id: '1', title: 'Existing About', content: 'Existing Content', activatedAt: null, deactivatedAt: null };
 
   beforeEach(async () => {
     mockAboutService = {
@@ -59,7 +59,7 @@ describe('EditAboutContentComponent', () => {
 
     await Promise.resolve(); // Allow promise to resolve for content update and navigation
 
-    expect(mockAboutService.updateAboutContent).toHaveBeenCalledWith({ ...mockAboutContent, title: updatedTitle, content: updatedContent });
+    expect(mockAboutService.updateAboutContent).toHaveBeenCalledWith({ ...mockAboutContent, title: updatedTitle, content: updatedContent, activatedAt: null, deactivatedAt: null });
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/about']);
   });
 

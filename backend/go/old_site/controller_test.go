@@ -100,14 +100,14 @@ func TestRecaptchaHandler(t *testing.T) {
 func TestPublicSquareFeedWsHandler(t *testing.T) {
 	// Save original functions and defer their restoration
 	origHasValidCookie := auth.HasValidCookie
-	origRedirectToAdminAuth := auth.RedirectToAdminAuth
+	origRedirectToAdminAuth := auth.RedirectToAdminAuthV2
 	origRedirectToHome := auth.RedirectToHome
 	origServeFeedWs := websocket.ServeFeedWs
 	mockLogOutput := &MockLogger{}
 	log := zerolog.New(mockLogOutput).With().Logger().Level(zerolog.DebugLevel)
 	t.Cleanup(func() {
 		auth.HasValidCookie = origHasValidCookie
-		auth.RedirectToAdminAuth = origRedirectToAdminAuth
+		auth.RedirectToAdminAuthV2 = origRedirectToAdminAuth
 		auth.RedirectToHome = origRedirectToHome
 		websocket.ServeFeedWs = origServeFeedWs
 		t.Log(mockLogOutput.Buf.String()) // Log the buffer content
@@ -122,7 +122,7 @@ func TestPublicSquareFeedWsHandler(t *testing.T) {
 		return true
 	}
 	redirectCalled := false
-	auth.RedirectToAdminAuth = func(w http.ResponseWriter, r *http.Request, l *zerolog.Logger) { redirectCalled = true }
+	auth.RedirectToAdminAuthV2 = func(w http.ResponseWriter, r *http.Request, l *zerolog.Logger) { redirectCalled = true }
 	auth.RedirectToHome = func(w http.ResponseWriter, r *http.Request, l *zerolog.Logger) { redirectCalled = true }
 	serveWsCalled := false
 	websocket.ServeFeedWs = func(p *websocket.Pool, w http.ResponseWriter, r *http.Request, l *zerolog.Logger) {
@@ -143,7 +143,7 @@ func TestPublicSquareFeedWsHandler(t *testing.T) {
 	// Test Case 2: Non-prod, invalid dev
 	t.Setenv("MODE", "localhost") // Changed from "dev" to "localhost"
 	auth.HasValidCookie = func(r *http.Request, ct auth.CookieType, cj *cmap.ConcurrentMap[string, auth.Cookie], l *zerolog.Logger) bool {
-		return ct != auth.CTDEV
+		return ct != auth.CTADMIN
 	}
 	redirectCalled = false
 	serveWsCalled = false
@@ -201,14 +201,14 @@ func TestPublicSquareFeedWsHandler(t *testing.T) {
 func TestPublicSquareWasmWsHandler(t *testing.T) {
 	// Save original functions and defer their restoration
 	origHasValidCookie := auth.HasValidCookie
-	origRedirectToAdminAuth := auth.RedirectToAdminAuth
+	origRedirectToAdminAuth := auth.RedirectToAdminAuthV2
 	origRedirectToHome := auth.RedirectToHome
 	origServeWasmWs := websocket.ServeWasmWs
 	mockLogOutput := &MockLogger{}
 	log := zerolog.New(mockLogOutput).With().Logger().Level(zerolog.DebugLevel)
 	t.Cleanup(func() {
 		auth.HasValidCookie = origHasValidCookie
-		auth.RedirectToAdminAuth = origRedirectToAdminAuth
+		auth.RedirectToAdminAuthV2 = origRedirectToAdminAuth
 		auth.RedirectToHome = origRedirectToHome
 		websocket.ServeWasmWs = origServeWasmWs
 		t.Log(mockLogOutput.Buf.String()) // Log the buffer content
@@ -223,7 +223,7 @@ func TestPublicSquareWasmWsHandler(t *testing.T) {
 		return true
 	}
 	redirectCalled := false
-	auth.RedirectToAdminAuth = func(w http.ResponseWriter, r *http.Request, l *zerolog.Logger) { redirectCalled = true }
+	auth.RedirectToAdminAuthV2 = func(w http.ResponseWriter, r *http.Request, l *zerolog.Logger) { redirectCalled = true }
 	auth.RedirectToHome = func(w http.ResponseWriter, r *http.Request, l *zerolog.Logger) { redirectCalled = true }
 	serveWsCalled := false
 	websocket.ServeWasmWs = func(p *websocket.Pool, w http.ResponseWriter, r *http.Request, l *zerolog.Logger) {
@@ -244,7 +244,7 @@ func TestPublicSquareWasmWsHandler(t *testing.T) {
 	// Test Case 2: Non-prod, invalid dev
 	t.Setenv("MODE", "localhost") // Changed from "dev" to "localhost"
 	auth.HasValidCookie = func(r *http.Request, ct auth.CookieType, cj *cmap.ConcurrentMap[string, auth.Cookie], l *zerolog.Logger) bool {
-		return ct != auth.CTDEV
+		return ct != auth.CTADMIN
 	}
 	redirectCalled = false
 	serveWsCalled = false
