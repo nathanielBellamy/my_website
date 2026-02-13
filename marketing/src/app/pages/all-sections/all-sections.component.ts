@@ -1,7 +1,8 @@
-import { Component, OnInit, AfterViewInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, AfterViewInit, OnDestroy, inject, NgZone } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { filter, debounceTime, throttleTime } from 'rxjs/operators';
+import { fromEvent, Subscription } from 'rxjs';
 import { HomeComponent } from '../home/home.component';
 import { AboutComponent } from '../about/about.component';
 import { GrooveJrComponent } from '../groove-jr/groove-jr.component';
@@ -13,14 +14,36 @@ import { BlogComponent } from '../blog/blog.component';
   imports: [CommonModule, HomeComponent, AboutComponent, GrooveJrComponent, BlogComponent],
   templateUrl: './all-sections.component.html',
 })
-export class AllSectionsComponent implements OnInit, AfterViewInit {
+export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly router = inject(Router);
+  private readonly location = inject(Location);
+  private readonly ngZone = inject(NgZone);
+  private scrollSubscription?: Subscription;
+  private scrollEndSubscription?: Subscription;
+  private isAutoScrolling = false;
 
   ngOnInit() {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.scrollToSection();
+    });
+
+    // Run scroll listener outside Angular zone to prevent excessive change detection cycles
+    this.ngZone.runOutsideAngular(() => {
+      // Throttle scroll events for performance
+      this.scrollSubscription = fromEvent(window, 'scroll')
+        .pipe(throttleTime(50))
+        .subscribe(() => {
+          this.onScroll();
+        });
+
+      // Detect end of scrolling to reset isAutoScrolling flag
+      this.scrollEndSubscription = fromEvent(window, 'scroll')
+        .pipe(debounceTime(150))
+        .subscribe(() => {
+          this.isAutoScrolling = false;
+        });
     });
   }
 
@@ -29,7 +52,51 @@ export class AllSectionsComponent implements OnInit, AfterViewInit {
     setTimeout(() => this.scrollToSection(), 100);
   }
 
+  ngOnDestroy() {
+    this.scrollSubscription?.unsubscribe();
+    this.scrollEndSubscription?.unsubscribe();
+  }
+
+  private onScroll() {
+    if (this.isAutoScrolling) return;
+
+    const sections = [
+      { id: 'home', path: '' },
+      { id: 'about', path: 'about' },
+      { id: 'groovejr', path: 'groovejr' },
+      { id: 'blog', path: 'blog' },
+    ];
+
+    const scrollPosition = window.scrollY + (window.innerHeight / 3); // Active point 1/3 down the screen
+
+    let activeSection = sections[0];
+
+    for (const section of sections) {
+      const element = document.getElementById(section.id);
+      if (element) {
+        const offsetTop = element.offsetTop;
+        const offsetBottom = offsetTop + element.offsetHeight;
+
+        if (scrollPosition >= offsetTop && scrollPosition < offsetBottom) {
+          activeSection = section;
+          break;
+        }
+      }
+    }
+
+    const currentPath = this.location.path().replace(/^\//, ''); // Remove leading slash
+    // Handle the root path case which might return ''
+    const normalizedCurrentPath = currentPath === '' ? '' : currentPath; 
+    
+    if (normalizedCurrentPath !== activeSection.path) {
+      this.ngZone.run(() => {
+        this.location.replaceState(activeSection.path);
+      });
+    }
+  }
+
   private scrollToSection() {
+    this.isAutoScrolling = true;
     const url = this.router.url;
     let sectionId = 'home';
     
