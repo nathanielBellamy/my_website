@@ -53,8 +53,15 @@ func (s *service) GetAllBlogPosts(filter models.FilterOptions) ([]models.BlogPos
 		Relation("Author").
 		Relation("Tags")
 
-	if !filter.ShowInactive {
-		query.Where("activated_at IS NOT NULL AND (deactivated_at IS NULL OR deactivated_at > NOW())")
+	switch filter.Status {
+	case "current":
+		query.Where("activated_at IS NOT NULL AND activated_at <= NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())")
+	case "inactive":
+		query.Where("activated_at IS NULL AND deactivated_at IS NULL")
+	case "past":
+		query.Where("deactivated_at IS NOT NULL AND deactivated_at < NOW()")
+	case "future":
+		query.Where("activated_at IS NOT NULL AND activated_at > NOW()")
 	}
 
 	if filter.SortField != "" {
@@ -259,8 +266,15 @@ func (s *service) GetAllHomeContent(filter models.FilterOptions) ([]models.HomeC
 	var content []models.HomeContent
 	query := s.DB.Model(&content)
 
-	if !filter.ShowInactive {
-		query.Where("activated_at IS NOT NULL AND (deactivated_at IS NULL OR deactivated_at > NOW())")
+	switch filter.Status {
+	case "current":
+		query.Where("activated_at IS NOT NULL AND activated_at <= NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())")
+	case "inactive":
+		query.Where("activated_at IS NULL AND deactivated_at IS NULL")
+	case "past":
+		query.Where("deactivated_at IS NOT NULL AND deactivated_at < NOW()")
+	case "future":
+		query.Where("activated_at IS NOT NULL AND activated_at > NOW()")
 	}
 
 	if filter.SortField != "" {
@@ -310,8 +324,15 @@ func (s *service) GetAllGrooveJrContent(filter models.FilterOptions) ([]models.G
 	var content []models.GrooveJrContent
 	query := s.DB.Model(&content)
 
-	if !filter.ShowInactive {
-		query.Where("activated_at IS NOT NULL AND (deactivated_at IS NULL OR deactivated_at > NOW())")
+	switch filter.Status {
+	case "current":
+		query.Where("activated_at IS NOT NULL AND activated_at <= NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())")
+	case "inactive":
+		query.Where("activated_at IS NULL AND deactivated_at IS NULL")
+	case "past":
+		query.Where("deactivated_at IS NOT NULL AND deactivated_at < NOW()")
+	case "future":
+		query.Where("activated_at IS NOT NULL AND activated_at > NOW()")
 	}
 
 	if filter.SortField != "" {
@@ -361,8 +382,15 @@ func (s *service) GetAllAboutContent(filter models.FilterOptions) ([]models.Abou
 	var content []models.AboutContent
 	query := s.DB.Model(&content)
 
-	if !filter.ShowInactive {
-		query.Where("activated_at IS NOT NULL AND (deactivated_at IS NULL OR deactivated_at > NOW())")
+	switch filter.Status {
+	case "current":
+		query.Where("activated_at IS NOT NULL AND activated_at <= NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())")
+	case "inactive":
+		query.Where("activated_at IS NULL AND deactivated_at IS NULL")
+	case "past":
+		query.Where("deactivated_at IS NOT NULL AND deactivated_at < NOW()")
+	case "future":
+		query.Where("activated_at IS NOT NULL AND activated_at > NOW()")
 	}
 
 	if filter.SortField != "" {

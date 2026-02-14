@@ -15,7 +15,7 @@ export class BlogService {
       page: options.page || 1,
       limit: options.limit || 10,
     };
-    if (options.showInactive !== undefined) params.showInactive = options.showInactive;
+    if (options.status) params.status = options.status;
     if (options.sortField) params.sort = options.sortField;
     if (options.sortOrder) params.order = options.sortOrder;
 

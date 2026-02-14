@@ -66,7 +66,7 @@ export interface PaginatedResponse<T> {
 export interface FilterOptions {
   page: number;
   limit: number;
-  showInactive: boolean;
+  status: 'current' | 'inactive' | 'past' | 'future';
   sortField?: string;
   sortOrder?: 'asc' | 'desc';
 }

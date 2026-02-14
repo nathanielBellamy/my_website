@@ -2,11 +2,11 @@ package models
 
 // FilterOptions contains parameters for filtering and sorting list queries.
 type FilterOptions struct {
-	Page         int
-	Limit        int
-	ShowInactive bool
-	SortField    string
-	SortOrder    string // "asc" or "desc"
+	Page      int
+	Limit     int
+	Status    string // "current", "inactive", "past", "future"
+	SortField string
+	SortOrder string // "asc" or "desc"
 }
 
 // PaginatedResponse is a generic response structure for list endpoints.

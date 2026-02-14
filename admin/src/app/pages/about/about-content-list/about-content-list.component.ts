@@ -19,7 +19,7 @@ export class AboutContentListComponent implements OnInit {
   total = signal<number>(0);
   page = signal<number>(1);
   limit = signal<number>(10);
-  showInactive = signal<boolean>(false);
+  status = signal<'current' | 'inactive' | 'past' | 'future'>('current');
   sortField = signal<string>('ordering');
   sortOrder = signal<'asc' | 'desc'>('asc');
 
@@ -33,7 +33,7 @@ export class AboutContentListComponent implements OnInit {
     const options: Partial<FilterOptions> = {
       page: this.page(),
       limit: this.limit(),
-      showInactive: this.showInactive(),
+      status: this.status(),
       sortField: this.sortField(),
       sortOrder: this.sortOrder(),
     };
@@ -53,8 +53,8 @@ export class AboutContentListComponent implements OnInit {
     }
   }
 
-  toggleShowInactive() {
-    this.showInactive.update(v => !v);
+  setStatus(newStatus: 'current' | 'inactive' | 'past' | 'future') {
+    this.status.set(newStatus);
     this.page.set(1);
     this.fetchAboutContent();
   }

@@ -29,7 +29,7 @@ func NewAdminController(log *zerolog.Logger, service Service) *AdminController {
 func getFilterOptions(r *http.Request) models.FilterOptions {
 	pageStr := r.URL.Query().Get("page")
 	limitStr := r.URL.Query().Get("limit")
-	showInactiveStr := r.URL.Query().Get("showInactive")
+	status := r.URL.Query().Get("status")
 	sortField := r.URL.Query().Get("sort")
 	sortOrder := r.URL.Query().Get("order")
 
@@ -43,14 +43,16 @@ func getFilterOptions(r *http.Request) models.FilterOptions {
 		limit = 10
 	}
 
-	showInactive := showInactiveStr == "true"
+	if status != "current" && status != "inactive" && status != "past" && status != "future" {
+		status = "current"
+	}
 
 	return models.FilterOptions{
-		Page:         page,
-		Limit:        limit,
-		ShowInactive: showInactive,
-		SortField:    sortField,
-		SortOrder:    sortOrder,
+		Page:      page,
+		Limit:     limit,
+		Status:    status,
+		SortField: sortField,
+		SortOrder: sortOrder,
 	}
 }
 
