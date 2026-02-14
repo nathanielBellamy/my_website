@@ -1,6 +1,6 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { HomeService } from '../../../services/home.service';
-import { HomeContent } from '../../../models/data-models';
+import { HomeContent, FilterOptions } from '../../../models/data-models';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -13,25 +13,69 @@ import { CommonModule } from '@angular/common';
 })
 export class HomeContentListComponent implements OnInit {
   private readonly homeService = inject(HomeService);
+  
+  // State
   homeContent = signal<HomeContent[]>([]);
+  total = signal<number>(0);
+  page = signal<number>(1);
+  limit = signal<number>(10);
+  showInactive = signal<boolean>(false);
+  sortField = signal<string>('ordering');
+  sortOrder = signal<'asc' | 'desc'>('asc');
+
+  totalPages = computed(() => Math.ceil(this.total() / this.limit()));
 
   ngOnInit() {
     this.fetchHomeContent();
   }
 
   fetchHomeContent() {
-    this.homeService.getAllHomeContent().then((content) => {
-      this.homeContent.set(content);
+    const options: Partial<FilterOptions> = {
+      page: this.page(),
+      limit: this.limit(),
+      showInactive: this.showInactive(),
+      sortField: this.sortField(),
+      sortOrder: this.sortOrder(),
+    };
+
+    this.homeService.getAllHomeContent(options).then((response) => {
+      this.homeContent.set(response.data);
+      this.total.set(response.total);
     }).catch((error) => {
       console.error('Error fetching home content:', error);
     });
   }
 
+  onPageChange(newPage: number) {
+    if (newPage >= 1 && newPage <= this.totalPages()) {
+      this.page.set(newPage);
+      this.fetchHomeContent();
+    }
+  }
+
+  toggleShowInactive() {
+    this.showInactive.update(v => !v);
+    this.page.set(1);
+    this.fetchHomeContent();
+  }
+
+  onSort(field: string) {
+    if (this.sortField() === field) {
+      this.sortOrder.update(o => o === 'asc' ? 'desc' : 'asc');
+    } else {
+      this.sortField.set(field);
+      this.sortOrder.set('asc');
+    }
+    this.fetchHomeContent();
+  }
+
   deleteContent(id: string) {
-    this.homeService.deleteHomeContent(id).then(() => {
-      this.fetchHomeContent(); // Refresh the list after deletion
-    }).catch((error) => {
-      console.error('Error deleting home content:', error);
-    });
+    if(confirm('Are you sure you want to delete this content?')) {
+        this.homeService.deleteHomeContent(id).then(() => {
+        this.fetchHomeContent();
+        }).catch((error) => {
+        console.error('Error deleting home content:', error);
+        });
+    }
   }
 }

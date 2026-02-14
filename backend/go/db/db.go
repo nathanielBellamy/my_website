@@ -43,6 +43,10 @@ func (pqa *PgQueryAdapter) Select(dest ...interface{}) error {
 	return pqa.Query.Select(dest...)
 }
 
+func (pqa *PgQueryAdapter) SelectAndCount(dest ...interface{}) (int, error) {
+	return pqa.Query.SelectAndCount(dest...)
+}
+
 func (pqa *PgQueryAdapter) Insert(dest ...interface{}) (pg.Result, error) {
 	return pqa.Query.Insert(dest...)
 }

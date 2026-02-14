@@ -26,9 +26,13 @@ func NewAdminController(log *zerolog.Logger, service Service) *AdminController {
 	}
 }
 
-func getPaginationParams(r *http.Request) (int, int) {
+func getFilterOptions(r *http.Request) models.FilterOptions {
 	pageStr := r.URL.Query().Get("page")
 	limitStr := r.URL.Query().Get("limit")
+	showInactiveStr := r.URL.Query().Get("showInactive")
+	sortField := r.URL.Query().Get("sort")
+	sortOrder := r.URL.Query().Get("order")
+
 	page, err := strconv.Atoi(pageStr)
 	if err != nil || page <= 0 {
 		page = 1
@@ -38,19 +42,34 @@ func getPaginationParams(r *http.Request) (int, int) {
 	if err != nil || limit <= 0 {
 		limit = 10
 	}
-	return page, limit
+
+	showInactive := showInactiveStr == "true"
+
+	return models.FilterOptions{
+		Page:         page,
+		Limit:        limit,
+		ShowInactive: showInactive,
+		SortField:    sortField,
+		SortOrder:    sortOrder,
+	}
 }
 
 // Blog
 func (ac *AdminController) GetAllBlogPostsHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllBlogPostsHandler Hit")
-	page, limit := getPaginationParams(r)
-	posts, err := ac.Service.GetAllBlogPosts(page, limit)
+	opts := getFilterOptions(r)
+	posts, total, err := ac.Service.GetAllBlogPosts(opts)
 	if err != nil {
 		http.Error(w, "Error fetching blog posts", http.StatusInternalServerError)
 		return
 	}
-	json.NewEncoder(w).Encode(posts)
+	resp := models.PaginatedResponse[models.BlogPost]{
+		Data:  posts,
+		Total: total,
+		Page:  opts.Page,
+		Limit: opts.Limit,
+	}
+	json.NewEncoder(w).Encode(resp)
 }
 
 func (ac *AdminController) GetBlogPostByIDHandler(w http.ResponseWriter, r *http.Request) {
@@ -77,9 +96,9 @@ func (ac *AdminController) GetBlogPostByIDHandler(w http.ResponseWriter, r *http
 func (ac *AdminController) GetBlogPostsByTagHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetBlogPostsByTagHandler Hit")
 	tag := r.PathValue("tag")
-	page, limit := getPaginationParams(r)
+	opts := getFilterOptions(r)
 
-	posts, err := ac.Service.GetBlogPostsByTag(tag, page, limit)
+	posts, err := ac.Service.GetBlogPostsByTag(tag, opts.Page, opts.Limit)
 	if err != nil {
 		http.Error(w, "Error fetching blog posts by tag", http.StatusInternalServerError)
 		return
@@ -166,13 +185,19 @@ func (ac *AdminController) DeleteBlogPostHandler(w http.ResponseWriter, r *http.
 // Home
 func (ac *AdminController) GetAllHomeContentHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllHomeContentHandler Hit")
-	page, limit := getPaginationParams(r)
-	content, err := ac.Service.GetAllHomeContent(page, limit)
+	opts := getFilterOptions(r)
+	content, total, err := ac.Service.GetAllHomeContent(opts)
 	if err != nil {
 		http.Error(w, "Error fetching home content", http.StatusInternalServerError)
 		return
 	}
-	json.NewEncoder(w).Encode(content)
+	resp := models.PaginatedResponse[models.HomeContent]{
+		Data:  content,
+		Total: total,
+		Page:  opts.Page,
+		Limit: opts.Limit,
+	}
+	json.NewEncoder(w).Encode(resp)
 }
 
 func (ac *AdminController) GetHomeContentByIDHandler(w http.ResponseWriter, r *http.Request) {
@@ -243,13 +268,19 @@ func (ac *AdminController) DeleteHomeContentHandler(w http.ResponseWriter, r *ht
 // GrooveJr
 func (ac *AdminController) GetAllGrooveJrContentHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllGrooveJrContentHandler Hit")
-	page, limit := getPaginationParams(r)
-	content, err := ac.Service.GetAllGrooveJrContent(page, limit)
+	opts := getFilterOptions(r)
+	content, total, err := ac.Service.GetAllGrooveJrContent(opts)
 	if err != nil {
 		http.Error(w, "Error fetching groove-jr content", http.StatusInternalServerError)
 		return
 	}
-	json.NewEncoder(w).Encode(content)
+	resp := models.PaginatedResponse[models.GrooveJrContent]{
+		Data:  content,
+		Total: total,
+		Page:  opts.Page,
+		Limit: opts.Limit,
+	}
+	json.NewEncoder(w).Encode(resp)
 }
 
 func (ac *AdminController) GetGrooveJrContentByIDHandler(w http.ResponseWriter, r *http.Request) {
@@ -320,13 +351,19 @@ func (ac *AdminController) DeleteGrooveJrContentHandler(w http.ResponseWriter, r
 // About
 func (ac *AdminController) GetAllAboutContentHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllAboutContentHandler Hit")
-	page, limit := getPaginationParams(r)
-	content, err := ac.Service.GetAllAboutContent(page, limit)
+	opts := getFilterOptions(r)
+	content, total, err := ac.Service.GetAllAboutContent(opts)
 	if err != nil {
 		http.Error(w, "Error fetching about content", http.StatusInternalServerError)
 		return
 	}
-	json.NewEncoder(w).Encode(content)
+	resp := models.PaginatedResponse[models.AboutContent]{
+		Data:  content,
+		Total: total,
+		Page:  opts.Page,
+		Limit: opts.Limit,
+	}
+	json.NewEncoder(w).Encode(resp)
 }
 
 func (ac *AdminController) GetAboutContentByIDHandler(w http.ResponseWriter, r *http.Request) {

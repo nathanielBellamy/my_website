@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HomeContent } from '../models/data-models';
+import { firstValueFrom } from 'rxjs';
+import { HomeContent, FilterOptions, PaginatedResponse } from '../models/data-models';
 
 @Injectable({
   providedIn: 'root',
@@ -9,8 +10,16 @@ export class HomeService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'http://localhost:8080/api/admin/home'; // Adjust as per your backend URL
 
-  getAllHomeContent(): Promise<HomeContent[]> {
-    return this.http.get<HomeContent[]>(this.apiUrl).toPromise() as Promise<HomeContent[]>;
+  async getAllHomeContent(options: Partial<FilterOptions> = {}): Promise<PaginatedResponse<HomeContent>> {
+    const params: any = {
+      page: options.page || 1,
+      limit: options.limit || 10,
+    };
+    if (options.showInactive !== undefined) params.showInactive = options.showInactive;
+    if (options.sortField) params.sort = options.sortField;
+    if (options.sortOrder) params.order = options.sortOrder;
+
+    return await firstValueFrom(this.http.get<PaginatedResponse<HomeContent>>(this.apiUrl, { params }));
   }
 
   getHomeContentById(id: string): Promise<HomeContent> {

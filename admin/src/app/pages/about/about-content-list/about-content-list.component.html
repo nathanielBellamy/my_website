@@ -1,45 +1,101 @@
 <div class="container mx-auto p-4 bg-white shadow-md rounded-lg">
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-3xl font-semibold text-gray-800">About Content</h2>
-    <a
-      routerLink="/about/new"
-      class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
-    >
-      Create New About Content
-    </a>
+    <div class="flex items-center space-x-4">
+      <label class="flex items-center space-x-2 cursor-pointer select-none">
+        <input 
+          type="checkbox" 
+          [checked]="showInactive()" 
+          (change)="toggleShowInactive()" 
+          class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
+        >
+        <span class="text-gray-700 font-medium">Show Inactive</span>
+      </label>
+      <a
+        routerLink="/about/new"
+        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 shadow-sm"
+      >
+        Create New Content
+      </a>
+    </div>
   </div>
 
-  @if (aboutContent().length > 0) {
-    <ul class="space-y-4">
-      @for (content of aboutContent(); track content.id) {
-        <li class="bg-gray-50 p-4 rounded-md shadow-sm border border-gray-200">
-          <div class="flex justify-between items-start mb-2">
-            <h3 class="text-xl font-medium text-gray-900">{{ content.title }}</h3>
-            <span class="text-xs text-gray-400 font-mono">ID: {{ content.id }}</span>
-          </div>
-          <p class="text-gray-700 mb-2 line-clamp-3">{{ content.content }}</p>
-          <div class="text-sm text-gray-500 mb-4">
-            <p>Activated: {{ content.activatedAt | date:'short' }} | Deactivated: {{ content.deactivatedAt | date:'short' }}</p>
-          </div>
-          <div class="flex space-x-4">
-            <a
-              [routerLink]="['/about', content.id, 'edit']"
-              class="text-blue-600 hover:text-blue-800 transition duration-300"
-            >
-              Edit
-            </a>
-            <button
-              (click)="deleteContent(content.id)"
-              class="text-red-600 hover:text-red-800 transition duration-300 focus:outline-none"
-              [attr.data-testid]="'delete-button-' + content.id"
-            >
-              Delete
-            </button>
-          </div>
-        </li>
-      }
-    </ul>
-  } @else {
-    <p class="text-gray-600 text-lg">No about content found.</p>
+  <div class="mb-4 flex space-x-2">
+      <button (click)="onSort('title')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded transition duration-200">
+        Sort by Title
+        @if (sortField() === 'title') {
+          <span>{{ sortOrder() === 'asc' ? '↑' : '↓' }}</span>
+        }
+      </button>
+      <button (click)="onSort('activatedAt')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded transition duration-200">
+        Sort by Date
+        @if (sortField() === 'activatedAt') {
+          <span>{{ sortOrder() === 'asc' ? '↑' : '↓' }}</span>
+        }
+      </button>
+      <button (click)="onSort('ordering')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded transition duration-200">
+        Sort by Order
+        @if (sortField() === 'ordering') {
+          <span>{{ sortOrder() === 'asc' ? '↑' : '↓' }}</span>
+        }
+      </button>
+  </div>
+
+  <ul class="space-y-4">
+    @for (content of aboutContent(); track content.id) {
+      <li class="bg-gray-50 p-4 rounded-md shadow-sm border border-gray-200 hover:shadow-md transition duration-200">
+        <div class="flex justify-between items-start mb-2">
+          <h3 class="text-xl font-medium text-gray-900">{{ content.title }}</h3>
+          <span class="text-xs text-gray-400 font-mono">ID: {{ content.id }}</span>
+        </div>
+        <p class="text-gray-700 mb-2 line-clamp-3">{{ content.content }}</p>
+        <div class="text-sm text-gray-500 mb-4 grid grid-cols-2 gap-x-4 gap-y-1">
+          <p>Activated: <span [class.text-green-600]="content.activatedAt">{{ content.activatedAt ? (content.activatedAt | date:'short') : 'Inactive' }}</span></p>
+          <p>Deactivated: <span [class.text-red-600]="content.deactivatedAt">{{ content.deactivatedAt ? (content.deactivatedAt | date:'short') : '-' }}</span></p>
+          <p>Order: {{ content.order }}</p>
+        </div>
+        <div class="flex space-x-4">
+          <a
+            [routerLink]="['/about', content.id, 'edit']"
+            class="text-blue-600 hover:text-blue-800 transition duration-300 font-medium"
+          >
+            Edit
+          </a>
+          <button
+            (click)="deleteContent(content.id)"
+            class="text-red-600 hover:text-red-800 transition duration-300 focus:outline-none font-medium"
+            [attr.data-testid]="'delete-button-' + content.id"
+          >
+            Delete
+          </button>
+        </div>
+      </li>
+    } @empty {
+      <li class="text-gray-600 text-lg p-4 text-center">No about content found.</li>
+    }
+  </ul>
+
+  <!-- Pagination -->
+  @if (total() > 0) {
+    <div class="mt-6 flex justify-between items-center border-t border-gray-200 pt-4">
+        <button 
+          (click)="onPageChange(page() - 1)" 
+          [disabled]="page() === 1"
+          class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
+        >
+            Previous
+        </button>
+        <span class="text-gray-600">
+          Page <span class="font-medium text-gray-900">{{ page() }}</span> of <span class="font-medium text-gray-900">{{ totalPages() }}</span> 
+          (Total: {{ total() }})
+        </span>
+        <button 
+          (click)="onPageChange(page() + 1)" 
+          [disabled]="page() === totalPages()"
+          class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
+        >
+            Next
+        </button>
+    </div>
   }
 </div>

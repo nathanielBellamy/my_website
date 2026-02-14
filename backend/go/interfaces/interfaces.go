@@ -11,6 +11,7 @@ type PgxQuerySeter interface {
 	Order(orders ...string) PgxQuerySeter
 	Join(join string, params ...interface{}) PgxQuerySeter
 	Select(dest ...interface{}) error
+	SelectAndCount(dest ...interface{}) (int, error)
 	Insert(dest ...interface{}) (pg.Result, error)
 	Update(dest ...interface{}) (pg.Result, error)
 	Delete(dest ...interface{}) (pg.Result, error)

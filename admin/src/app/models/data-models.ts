@@ -55,3 +55,18 @@ export interface AboutContent {
 export interface TrackerData {
   ip: string;
 }
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface FilterOptions {
+  page: number;
+  limit: number;
+  showInactive: boolean;
+  sortField?: string;
+  sortOrder?: 'asc' | 'desc';
+}

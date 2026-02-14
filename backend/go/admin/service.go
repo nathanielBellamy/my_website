@@ -8,7 +8,7 @@ import (
 
 type Service interface {
 	// Blog
-	GetAllBlogPosts(page, limit int) ([]models.BlogPost, error)
+	GetAllBlogPosts(filter models.FilterOptions) ([]models.BlogPost, int, error)
 	GetBlogPostByID(id string) (*models.BlogPost, error)
 	GetBlogPostsByTag(tag string, page, limit int) ([]models.BlogPost, error)
 	CreateBlogPost(post *models.BlogPost) (*models.BlogPost, error)
@@ -16,21 +16,21 @@ type Service interface {
 	DeleteBlogPost(id string) error
 
 	// Home
-	GetAllHomeContent(page, limit int) ([]models.HomeContent, error)
+	GetAllHomeContent(filter models.FilterOptions) ([]models.HomeContent, int, error)
 	GetHomeContentByID(id string) (*models.HomeContent, error)
 	CreateHomeContent(content *models.HomeContent) (*models.HomeContent, error)
 	UpdateHomeContent(content *models.HomeContent) (*models.HomeContent, error)
 	DeleteHomeContent(id string) error
 
 	// GrooveJr
-	GetAllGrooveJrContent(page, limit int) ([]models.GrooveJrContent, error)
+	GetAllGrooveJrContent(filter models.FilterOptions) ([]models.GrooveJrContent, int, error)
 	GetGrooveJrContentByID(id string) (*models.GrooveJrContent, error)
 	CreateGrooveJrContent(content *models.GrooveJrContent) (*models.GrooveJrContent, error)
 	UpdateGrooveJrContent(content *models.GrooveJrContent) (*models.GrooveJrContent, error)
 	DeleteGrooveJrContent(id string) error
 
 	// About
-	GetAllAboutContent(page, limit int) ([]models.AboutContent, error)
+	GetAllAboutContent(filter models.FilterOptions) ([]models.AboutContent, int, error)
 	GetAboutContentByID(id string) (*models.AboutContent, error)
 	CreateAboutContent(content *models.AboutContent) (*models.AboutContent, error)
 	UpdateAboutContent(content *models.AboutContent) (*models.AboutContent, error)
@@ -47,16 +47,30 @@ func NewService(db interfaces.PgxDB, log *zerolog.Logger) Service {
 }
 
 // Blog
-func (s *service) GetAllBlogPosts(page, limit int) ([]models.BlogPost, error) {
+func (s *service) GetAllBlogPosts(filter models.FilterOptions) ([]models.BlogPost, int, error) {
 	var posts []models.BlogPost
-	err := s.DB.Model(&posts).
+	query := s.DB.Model(&posts).
 		Relation("Author").
-		Relation("Tags").
-		Order("ordering ASC", "activated_at DESC").
-		Limit(limit).
-		Offset((page - 1) * limit).
-		Select()
-	return posts, err
+		Relation("Tags")
+
+	if !filter.ShowInactive {
+		query.Where("activated_at IS NOT NULL AND (deactivated_at IS NULL OR deactivated_at > NOW())")
+	}
+
+	if filter.SortField != "" {
+		order := "ASC"
+		if filter.SortOrder == "desc" || filter.SortOrder == "DESC" {
+			order = "DESC"
+		}
+		query.Order(filter.SortField + " " + order)
+	} else {
+		query.Order("ordering ASC", "activated_at DESC")
+	}
+
+	count, err := query.Limit(filter.Limit).
+		Offset((filter.Page - 1) * filter.Limit).
+		SelectAndCount()
+	return posts, count, err
 }
 
 func (s *service) GetBlogPostByID(id string) (*models.BlogPost, error) {
@@ -241,14 +255,28 @@ func (s *service) DeleteBlogPost(id string) error {
 }
 
 // Home
-func (s *service) GetAllHomeContent(page, limit int) ([]models.HomeContent, error) {
+func (s *service) GetAllHomeContent(filter models.FilterOptions) ([]models.HomeContent, int, error) {
 	var content []models.HomeContent
-	err := s.DB.Model(&content).
-		Order("ordering ASC", "activated_at DESC").
-		Limit(limit).
-		Offset((page - 1) * limit).
-		Select()
-	return content, err
+	query := s.DB.Model(&content)
+
+	if !filter.ShowInactive {
+		query.Where("activated_at IS NOT NULL AND (deactivated_at IS NULL OR deactivated_at > NOW())")
+	}
+
+	if filter.SortField != "" {
+		order := "ASC"
+		if filter.SortOrder == "desc" || filter.SortOrder == "DESC" {
+			order = "DESC"
+		}
+		query.Order(filter.SortField + " " + order)
+	} else {
+		query.Order("ordering ASC", "activated_at DESC")
+	}
+
+	count, err := query.Limit(filter.Limit).
+		Offset((filter.Page - 1) * filter.Limit).
+		SelectAndCount()
+	return content, count, err
 }
 
 func (s *service) GetHomeContentByID(id string) (*models.HomeContent, error) {
@@ -278,14 +306,28 @@ func (s *service) DeleteHomeContent(id string) error {
 }
 
 // GrooveJr
-func (s *service) GetAllGrooveJrContent(page, limit int) ([]models.GrooveJrContent, error) {
+func (s *service) GetAllGrooveJrContent(filter models.FilterOptions) ([]models.GrooveJrContent, int, error) {
 	var content []models.GrooveJrContent
-	err := s.DB.Model(&content).
-		Order("ordering ASC", "activated_at DESC").
-		Limit(limit).
-		Offset((page - 1) * limit).
-		Select()
-	return content, err
+	query := s.DB.Model(&content)
+
+	if !filter.ShowInactive {
+		query.Where("activated_at IS NOT NULL AND (deactivated_at IS NULL OR deactivated_at > NOW())")
+	}
+
+	if filter.SortField != "" {
+		order := "ASC"
+		if filter.SortOrder == "desc" || filter.SortOrder == "DESC" {
+			order = "DESC"
+		}
+		query.Order(filter.SortField + " " + order)
+	} else {
+		query.Order("ordering ASC", "activated_at DESC")
+	}
+
+	count, err := query.Limit(filter.Limit).
+		Offset((filter.Page - 1) * filter.Limit).
+		SelectAndCount()
+	return content, count, err
 }
 
 func (s *service) GetGrooveJrContentByID(id string) (*models.GrooveJrContent, error) {
@@ -315,14 +357,28 @@ func (s *service) DeleteGrooveJrContent(id string) error {
 }
 
 // About
-func (s *service) GetAllAboutContent(page, limit int) ([]models.AboutContent, error) {
+func (s *service) GetAllAboutContent(filter models.FilterOptions) ([]models.AboutContent, int, error) {
 	var content []models.AboutContent
-	err := s.DB.Model(&content).
-		Order("ordering ASC", "activated_at DESC").
-		Limit(limit).
-		Offset((page - 1) * limit).
-		Select()
-	return content, err
+	query := s.DB.Model(&content)
+
+	if !filter.ShowInactive {
+		query.Where("activated_at IS NOT NULL AND (deactivated_at IS NULL OR deactivated_at > NOW())")
+	}
+
+	if filter.SortField != "" {
+		order := "ASC"
+		if filter.SortOrder == "desc" || filter.SortOrder == "DESC" {
+			order = "DESC"
+		}
+		query.Order(filter.SortField + " " + order)
+	} else {
+		query.Order("ordering ASC", "activated_at DESC")
+	}
+
+	count, err := query.Limit(filter.Limit).
+		Offset((filter.Page - 1) * filter.Limit).
+		SelectAndCount()
+	return content, count, err
 }
 
 func (s *service) GetAboutContentByID(id string) (*models.AboutContent, error) {
