@@ -30,7 +30,7 @@ func (s *service) GetAllBlogPosts(page, limit int) ([]models.BlogPost, error) {
 	err := s.DB.Model(&posts).
 		Relation("Author").
 		Relation("Tags").
-		Where("activated_at IS NOT NULL AND activated_at < NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())").
+		Where("blog_post.activated_at IS NOT NULL AND blog_post.activated_at < NOW() AND (blog_post.deactivated_at IS NULL OR blog_post.deactivated_at > NOW())").
 		Limit(limit).
 		Offset((page - 1) * limit).
 		Select()
@@ -40,8 +40,8 @@ func (s *service) GetAllBlogPosts(page, limit int) ([]models.BlogPost, error) {
 func (s *service) GetBlogPostByID(id string) (*models.BlogPost, error) {
 	var post models.BlogPost
 	err := s.DB.Model(&post).
-		Where("id = ?", id).
-		Where("activated_at IS NOT NULL AND activated_at < NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())").
+		Where("blog_post.id = ?", id).
+		Where("blog_post.activated_at IS NOT NULL AND blog_post.activated_at < NOW() AND (blog_post.deactivated_at IS NULL OR blog_post.deactivated_at > NOW())").
 		Relation("Author").
 		Relation("Tags").
 		Select()

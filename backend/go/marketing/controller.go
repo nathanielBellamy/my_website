@@ -54,6 +54,7 @@ func (mc *MarketingController) GetAllBlogPostsHandler(w http.ResponseWriter, r *
 	page, limit := getPaginationParams(r)
 	posts, err := mc.Service.GetAllBlogPosts(page, limit)
 	if err != nil {
+		mc.Log.Error().Err(err).Msg("Error fetching blog posts")
 		http.Error(w, "Error fetching blog posts", http.StatusInternalServerError)
 		return
 	}
@@ -67,6 +68,7 @@ func (mc *MarketingController) GetBlogPostByIDHandler(w http.ResponseWriter, r *
 	mc.Log.Debug().Str("idStr", id).Msg("GetBlogPostByIDHandler: PathValue 'id'")
 	post, err := mc.Service.GetBlogPostByID(id)
 	if err != nil {
+		mc.Log.Error().Err(err).Msg("Error fetching blog post")
 		http.Error(w, "Error fetching blog post", http.StatusInternalServerError)
 		return
 	}
@@ -88,6 +90,7 @@ func (mc *MarketingController) GetBlogPostsByTagHandler(w http.ResponseWriter, r
 
 	posts, err := mc.Service.GetBlogPostsByTag(tag, page, limit)
 	if err != nil {
+		mc.Log.Error().Err(err).Msg("Error fetching blog posts by tag")
 		http.Error(w, "Error fetching blog posts by tag", http.StatusInternalServerError)
 		return
 	}
@@ -121,6 +124,7 @@ func (mc *MarketingController) GetHomeContentByIDHandler(w http.ResponseWriter, 
 
 	content, err := mc.Service.GetHomeContentByID(id)
 	if err != nil {
+		mc.Log.Error().Err(err).Msg("Error fetching home content")
 		http.Error(w, "Error fetching home content", http.StatusInternalServerError)
 		return
 	}
@@ -143,6 +147,7 @@ func (mc *MarketingController) GetAllGrooveJrContentHandler(w http.ResponseWrite
 
 	content, err := mc.Service.GetAllGrooveJrContent(page, limit)
 	if err != nil {
+		mc.Log.Error().Err(err).Msg("Error fetching groove-jr content")
 		http.Error(w, "Error fetching groove-jr content", http.StatusInternalServerError)
 		return
 	}
@@ -158,6 +163,7 @@ func (mc *MarketingController) GetGrooveJrContentByIDHandler(w http.ResponseWrit
 
 	content, err := mc.Service.GetGrooveJrContentByID(id)
 	if err != nil {
+		mc.Log.Error().Err(err).Msg("Error fetching groove-jr content")
 		http.Error(w, "Error fetching groove-jr content", http.StatusInternalServerError)
 		return
 	}
@@ -180,6 +186,7 @@ func (mc *MarketingController) GetAllAboutContentHandler(w http.ResponseWriter, 
 
 	content, err := mc.Service.GetAllAboutContent(page, limit)
 	if err != nil {
+		mc.Log.Error().Err(err).Msg("Error fetching about content")
 		http.Error(w, "Error fetching about content", http.StatusInternalServerError)
 		return
 	}
@@ -195,6 +202,7 @@ func (mc *MarketingController) GetAboutContentByIDHandler(w http.ResponseWriter,
 
 	content, err := mc.Service.GetAboutContentByID(id)
 	if err != nil {
+		mc.Log.Error().Err(err).Msg("Error fetching about content")
 		http.Error(w, "Error fetching about content", http.StatusInternalServerError)
 		return
 	}
