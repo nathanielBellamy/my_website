@@ -1,13 +1,13 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject } from '@angular/core';
 import { GrooveJrService } from '../../../services/groove-jr.service';
 import { Router } from '@angular/router';
 import { GrooveJrContent } from '../../../models/data-models';
+import { GrooveJrFormComponent } from '../../../components/groove-jr-form/groove-jr-form.component';
 
 @Component({
   selector: 'app-create-groove-jr-content',
   standalone: true,
-  imports: [FormsModule],
+  imports: [GrooveJrFormComponent],
   templateUrl: './create-groove-jr-content.component.html',
   styleUrl: './create-groove-jr-content.component.css',
 })
@@ -15,31 +15,12 @@ export class CreateGrooveJrContentComponent {
   private readonly grooveJrService = inject(GrooveJrService);
   private readonly router = inject(Router);
 
-  grooveJrContent: GrooveJrContent = {
-    id: '',
-    title: '',
-    content: '',
-  };
-
-  activatedAtInput: string = '';
-  deactivatedAtInput: string = '';
-
-  async createContent() {
+  async createContent(content: GrooveJrContent) {
     try {
-      if (this.activatedAtInput) {
-        this.grooveJrContent.activatedAt = new Date(this.activatedAtInput).toISOString();
-      }
-      if (this.deactivatedAtInput) {
-        this.grooveJrContent.deactivatedAt = new Date(this.deactivatedAtInput).toISOString();
-      }
-      await this.grooveJrService.createGrooveJrContent(this.grooveJrContent);
-      this.router.navigate(['/groovejr']); // Navigate back to the list after creation
+      await this.grooveJrService.createGrooveJrContent(content);
+      this.router.navigate(['/groovejr']);
     } catch (error) {
       console.error('Error creating GrooveJr content:', error);
     }
-  }
-
-  goBack() {
-    this.router.navigate(['/groovejr']);
   }
 }

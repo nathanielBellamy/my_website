@@ -1,13 +1,13 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject } from '@angular/core';
 import { HomeService } from '../../../services/home.service';
 import { Router } from '@angular/router';
 import { HomeContent } from '../../../models/data-models';
+import { HomeFormComponent } from '../../../components/home-form/home-form.component';
 
 @Component({
   selector: 'app-create-home-content',
   standalone: true,
-  imports: [FormsModule],
+  imports: [HomeFormComponent],
   templateUrl: './create-home-content.component.html',
   styleUrl: './create-home-content.component.css',
 })
@@ -15,31 +15,12 @@ export class CreateHomeContentComponent {
   private readonly homeService = inject(HomeService);
   private readonly router = inject(Router);
 
-  homeContent: HomeContent = {
-    id: '',
-    title: '',
-    content: '',
-  };
-
-  activatedAtInput: string = '';
-  deactivatedAtInput: string = '';
-
-  async createContent() {
+  async createContent(content: HomeContent) {
     try {
-      if (this.activatedAtInput) {
-        this.homeContent.activatedAt = new Date(this.activatedAtInput).toISOString();
-      }
-      if (this.deactivatedAtInput) {
-        this.homeContent.deactivatedAt = new Date(this.deactivatedAtInput).toISOString();
-      }
-      await this.homeService.createHomeContent(this.homeContent);
-      this.router.navigate(['/home']); // Navigate back to the list after creation
+      await this.homeService.createHomeContent(content);
+      this.router.navigate(['/home']);
     } catch (error) {
       console.error('Error creating home content:', error);
     }
-  }
-
-  goBack() {
-    this.router.navigate(['/home']);
   }
 }

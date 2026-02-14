@@ -26,7 +26,7 @@ func NewService(db interfaces.PgxDB) Service {
 }
 
 func (s *service) GetAllBlogPosts(page, limit int) ([]models.BlogPost, error) {
-	var posts []models.BlogPost
+	posts := make([]models.BlogPost, 0)
 	err := s.DB.Model(&posts).
 		Relation("Author").
 		Relation("Tags").
@@ -52,7 +52,7 @@ func (s *service) GetBlogPostByID(id string) (*models.BlogPost, error) {
 }
 
 func (s *service) GetBlogPostsByTag(tag string, page, limit int) ([]models.BlogPost, error) {
-	var posts []models.BlogPost
+	posts := make([]models.BlogPost, 0)
 	err := s.DB.Model(&posts).
 		Relation("Author").
 		Relation("Tags").
@@ -67,9 +67,9 @@ func (s *service) GetBlogPostsByTag(tag string, page, limit int) ([]models.BlogP
 }
 
 func (s *service) GetAllHomeContent(page, limit int) ([]models.HomeContent, error) {
-	var content []models.HomeContent
+	content := make([]models.HomeContent, 0)
 	err := s.DB.Model(&content).
-		Where("activated_at IS NOT NULL AND activated_at < NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())").
+		Where("home_content.activated_at IS NOT NULL AND home_content.activated_at < NOW() AND (home_content.deactivated_at IS NULL OR home_content.deactivated_at > NOW())").
 		Limit(limit).
 		Offset((page - 1) * limit).
 		Select()
@@ -79,8 +79,8 @@ func (s *service) GetAllHomeContent(page, limit int) ([]models.HomeContent, erro
 func (s *service) GetHomeContentByID(id string) (*models.HomeContent, error) {
 	var content models.HomeContent
 	err := s.DB.Model(&content).
-		Where("id = ?", id).
-		Where("activated_at IS NOT NULL AND activated_at < NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())").
+		Where("home_content.id = ?", id).
+		Where("home_content.activated_at IS NOT NULL AND home_content.activated_at < NOW() AND (home_content.deactivated_at IS NULL OR home_content.deactivated_at > NOW())").
 		Select()
 	if err != nil {
 		return nil, err
@@ -89,9 +89,9 @@ func (s *service) GetHomeContentByID(id string) (*models.HomeContent, error) {
 }
 
 func (s *service) GetAllGrooveJrContent(page, limit int) ([]models.GrooveJrContent, error) {
-	var content []models.GrooveJrContent
+	content := make([]models.GrooveJrContent, 0)
 	err := s.DB.Model(&content).
-		Where("activated_at IS NOT NULL AND activated_at < NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())").
+		Where("groove_jr_content.activated_at IS NOT NULL AND groove_jr_content.activated_at < NOW() AND (groove_jr_content.deactivated_at IS NULL OR groove_jr_content.deactivated_at > NOW())").
 		Limit(limit).
 		Offset((page - 1) * limit).
 		Select()
@@ -101,8 +101,8 @@ func (s *service) GetAllGrooveJrContent(page, limit int) ([]models.GrooveJrConte
 func (s *service) GetGrooveJrContentByID(id string) (*models.GrooveJrContent, error) {
 	var content models.GrooveJrContent
 	err := s.DB.Model(&content).
-		Where("id = ?", id).
-		Where("activated_at IS NOT NULL AND activated_at < NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())").
+		Where("groove_jr_content.id = ?", id).
+		Where("groove_jr_content.activated_at IS NOT NULL AND groove_jr_content.activated_at < NOW() AND (groove_jr_content.deactivated_at IS NULL OR groove_jr_content.deactivated_at > NOW())").
 		Select()
 	if err != nil {
 		return nil, err
@@ -111,9 +111,9 @@ func (s *service) GetGrooveJrContentByID(id string) (*models.GrooveJrContent, er
 }
 
 func (s *service) GetAllAboutContent(page, limit int) ([]models.AboutContent, error) {
-	var content []models.AboutContent
+	content := make([]models.AboutContent, 0)
 	err := s.DB.Model(&content).
-		Where("activated_at IS NOT NULL AND activated_at < NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())").
+		Where("about_content.activated_at IS NOT NULL AND about_content.activated_at < NOW() AND (about_content.deactivated_at IS NULL OR about_content.deactivated_at > NOW())").
 		Limit(limit).
 		Offset((page - 1) * limit).
 		Select()
@@ -123,8 +123,8 @@ func (s *service) GetAllAboutContent(page, limit int) ([]models.AboutContent, er
 func (s *service) GetAboutContentByID(id string) (*models.AboutContent, error) {
 	var content models.AboutContent
 	err := s.DB.Model(&content).
-		Where("id = ?", id).
-		Where("activated_at IS NOT NULL AND activated_at < NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())").
+		Where("about_content.id = ?", id).
+		Where("about_content.activated_at IS NOT NULL AND about_content.activated_at < NOW() AND (about_content.deactivated_at IS NULL OR about_content.deactivated_at > NOW())").
 		Select()
 	if err != nil {
 		return nil, err

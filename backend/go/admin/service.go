@@ -266,7 +266,7 @@ func (s *service) CreateHomeContent(content *models.HomeContent) (*models.HomeCo
 }
 
 func (s *service) UpdateHomeContent(content *models.HomeContent) (*models.HomeContent, error) {
-	_, err := s.DB.Model(content).Where("id = ?", content.ID).Update()
+	_, err := s.DB.Model(content).Column("title", "content", "activated_at", "deactivated_at").Where("id = ?", content.ID).Update()
 	return content, err
 }
 
@@ -302,7 +302,7 @@ func (s *service) CreateGrooveJrContent(content *models.GrooveJrContent) (*model
 }
 
 func (s *service) UpdateGrooveJrContent(content *models.GrooveJrContent) (*models.GrooveJrContent, error) {
-	_, err := s.DB.Model(content).Where("id = ?", content.ID).Update()
+	_, err := s.DB.Model(content).Column("title", "content", "activated_at", "deactivated_at").Where("id = ?", content.ID).Update()
 	return content, err
 }
 
@@ -338,7 +338,7 @@ func (s *service) CreateAboutContent(content *models.AboutContent) (*models.Abou
 }
 
 func (s *service) UpdateAboutContent(content *models.AboutContent) (*models.AboutContent, error) {
-	_, err := s.DB.Model(content).Where("id = ?", content.ID).Update()
+	_, err := s.DB.Model(content).Column("title", "content", "activated_at", "deactivated_at").Where("id = ?", content.ID).Update()
 	return content, err
 }
 
