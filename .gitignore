@@ -3,10 +3,12 @@
 
 # env
 config.env
+
 backend/go/.env.prod
 backend/go/.env.remotedev
 
 # Logs
+backups/
 log/
 old-site/logs
 old-site/*.log
