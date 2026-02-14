@@ -1,13 +1,12 @@
 import { Component, input, output, EventEmitter, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { BlogPost } from '../../models/data-models';
-import { JsonPipe } from '@angular/common'; // Import JsonPipe for debugging
 import { MarkdownComponent } from 'ngx-markdown';
 
 @Component({
   selector: 'app-blog-form',
   standalone: true,
-  imports: [ReactiveFormsModule, JsonPipe, MarkdownComponent], // Add MarkdownComponent
+  imports: [ReactiveFormsModule, MarkdownComponent], // Add MarkdownComponent
   templateUrl: './blog-form.component.html',
   styleUrl: './blog-form.component.css',
 })

@@ -1,13 +1,12 @@
 import { Component, input, output, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { AboutContent } from '../../models/data-models';
-import { JsonPipe } from '@angular/common';
 import { MarkdownComponent } from 'ngx-markdown';
 
 @Component({
   selector: 'app-about-form',
   standalone: true,
-  imports: [ReactiveFormsModule, JsonPipe, MarkdownComponent],
+  imports: [ReactiveFormsModule, MarkdownComponent],
   templateUrl: './about-form.component.html',
   styleUrl: './about-form.component.css',
 })

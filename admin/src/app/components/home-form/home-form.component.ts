@@ -1,13 +1,12 @@
 import { Component, input, output, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { HomeContent } from '../../models/data-models';
-import { JsonPipe } from '@angular/common';
 import { MarkdownComponent } from 'ngx-markdown';
 
 @Component({
   selector: 'app-home-form',
   standalone: true,
-  imports: [ReactiveFormsModule, JsonPipe, MarkdownComponent],
+  imports: [ReactiveFormsModule, MarkdownComponent],
   templateUrl: './home-form.component.html',
   styleUrl: './home-form.component.css',
 })

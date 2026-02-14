@@ -1,13 +1,12 @@
 import { Component, input, output, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { GrooveJrContent } from '../../models/data-models';
-import { JsonPipe } from '@angular/common';
 import { MarkdownComponent } from 'ngx-markdown';
 
 @Component({
   selector: 'app-groove-jr-form',
   standalone: true,
-  imports: [ReactiveFormsModule, JsonPipe, MarkdownComponent],
+  imports: [ReactiveFormsModule, MarkdownComponent],
   templateUrl: './groove-jr-form.component.html',
   styleUrl: './groove-jr-form.component.css',
 })
