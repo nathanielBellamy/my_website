@@ -31,6 +31,10 @@ func (pqa *PgQueryAdapter) Where(query string, params ...interface{}) interfaces
 	return &PgQueryAdapter{pqa.Query.Where(query, params...)}
 }
 
+func (pqa *PgQueryAdapter) Order(orders ...string) interfaces.PgxQuerySeter {
+	return &PgQueryAdapter{pqa.Query.Order(orders...)}
+}
+
 func (pqa *PgQueryAdapter) Join(join string, params ...interface{}) interfaces.PgxQuerySeter {
 	return &PgQueryAdapter{pqa.Query.Join(join, params...)}
 }

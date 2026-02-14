@@ -22,6 +22,7 @@ export interface BlogPost {
   updatedAt: string; // ISO 8601 string
   activatedAt?: string | null;
   deactivatedAt?: string | null;
+  order: number;
 }
 
 export interface HomeContent {
@@ -30,6 +31,7 @@ export interface HomeContent {
   content: string;
   activatedAt?: string | null;
   deactivatedAt?: string | null;
+  order: number;
 }
 
 export interface GrooveJrContent {
@@ -38,6 +40,7 @@ export interface GrooveJrContent {
   content: string;
   activatedAt?: string | null;
   deactivatedAt?: string | null;
+  order: number;
 }
 
 export interface AboutContent {
@@ -46,6 +49,7 @@ export interface AboutContent {
   content: string;
   activatedAt?: string | null;
   deactivatedAt?: string | null;
+  order: number;
 }
 
 export interface TrackerData {

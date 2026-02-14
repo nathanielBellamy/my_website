@@ -29,6 +29,7 @@ CREATE TABLE blog_posts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     activated_at TIMESTAMPTZ,
     deactivated_at TIMESTAMPTZ,
+    ordering INTEGER DEFAULT 0,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     author_id UUID REFERENCES authors(id),
@@ -48,6 +49,7 @@ CREATE TABLE home_contents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     activated_at TIMESTAMPTZ,
     deactivated_at TIMESTAMPTZ,
+    ordering INTEGER DEFAULT 0,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL
 );
@@ -57,6 +59,7 @@ CREATE TABLE groove_jr_contents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     activated_at TIMESTAMPTZ,
     deactivated_at TIMESTAMPTZ,
+    ordering INTEGER DEFAULT 0,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL
 );
@@ -66,6 +69,7 @@ CREATE TABLE about_contents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     activated_at TIMESTAMPTZ,
     deactivated_at TIMESTAMPTZ,
+    ordering INTEGER DEFAULT 0,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL
 );

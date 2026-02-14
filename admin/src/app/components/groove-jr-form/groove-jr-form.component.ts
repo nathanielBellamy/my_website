@@ -21,6 +21,7 @@ export class GrooveJrFormComponent implements OnInit {
     this.form = this.fb.group({
       id: [this.contentData()?.id || ''],
       title: [this.contentData()?.title || '', Validators.required],
+      order: [this.contentData()?.order || 0, Validators.required],
       content: [this.contentData()?.content || '', Validators.required],
       activatedAt: [this.formatDateForInput(this.contentData()?.activatedAt)],
       deactivatedAt: [this.formatDateForInput(this.contentData()?.deactivatedAt)],

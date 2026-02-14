@@ -8,4 +8,5 @@ export interface BlogPost {
   updatedAt: string;
   activatedAt?: string;
   deactivatedAt?: string;
+  order: number;
 }

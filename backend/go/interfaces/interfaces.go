@@ -8,6 +8,7 @@ type PgxQuerySeter interface {
 	Limit(count int) PgxQuerySeter
 	Offset(offset int) PgxQuerySeter
 	Where(query string, params ...interface{}) PgxQuerySeter
+	Order(orders ...string) PgxQuerySeter
 	Join(join string, params ...interface{}) PgxQuerySeter
 	Select(dest ...interface{}) error
 	Insert(dest ...interface{}) (pg.Result, error)

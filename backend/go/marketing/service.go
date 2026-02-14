@@ -31,6 +31,7 @@ func (s *service) GetAllBlogPosts(page, limit int) ([]models.BlogPost, error) {
 		Relation("Author").
 		Relation("Tags").
 		Where("blog_post.activated_at IS NOT NULL AND blog_post.activated_at < NOW() AND (blog_post.deactivated_at IS NULL OR blog_post.deactivated_at > NOW())").
+		Order("ordering ASC", "activated_at DESC").
 		Limit(limit).
 		Offset((page - 1) * limit).
 		Select()
@@ -60,6 +61,7 @@ func (s *service) GetBlogPostsByTag(tag string, page, limit int) ([]models.BlogP
 		Join("JOIN tags AS t ON t.id = bpt.tag_id").
 		Where("t.name = ?", tag).
 		Where("blog_post.activated_at IS NOT NULL AND blog_post.activated_at < NOW() AND (blog_post.deactivated_at IS NULL OR blog_post.deactivated_at > NOW())").
+		Order("ordering ASC", "activated_at DESC").
 		Limit(limit).
 		Offset((page - 1) * limit).
 		Select()
@@ -70,6 +72,7 @@ func (s *service) GetAllHomeContent(page, limit int) ([]models.HomeContent, erro
 	content := make([]models.HomeContent, 0)
 	err := s.DB.Model(&content).
 		Where("home_content.activated_at IS NOT NULL AND home_content.activated_at < NOW() AND (home_content.deactivated_at IS NULL OR home_content.deactivated_at > NOW())").
+		Order("ordering ASC", "activated_at DESC").
 		Limit(limit).
 		Offset((page - 1) * limit).
 		Select()
@@ -92,6 +95,7 @@ func (s *service) GetAllGrooveJrContent(page, limit int) ([]models.GrooveJrConte
 	content := make([]models.GrooveJrContent, 0)
 	err := s.DB.Model(&content).
 		Where("groove_jr_content.activated_at IS NOT NULL AND groove_jr_content.activated_at < NOW() AND (groove_jr_content.deactivated_at IS NULL OR groove_jr_content.deactivated_at > NOW())").
+		Order("ordering ASC", "activated_at DESC").
 		Limit(limit).
 		Offset((page - 1) * limit).
 		Select()
@@ -114,6 +118,7 @@ func (s *service) GetAllAboutContent(page, limit int) ([]models.AboutContent, er
 	content := make([]models.AboutContent, 0)
 	err := s.DB.Model(&content).
 		Where("about_content.activated_at IS NOT NULL AND about_content.activated_at < NOW() AND (about_content.deactivated_at IS NULL OR about_content.deactivated_at > NOW())").
+		Order("ordering ASC", "activated_at DESC").
 		Limit(limit).
 		Offset((page - 1) * limit).
 		Select()

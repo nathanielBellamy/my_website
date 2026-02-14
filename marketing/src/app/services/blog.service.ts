@@ -19,6 +19,7 @@ export class BlogService {
           id: item.id,
           title: item.title,
           content: item.content,
+          order: item.order,
           author: item.author,
           tags: item.tags,
           createdAt: item.createdAt,

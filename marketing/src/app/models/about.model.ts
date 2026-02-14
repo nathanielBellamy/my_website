@@ -4,4 +4,5 @@ export interface AboutContent {
   content: string;
   activatedAt?: string;
   deactivatedAt?: string;
+  order: number;
 }

@@ -19,6 +19,7 @@ export class AboutService {
             id: item.id,
             title: item.title,
             content: item.content,
+            order: item.order,
           }))
         )
       )
@@ -32,6 +33,7 @@ export class AboutService {
           id: item.id,
           title: item.title,
           content: item.content,
+          order: item.order,
         }))
       )
     );

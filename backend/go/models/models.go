@@ -35,6 +35,7 @@ type BlogPost struct {
 	UpdatedAt     time.Time  `json:"updatedAt"`
 	ActivatedAt   *time.Time `json:"activatedAt"`
 	DeactivatedAt *time.Time `json:"deactivatedAt"`
+	Ordering      int        `json:"order" pg:"ordering"`
 }
 
 type BlogPostTag struct {
@@ -51,6 +52,7 @@ type HomeContent struct {
 	Content       string     `json:"content"`
 	ActivatedAt   *time.Time `json:"activatedAt"`
 	DeactivatedAt *time.Time `json:"deactivatedAt"`
+	Ordering      int        `json:"order" pg:"ordering"`
 }
 
 // GrooveJrContent represents content for the groove-jr page.
@@ -61,6 +63,7 @@ type GrooveJrContent struct {
 	Content       string     `json:"content"`
 	ActivatedAt   *time.Time `json:"activatedAt"`
 	DeactivatedAt *time.Time `json:"deactivatedAt"`
+	Ordering      int        `json:"order" pg:"ordering"`
 }
 
 // AboutContent represents content for the about page.
@@ -71,6 +74,7 @@ type AboutContent struct {
 	Content       string     `json:"content"`
 	ActivatedAt   *time.Time `json:"activatedAt"`
 	DeactivatedAt *time.Time `json:"deactivatedAt"`
+	Ordering      int        `json:"order" pg:"ordering"`
 }
 
 // TrackerData represents tracking information.

@@ -4,4 +4,5 @@ export interface GrooveJrContent {
   content: string;
   activatedAt?: string;
   deactivatedAt?: string;
+  order: number;
 }

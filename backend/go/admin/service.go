@@ -52,6 +52,7 @@ func (s *service) GetAllBlogPosts(page, limit int) ([]models.BlogPost, error) {
 	err := s.DB.Model(&posts).
 		Relation("Author").
 		Relation("Tags").
+		Order("ordering ASC", "activated_at DESC").
 		Limit(limit).
 		Offset((page - 1) * limit).
 		Select()
@@ -183,7 +184,7 @@ func (s *service) UpdateBlogPost(post *models.BlogPost) (*models.BlogPost, error
 
 	// 2. Update the BlogPost itself (title, content, author_id, updated_at, activated_at, deactivated_at).
 	_, err := s.DB.Model(post).
-		Column("title", "content", "author_id", "updated_at", "activated_at", "deactivated_at").
+		Column("title", "content", "author_id", "updated_at", "activated_at", "deactivated_at", "ordering").
 		Where("id = ?", post.ID).
 		Update()
 	if err != nil {
@@ -243,6 +244,7 @@ func (s *service) DeleteBlogPost(id string) error {
 func (s *service) GetAllHomeContent(page, limit int) ([]models.HomeContent, error) {
 	var content []models.HomeContent
 	err := s.DB.Model(&content).
+		Order("ordering ASC", "activated_at DESC").
 		Limit(limit).
 		Offset((page - 1) * limit).
 		Select()
@@ -266,7 +268,7 @@ func (s *service) CreateHomeContent(content *models.HomeContent) (*models.HomeCo
 }
 
 func (s *service) UpdateHomeContent(content *models.HomeContent) (*models.HomeContent, error) {
-	_, err := s.DB.Model(content).Column("title", "content", "activated_at", "deactivated_at").Where("id = ?", content.ID).Update()
+	_, err := s.DB.Model(content).Column("title", "content", "activated_at", "deactivated_at", "ordering").Where("id = ?", content.ID).Update()
 	return content, err
 }
 
@@ -279,6 +281,7 @@ func (s *service) DeleteHomeContent(id string) error {
 func (s *service) GetAllGrooveJrContent(page, limit int) ([]models.GrooveJrContent, error) {
 	var content []models.GrooveJrContent
 	err := s.DB.Model(&content).
+		Order("ordering ASC", "activated_at DESC").
 		Limit(limit).
 		Offset((page - 1) * limit).
 		Select()
@@ -302,7 +305,7 @@ func (s *service) CreateGrooveJrContent(content *models.GrooveJrContent) (*model
 }
 
 func (s *service) UpdateGrooveJrContent(content *models.GrooveJrContent) (*models.GrooveJrContent, error) {
-	_, err := s.DB.Model(content).Column("title", "content", "activated_at", "deactivated_at").Where("id = ?", content.ID).Update()
+	_, err := s.DB.Model(content).Column("title", "content", "activated_at", "deactivated_at", "ordering").Where("id = ?", content.ID).Update()
 	return content, err
 }
 
@@ -315,6 +318,7 @@ func (s *service) DeleteGrooveJrContent(id string) error {
 func (s *service) GetAllAboutContent(page, limit int) ([]models.AboutContent, error) {
 	var content []models.AboutContent
 	err := s.DB.Model(&content).
+		Order("ordering ASC", "activated_at DESC").
 		Limit(limit).
 		Offset((page - 1) * limit).
 		Select()
@@ -338,7 +342,7 @@ func (s *service) CreateAboutContent(content *models.AboutContent) (*models.Abou
 }
 
 func (s *service) UpdateAboutContent(content *models.AboutContent) (*models.AboutContent, error) {
-	_, err := s.DB.Model(content).Column("title", "content", "activated_at", "deactivated_at").Where("id = ?", content.ID).Update()
+	_, err := s.DB.Model(content).Column("title", "content", "activated_at", "deactivated_at", "ordering").Where("id = ?", content.ID).Update()
 	return content, err
 }
 

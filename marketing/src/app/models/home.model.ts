@@ -4,4 +4,5 @@ export interface HomeContent {
   content: string;
   activatedAt?: string;
   deactivatedAt?: string;
+  order: number;
 }

@@ -21,6 +21,7 @@ export class BlogFormComponent implements OnInit {
     this.blogForm = this.fb.group({
       id: [this.post()?.id || ''],
       title: [this.post()?.title || '', Validators.required],
+      order: [this.post()?.order || 0, Validators.required],
       content: [this.post()?.content || '', Validators.required],
       author: this.fb.group({
         id: [this.post()?.author?.id || ''],
