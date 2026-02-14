@@ -1,0 +1,61 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24.x'
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '24.x'
+        cache: 'npm'
+        cache-dependency-path: |
+          package-lock.json
+          admin/package-lock.json
+          marketing/package-lock.json
+        
+    - name: Install root dependencies
+      run: npm ci
+      
+    - name: Install admin SPA dependencies
+      working-directory: ./admin
+      run: npm ci
+      
+    - name: Install marketing SPA dependencies
+      working-directory: ./marketing
+      run: npm ci
+      
+    - name: Run Go backend tests
+      run: |
+        echo "📣  🧪   TESTING: GO SERVER"
+        go test ./backend/go/...
+        echo "📣  🏁  DONE: GO SERVER TESTED"
+        
+    - name: Run admin SPA tests
+      working-directory: ./admin
+      run: |
+        echo "📣  🧪   TESTING: ADMIN SPA"
+        npm test
+        echo "📣  🏁  DONE: ADMIN SPA TESTED"
+        
+    - name: Run marketing SPA tests
+      working-directory: ./marketing
+      run: |
+        echo "📣  🧪   TESTING: MARKETING SPA"
+        npm test
+        echo "📣  🏁  DONE: MARKETING SPA TESTED"
