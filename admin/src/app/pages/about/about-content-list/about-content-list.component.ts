@@ -2,11 +2,12 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { AboutService } from '../../../services/about.service';
 import { AboutContent } from '../../../models/data-models';
 import { RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-about-content-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],
   templateUrl: './about-content-list.component.html',
   styleUrl: './about-content-list.component.css',
 })

@@ -12,12 +12,16 @@
   <ul class="space-y-4">
     @for (post of blogPosts(); track post.id) {
       <li class="bg-gray-50 p-4 rounded-md shadow-sm border border-gray-200">
-        <h3 class="text-xl font-medium text-gray-900 mb-2">{{ post.title }}</h3>
+        <div class="flex justify-between items-start mb-2">
+          <h3 class="text-xl font-medium text-gray-900">{{ post.title }}</h3>
+          <span class="text-xs text-gray-400 font-mono">ID: {{ post.id }}</span>
+        </div>
         <p class="text-gray-700 mb-2 line-clamp-3">{{ post.content }}</p>
         <div class="text-sm text-gray-500 mb-4">
           <p>Author: <span class="font-medium text-gray-700">{{ post.author?.name }}</span></p>
           <p>Tags: <span class="font-medium text-gray-700">{{ getTagsAsString(post.tags) }}</span></p>
           <p>Created: {{ post.createdAt | date:'short' }} | Updated: {{ post.updatedAt | date:'short' }}</p>
+          <p>Activated: {{ post.activatedAt | date:'short' }} | Deactivated: {{ post.deactivatedAt | date:'short' }}</p>
         </div>
         <div class="flex space-x-4">
           <a

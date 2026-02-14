@@ -2,11 +2,12 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { HomeService } from '../../../services/home.service';
 import { HomeContent } from '../../../models/data-models';
 import { RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home-content-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],
   templateUrl: './home-content-list.component.html',
   styleUrl: './home-content-list.component.css',
 })

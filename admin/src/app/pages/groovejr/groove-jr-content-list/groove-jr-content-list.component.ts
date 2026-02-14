@@ -2,11 +2,12 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { GrooveJrService } from '../../../services/groove-jr.service';
 import { GrooveJrContent } from '../../../models/data-models';
 import { RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-groove-jr-content-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],
   templateUrl: './groove-jr-content-list.component.html',
   styleUrl: './groove-jr-content-list.component.css',
 })
