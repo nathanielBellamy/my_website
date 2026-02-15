@@ -113,6 +113,7 @@ A detailed, step-by-step plan will be maintained using the `TODO` list feature. 
     *   Update NixOS configuration for deployment on Linode.
     *   Set up CI/CD pipeline (e.g., using ArgoCD).
     *   [x] Fix ambiguous column issue in `GetAllBlogPosts` (backend)
+    *   [x] Fix persistence of `activatedAt` and `deactivatedAt` timestamps for Blog Posts (Frontend default + Backend DTO mapping)
 
 ## Architectural Decisions
 

@@ -19,6 +19,9 @@ export class BlogFormComponent implements OnInit {
   blogForm!: FormGroup;
 
   ngOnInit() {
+    // Default activatedAt to now for new posts
+    const initialActivatedAt = this.post()?.activatedAt || (this.post() ? null : new Date().toISOString());
+
     this.blogForm = this.fb.group({
       id: [this.post()?.id || ''],
       title: [this.post()?.title || '', Validators.required],
@@ -31,7 +34,7 @@ export class BlogFormComponent implements OnInit {
       tags: [this.post()?.tags?.map(tag => tag.name).join(', ') || ''], // Assuming tags are comma-separated strings for input
       createdAt: [this.post()?.createdAt || ''],
       updatedAt: [this.post()?.updatedAt || ''],
-      activatedAt: [this.formatDateForInput(this.post()?.activatedAt)],
+      activatedAt: [this.formatDateForInput(initialActivatedAt)],
       deactivatedAt: [this.formatDateForInput(this.post()?.deactivatedAt)],
     }, { validators: this.dateRangeValidator });
   }
