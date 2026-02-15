@@ -130,6 +130,16 @@ A detailed, step-by-step plan will be maintained using the `TODO` list feature. 
 
 ## Testing
 
+
+
 1. We will NOT test the old-site/ and auth/dev SPAs as they are being sunset and we do not care about them. They work well and have worked without fail as is for 2 years. Who needs test? Not us on these. Let's not waiste effor there. 
+
 2. That said, we very much WILL unit test on all other projects, extensively.
-3. Whenever a code path is modified and/or a new code path is added, an accompanying unit test should be written, documenting and demonstrating the new and/or modified behavior. 
+
+3. Whenever a code path is modified and/or a new code path is added, an accompanying unit test should be written, documenting and demonstrating the new and/or modified behavior.
+
+4. We will use Cypress for end-to-end (E2E) testing. All new display and CRUD functionality for the `admin/` and `marketing/` apps MUST have accompanying E2E tests.
+
+5. E2E tests are located in the top-level `e2e/` directory and can be run using the `./lifecycle/e2e.sh` script.
+
+ 

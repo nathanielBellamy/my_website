@@ -26,7 +26,12 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
+      this.isAutoScrolling = true;
       this.scrollToSection();
+      // Keep isAutoScrolling true for a bit longer to ensure scroll starts
+      setTimeout(() => {
+        // if we are still scrolling, the scrollEndSubscription will reset it
+      }, 100);
     });
 
     // Run scroll listener outside Angular zone to prevent excessive change detection cycles
