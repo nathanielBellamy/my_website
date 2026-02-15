@@ -5,6 +5,7 @@ import { CardComponent } from '../../components/card/card.component';
 import { BlogStore } from './blog.store';
 import { signal, WritableSignal } from '@angular/core';
 import { BlogPost } from '../../models/blog-post.model';
+import { provideRouter } from '@angular/router';
 
 const mockBlogPosts: BlogPost[] = [
   { id: '1', title: 'Title 1', content: 'Body 1', author: 'Author 1', tags: [], createdAt: '', updatedAt: '' },
@@ -27,6 +28,7 @@ describe('BlogComponent', () => {
       imports: [CardComponent],
       providers: [
         provideMarkdown(),
+        provideRouter([]),
         {
           provide: BlogStore,
           useValue: {
@@ -51,7 +53,7 @@ describe('BlogComponent', () => {
     await waitFor(() => {
       expect(screen.getAllByRole('article').length).toBe(2);
       screen.getByText('Title 1');
-      screen.getByText('Body 2');
+      screen.getByText('Body 1');
     });
   });
 
