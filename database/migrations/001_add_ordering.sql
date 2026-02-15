@@ -1,0 +1,4 @@
+ALTER TABLE blog_posts ADD COLUMN ordering INTEGER DEFAULT 0;
+ALTER TABLE home_contents ADD COLUMN ordering INTEGER DEFAULT 0;
+ALTER TABLE groove_jr_contents ADD COLUMN ordering INTEGER DEFAULT 0;
+ALTER TABLE about_contents ADD COLUMN ordering INTEGER DEFAULT 0;

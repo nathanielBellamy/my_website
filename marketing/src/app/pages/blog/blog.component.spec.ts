@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/angular';
+import { provideMarkdown } from 'ngx-markdown';
 import { BlogComponent } from './blog.component';
 import { CardComponent } from '../../components/card/card.component';
 import { BlogStore } from './blog.store';
@@ -25,6 +26,7 @@ describe('BlogComponent', () => {
     await render(BlogComponent, {
       imports: [CardComponent],
       providers: [
+        provideMarkdown(),
         {
           provide: BlogStore,
           useValue: {

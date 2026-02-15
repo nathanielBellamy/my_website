@@ -1,0 +1,19 @@
+<div class="min-h-screen bg-gray-100">
+  <header class="bg-gray-800 text-white p-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Admin Panel</h1>
+      <nav>
+        <div class="flex gap-2">
+          <a routerLink="/home" data-testid="nav-admin-home">Home</a>
+          <a routerLink="/groovejr" data-testid="nav-admin-groovejr">GrooveJr</a>
+          <a routerLink="/about" data-testid="nav-admin-about">About</a>
+          <a routerLink="/blog" data-testid="nav-admin-blog">Blog</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container mx-auto p-4">
+    <router-outlet></router-outlet>
+  </main>
+</div>

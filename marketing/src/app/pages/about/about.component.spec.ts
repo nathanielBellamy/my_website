@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/angular';
+import { provideMarkdown } from 'ngx-markdown';
 import { AboutComponent } from './about.component';
 import { AboutStore } from './about.store';
 import { signal, WritableSignal } from '@angular/core';
@@ -23,6 +24,7 @@ describe('AboutComponent', () => {
 
     await render(AboutComponent, {
       providers: [
+        provideMarkdown(),
         {
           provide: AboutStore,
           useValue: {

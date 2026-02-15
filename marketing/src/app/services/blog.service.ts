@@ -11,8 +11,6 @@ export class BlogService {
   private readonly apiUrl = `${environment.API_BASE_URL}/marketing/blog`;
   private readonly http = inject(HttpClient);
 
-  constructor() {}
-
   // TODO: add route to marketing controller in backend/go/marketing
   getById(id: string): Promise<BlogPost> {
     return firstValueFrom(
@@ -21,6 +19,7 @@ export class BlogService {
           id: item.id,
           title: item.title,
           content: item.content,
+          order: item.order,
           author: item.author,
           tags: item.tags,
           createdAt: item.createdAt,

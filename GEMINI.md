@@ -24,9 +24,11 @@ This document outlines the plan and process for developing the new Angular front
   - Although the new `marketing` and `admin` apps will be written in Angular, the goal is to keep these apps doing nothing more than standard, boring CRUD - we will thus keep all asynchronouse code as close to `Promise`s as possible.
     - That is, whenever possible we will prefer to `await` a `Promise` as opposed to `subscribe`ing to an `Observable`.
   - We will be using the Angular Testing Library as our main unit test framework
-    - I should never see TestBed in this code
+    - I should never see `TestBed` in this code
   - We will use Cypress to write an E2E test suite that can target local, dev, and production environments. 
   - Never pass services into constructors. Always inject services directly: `private readonly fooService: FooService = inject(FooService);`
+  - We will not use `Observable.prototype.toPromise()` as it is deprecated. Rather we will wrap these Observables in the rxjs method `firstValueFrom()` in order to convert one-shot Observables into Promises
+  
 
   ## JavaScript/TypeScript conventions
   - We will always prefer `Enum`s over loose strings.
@@ -34,6 +36,8 @@ This document outlines the plan and process for developing the new Angular front
   - On the frontend, all ids will be UUID strings, hence all interfaces with an `id` field should define `id: string`
 
   ## HTML Convetions
+  - Any element that the user might interact with directly (e.g. hover over, click, highlight, ...) will be given a unique data-testid so as to be easily selectible programatically.
+  - All HTML will follow accessibility compliance, include full aria properties, and be easily readable. 
   - We will prefer tall and skinny HTML as opposed to long-lined HTML
   - Our opening and closing HTML tags will always be aligned vertically
   ```html
@@ -53,8 +57,19 @@ This document outlines the plan and process for developing the new Angular front
   ## CSS Convetions
   - We will be using Tailwind for our CSS needs.
   - For common, shared colors and spacing we will use Sass variables from within Tailwind.
+  - FOR THE LOVE OF GOD - to import Tailwind in `styles.css` it is just `import 'tailwindcss';`
 
+  ## Git conventions
+  - All commits will be done manually by humans. 
+  - Gemini will never commit anything.
+  - Gemini will never call `git add` - all adding will be done manually by humans.
+  - Gemini has readonly access to git.
 
+  ## backend/go
+  - We will log an ungodly amount.
+  - At every opportunity, log.
+  - Catch and log all errors with full stack straces.
+  - We will going to log so goddamn much, as it helps you debug.
 
 ---
 
@@ -97,6 +112,8 @@ A detailed, step-by-step plan will be maintained using the `TODO` list feature. 
     *   Integrate the new frontend with the existing application.
     *   Update NixOS configuration for deployment on Linode.
     *   Set up CI/CD pipeline (e.g., using ArgoCD).
+    *   [x] Fix ambiguous column issue in `GetAllBlogPosts` (backend)
+    *   [x] Fix persistence of `activatedAt` and `deactivatedAt` timestamps for Blog Posts (Frontend default + Backend DTO mapping)
 
 ## Architectural Decisions
 
@@ -115,6 +132,16 @@ A detailed, step-by-step plan will be maintained using the `TODO` list feature. 
 
 ## Testing
 
+
+
 1. We will NOT test the old-site/ and auth/dev SPAs as they are being sunset and we do not care about them. They work well and have worked without fail as is for 2 years. Who needs test? Not us on these. Let's not waiste effor there. 
+
 2. That said, we very much WILL unit test on all other projects, extensively.
-3. Whenever a code path is modified and/or a new code path is added, an accompanying unit test should be written, documenting and demonstrating the new and/or modified behavior. 
+
+3. Whenever a code path is modified and/or a new code path is added, an accompanying unit test should be written, documenting and demonstrating the new and/or modified behavior.
+
+4. We will use Cypress for end-to-end (E2E) testing. All new display and CRUD functionality for the `admin/` and `marketing/` apps MUST have accompanying E2E tests.
+
+5. E2E tests are located in the top-level `e2e/` directory and can be run using the `./lifecycle/e2e.sh` script.
+
+ 

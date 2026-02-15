@@ -65,7 +65,7 @@ EOF
 }
 
 # Function for auth SPA build
-build_auth_dev_spa() {
+build_auth_admin_spa() {
   cat << EOF
 
   📣  🏗️   BUILDING:
@@ -73,21 +73,12 @@ AUTH SPA
 
 EOF
   SPA_ENV=$1
-  cd auth/dev && npm run build-$SPA_ENV 
+  cd auth/admin && npm run build-$SPA_ENV 
   cd ../..
   cat << EOF
 
   📣  🏁  DONE:
 AUTH SPA BUILT
-
-EOF
-
-  # Perform the regex string replacement
-  sed -i '' 's/\/assets/\.\/assets/g' build/auth/dev/index.html
-  cat << EOF
-
-  📣  🏁  DONE:
-UPDATED ASSET PATHS IN AUTH SPA index.html
 
 EOF
 }
@@ -138,6 +129,25 @@ MARKETING SPA BUILT
 EOF
 }
 
+# Function for admin SPA build
+build_admin_spa() {
+  cat << EOF
+
+  📣  🏗️   BUILDING:
+ADMIN SPA
+
+EOF
+  SPA_ENV=$1
+  cd admin && npm run build-admin-$SPA_ENV 
+  cd ..
+  cat << EOF
+
+  📣  🏁  DONE:
+ADMIN SPA BUILT
+
+EOF
+}
+
 ######
 
 cat << EOF
@@ -178,23 +188,26 @@ fi
 case $MODE in
   localhost)
     build_go_server "localhost"
-    build_auth_dev_spa "localhost"
+    build_auth_admin_spa "localhost"
     if [ "$incl_old_site" = true ]; then
       build_old_site_spa "localhost"
     fi
     build_marketing_spa "localhost"
+    build_admin_spa "localhost"
     ;;
   remotedev)
     build_go_server "remotedev"
-    build_auth_dev_spa "remotedev"
+    build_auth_admin_spa "remotedev"
     build_old_site_spa "remotedev"
     build_marketing_spa "remotedev"
+    build_admin_spa "remotedev"
     ;;
   prod)
     build_go_server "prod"
-    build_auth_dev_spa "prod"
+    build_auth_admin_spa "prod"
     build_old_site_spa "prod"
     build_marketing_spa "prod"
+    build_admin_spa "prod"
     ;;
   *)
     echo "Invalid MODE. Choose between localhost, remotedev, or prod."

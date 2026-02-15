@@ -1,1 +1,92 @@
 @import 'tailwindcss';
+
+@theme {
+  --color-background: #0B1120;
+  --color-primary-accent: #22D3EE;
+  --color-secondary-accent: #D946EF;
+  --color-body-text: #CBD5E1;
+  --color-heading-text: #FFFFFF;
+  --color-cmyk-c: #00FFFF;
+  --color-cmyk-m: #FF00FF;
+  --color-cmyk-y: #FFFF00;
+  --color-card: #1E293B;
+  --color-vibrant-yellow: #FACC15;
+  --color-vibrant-green: #4ADE80;
+  --color-vibrant-orange: #FB923C;
+
+  --font-sans: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Outfit", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    @apply w-full overflow-x-hidden;
+  }
+  
+  body {
+    @apply bg-background text-body-text font-sans w-full min-h-screen;
+    position: relative;
+    isolation: isolate;
+  }
+
+  body::before,
+  body::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.15;
+  }
+
+  body::before {
+    background-color: theme('colors.primary-accent');
+    width: 30rem;
+    height: 30rem;
+    top: -10rem;
+    left: -20rem;
+  }
+
+    body::after {
+
+      background-color: theme('colors.secondary-accent');
+
+      width: 40rem;
+
+      height: 40rem;
+
+      bottom: -20rem;
+
+      right: -20rem;
+
+    }
+
+  
+
+    .bg-blob-3 {
+
+      position: absolute;
+
+      z-index: -1;
+
+      border-radius: 50%;
+
+      filter: blur(100px);
+
+      opacity: 0.1;
+
+      background-color: theme('colors.vibrant-orange');
+
+      width: 25rem;
+
+      height: 25rem;
+
+      top: 40%;
+
+      right: -10rem;
+
+    }
+
+  }
+
+  

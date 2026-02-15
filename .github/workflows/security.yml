@@ -1,0 +1,101 @@
+name: Security Audit
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  vulnerability-scan:
+    name: Vulnerability Scan (Trivy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
+
+  static-analysis:
+    name: Static Analysis (Go & Node)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Run gosec
+        run: |
+          go install github.com/securego/gosec/v2/cmd/gosec@latest
+          gosec ./backend/go/...
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run npm audit (Admin)
+        run: cd admin && npm audit --audit-level=high
+
+      - name: Run npm audit (Marketing)
+        run: cd marketing && npm audit --audit-level=high
+
+  website-audit:
+    name: Website Audit (Squirrel)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mw_db
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Initialize Database
+        run: |
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+          PGPASSWORD=postgres psql -h localhost -p 5434 -U postgres -d mw_db -f database/init.sql
+
+      - name: Build and Start Backend
+        run: |
+          cd backend/go
+          go build -o ../../backend-server main.go
+          cd ../..
+          export DATABASE_URL=postgres://postgres:postgres@localhost:5434/mw_db?sslmode=disable
+          export MODE=localhost
+          ./backend-server > backend.log 2>&1 &
+          timeout 60s bash -c 'until curl -s http://localhost:8080/api/marketing/home; do sleep 2; done' || (echo "Backend failed to start" && exit 1)
+
+      - name: Install Squirrel
+        run: |
+          curl -sSfL https://squirrelscan.com/download/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Run Squirrel Audit
+        run: squirrel audit http://localhost:8080 --format console --coverage quick
