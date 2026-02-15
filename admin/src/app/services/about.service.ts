@@ -22,19 +22,19 @@ export class AboutService {
     return await firstValueFrom(this.http.get<PaginatedResponse<AboutContent>>(this.apiUrl, { params }));
   }
 
-  getAboutContentById(id: string): Promise<AboutContent> {
-    return this.http.get<AboutContent>(`${this.apiUrl}/${id}`).toPromise() as Promise<AboutContent>;
+  async getAboutContentById(id: string): Promise<AboutContent> {
+    return await firstValueFrom(this.http.get<AboutContent>(`${this.apiUrl}/${id}`));
   }
 
-  createAboutContent(content: AboutContent): Promise<AboutContent> {
-    return this.http.post<AboutContent>(this.apiUrl, content).toPromise() as Promise<AboutContent>;
+  async createAboutContent(content: AboutContent): Promise<AboutContent> {
+    return await firstValueFrom(this.http.post<AboutContent>(this.apiUrl, content));
   }
 
-  updateAboutContent(content: AboutContent): Promise<AboutContent> {
-    return this.http.put<AboutContent>(`${this.apiUrl}/${content.id}`, content).toPromise() as Promise<AboutContent>;
+  async updateAboutContent(content: AboutContent): Promise<AboutContent> {
+    return await firstValueFrom(this.http.put<AboutContent>(`${this.apiUrl}/${content.id}`, content));
   }
 
-  deleteAboutContent(id: string): Promise<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).toPromise() as Promise<void>;
+  async deleteAboutContent(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete<void>(`${this.apiUrl}/${id}`));
   }
 }

@@ -22,19 +22,19 @@ export class HomeService {
     return await firstValueFrom(this.http.get<PaginatedResponse<HomeContent>>(this.apiUrl, { params }));
   }
 
-  getHomeContentById(id: string): Promise<HomeContent> {
-    return this.http.get<HomeContent>(`${this.apiUrl}/${id}`).toPromise() as Promise<HomeContent>;
+  async getHomeContentById(id: string): Promise<HomeContent> {
+    return await firstValueFrom(this.http.get<HomeContent>(`${this.apiUrl}/${id}`));
   }
 
-  createHomeContent(content: HomeContent): Promise<HomeContent> {
-    return this.http.post<HomeContent>(this.apiUrl, content).toPromise() as Promise<HomeContent>;
+  async createHomeContent(content: HomeContent): Promise<HomeContent> {
+    return await firstValueFrom(this.http.post<HomeContent>(this.apiUrl, content));
   }
 
-  updateHomeContent(content: HomeContent): Promise<HomeContent> {
-    return this.http.put<HomeContent>(`${this.apiUrl}/${content.id}`, content).toPromise() as Promise<HomeContent>;
+  async updateHomeContent(content: HomeContent): Promise<HomeContent> {
+    return await firstValueFrom(this.http.put<HomeContent>(`${this.apiUrl}/${content.id}`, content));
   }
 
-  deleteHomeContent(id: string): Promise<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).toPromise() as Promise<void>;
+  async deleteHomeContent(id: string): Promise<void> {
+    return await firstValueFrom(this.http.delete<void>(`${this.apiUrl}/${id}`));
   }
 }

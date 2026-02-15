@@ -22,19 +22,19 @@ export class GrooveJrService {
     return await firstValueFrom(this.http.get<PaginatedResponse<GrooveJrContent>>(this.apiUrl, { params }));
   }
 
-  getGrooveJrContentById(id: string): Promise<GrooveJrContent> {
-    return this.http.get<GrooveJrContent>(`${this.apiUrl}/${id}`).toPromise() as Promise<GrooveJrContent>;
+  async getGrooveJrContentById(id: string): Promise<GrooveJrContent> {
+    return await firstValueFrom(this.http.get<GrooveJrContent>(`${this.apiUrl}/${id}`));
   }
 
-  createGrooveJrContent(content: GrooveJrContent): Promise<GrooveJrContent> {
-    return this.http.post<GrooveJrContent>(this.apiUrl, content).toPromise() as Promise<GrooveJrContent>;
+  async createGrooveJrContent(content: GrooveJrContent): Promise<GrooveJrContent> {
+    return await firstValueFrom(this.http.post<GrooveJrContent>(this.apiUrl, content));
   }
 
-  updateGrooveJrContent(content: GrooveJrContent): Promise<GrooveJrContent> {
-    return this.http.put<GrooveJrContent>(`${this.apiUrl}/${content.id}`, content).toPromise() as Promise<GrooveJrContent>;
+  async updateGrooveJrContent(content: GrooveJrContent): Promise<GrooveJrContent> {
+    return await firstValueFrom(this.http.put<GrooveJrContent>(`${this.apiUrl}/${content.id}`, content));
   }
 
-  deleteGrooveJrContent(id: string): Promise<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).toPromise() as Promise<void>;
+  async deleteGrooveJrContent(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete<void>(`${this.apiUrl}/${id}`));
   }
 }

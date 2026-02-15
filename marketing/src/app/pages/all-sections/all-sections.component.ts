@@ -1,8 +1,8 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, inject, NgZone } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
-import { filter, debounceTime, throttleTime } from 'rxjs/operators';
-import { fromEvent, Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { HomeComponent } from '../home/home.component';
 import { AboutComponent } from '../about/about.component';
 import { GrooveJrComponent } from '../groove-jr/groove-jr.component';
@@ -18,94 +18,74 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly location = inject(Location);
   private readonly ngZone = inject(NgZone);
-  private scrollSubscription?: Subscription;
-  private scrollEndSubscription?: Subscription;
+  private routerSubscription?: Subscription;
+  private observer?: IntersectionObserver;
   private isAutoScrolling = false;
+  private lastNavTime = 0;
 
   ngOnInit() {
-    this.router.events.pipe(
+    this.routerSubscription = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.isAutoScrolling = true;
+      this.lastNavTime = Date.now();
       this.scrollToSection();
-      // Keep isAutoScrolling true for a bit longer to ensure scroll starts
+      // Allow scroll tracking after a delay
       setTimeout(() => {
-        // if we are still scrolling, the scrollEndSubscription will reset it
-      }, 100);
-    });
-
-    // Run scroll listener outside Angular zone to prevent excessive change detection cycles
-    this.ngZone.runOutsideAngular(() => {
-      // Throttle scroll events for performance
-      this.scrollSubscription = fromEvent(window, 'scroll')
-        .pipe(throttleTime(50))
-        .subscribe(() => {
-          this.onScroll();
-        });
-
-      // Detect end of scrolling to reset isAutoScrolling flag
-      this.scrollEndSubscription = fromEvent(window, 'scroll')
-        .pipe(debounceTime(150))
-        .subscribe(() => {
-          this.isAutoScrolling = false;
-        });
+        this.isAutoScrolling = false;
+      }, 1000);
     });
   }
 
   ngAfterViewInit() {
+    this.setupIntersectionObserver();
     // Small delay to ensure DOM is ready
     setTimeout(() => this.scrollToSection(), 100);
   }
 
   ngOnDestroy() {
-    this.scrollSubscription?.unsubscribe();
-    this.scrollEndSubscription?.unsubscribe();
+    this.routerSubscription?.unsubscribe();
+    this.observer?.disconnect();
   }
 
-  private onScroll() {
-    if (this.isAutoScrolling) return;
+  private setupIntersectionObserver() {
+    const options = {
+      root: null,
+      rootMargin: '-20% 0px -70% 0px', // Trigger when section is in the top portion of the viewport
+      threshold: 0
+    };
 
-    const sections = [
-      { id: 'home', path: '' },
-      { id: 'about', path: 'about' },
-      { id: 'groovejr', path: 'groovejr' },
-      { id: 'blog', path: 'blog' },
-    ];
+    this.observer = new IntersectionObserver((entries) => {
+      if (this.isAutoScrolling || (Date.now() - this.lastNavTime < 1000)) return;
 
-    const scrollPosition = window.scrollY + (window.innerHeight / 2); // Active point center of the screen
-
-    let activeSection = sections[0];
-
-    for (const section of sections) {
-      const element = document.getElementById(section.id);
-      if (element) {
-        const offsetTop = element.offsetTop;
-        const offsetBottom = offsetTop + element.offsetHeight;
-
-        if (scrollPosition >= offsetTop && scrollPosition < offsetBottom) {
-          activeSection = section;
-          break;
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const sectionId = entry.target.id;
+          const path = sectionId === 'home' ? '' : sectionId;
+          const currentPath = this.location.path().replace(/^\//, '');
+          
+          if (currentPath !== path) {
+            this.ngZone.run(() => {
+              this.location.replaceState(path);
+            });
+          }
         }
-      }
-    }
-
-    const currentPath = this.location.path().replace(/^\//, ''); // Remove leading slash
-    // Handle the root path case which might return ''
-    const normalizedCurrentPath = currentPath === '' ? '' : currentPath; 
-    
-    if (normalizedCurrentPath !== activeSection.path) {
-      this.ngZone.run(() => {
-        this.location.replaceState(activeSection.path);
       });
-    }
+    }, options);
+
+    const sections = ['home', 'about', 'groovejr', 'blog'];
+    sections.forEach(id => {
+      const element = document.getElementById(id);
+      if (element) {
+        this.observer?.observe(element);
+      }
+    });
   }
 
   private scrollToSection() {
-    this.isAutoScrolling = true;
     const url = this.router.url;
     let sectionId = 'home';
     
-    // Simple matching logic
     if (url.includes('about')) sectionId = 'about';
     else if (url.includes('groovejr')) sectionId = 'groovejr';
     else if (url.includes('blog')) sectionId = 'blog';
@@ -114,7 +94,6 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
-        // fallback to top if element not found (e.g. home)
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }

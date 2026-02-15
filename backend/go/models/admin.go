@@ -10,6 +10,7 @@ type TagDTO struct {
 
 type CreateBlogPostDTO struct {
 	Title   string      `json:"title"`
+	Order   int         `json:"order"`
 	Content string      `json:"content"`
 	Author  *AuthorDTO  `json:"author"`
 	Tags    []*TagDTO   `json:"tags"`

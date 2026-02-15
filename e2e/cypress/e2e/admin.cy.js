@@ -92,8 +92,9 @@ describe('Admin App', () => {
 
     // Verify created
     cy.url().should('include', '/admin/blog')
+    cy.contains('Blog Posts').should('be.visible')
     cy.get('[data-testid="status-inactive"]').click()
-    cy.contains(testTitle).should('be.visible')
+    cy.contains(testTitle, { timeout: 10000 }).should('be.visible')
 
     // Edit
     cy.contains('li', testTitle).within(() => {

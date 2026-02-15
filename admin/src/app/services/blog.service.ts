@@ -26,15 +26,15 @@ export class BlogService {
     return await firstValueFrom(this.http.get<BlogPost>(`${this.apiUrl}/${id}`));
   }
 
-  createBlogPost(post: BlogPost): Promise<BlogPost> {
-    return this.http.post<BlogPost>(this.apiUrl, post).toPromise() as Promise<BlogPost>;
+  async createBlogPost(post: BlogPost): Promise<BlogPost> {
+    return await firstValueFrom(this.http.post<BlogPost>(this.apiUrl, post));
   }
 
   async updateBlogPost(post: BlogPost): Promise<BlogPost> {
     return await firstValueFrom(this.http.put<BlogPost>(`${this.apiUrl}/${post.id}`, post));
   }
 
-  deleteBlogPost(id: string): Promise<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).toPromise() as Promise<void>;
+  async deleteBlogPost(id: string): Promise<void> {
+    return await firstValueFrom(this.http.delete<void>(`${this.apiUrl}/${id}`));
   }
 }

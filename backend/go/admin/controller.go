@@ -136,8 +136,9 @@ func (ac *AdminController) CreateBlogPostHandler(w http.ResponseWriter, r *http.
 
 	// Map DTO to model
 	post := &models.BlogPost{
-		Title:   dto.Title,
-		Content: dto.Content,
+		Title:    dto.Title,
+		Ordering: dto.Order,
+		Content:  dto.Content,
 	}
 	if dto.Author != nil {
 		post.Author = &models.Author{Name: dto.Author.Name}
