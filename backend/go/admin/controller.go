@@ -56,6 +56,12 @@ func getFilterOptions(r *http.Request) models.FilterOptions {
 	}
 }
 
+func (ac *AdminController) sendJSON(w http.ResponseWriter, data interface{}) {
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		ac.Log.Error().Err(err).Msg("Error encoding response")
+	}
+}
+
 // Blog
 func (ac *AdminController) GetAllBlogPostsHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllBlogPostsHandler Hit")
@@ -71,7 +77,7 @@ func (ac *AdminController) GetAllBlogPostsHandler(w http.ResponseWriter, r *http
 		Page:  opts.Page,
 		Limit: opts.Limit,
 	}
-	json.NewEncoder(w).Encode(resp)
+	ac.sendJSON(w, resp)
 }
 
 func (ac *AdminController) GetBlogPostByIDHandler(w http.ResponseWriter, r *http.Request) {
@@ -92,7 +98,7 @@ func (ac *AdminController) GetBlogPostByIDHandler(w http.ResponseWriter, r *http
 	}
 
 	ac.Log.Info().Str("id", id).Interface("post", post).Msg("Successfully fetched blog post")
-	json.NewEncoder(w).Encode(post)
+	ac.sendJSON(w, post)
 }
 
 func (ac *AdminController) GetBlogPostsByTagHandler(w http.ResponseWriter, r *http.Request) {
@@ -106,7 +112,7 @@ func (ac *AdminController) GetBlogPostsByTagHandler(w http.ResponseWriter, r *ht
 		return
 	}
 
-	json.NewEncoder(w).Encode(posts)
+	ac.sendJSON(w, posts)
 }
 
 func (ac *AdminController) CreateBlogPostHandler(w http.ResponseWriter, r *http.Request) {
@@ -149,7 +155,7 @@ func (ac *AdminController) CreateBlogPostHandler(w http.ResponseWriter, r *http.
 		return
 	}
 
-	json.NewEncoder(w).Encode(newPost)
+	ac.sendJSON(w, newPost)
 }
 
 
@@ -169,7 +175,7 @@ func (ac *AdminController) UpdateBlogPostHandler(w http.ResponseWriter, r *http.
 		return
 	}
 
-	json.NewEncoder(w).Encode(updatedPost)
+	ac.sendJSON(w, updatedPost)
 }
 
 func (ac *AdminController) DeleteBlogPostHandler(w http.ResponseWriter, r *http.Request) {
@@ -199,7 +205,7 @@ func (ac *AdminController) GetAllHomeContentHandler(w http.ResponseWriter, r *ht
 		Page:  opts.Page,
 		Limit: opts.Limit,
 	}
-	json.NewEncoder(w).Encode(resp)
+	ac.sendJSON(w, resp)
 }
 
 func (ac *AdminController) GetHomeContentByIDHandler(w http.ResponseWriter, r *http.Request) {
@@ -216,7 +222,7 @@ func (ac *AdminController) GetHomeContentByIDHandler(w http.ResponseWriter, r *h
 		return
 	}
 
-	json.NewEncoder(w).Encode(content)
+	ac.sendJSON(w, content)
 }
 
 func (ac *AdminController) CreateHomeContentHandler(w http.ResponseWriter, r *http.Request) {
@@ -233,7 +239,7 @@ func (ac *AdminController) CreateHomeContentHandler(w http.ResponseWriter, r *ht
 		return
 	}
 
-	json.NewEncoder(w).Encode(newContent)
+	ac.sendJSON(w, newContent)
 }
 
 func (ac *AdminController) UpdateHomeContentHandler(w http.ResponseWriter, r *http.Request) {
@@ -252,7 +258,7 @@ func (ac *AdminController) UpdateHomeContentHandler(w http.ResponseWriter, r *ht
 		return
 	}
 
-	json.NewEncoder(w).Encode(updatedContent)
+	ac.sendJSON(w, updatedContent)
 }
 
 func (ac *AdminController) DeleteHomeContentHandler(w http.ResponseWriter, r *http.Request) {
@@ -282,7 +288,7 @@ func (ac *AdminController) GetAllGrooveJrContentHandler(w http.ResponseWriter, r
 		Page:  opts.Page,
 		Limit: opts.Limit,
 	}
-	json.NewEncoder(w).Encode(resp)
+	ac.sendJSON(w, resp)
 }
 
 func (ac *AdminController) GetGrooveJrContentByIDHandler(w http.ResponseWriter, r *http.Request) {
@@ -299,7 +305,7 @@ func (ac *AdminController) GetGrooveJrContentByIDHandler(w http.ResponseWriter, 
 		return
 	}
 
-	json.NewEncoder(w).Encode(content)
+	ac.sendJSON(w, content)
 }
 
 func (ac *AdminController) CreateGrooveJrContentHandler(w http.ResponseWriter, r *http.Request) {
@@ -316,7 +322,7 @@ func (ac *AdminController) CreateGrooveJrContentHandler(w http.ResponseWriter, r
 		return
 	}
 
-	json.NewEncoder(w).Encode(newContent)
+	ac.sendJSON(w, newContent)
 }
 
 func (ac *AdminController) UpdateGrooveJrContentHandler(w http.ResponseWriter, r *http.Request) {
@@ -335,7 +341,7 @@ func (ac *AdminController) UpdateGrooveJrContentHandler(w http.ResponseWriter, r
 		return
 	}
 
-	json.NewEncoder(w).Encode(updatedContent)
+	ac.sendJSON(w, updatedContent)
 }
 
 func (ac *AdminController) DeleteGrooveJrContentHandler(w http.ResponseWriter, r *http.Request) {
@@ -365,7 +371,7 @@ func (ac *AdminController) GetAllAboutContentHandler(w http.ResponseWriter, r *h
 		Page:  opts.Page,
 		Limit: opts.Limit,
 	}
-	json.NewEncoder(w).Encode(resp)
+	ac.sendJSON(w, resp)
 }
 
 func (ac *AdminController) GetAboutContentByIDHandler(w http.ResponseWriter, r *http.Request) {
@@ -382,7 +388,7 @@ func (ac *AdminController) GetAboutContentByIDHandler(w http.ResponseWriter, r *
 		return
 	}
 
-	json.NewEncoder(w).Encode(content)
+	ac.sendJSON(w, content)
 }
 
 func (ac *AdminController) CreateAboutContentHandler(w http.ResponseWriter, r *http.Request) {
@@ -399,7 +405,7 @@ func (ac *AdminController) CreateAboutContentHandler(w http.ResponseWriter, r *h
 		return
 	}
 
-	json.NewEncoder(w).Encode(newContent)
+	ac.sendJSON(w, newContent)
 }
 
 func (ac *AdminController) UpdateAboutContentHandler(w http.ResponseWriter, r *http.Request) {
@@ -418,7 +424,7 @@ func (ac *AdminController) UpdateAboutContentHandler(w http.ResponseWriter, r *h
 		return
 	}
 
-	json.NewEncoder(w).Encode(updatedContent)
+	ac.sendJSON(w, updatedContent)
 }
 
 func (ac *AdminController) DeleteAboutContentHandler(w http.ResponseWriter, r *http.Request) {
@@ -438,4 +444,3 @@ func (ac *AdminController) AdminFileServer() http.Handler {
 	handler := auth.SpaHandler("build/admin/browser", "index.html")
 	return http.StripPrefix("/admin/", auth.LogClientIp("/admin/", ac.Log, handler))
 }
-

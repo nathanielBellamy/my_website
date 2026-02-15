@@ -30,6 +30,12 @@ func NewMarketingController(log *zerolog.Logger, service Service) *MarketingCont
 
 }
 
+func (mc *MarketingController) sendJSON(w http.ResponseWriter, data interface{}) {
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		mc.Log.Error().Err(err).Msg("Error encoding response")
+	}
+}
+
 // getPaginationParams extracts page and limit from request queries.
 
 func getPaginationParams(r *http.Request) (int, int) {
@@ -58,7 +64,7 @@ func (mc *MarketingController) GetAllBlogPostsHandler(w http.ResponseWriter, r *
 		http.Error(w, "Error fetching blog posts", http.StatusInternalServerError)
 		return
 	}
-	json.NewEncoder(w).Encode(posts)
+	mc.sendJSON(w, posts)
 }
 
 // GetBlogPostByIDHandler handles fetching a single blog post by ID.
@@ -78,7 +84,7 @@ func (mc *MarketingController) GetBlogPostByIDHandler(w http.ResponseWriter, r *
 		return
 	}
 
-	json.NewEncoder(w).Encode(post)
+	mc.sendJSON(w, post)
 }
 
 // GetBlogPostsByTagHandler handles fetching blog posts by tag.
@@ -95,7 +101,7 @@ func (mc *MarketingController) GetBlogPostsByTagHandler(w http.ResponseWriter, r
 		return
 	}
 
-	json.NewEncoder(w).Encode(posts)
+	mc.sendJSON(w, posts)
 }
 
 // Home
@@ -113,7 +119,7 @@ func (mc *MarketingController) GetAllHomeContentHandler(w http.ResponseWriter, r
 		return
 	}
 
-	json.NewEncoder(w).Encode(content)
+	mc.sendJSON(w, content)
 }
 
 // GetHomeContentByIDHandler handles fetching home content by ID.
@@ -134,7 +140,7 @@ func (mc *MarketingController) GetHomeContentByIDHandler(w http.ResponseWriter, 
 		return
 	}
 
-	json.NewEncoder(w).Encode(content)
+	mc.sendJSON(w, content)
 }
 
 // GrooveJr
@@ -152,7 +158,7 @@ func (mc *MarketingController) GetAllGrooveJrContentHandler(w http.ResponseWrite
 		return
 	}
 
-	json.NewEncoder(w).Encode(content)
+	mc.sendJSON(w, content)
 }
 
 // GetGrooveJrContentByIDHandler handles fetching groove-jr content by ID.
@@ -173,7 +179,7 @@ func (mc *MarketingController) GetGrooveJrContentByIDHandler(w http.ResponseWrit
 		return
 	}
 
-	json.NewEncoder(w).Encode(content)
+	mc.sendJSON(w, content)
 }
 
 // About
@@ -191,7 +197,7 @@ func (mc *MarketingController) GetAllAboutContentHandler(w http.ResponseWriter, 
 		return
 	}
 
-	json.NewEncoder(w).Encode(content)
+	mc.sendJSON(w, content)
 }
 
 // GetAboutContentByIDHandler handles fetching about content by ID.
@@ -212,7 +218,7 @@ func (mc *MarketingController) GetAboutContentByIDHandler(w http.ResponseWriter,
 		return
 	}
 
-	json.NewEncoder(w).Encode(content)
+	mc.sendJSON(w, content)
 }
 
 func GetMarketingFileServerNoAuth() http.Handler {

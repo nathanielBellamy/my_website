@@ -122,7 +122,9 @@ func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, 
 		})
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{"challenge": challenge})
+		if err := json.NewEncoder(w).Encode(map[string]string{"challenge": challenge}); err != nil {
+			log.Error().Err(err).Msg("Error encoding challenge response")
+		}
 	})
 
 	// Password Validation Endpoint
