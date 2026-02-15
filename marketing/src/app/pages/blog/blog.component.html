@@ -22,5 +22,10 @@
 </div>
 
 <ng-template #itemTmpl let-item>
-  <app-card [title]="item.title" [content]="item.content"></app-card>
+  <app-card 
+    [title]="item.title" 
+    [content]="getSnippet(item.content)"
+    [tags]="item.tags"
+    (click)="viewPost(item.id)">
+  </app-card>
 </ng-template>

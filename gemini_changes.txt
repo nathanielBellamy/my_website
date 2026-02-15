@@ -1,0 +1,7 @@
+Describe the changes made:
+- Created `BlogContentDetailsComponent` to display full blog post content.
+- Updated `BlogComponent` to display snippets (first sentence) and link to the details page.
+- Added `/blog/:id` route to `app.routes.ts`.
+- Fixed build error by correcting import path in `app.routes.ts`.
+- Added unit tests for `BlogContentDetailsComponent` and updated `BlogComponent` tests.
+- Added E2E test `e2e/cypress/e2e/marketing-blog.cy.js` to verify blog navigation and details view.
