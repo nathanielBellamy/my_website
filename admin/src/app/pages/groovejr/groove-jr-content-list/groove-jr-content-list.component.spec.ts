@@ -14,7 +14,7 @@ describe('GrooveJrContentListComponent', () => {
 
   beforeEach(() => {
     mockGrooveJrService = {
-      getAllGrooveJrContent: jest.fn().mockReturnValue(Promise.resolve(mockGrooveJrContent)),
+      getAllGrooveJrContent: jest.fn().mockReturnValue(Promise.resolve({ data: mockGrooveJrContent, total: mockGrooveJrContent.length })),
       deleteGrooveJrContent: jest.fn().mockReturnValue(Promise.resolve()),
     };
   });

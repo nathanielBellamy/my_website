@@ -31,7 +31,7 @@ describe('HomeService', () => {
     const promise = service.getAllHomeContent();
 
     // Expect a GET request to the API URL
-    const req = httpTestingController.expectOne('http://localhost:8080/api/admin/home');
+    const req = httpTestingController.expectOne(req => req.url.startsWith('http://localhost:8080/api/admin/home'));
     expect(req.request.method).toEqual('GET');
 
     // Respond to the request with mock data

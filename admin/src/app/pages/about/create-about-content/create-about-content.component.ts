@@ -23,4 +23,8 @@ export class CreateAboutContentComponent {
       console.error('Error creating about content:', error);
     }
   }
+
+  goBack() {
+    this.router.navigate(['/about']);
+  }
 }

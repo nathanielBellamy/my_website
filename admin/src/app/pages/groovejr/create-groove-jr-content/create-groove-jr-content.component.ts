@@ -23,4 +23,8 @@ export class CreateGrooveJrContentComponent {
       console.error('Error creating GrooveJr content:', error);
     }
   }
+
+  goBack() {
+    this.router.navigate(['/groovejr']);
+  }
 }

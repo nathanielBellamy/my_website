@@ -23,4 +23,8 @@ export class CreateBlogPostComponent {
       console.error('Error creating blog post:', error);
     }
   }
+
+  async goBack() {
+    await this.router.navigate(['/blog']);
+  }
 }

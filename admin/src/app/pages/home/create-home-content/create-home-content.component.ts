@@ -23,4 +23,8 @@ export class CreateHomeContentComponent {
       console.error('Error creating home content:', error);
     }
   }
+
+  goBack() {
+    this.router.navigate(['/home']);
+  }
 }

@@ -39,4 +39,8 @@ export class EditGrooveJrContentComponent implements OnInit {
       console.error('Error updating GrooveJr content:', error);
     }
   }
+
+  goBack() {
+    this.router.navigate(['/groovejr']);
+  }
 }

@@ -39,4 +39,8 @@ export class EditAboutContentComponent implements OnInit {
       console.error('Error updating about content:', error);
     }
   }
+
+  goBack() {
+    this.router.navigate(['/about']);
+  }
 }

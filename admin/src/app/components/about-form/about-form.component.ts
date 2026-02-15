@@ -13,6 +13,7 @@ import { MarkdownComponent } from 'ngx-markdown';
 export class AboutFormComponent implements OnInit {
   contentData = input<AboutContent | undefined>();
   submitForm = output<AboutContent>();
+  cancel = output<void>();
 
   private readonly fb = inject(FormBuilder);
   form!: FormGroup;
@@ -54,5 +55,9 @@ export class AboutFormComponent implements OnInit {
       return { dateRangeInvalid: true };
     }
     return null;
+  }
+
+  onCancel() {
+    this.cancel.emit();
   }
 }

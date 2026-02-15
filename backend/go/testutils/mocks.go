@@ -98,6 +98,17 @@ func (mq *MockPgQuery) Select(dest ...interface{}) error {
 	return nil
 }
 
+func (mq *MockPgQuery) SelectAndCount(dest ...interface{}) (int, error) {
+	if mq.Err != nil {
+		return 0, mq.Err
+	}
+	if mq.SelectFunc != nil {
+		err := mq.SelectFunc(mq.modelDest, dest...)
+		return 0, err
+	}
+	return 0, nil
+}
+
 func (mq *MockPgQuery) Insert(dest ...interface{}) (pg.Result, error) {
 	if mq.Err != nil {
 		return &MockPgResult{Err: mq.Err}, mq.Err

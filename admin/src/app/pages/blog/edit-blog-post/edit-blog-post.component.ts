@@ -37,4 +37,8 @@ export class EditBlogPostComponent implements OnInit {
       console.error('Error updating blog post:', error);
     }
   }
+
+  async goBack() {
+    await this.router.navigate(['/blog']);
+  }
 }

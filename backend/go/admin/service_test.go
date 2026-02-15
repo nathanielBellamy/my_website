@@ -27,7 +27,7 @@ func TestAdminGetAllBlogPosts(t *testing.T) {
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
 	service := NewService(mockDB, &zerolog.Logger{})
 
-	posts, err := service.GetAllBlogPosts(1, 10)
+	posts, _, err := service.GetAllBlogPosts(models.FilterOptions{Page: 1, Limit: 10})
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
@@ -176,7 +176,7 @@ func TestAdminGetAllHomeContent(t *testing.T) {
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
 	service := NewService(mockDB, &zerolog.Logger{})
 
-	content, err := service.GetAllHomeContent(1, 10)
+	content, _, err := service.GetAllHomeContent(models.FilterOptions{Page: 1, Limit: 10})
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
@@ -300,7 +300,7 @@ func TestAdminGetAllGrooveJrContent(t *testing.T) {
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
 	service := NewService(mockDB, &zerolog.Logger{})
 
-	content, err := service.GetAllGrooveJrContent(1, 10)
+	content, _, err := service.GetAllGrooveJrContent(models.FilterOptions{Page: 1, Limit: 10})
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
@@ -422,7 +422,7 @@ func TestAdminGetAllAboutContent(t *testing.T) {
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
 	service := NewService(mockDB, &zerolog.Logger{})
 
-	content, err := service.GetAllAboutContent(1, 10)
+	content, _, err := service.GetAllAboutContent(models.FilterOptions{Page: 1, Limit: 10})
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}

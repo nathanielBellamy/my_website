@@ -46,6 +46,21 @@ func NewService(db interfaces.PgxDB, log *zerolog.Logger) Service {
 	return &service{DB: db, Log: log}
 }
 
+func mapSortField(field string) string {
+	switch field {
+	case "activatedAt":
+		return "activated_at"
+	case "deactivatedAt":
+		return "deactivated_at"
+	case "createdAt":
+		return "created_at"
+	case "updatedAt":
+		return "updated_at"
+	default:
+		return field
+	}
+}
+
 // Blog
 func (s *service) GetAllBlogPosts(filter models.FilterOptions) ([]models.BlogPost, int, error) {
 	var posts []models.BlogPost
@@ -69,7 +84,7 @@ func (s *service) GetAllBlogPosts(filter models.FilterOptions) ([]models.BlogPos
 		if filter.SortOrder == "desc" || filter.SortOrder == "DESC" {
 			order = "DESC"
 		}
-		query.Order(filter.SortField + " " + order)
+		query.Order(mapSortField(filter.SortField) + " " + order)
 	} else {
 		query.Order("ordering ASC", "activated_at DESC")
 	}
@@ -282,7 +297,7 @@ func (s *service) GetAllHomeContent(filter models.FilterOptions) ([]models.HomeC
 		if filter.SortOrder == "desc" || filter.SortOrder == "DESC" {
 			order = "DESC"
 		}
-		query.Order(filter.SortField + " " + order)
+		query.Order(mapSortField(filter.SortField) + " " + order)
 	} else {
 		query.Order("ordering ASC", "activated_at DESC")
 	}
@@ -340,7 +355,7 @@ func (s *service) GetAllGrooveJrContent(filter models.FilterOptions) ([]models.G
 		if filter.SortOrder == "desc" || filter.SortOrder == "DESC" {
 			order = "DESC"
 		}
-		query.Order(filter.SortField + " " + order)
+		query.Order(mapSortField(filter.SortField) + " " + order)
 	} else {
 		query.Order("ordering ASC", "activated_at DESC")
 	}
@@ -398,7 +413,7 @@ func (s *service) GetAllAboutContent(filter models.FilterOptions) ([]models.Abou
 		if filter.SortOrder == "desc" || filter.SortOrder == "DESC" {
 			order = "DESC"
 		}
-		query.Order(filter.SortField + " " + order)
+		query.Order(mapSortField(filter.SortField) + " " + order)
 	} else {
 		query.Order("ordering ASC", "activated_at DESC")
 	}

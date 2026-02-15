@@ -13,7 +13,7 @@ describe('BlogComponent', () => {
 
   beforeEach(() => {
     mockBlogService = {
-      getAllBlogPosts: jest.fn().mockReturnValue(Promise.resolve(mockBlogPosts)),
+      getAllBlogPosts: jest.fn().mockReturnValue(Promise.resolve({ data: mockBlogPosts, total: mockBlogPosts.length })),
       deleteBlogPost: jest.fn().mockReturnValue(Promise.resolve()),
     };
   });

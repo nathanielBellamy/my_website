@@ -14,7 +14,7 @@ describe('AboutContentListComponent', () => {
 
   beforeEach(() => {
     mockAboutService = {
-      getAllAboutContent: jest.fn().mockReturnValue(Promise.resolve(mockAboutContent)),
+      getAllAboutContent: jest.fn().mockReturnValue(Promise.resolve({ data: mockAboutContent, total: mockAboutContent.length })),
       deleteAboutContent: jest.fn().mockReturnValue(Promise.resolve()),
     };
   });

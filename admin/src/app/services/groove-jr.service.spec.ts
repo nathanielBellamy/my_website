@@ -29,7 +29,7 @@ describe('GrooveJrService', () => {
 
     const promise = service.getAllGrooveJrContent();
 
-    const req = httpTestingController.expectOne('http://localhost:8080/api/admin/groovejr');
+    const req = httpTestingController.expectOne(req => req.url.startsWith('http://localhost:8080/api/admin/groovejr'));
     expect(req.request.method).toEqual('GET');
     req.flush(mockContent);
 

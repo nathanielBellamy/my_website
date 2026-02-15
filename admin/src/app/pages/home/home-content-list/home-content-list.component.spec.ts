@@ -13,7 +13,7 @@ describe('HomeContentListComponent', () => {
   ];
   beforeEach(() => {
     mockHomeService = {
-      getAllHomeContent: jest.fn().mockReturnValue(Promise.resolve(mockHomeContent)),
+      getAllHomeContent: jest.fn().mockReturnValue(Promise.resolve({ data: mockHomeContent, total: mockHomeContent.length })),
       deleteHomeContent: jest.fn().mockReturnValue(Promise.resolve()),
     };
   });

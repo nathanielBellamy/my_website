@@ -29,7 +29,7 @@ describe('AboutService', () => {
 
     const promise = service.getAllAboutContent();
 
-    const req = httpTestingController.expectOne('http://localhost:8080/api/admin/about');
+    const req = httpTestingController.expectOne(req => req.url.startsWith('http://localhost:8080/api/admin/about'));
     expect(req.request.method).toEqual('GET');
     req.flush(mockContent);
 

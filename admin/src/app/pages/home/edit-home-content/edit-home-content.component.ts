@@ -39,4 +39,8 @@ export class EditHomeContentComponent implements OnInit {
       console.error('Error updating home content:', error);
     }
   }
+
+  goBack() {
+    this.router.navigate(['/home']);
+  }
 }

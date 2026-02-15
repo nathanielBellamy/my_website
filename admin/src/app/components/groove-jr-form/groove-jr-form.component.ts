@@ -13,6 +13,7 @@ import { MarkdownComponent } from 'ngx-markdown';
 export class GrooveJrFormComponent implements OnInit {
   contentData = input<GrooveJrContent | undefined>();
   submitForm = output<GrooveJrContent>();
+  cancel = output<void>();
 
   private readonly fb = inject(FormBuilder);
   form!: FormGroup;
@@ -54,5 +55,9 @@ export class GrooveJrFormComponent implements OnInit {
       return { dateRangeInvalid: true };
     }
     return null;
+  }
+
+  onCancel() {
+    this.cancel.emit();
   }
 }
