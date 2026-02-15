@@ -23,6 +23,7 @@
               type="text"
               id="title"
               formControlName="title"
+              data-testid="input-title"
               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
           </div>
         </div>
@@ -36,6 +37,7 @@
               type="number"
               id="order"
               formControlName="order"
+              data-testid="input-order"
               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
           </div>
         </div>
@@ -49,6 +51,7 @@
               <textarea
                 id="content"
                 formControlName="content"
+                data-testid="input-content"
                 rows="10"
                 class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"></textarea>
             </div>
@@ -70,6 +73,7 @@
               type="text"
               id="authorName"
               formControlName="name"
+              data-testid="input-author-name"
               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
           </div>
         </div>
@@ -83,6 +87,7 @@
               type="text"
               id="tags"
               formControlName="tags"
+              data-testid="input-tags"
               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
           </div>
         </div>
@@ -96,6 +101,7 @@
               type="datetime-local"
               id="activatedAt"
               formControlName="activatedAt"
+              data-testid="input-activatedAt"
               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
           </div>
         </div>
@@ -109,6 +115,7 @@
               type="datetime-local"
               id="deactivatedAt"
               formControlName="deactivatedAt"
+              data-testid="input-deactivatedAt"
               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
           </div>
         </div>
@@ -131,15 +138,18 @@
       <button
         type="button"
         (click)="onCancel()"
+        data-testid="button-cancel"
         class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
         Cancel
       </button>
       <button
         type="submit"
         [disabled]="blogForm.invalid"
+        data-testid="button-save"
         class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
         Save
       </button>
     </div>
   </div>
+
 </form>
