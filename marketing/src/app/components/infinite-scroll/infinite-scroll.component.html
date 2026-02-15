@@ -1,17 +1,30 @@
-<div class="infinite-scroll-container flex flex-wrap w-full justify-center" (scroll)="onScroll($event)">
-  <ng-container *ngFor="let item of items">
-    <ng-container
-      [ngTemplateOutlet]="itemTemplate"
-      [ngTemplateOutletContext]="{ $implicit: item }"
-    ></ng-container>
-  </ng-container>
-  <div *ngIf="error" class="error-message">
-    <p>Error: {{ error }}</p>
-  </div>
-  <div *ngIf="loading" class="loading-indicator">
-    <p>Loading...</p>
-  </div>
-  <div *ngIf="allLoaded" class="all-loaded-indicator">
-    <p>All items loaded.</p>
-  </div>
+<div class="infinite-scroll-container flex flex-col items-center w-full space-y-8">
+  @for (item of items(); track $index) {
+    <div class="w-full max-w-3xl px-4">
+      <ng-container
+        [ngTemplateOutlet]="itemTemplate()"
+        [ngTemplateOutletContext]="{ $implicit: item }"
+      ></ng-container>
+    </div>
+  }
+
+  <div #sentinel class="h-4 w-full"></div>
+
+  @if (error()) {
+    <div class="error-message">
+      <p>Error: {{ error() }}</p>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="loading-indicator">
+      <p>Loading...</p>
+    </div>
+  }
+
+  @if (allLoaded()) {
+    <div class="all-loaded-indicator">
+      <p>All items loaded.</p>
+    </div>
+  }
 </div>

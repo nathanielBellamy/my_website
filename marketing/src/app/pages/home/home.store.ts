@@ -7,6 +7,7 @@ type HomeState = {
   content: HomeContent[];
   loading: boolean;
   error: string | null;
+  page: number;
   allLoaded: boolean;
 };
 
@@ -14,6 +15,7 @@ const initialState: HomeState = {
   content: [],
   loading: false,
   error: null,
+  page: 1,
   allLoaded: false,
 };
 
@@ -25,14 +27,18 @@ export const HomeStore = signalStore(
       if (store.loading() || store.allLoaded()) return;
 
       const pageSize = 6;
-      const currentPage = Math.ceil(store.content().length / pageSize) + 1;
 
       patchState(store, { loading: true });
       try {
-        const newContent: HomeContent[] = await homeService.getAll(currentPage, pageSize);
+        const newContent: HomeContent[] = await homeService.getAll(store.page(), pageSize);
+
+        if (newContent.length < pageSize) {
+          patchState(store, { allLoaded: true });
+        }
 
         patchState(store, {
           content: [...store.content(), ...newContent],
+          page: store.page() + 1,
           loading: false,
         });
       } catch (error) {

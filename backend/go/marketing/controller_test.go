@@ -1,122 +1,345 @@
 package marketing
 
 import (
-	"bytes"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-
 	"testing"
 
-	"github.com/nathanielBellamy/my_website/backend/go/auth"
+	"github.com/nathanielBellamy/my_website/backend/go/models"
+	"github.com/nathanielBellamy/my_website/backend/go/testutils"
+
 	"github.com/rs/zerolog"
 )
 
-// MockLogger is a mock implementation of zerolog.Logger for testing.
-type MockLogger struct {
-	Buf bytes.Buffer
+type MockMarketingService struct {
+	GetAllBlogPostsFunc      func(page, limit int) ([]models.BlogPost, error)
+	GetBlogPostByIDFunc      func(id string) (*models.BlogPost, error)
+	GetBlogPostsByTagFunc    func(tag string, page, limit int) ([]models.BlogPost, error)
+	GetAllHomeContentFunc    func(page, limit int) ([]models.HomeContent, error)
+	GetHomeContentByIDFunc   func(id string) (*models.HomeContent, error)
+	GetAllGrooveJrContentFunc func(page, limit int) ([]models.GrooveJrContent, error)
+	GetGrooveJrContentByIDFunc func(id string) (*models.GrooveJrContent, error)
+	GetAllAboutContentFunc   func(page, limit int) ([]models.AboutContent, error)
+	GetAboutContentByIDFunc  func(id string) (*models.AboutContent, error)
 }
 
-func (m *MockLogger) Write(p []byte) (n int, err error) {
-	return m.Buf.Write(p)
+func (m *MockMarketingService) GetAllBlogPosts(page, limit int) ([]models.BlogPost, error) {
+	return m.GetAllBlogPostsFunc(page, limit)
+}
+func (m *MockMarketingService) GetBlogPostByID(id string) (*models.BlogPost, error) {
+	return m.GetBlogPostByIDFunc(id)
+}
+func (m *MockMarketingService) GetBlogPostsByTag(tag string, page, limit int) ([]models.BlogPost, error) {
+	return m.GetBlogPostsByTagFunc(tag, page, limit)
+}
+func (m *MockMarketingService) GetAllHomeContent(page, limit int) ([]models.HomeContent, error) {
+	return m.GetAllHomeContentFunc(page, limit)
+}
+func (m *MockMarketingService) GetHomeContentByID(id string) (*models.HomeContent, error) {
+	return m.GetHomeContentByIDFunc(id)
+}
+func (m *MockMarketingService) GetAllGrooveJrContent(page, limit int) ([]models.GrooveJrContent, error) {
+	return m.GetAllGrooveJrContentFunc(page, limit)
+}
+func (m *MockMarketingService) GetGrooveJrContentByID(id string) (*models.GrooveJrContent, error) {
+	return m.GetGrooveJrContentByIDFunc(id)
+}
+func (m *MockMarketingService) GetAllAboutContent(page, limit int) ([]models.AboutContent, error) {
+	return m.GetAllAboutContentFunc(page, limit)
+}
+func (m *MockMarketingService) GetAboutContentByID(id string) (*models.AboutContent, error) {
+	return m.GetAboutContentByIDFunc(id)
 }
 
 func TestGetAllBlogPostsHandler(t *testing.T) {
-	// Save original GetClientIpAddr and defer its restoration
-	origGetClientIpAddr := auth.GetClientIpAddr
-	mockLogOutput := &MockLogger{}
-	log := zerolog.New(mockLogOutput).Level(zerolog.DebugLevel).With().Logger()
-	mc := NewMarketingController(&log)
+	mockService := &MockMarketingService{
+		GetAllBlogPostsFunc: func(page, limit int) ([]models.BlogPost, error) {
+			return []models.BlogPost{{ID: "1", Title: "Test Post"}}, nil
+		},
+	}
+	mockLogOutput := &testutils.MockLogger{}
+	log := zerolog.New(mockLogOutput)
+	controller := NewMarketingController(&log, mockService)
 
-	t.Cleanup(func() {
-		auth.GetClientIpAddr = origGetClientIpAddr
-		t.Log(mockLogOutput.Buf.String()) // Log the buffer content
-	})
-
-	req, err := http.NewRequest("GET", "/api/blog?page=1&limit=10", nil)
+	req, err := http.NewRequest("GET", "/api/marketing/blog", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	rr := httptest.NewRecorder()
-	mc.GetAllBlogPostsHandler(rr, req)
+	handler := http.HandlerFunc(controller.GetAllBlogPostsHandler)
+
+	handler.ServeHTTP(rr, req)
 
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
 
-	var posts []BlogPost
+	var posts []models.BlogPost
 	if err := json.Unmarshal(rr.Body.Bytes(), &posts); err != nil {
-		t.Fatalf("could not unmarshal response: %v", err)
+		t.Fatal(err)
 	}
-
-	if len(posts) != 10 {
-		t.Errorf("expected 10 blog posts, got %d", len(posts))
-	}
-	if posts[0].ID != "blog-post-id-1" || posts[1].ID != "blog-post-id-2" {
-		t.Errorf("expected first two blog post IDs %q and %q, got %q and %q", "blog-post-id-1", "blog-post-id-2", posts[0].ID, posts[1].ID)
+	if len(posts) != 1 {
+		t.Errorf("expected 1 post, got %d", len(posts))
 	}
 }
 
 func TestGetBlogPostByIDHandler(t *testing.T) {
-	origGetClientIpAddr := auth.GetClientIpAddr
-	mockLogOutput := &MockLogger{}
-	log := zerolog.New(mockLogOutput).Level(zerolog.DebugLevel).With().Logger()
-	mc := NewMarketingController(&log)
-	t.Cleanup(func() {
-		auth.GetClientIpAddr = origGetClientIpAddr
-		t.Log(mockLogOutput.Buf.String()) // Log the buffer content
-	})
-	auth.GetClientIpAddr = func(r *http.Request) string { return "127.0.0.1" }
+	mockService := &MockMarketingService{
+		GetBlogPostByIDFunc: func(id string) (*models.BlogPost, error) {
+			if id == "1" {
+				return &models.BlogPost{ID: "1", Title: "Test Post"}, nil
+			}
+			return nil, nil
+		},
+	}
+	mockLogOutput := &testutils.MockLogger{}
+	log := zerolog.New(mockLogOutput)
+	controller := NewMarketingController(&log, mockService)
 
-	// Create a test server
-	router := http.NewServeMux()
-	router.HandleFunc("/api/blog/{id}", mc.GetBlogPostByIDHandler)
-	testServer := httptest.NewServer(router)
-	defer testServer.Close()
+	// Create a test mux to handle path parameters
+	testMux := http.NewServeMux()
+	testMux.HandleFunc("/api/marketing/blog/{id}", controller.GetBlogPostByIDHandler)
 
-	// Test case for existing ID
-	req, err := http.NewRequest("GET", testServer.URL+"/api/blog/blog-id-1", nil)
-	if err != nil {
-		t.Fatal(err)
+	// Test found
+	req, _ := http.NewRequest("GET", "/api/marketing/blog/1", nil)
+	rr := httptest.NewRecorder()
+	testMux.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+	}
+	var post models.BlogPost
+	json.Unmarshal(rr.Body.Bytes(), &post)
+	if post.ID != "1" {
+		t.Errorf("expected post ID 1, got %s", post.ID)
 	}
 
-	resp, err := testServer.Client().Do(req)
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer resp.Body.Close()
-
-	if status := resp.StatusCode; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
-	}
-
-	var post BlogPost
-	if err := json.NewDecoder(resp.Body).Decode(&post); err != nil {
-		t.Fatalf("could not unmarshal response: %v", err)
-	}
-	if post.ID != "blog-id-1" {
-		t.Errorf("expected blog post ID %q, got %q", "blog-id-1", post.ID)
-	}
-
-	// Test case for non-existing ID
-	req, err = http.NewRequest("GET", testServer.URL+"/api/blog/99", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	resp, err = testServer.Client().Do(req)
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer resp.Body.Close()
-
-	if status := resp.StatusCode; status != http.StatusNotFound {
-		t.Errorf("handler returned wrong status code for non-existing ID: got %v want %v",
-			status, http.StatusNotFound)
+	// Test not found
+	req, _ = http.NewRequest("GET", "/api/marketing/blog/2", nil)
+	rr = httptest.NewRecorder()
+	testMux.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusNotFound {
+		t.Errorf("handler returned wrong status code for not found: got %v want %v", status, http.StatusNotFound)
 	}
 }
 
+func TestGetBlogPostsByTagHandler(t *testing.T) {
+	mockService := &MockMarketingService{
+		GetBlogPostsByTagFunc: func(tag string, page, limit int) ([]models.BlogPost, error) {
+			if tag == "test" {
+				return []models.BlogPost{{ID: "1", Title: "Tagged Post"}}, nil
+			}
+			return []models.BlogPost{}, nil
+		},
+	}
+	mockLogOutput := &testutils.MockLogger{}
+	log := zerolog.New(mockLogOutput)
+	controller := NewMarketingController(&log, mockService)
 
+	// Create a test mux to handle path parameters
+	testMux := http.NewServeMux()
+	testMux.HandleFunc("/api/marketing/blog/tag/{tag}", controller.GetBlogPostsByTagHandler)
+
+	req, _ := http.NewRequest("GET", "/api/marketing/blog/tag/test", nil)
+	rr := httptest.NewRecorder()
+	testMux.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+	}
+	var posts []models.BlogPost
+	json.Unmarshal(rr.Body.Bytes(), &posts)
+	if len(posts) != 1 {
+		t.Errorf("expected 1 tagged post, got %d", len(posts))
+	}
+}
+
+func TestGetAllHomeContentHandler(t *testing.T) {
+	mockService := &MockMarketingService{
+		GetAllHomeContentFunc: func(page, limit int) ([]models.HomeContent, error) {
+			return []models.HomeContent{{ID: "1", Title: "Home Content"}}, nil
+		},
+	}
+	mockLogOutput := &testutils.MockLogger{}
+	log := zerolog.New(mockLogOutput)
+	controller := NewMarketingController(&log, mockService)
+
+	req, _ := http.NewRequest("GET", "/api/marketing/home", nil)
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(controller.GetAllHomeContentHandler)
+	handler.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+	}
+	var content []models.HomeContent
+	json.Unmarshal(rr.Body.Bytes(), &content)
+	if len(content) != 1 {
+		t.Errorf("expected 1 home content, got %d", len(content))
+	}
+}
+
+func TestGetHomeContentByIDHandler(t *testing.T) {
+	mockService := &MockMarketingService{
+		GetHomeContentByIDFunc: func(id string) (*models.HomeContent, error) {
+			if id == "1" {
+				return &models.HomeContent{ID: "1", Title: "Home Content"}, nil
+			}
+			return nil, nil
+		},
+	}
+	mockLogOutput := &testutils.MockLogger{}
+	log := zerolog.New(mockLogOutput)
+	controller := NewMarketingController(&log, mockService)
+
+	// Create a test mux to handle path parameters
+	testMux := http.NewServeMux()
+	testMux.HandleFunc("/api/marketing/home/{id}", controller.GetHomeContentByIDHandler)
+
+	// Test found
+	req, _ := http.NewRequest("GET", "/api/marketing/home/1", nil)
+	rr := httptest.NewRecorder()
+	testMux.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+	}
+	var content models.HomeContent
+	json.Unmarshal(rr.Body.Bytes(), &content)
+	if content.ID != "1" {
+		t.Errorf("expected home content ID 1, got %s", content.ID)
+	}
+
+	// Test not found
+	req, _ = http.NewRequest("GET", "/api/marketing/home/2", nil)
+	rr = httptest.NewRecorder()
+	testMux.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusNotFound {
+		t.Errorf("handler returned wrong status code for not found: got %v want %v", status, http.StatusNotFound)
+	}
+}
+
+func TestGetAllGrooveJrContentHandler(t *testing.T) {
+	mockService := &MockMarketingService{
+		GetAllGrooveJrContentFunc: func(page, limit int) ([]models.GrooveJrContent, error) {
+			return []models.GrooveJrContent{{ID: "1", Title: "GrooveJr Content"}}, nil
+		},
+	}
+	mockLogOutput := &testutils.MockLogger{}
+	log := zerolog.New(mockLogOutput)
+	controller := NewMarketingController(&log, mockService)
+
+	req, _ := http.NewRequest("GET", "/api/marketing/groovejr", nil)
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(controller.GetAllGrooveJrContentHandler)
+	handler.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+	}
+	var content []models.GrooveJrContent
+	json.Unmarshal(rr.Body.Bytes(), &content)
+	if len(content) != 1 {
+		t.Errorf("expected 1 GrooveJr content, got %d", len(content))
+	}
+}
+
+func TestGetGrooveJrContentByIDHandler(t *testing.T) {
+	mockService := &MockMarketingService{
+		GetGrooveJrContentByIDFunc: func(id string) (*models.GrooveJrContent, error) {
+			if id == "1" {
+				return &models.GrooveJrContent{ID: "1", Title: "GrooveJr Content"}, nil
+			}
+			return nil, nil
+		},
+	}
+	mockLogOutput := &testutils.MockLogger{}
+	log := zerolog.New(mockLogOutput)
+	controller := NewMarketingController(&log, mockService)
+
+	// Create a test mux to handle path parameters
+	testMux := http.NewServeMux()
+	testMux.HandleFunc("/api/marketing/groovejr/{id}", controller.GetGrooveJrContentByIDHandler)
+
+	// Test found
+	req, _ := http.NewRequest("GET", "/api/marketing/groovejr/1", nil)
+	rr := httptest.NewRecorder()
+	testMux.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+	}
+	var content models.GrooveJrContent
+	json.Unmarshal(rr.Body.Bytes(), &content)
+	if content.ID != "1" {
+		t.Errorf("expected GrooveJr content ID 1, got %s", content.ID)
+	}
+
+	// Test not found
+	req, _ = http.NewRequest("GET", "/api/marketing/groovejr/2", nil)
+	rr = httptest.NewRecorder()
+	testMux.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusNotFound {
+		t.Errorf("handler returned wrong status code for not found: got %v want %v", status, http.StatusNotFound)
+	}
+}
+
+func TestGetAllAboutContentHandler(t *testing.T) {
+	mockService := &MockMarketingService{
+		GetAllAboutContentFunc: func(page, limit int) ([]models.AboutContent, error) {
+			return []models.AboutContent{{ID: "1", Title: "About Content"}}, nil
+		},
+	}
+	mockLogOutput := &testutils.MockLogger{}
+	log := zerolog.New(mockLogOutput)
+	controller := NewMarketingController(&log, mockService)
+
+	req, _ := http.NewRequest("GET", "/api/marketing/about", nil)
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(controller.GetAllAboutContentHandler)
+	handler.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+	}
+	var content []models.AboutContent
+	json.Unmarshal(rr.Body.Bytes(), &content)
+	if len(content) != 1 {
+		t.Errorf("expected 1 About content, got %d", len(content))
+	}
+}
+
+func TestGetAboutContentByIDHandler(t *testing.T) {
+	mockService := &MockMarketingService{
+		GetAboutContentByIDFunc: func(id string) (*models.AboutContent, error) {
+			if id == "1" {
+				return &models.AboutContent{ID: "1", Title: "About Content"}, nil
+			}
+			return nil, nil
+		},
+	}
+	mockLogOutput := &testutils.MockLogger{}
+	log := zerolog.New(mockLogOutput)
+	controller := NewMarketingController(&log, mockService)
+
+	// Create a test mux to handle path parameters
+	testMux := http.NewServeMux()
+	testMux.HandleFunc("/api/marketing/about/{id}", controller.GetAboutContentByIDHandler)
+
+	// Test found
+	req, _ := http.NewRequest("GET", "/api/marketing/about/1", nil)
+	rr := httptest.NewRecorder()
+	testMux.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+	}
+	var content models.AboutContent
+	json.Unmarshal(rr.Body.Bytes(), &content)
+	if content.ID != "1" {
+		t.Errorf("expected About content ID 1, got %s", content.ID)
+	}
+
+	// Test not found
+	req, _ = http.NewRequest("GET", "/api/marketing/about/2", nil)
+	rr = httptest.NewRecorder()
+	testMux.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusNotFound {
+		t.Errorf("handler returned wrong status code for not found: got %v want %v", status, http.StatusNotFound)
+	}
+}

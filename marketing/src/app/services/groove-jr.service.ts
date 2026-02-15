@@ -8,10 +8,8 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class GrooveJrService {
-  private apiUrl = `${environment.API_BASE_URL}/marketing/groovejr`;
+  private readonly apiUrl = `${environment.API_BASE_URL}/marketing/groovejr`;
   private readonly http = inject(HttpClient);
-
-  constructor() {}
 
   getAll(page: number, limit: number): Promise<GrooveJrContent[]> {
     return firstValueFrom(
@@ -21,6 +19,7 @@ export class GrooveJrService {
             id: item.id,
             title: item.title,
             content: item.content,
+            order: item.order,
           }))
         )
       )
@@ -34,6 +33,7 @@ export class GrooveJrService {
           id: item.id,
           title: item.title,
           content: item.content,
+          order: item.order,
         }))
       )
     );

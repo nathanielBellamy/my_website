@@ -1,28 +1,16 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { HeaderComponent } from './components/header/header.component';
-import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [NavbarComponent, HeaderComponent, RouterOutlet, CommonModule],
+  imports: [RouterOutlet, CommonModule, NavbarComponent],
   templateUrl: './app.component.html',
   styles: [],
 })
-export class AppComponent implements OnInit {
-  showHeader: boolean = true;
-  private readonly router: Router = inject(Router);
-
-  constructor() {}
-
-  ngOnInit() {
-    this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
-        this.showHeader = event.urlAfterRedirects === '/';
-      });
-  }
+export class AppComponent {
 }
+
+

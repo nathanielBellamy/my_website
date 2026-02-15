@@ -76,6 +76,11 @@
                   "with": "src/environments/environment.remotedev.ts"
                 }
               ]
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"

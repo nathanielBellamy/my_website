@@ -11,7 +11,7 @@ import { InfiniteScrollComponent } from '../../components/infinite-scroll/infini
   templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit {
-  readonly store = inject(HomeStore);
+  protected readonly store = inject(HomeStore);
 
   ngOnInit() {
     this.store.loadMore();

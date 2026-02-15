@@ -11,7 +11,7 @@ import { CardComponent } from '../../components/card/card.component';
   templateUrl: './about.component.html',
 })
 export class AboutComponent implements OnInit {
-  readonly store = inject(AboutStore);
+  protected readonly store = inject(AboutStore);
 
   ngOnInit() {
     this.store.loadMore();

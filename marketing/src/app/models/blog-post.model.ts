@@ -6,4 +6,7 @@ export interface BlogPost {
   tags: string[];
   createdAt: string;
   updatedAt: string;
+  activatedAt?: string;
+  deactivatedAt?: string;
+  order: number;
 }

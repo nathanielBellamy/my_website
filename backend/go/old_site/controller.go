@@ -59,22 +59,22 @@ func (osc *OldSiteController) PublicSquareFeedWsHandler(w http.ResponseWriter, r
 	mode := os.Getenv("MODE")
 	if !env.IsProd(mode) {
 		// localhost and remote dev require basic login
-		validDev := auth.HasValidCookie(r, auth.CTDEV, osc.CookieJar, osc.Log)
+		validAdmin := auth.HasValidCookie(r, auth.CTADMIN, osc.CookieJar, osc.Log)
 		validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, osc.CookieJar, osc.Log)
 		osc.Log.Debug().
-			Bool("debug_validDev", validDev).
+			Bool("debug_validAdmin", validAdmin).
 			Bool("debug_validRecaptcha", validRecaptcha).
 			Msg("DEBUG HasValidCookie values")
 		osc.Log.Info().
 			Str("ip", ip).
-			Bool("validDev", validDev).
+			Bool("validAdmin", validAdmin).
 			Bool("validRecaptcha", validRecaptcha).
 			Msg("PS FEED WS")
 
-		if validDev && validRecaptcha {
+		if validAdmin && validRecaptcha {
 			websocket.ServeFeedWs(osc.FeedPool, w, r, osc.Log)
 		} else {
-			auth.RedirectToDevAuth(w, r, osc.Log)
+			auth.RedirectToAdminAuthV2(w, r, osc.Log)
 		}
 	} else {
 		// prod is public
@@ -99,22 +99,22 @@ func (osc *OldSiteController) PublicSquareWasmWsHandler(w http.ResponseWriter, r
 	mode := os.Getenv("MODE")
 	if !env.IsProd(mode) {
 		// localhost and remote dev require basic login
-		validDev := auth.HasValidCookie(r, auth.CTDEV, osc.CookieJar, osc.Log)
+		validAdmin := auth.HasValidCookie(r, auth.CTADMIN, osc.CookieJar, osc.Log)
 		validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, osc.CookieJar, osc.Log)
 		osc.Log.Debug().
-			Bool("debug_validDev", validDev).
+			Bool("debug_validAdmin", validAdmin).
 			Bool("debug_validRecaptcha", validRecaptcha).
 			Msg("DEBUG HasValidCookie values")
 		osc.Log.Info().
 			Str("ip", ip).
-			Bool("validDev", validDev).
+			Bool("validAdmin", validAdmin).
 			Bool("validRecaptcha", validRecaptcha).
 			Msg("PS WASM WS")
 
-		if validDev && validRecaptcha {
+		if validAdmin && validRecaptcha {
 			websocket.ServeWasmWs(osc.WasmPool, w, r, osc.Log)
 		} else {
-			auth.RedirectToDevAuth(w, r, osc.Log)
+			auth.RedirectToAdminAuthV2(w, r, osc.Log)
 		}
 	} else {
 		// prod is public

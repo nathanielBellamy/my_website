@@ -10,8 +10,8 @@ func TestIsProd(t *testing.T) {
 		{"prod", true},
 		{"remotedev", false},
 		{"localhost", false},
-		{"unknown", true}, // Default assumption if not localhost or remotedev
-		{"", true},       // Default assumption if empty
+		{"unknown", false},
+		{"", false},
 	}
 
 	for _, test := range tests {
@@ -31,8 +31,8 @@ func TestIsLocalhost(t *testing.T) {
 		{"prod", false},
 		{"remotedev", false},
 		{"localhost", true},
-		{"unknown", true}, // Default assumption if not prod or remotedev
-		{"", true},       // Default assumption if empty
+		{"unknown", false},
+		{"", true},
 	}
 
 	for _, test := range tests {
@@ -52,8 +52,8 @@ func TestIsRemotedev(t *testing.T) {
 		{"prod", false},
 		{"remotedev", true},
 		{"localhost", false},
-		{"unknown", true}, // Default assumption if not prod or localhost
-		{"", true},       // Default assumption if empty
+		{"unknown", false},
+		{"", false},
 	}
 
 	for _, test := range tests {

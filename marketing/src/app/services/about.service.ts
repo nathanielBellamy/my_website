@@ -8,10 +8,8 @@ import { AboutContent } from '../models/about.model';
   providedIn: 'root',
 })
 export class AboutService {
-  private apiUrl = `${environment.API_BASE_URL}/marketing/about`;
+  private readonly apiUrl = `${environment.API_BASE_URL}/marketing/about`;
   private readonly http = inject(HttpClient);
-
-  constructor() {}
 
   getAll(page: number, limit: number): Promise<AboutContent[]> {
     return firstValueFrom(
@@ -21,6 +19,7 @@ export class AboutService {
             id: item.id,
             title: item.title,
             content: item.content,
+            order: item.order,
           }))
         )
       )
@@ -34,6 +33,7 @@ export class AboutService {
           id: item.id,
           title: item.title,
           content: item.content,
+          order: item.order,
         }))
       )
     );

@@ -1,4 +1,16 @@
-<div class="h-full">
+<div class="h-full py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center">
+    <h1 
+      data-testid="blog-header"
+      class="font-heading text-5xl md:text-7xl font-bold text-heading-text mb-6">
+      Blog
+    </h1>
+    <p class="font-sans text-xl text-body-text max-w-2xl mx-auto">
+      Thoughts on software engineering, clean code, and building systems that last.
+    </p>
+    <div class="h-1 w-12 bg-vibrant-orange mt-8 mx-auto rounded-full"></div>
+  </div>
+
   <app-infinite-scroll
     [items]="store.posts()"
     [loading]="store.loading()"
