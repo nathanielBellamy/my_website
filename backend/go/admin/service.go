@@ -70,13 +70,13 @@ func (s *service) GetAllBlogPosts(filter models.FilterOptions) ([]models.BlogPos
 
 	switch filter.Status {
 	case "current":
-		query.Where("activated_at IS NOT NULL AND activated_at <= NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())")
+		query.Where("blog_post.activated_at IS NOT NULL AND blog_post.activated_at <= NOW() AND (blog_post.deactivated_at IS NULL OR blog_post.deactivated_at > NOW())")
 	case "inactive":
-		query.Where("activated_at IS NULL AND deactivated_at IS NULL")
+		query.Where("blog_post.activated_at IS NULL AND blog_post.deactivated_at IS NULL")
 	case "past":
-		query.Where("deactivated_at IS NOT NULL AND deactivated_at < NOW()")
+		query.Where("blog_post.deactivated_at IS NOT NULL AND blog_post.deactivated_at < NOW()")
 	case "future":
-		query.Where("activated_at IS NOT NULL AND activated_at > NOW()")
+		query.Where("blog_post.activated_at IS NOT NULL AND blog_post.activated_at > NOW()")
 	}
 
 	if filter.SortField != "" {
@@ -84,9 +84,13 @@ func (s *service) GetAllBlogPosts(filter models.FilterOptions) ([]models.BlogPos
 		if filter.SortOrder == "desc" || filter.SortOrder == "DESC" {
 			order = "DESC"
 		}
-		query.Order(mapSortField(filter.SortField) + " " + order)
+		field := mapSortField(filter.SortField)
+		if field == "activated_at" || field == "deactivated_at" || field == "created_at" || field == "updated_at" {
+			field = "blog_post." + field
+		}
+		query.Order(field + " " + order)
 	} else {
-		query.Order("ordering ASC", "activated_at DESC")
+		query.Order("blog_post.ordering ASC", "blog_post.activated_at DESC")
 	}
 
 	count, err := query.Limit(filter.Limit).
@@ -187,11 +191,13 @@ func (s *service) CreateBlogPost(post *models.BlogPost) (*models.BlogPost, error
 				})
 			}
 			s.Log.Info().Interface("tags", blogPostTags).Msg("BlogPostTags to insert")
+			s.Log.Info().Msg("Attempting to insert BlogPostTags")
 			_, err = s.DB.Model(&blogPostTags).Insert()
 			if err != nil {
 				s.Log.Error().Err(err).Msg("Error inserting blog post tags")
 				return nil, err
 			}
+			s.Log.Info().Msg("Successfully inserted BlogPostTags")
 		}
 	}
 

@@ -68,6 +68,7 @@ func (ac *AdminController) GetAllBlogPostsHandler(w http.ResponseWriter, r *http
 	opts := getFilterOptions(r)
 	posts, total, err := ac.Service.GetAllBlogPosts(opts)
 	if err != nil {
+		ac.Log.Error().Err(err).Msg("Error fetching blog posts")
 		http.Error(w, "Error fetching blog posts", http.StatusInternalServerError)
 		return
 	}

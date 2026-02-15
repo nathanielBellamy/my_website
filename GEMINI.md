@@ -112,6 +112,7 @@ A detailed, step-by-step plan will be maintained using the `TODO` list feature. 
     *   Integrate the new frontend with the existing application.
     *   Update NixOS configuration for deployment on Linode.
     *   Set up CI/CD pipeline (e.g., using ArgoCD).
+    *   [x] Fix ambiguous column issue in `GetAllBlogPosts` (backend)
 
 ## Architectural Decisions
 
