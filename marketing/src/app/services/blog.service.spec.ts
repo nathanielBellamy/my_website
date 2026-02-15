@@ -8,8 +8,8 @@ import { BlogPost } from '../models/blog-post.model';
 import { environment } from '../../environments/environment';
 
 const mockBlogPosts: BlogPost[] = [
-  { id: '1', title: 'Post 1', content: 'Content 1', author: 'Author 1', tags: [], createdAt: '', updatedAt: '' },
-  { id: '2', title: 'Post 2', content: 'Content 2', author: 'Author 2', tags: [], createdAt: '', updatedAt: '' },
+  { id: '1', title: 'Post 1', content: 'Content 1', author: { id: '1', name: 'Author 1' }, tags: [], createdAt: '', updatedAt: '', order: 1 },
+  { id: '2', title: 'Post 2', content: 'Content 2', author: { id: '2', name: 'Author 2' }, tags: [], createdAt: '', updatedAt: '', order: 2 },
 ];
 
 describe('BlogService', () => {

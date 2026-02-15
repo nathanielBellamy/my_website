@@ -8,8 +8,8 @@ describe('Marketing Blog', () => {
           id: '123',
           title: 'Test Blog Post',
           content: 'This is a test blog post content. It is long enough to have a snippet.',
-          author: 'Test Author',
-          tags: ['test', 'cypress'],
+          author: { id: '1', name: 'Test Author' },
+          tags: [{ id: '1', name: 'test' }, { id: '2', name: 'cypress' }],
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           order: 1
@@ -24,8 +24,8 @@ describe('Marketing Blog', () => {
         id: '123',
         title: 'Test Blog Post',
         content: '# Test Blog Post\n\nThis is a test blog post content. It is long enough to have a snippet.',
-        author: 'Test Author',
-        tags: ['test', 'cypress'],
+        author: { id: '1', name: 'Test Author' },
+        tags: [{ id: '1', name: 'test' }, { id: '2', name: 'cypress' }],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         order: 1

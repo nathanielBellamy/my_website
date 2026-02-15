@@ -11,8 +11,8 @@ describe('BlogContentDetailsComponent', () => {
     id: '123',
     title: 'Test Post',
     content: 'This is a test post content.',
-    author: 'Test Author',
-    tags: ['test', 'angular'],
+    author: { id: '1', name: 'Test Author' },
+    tags: [{ id: '1', name: 'test' }, { id: '2', name: 'angular' }],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     order: 1

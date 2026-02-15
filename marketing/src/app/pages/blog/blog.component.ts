@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { InfiniteScrollComponent } from '../../components/infinite-scroll/infinite-scroll.component';
 import { CardComponent } from '../../components/card/card.component';
+import { Tag } from '../../models/blog-post.model';
 
 @Component({
   selector: 'app-blog',
@@ -35,5 +36,9 @@ export class BlogComponent implements OnInit {
         return content.substring(0, firstPeriod + 1);
     }
     return content.length > 150 ? content.substring(0, 150) + '...' : content;
+  }
+
+  getTags(tags: Tag[]): string[] {
+    return tags ? tags.map(t => t.name) : [];
   }
 }
