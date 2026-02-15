@@ -2,7 +2,6 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/angular';
 import { EditBlogPostComponent } from './edit-blog-post.component';
 import { BlogService } from '../../../services/blog.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
 import { BlogPost } from '../../../models/data-models';
 
 describe('EditBlogPostComponent', () => {

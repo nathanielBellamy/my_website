@@ -1,7 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/angular';
 import { HomeContentListComponent } from './home-content-list.component';
 import { HomeService } from 'app/services/home.service';
-import { of } from 'rxjs';
 import { HomeContent } from '../../models/data-models';
 
 
