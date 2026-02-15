@@ -25,7 +25,7 @@
   <app-card 
     [title]="item.title" 
     [content]="getSnippet(item.content)"
-    [tags]="item.tags"
+    [tags]="getTags(item.tags)"
     (click)="viewPost(item.id)">
   </app-card>
 </ng-template>

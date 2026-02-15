@@ -20,9 +20,9 @@
     <article class="bg-card border border-white/10 rounded-xl p-8 shadow-xl">
       <header class="mb-8 border-b border-white/10 pb-8">
         <div class="flex flex-wrap gap-2 mb-4">
-          @for (tag of post.tags; track tag) {
+          @for (tag of post.tags; track tag.id) {
             <span class="bg-primary-accent/10 text-primary-accent px-3 py-1 rounded-full text-sm font-semibold">
-              #{{ tag }}
+              #{{ tag.name }}
             </span>
           }
         </div>
@@ -32,7 +32,7 @@
         <div class="text-body-text/60 text-sm flex items-center gap-4">
           <span>{{ post.createdAt | date:'longDate' }}</span>
           <span>•</span>
-          <span>{{ post.author }}</span>
+          <span>{{ post.author.name }}</span>
         </div>
       </header>
 

@@ -3,5 +3,7 @@ Describe the changes made:
 - Updated `BlogComponent` to display snippets (first sentence) and link to the details page.
 - Added `/blog/:id` route to `app.routes.ts`.
 - Fixed build error by correcting import path in `app.routes.ts`.
-- Added unit tests for `BlogContentDetailsComponent` and updated `BlogComponent` tests.
-- Added E2E test `e2e/cypress/e2e/marketing-blog.cy.js` to verify blog navigation and details view.
+- Fixed object rendering issue in blog details by updating `BlogPost` model to use `Author` and `Tag` objects instead of strings, matching backend response.
+- Updated `BlogContentDetailsComponent` template to display `author.name` and `tag.name`.
+- Updated `BlogComponent` to use `getTags` helper method for converting `Tag[]` to `string[]` for the card component.
+- Updated unit tests and E2E tests (`marketing-blog.cy.js`) to use correct mock data structure.

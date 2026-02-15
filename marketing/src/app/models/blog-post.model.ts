@@ -1,9 +1,19 @@
+export interface Author {
+  id: string;
+  name: string;
+}
+
+export interface Tag {
+  id: string;
+  name: string;
+}
+
 export interface BlogPost {
   id: string;
   title: string;
   content: string;
-  author: string;
-  tags: string[];
+  author: Author;
+  tags: Tag[];
   createdAt: string;
   updatedAt: string;
   activatedAt?: string;
