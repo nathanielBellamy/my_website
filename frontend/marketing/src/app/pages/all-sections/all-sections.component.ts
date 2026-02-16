@@ -29,7 +29,12 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
     ).subscribe(() => {
       this.isAutoScrolling = true;
       this.lastNavTime = Date.now();
-      this.scrollToSection();
+      
+      // Small delay to allow scroll restoration to complete first
+      setTimeout(() => {
+        this.scrollToSection();
+      }, 100);
+
       // Allow scroll tracking after a delay
       setTimeout(() => {
         this.isAutoScrolling = false;
