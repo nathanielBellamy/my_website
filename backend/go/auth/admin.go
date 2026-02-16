@@ -216,8 +216,21 @@ func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, 
 			return
 		}
 
-		// Generate 6-digit OTP
-		otp := fmt.Sprintf("%06d", rand.Intn(1000000))
+		// Generate 6-digit OTP using crypto/rand for security
+		otpNum := make([]byte, 4)
+		if _, err := crand.Read(otpNum); err != nil {
+			log.Error().
+				Err(err).
+				Msg("Failed to generate secure OTP")
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+		// Convert to 6-digit number
+		otpValue := int(otpNum[0])<<24 | int(otpNum[1])<<16 | int(otpNum[2])<<8 | int(otpNum[3])
+		if otpValue < 0 {
+			otpValue = -otpValue
+		}
+		otp := fmt.Sprintf("%06d", otpValue%1000000)
 		pendingOtps.Set(adminEmail, otp)
 
 		// Email delivery

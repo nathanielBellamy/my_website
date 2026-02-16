@@ -100,6 +100,9 @@ jobs:
       - name: Initialize Database
         run: |
           sudo apt-get update && sudo apt-get install -y postgresql-client
+          # Create root role to avoid "role root does not exist" errors
+          PGPASSWORD=postgres psql -h localhost -p 5434 -U postgres -d postgres -c "CREATE ROLE root WITH LOGIN PASSWORD 'root';" || true
+          PGPASSWORD=postgres psql -h localhost -p 5434 -U postgres -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE mw_db TO root;" || true
           PGPASSWORD=postgres psql -h localhost -p 5434 -U postgres -d mw_db -f database/init.sql
 
       - name: Build and Start Backend
@@ -111,8 +114,11 @@ jobs:
           export DATABASE_URL=postgres://postgres:postgres@localhost:5434/mw_db?sslmode=disable
           export MODE=localhost
           ./backend-server > backend.log 2>&1 &
-          # Wait for backend to be ready
-          timeout 60s bash -c 'until curl -s http://localhost:8080/api/marketing/home; do sleep 2; done' || (echo "Backend failed to start. Logs:" && cat backend.log && exit 1)
+          BACKEND_PID=$!
+          echo "Backend started with PID: $BACKEND_PID"
+          # Wait for backend to be ready with increased timeout
+          timeout 120s bash -c 'until curl -sf http://localhost:8080/api/marketing/home > /dev/null 2>&1; do echo "Waiting for backend..."; sleep 3; done' || (echo "Backend failed to start. Logs:" && cat backend.log && exit 1)
+          echo "Backend is ready!"
 
       - name: Install E2E dependencies
         run: cd e2e && npm ci

@@ -67,13 +67,23 @@ func main() {
 
 	SetupRoutes(http.DefaultServeMux, &cookieJar, &log, feedPool, wasmPool, db.NewPgDBAdapter(dbClient))
 
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		log.Fatal().
-			Msg("UnableToServe")
+	// Create HTTP server with proper timeouts to prevent resource exhaustion
+	server := &http.Server{
+		Addr:         ":8080",
+		Handler:      nil, // Use DefaultServeMux
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
 	}
 
 	log.Info().
-		Msg("Now serving on 8080")
+		Msg("Starting server on :8080")
+
+	if err := server.ListenAndServe(); err != nil {
+		log.Fatal().
+			Err(err).
+			Msg("UnableToServe")
+	}
 }
 
 func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, feedPool *websocket.Pool, wasmPool *websocket.Pool, db interfaces.PgxDB) {
