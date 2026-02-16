@@ -23,29 +23,29 @@ COPY version.ts .
 COPY package.json package-lock.json ./
 RUN npm install
 
-COPY auth/admin/package.json auth/admin/package-lock.json ./auth/admin/
+COPY frontend/auth/admin/package.json frontend/auth/admin/package-lock.json ./auth/admin/
 RUN npm --prefix auth/admin install
 
-COPY old-site/package.json old-site/package-lock.json ./old-site/
+COPY frontend/old-site/package.json frontend/old-site/package-lock.json ./old-site/
 RUN npm --prefix old-site install
 
-COPY admin/package.json admin/package-lock.json ./admin/
+COPY frontend/admin/package.json frontend/admin/package-lock.json ./admin/
 RUN npm --prefix admin install
 
-COPY marketing/package.json marketing/package-lock.json ./marketing/
+COPY frontend/marketing/package.json frontend/marketing/package-lock.json ./marketing/
 RUN npm --prefix marketing install
 
 # Build frontend applications
-COPY auth/admin ./auth/admin
+COPY frontend/auth/admin ./auth/admin
 RUN npm run build-localhost --prefix auth/admin
 
-COPY old-site ./old-site
+COPY frontend/old-site ./old-site
 RUN npm run build-old-site-localhost --prefix old-site
 
-COPY admin ./admin
+COPY frontend/admin ./admin
 RUN npm run build-localhost --prefix admin
 
-COPY marketing ./marketing
+COPY frontend/marketing ./marketing
 RUN npm run build-localhost --prefix marketing
 
 # Copy the go module files and download dependencies
@@ -64,7 +64,7 @@ WORKDIR /app
 COPY --from=builder /app/main .
 
 # Copy the built frontend assets from the builder stage
-COPY --from=builder /app/build ./build
+COPY --from=builder /build ./build
 
 # Copy the environment file
 COPY --from=builder /app/backend/go/.env.localhost .

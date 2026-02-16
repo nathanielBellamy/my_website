@@ -24,8 +24,8 @@ test_admin_spa() {
   📣  🧪   TESTING:
 ADMIN SPA
 EOF
-  cd admin && npm test
-  cd ..
+  cd frontend/admin && npm test
+  cd ../..
   cat << EOF
 
   📣  🏁  DONE:
@@ -40,8 +40,8 @@ test_marketing_spa() {
   📣  🧪   TESTING:
 MARKETING SPA
 EOF
-  cd marketing && npm test
-  cd ..
+  cd frontend/marketing && npm test
+  cd ../..
   cat << EOF
 
   📣  🏁  DONE:
