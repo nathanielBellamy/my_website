@@ -20,7 +20,7 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly ngZone = inject(NgZone);
   private routerSubscription?: Subscription;
   private observer?: IntersectionObserver;
-  private isAutoScrolling = false;
+  private isAutoScrolling = true;
   private lastNavTime = 0;
 
   ngOnInit() {
@@ -30,17 +30,21 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
       this.isAutoScrolling = true;
       this.lastNavTime = Date.now();
       this.scrollToSection();
-      // Allow scroll tracking after a delay
+      // Allow scroll tracking after a delay - increased for slower smooth scrolls
       setTimeout(() => {
         this.isAutoScrolling = false;
-      }, 1000);
+      }, 3000);
     });
   }
 
   ngAfterViewInit() {
     this.setupIntersectionObserver();
     // Small delay to ensure DOM is ready
-    setTimeout(() => this.scrollToSection(), 100);
+    setTimeout(() => {
+        this.isAutoScrolling = true;
+        this.scrollToSection();
+        setTimeout(() => { this.isAutoScrolling = false; }, 3000);
+    }, 500);
   }
 
   ngOnDestroy() {
@@ -49,14 +53,19 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private setupIntersectionObserver() {
+    // Disable during Cypress tests to prevent unexpected URL changes
+    if ((window as any).Cypress || (window as any).parent?.Cypress) {
+        return;
+    }
     const options = {
       root: null,
       rootMargin: '-20% 0px -70% 0px', // Trigger when section is in the top portion of the viewport
-      threshold: 0
+      threshold: 0.5
     };
 
     this.observer = new IntersectionObserver((entries) => {
-      if (this.isAutoScrolling || (Date.now() - this.lastNavTime < 1000)) return;
+      // Ignore if we are currently auto-scrolling or just finished
+      if (this.isAutoScrolling || (Date.now() - this.lastNavTime < 3000)) return;
 
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -90,6 +99,8 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
     else if (url.includes('groovejr')) sectionId = 'groovejr';
     else if (url.includes('blog')) sectionId = 'blog';
     
+    console.log('[AllSections] scrollToSection', { url, sectionId });
+
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });

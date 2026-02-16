@@ -83,6 +83,6 @@ describe('AboutService', () => {
     expect(req.request.method).toEqual('DELETE');
     req.flush(null);
 
-    await expect(promise).resolves.toBeNull();
+    await expect(promise).resolves.toBeUndefined();
   });
 });

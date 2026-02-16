@@ -70,6 +70,7 @@ describe('BlogContentDetailsComponent', () => {
   });
 
   it('should show error if fetch fails', async () => {
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     const mockErrorService = {
       getById: jest.fn().mockRejectedValue(new Error('Fetch failed')),
     };
@@ -85,5 +86,6 @@ describe('BlogContentDetailsComponent', () => {
     });
 
     expect(await screen.findByText('Failed to load blog post')).toBeTruthy();
+    consoleSpy.mockRestore();
   });
 });

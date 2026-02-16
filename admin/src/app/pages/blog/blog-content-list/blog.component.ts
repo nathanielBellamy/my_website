@@ -22,6 +22,7 @@ export class BlogComponent implements OnInit {
   status = signal<'current' | 'inactive' | 'past' | 'future'>('current');
   sortField = signal<string>('ordering');
   sortOrder = signal<'asc' | 'desc'>('asc');
+  private currentRequestId = 0;
 
   totalPages = computed(() => Math.ceil(this.total() / this.limit()));
 
@@ -30,6 +31,7 @@ export class BlogComponent implements OnInit {
   }
 
   fetchBlogPosts() {
+    const requestId = ++this.currentRequestId;
     const options: Partial<FilterOptions> = {
       page: this.page(),
       limit: this.limit(),
@@ -39,10 +41,14 @@ export class BlogComponent implements OnInit {
     };
 
     this.blogService.getAllBlogPosts(options).then((response) => {
-      this.blogPosts.set(response.data);
-      this.total.set(response.total);
+      if (requestId === this.currentRequestId) {
+        this.blogPosts.set(response.data);
+        this.total.set(response.total);
+      }
     }).catch((error) => {
-      console.error('Error fetching blog posts:', error);
+      if (requestId === this.currentRequestId) {
+        console.error('Error fetching blog posts:', error);
+      }
     });
   }
 

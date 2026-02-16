@@ -84,10 +84,12 @@ describe('Admin App', () => {
     // Create
     cy.get('[data-testid="create-new-blog-post"]').click()
     cy.get('[data-testid="input-title"]').type(testTitle)
-    cy.get('[data-testid="input-order"]').type('999')
+    cy.get('[data-testid="input-order"]').type('-100')
     cy.get('[data-testid="input-content"]').type('Blog post content.')
     cy.get('[data-testid="input-author-name"]').type('E2E Tester')
     cy.get('[data-testid="input-tags"]').type('e2e, test')
+    // Clear default activatedAt to make it inactive
+    cy.get('[data-testid="input-activatedAt"]').clear()
     cy.get('[data-testid="button-save"]').click()
 
     // Verify created
@@ -102,10 +104,14 @@ describe('Admin App', () => {
     })
     const updatedTitle = `${testTitle} UPDATED`
     cy.get('[data-testid="input-title"]').clear().type(updatedTitle)
+    cy.get('[data-testid="input-order"]').clear().type('-100') // Ensure order stays at top
     cy.get('[data-testid="button-save"]').click()
+    cy.wait(1000)
 
     // Verify updated
+    cy.reload() // Ensure fresh list
     cy.get('[data-testid="status-inactive"]').click()
+    cy.wait(1000)
     cy.contains(updatedTitle).should('be.visible')
 
     // Delete
