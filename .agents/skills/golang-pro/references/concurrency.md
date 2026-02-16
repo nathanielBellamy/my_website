@@ -224,6 +224,9 @@ func (c *Cache) Get(key string) (string, bool) {
 func (c *Cache) Set(key, value string) {
     c.mu.Lock()
     defer c.mu.Unlock()
+    if c.items == nil {
+        c.items = make(map[string]string)
+    }
     c.items[key] = value
 }
 
