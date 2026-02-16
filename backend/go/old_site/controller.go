@@ -46,10 +46,14 @@ func (osc *OldSiteController) RecaptchaHandler(w http.ResponseWriter, r *http.Re
 		auth.SetRecaptchaCookieOnClient(w, osc.CookieJar, osc.Log)
 
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
+		if _, err := w.Write([]byte("OK")); err != nil {
+			osc.Log.Error().Err(err).Msg("Error writing OK response")
+		}
 	} else {
 		w.WriteHeader(http.StatusForbidden)
-		w.Write([]byte("NOT OK"))
+		if _, err := w.Write([]byte("NOT OK")); err != nil {
+			osc.Log.Error().Err(err).Msg("Error writing NOT OK response")
+		}
 	}
 }
 

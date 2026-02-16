@@ -30,7 +30,9 @@ type Message struct {
 var ReadFeed = func(c *Client) {
 	defer func() {
 		c.Pool.Unregister <- c
-		(*c.Conn).Close()
+		if closeErr := (*c.Conn).Close(); closeErr != nil {
+			c.Pool.Log.Error().Err(closeErr).Msg("Error closing connection in ReadFeed")
+		}
 	}()
 
 	for {
@@ -55,7 +57,9 @@ var ReadFeed = func(c *Client) {
 var ReadWasm = func(c *Client) {
 	defer func() {
 		c.Pool.Unregister <- c
-		(*c.Conn).Close()
+		if closeErr := (*c.Conn).Close(); closeErr != nil {
+			c.Pool.Log.Error().Err(closeErr).Msg("Error closing connection in ReadWasm")
+		}
 	}()
 
 	for {

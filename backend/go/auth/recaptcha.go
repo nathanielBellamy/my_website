@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"regexp"
 	"time"
 
 	"github.com/nathanielBellamy/my_website/backend/go/env"
@@ -85,6 +86,16 @@ func CreateAssessment(rData RecaptchaData, log *zerolog.Logger) bool {
 		Msg("CreateAssessment rData")
 
 	apiKey := os.Getenv("GOOGLE_API_KEY")
+	// Validate projectID to prevent SSRF attacks
+	// ProjectID should only contain alphanumeric characters, hyphens, and underscores
+	if !isValidProjectID(rData.ProjectID) {
+		log.Error().
+			Str("ip", rData.ClientIP).
+			Str("projectId", rData.ProjectID).
+			Msg("Invalid project ID format")
+		return false
+	}
+	
 	url := fmt.Sprintf(
 		"https://recaptchaenterprise.googleapis.com/v1/projects/%s/assessments?key=%s",
 		rData.ProjectID,
@@ -184,4 +195,13 @@ var SetRecaptchaCookieOnClient = func(
 
 	cookieJar.SetIfAbsent(sessionToken, Cookie{Valid: true, Type: CTPSR})
 	http.SetCookie(w, &c)
+}
+
+// isValidProjectID validates that the project ID only contains safe characters
+// to prevent SSRF attacks. Google Cloud project IDs are alphanumeric with hyphens.
+func isValidProjectID(projectID string) bool {
+	// Google Cloud project IDs must be 6-30 characters and contain only lowercase letters,
+	// numbers, and hyphens. They must start with a letter.
+	validProjectID := regexp.MustCompile(`^[a-z][a-z0-9-]{5,29}$`)
+	return validProjectID.MatchString(projectID)
 }

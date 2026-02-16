@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/nathanielBellamy/my_website/backend/go/admin"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
@@ -28,7 +29,9 @@ func main() {
 	mode := os.Getenv("MODE")
 	if mode == "" {
 		mode = "localhost"
-		os.Setenv("MODE", mode)
+		if err := os.Setenv("MODE", mode); err != nil {
+			log.Warn().Err(err).Msg("Failed to set MODE environment variable")
+		}
 	}
 
 	// read env file
