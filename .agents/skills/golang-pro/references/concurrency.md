@@ -151,7 +151,18 @@ type Server struct {
     done chan struct{}
 }
 
+// NewServer constructs a Server with an initialized done channel.
+func NewServer() *Server {
+    return &Server{
+        done: make(chan struct{}),
+    }
+}
+
 func (s *Server) Shutdown() {
+    if s.done == nil {
+        // Nothing to shut down; avoid closing a nil channel.
+        return
+    }
     close(s.done)
 }
 
