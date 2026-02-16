@@ -125,23 +125,30 @@ func fanIn(ctx context.Context, channels ...<-chan int) <-chan int {
 ```go
 // Timeout pattern
 func fetchWithTimeout(ctx context.Context, url string) (string, error) {
+    // Derive a context with timeout to avoid unmanaged timers.
+    ctx, cancel := context.WithTimeout(ctx, 50*time.Millisecond)
+    defer cancel()
+
     result := make(chan string, 1)
-    errCh := make(chan error, 1)
 
     go func() {
         // Simulate network call
         time.Sleep(100 * time.Millisecond)
-        result <- "data from " + url
+        select {
+        case result <- "data from " + url:
+        case <-ctx.Done():
+            // Context cancelled or timed out; caller no longer cares.
+            return
+        }
     }()
 
     select {
     case res := <-result:
         return res, nil
-    case err := <-errCh:
-        return "", err
-    case <-time.After(50 * time.Millisecond):
-        return "", fmt.Errorf("timeout")
     case <-ctx.Done():
+        if ctx.Err() == context.DeadlineExceeded {
+            return "", fmt.Errorf("timeout")
+        }
         return "", ctx.Err()
     }
 }
