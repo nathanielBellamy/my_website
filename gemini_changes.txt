@@ -1,0 +1,13 @@
+Describe the changes made:
+- Created `BlogContentDetailsComponent` to display full blog post content.
+- Updated `BlogComponent` to display snippets (first sentence) and link to the details page.
+- Added `/blog/:id` route to `app.routes.ts`.
+- Fixed build error by correcting import path in `app.routes.ts`.
+- Fixed object rendering issue in blog details by updating `BlogPost` model to use `Author` and `Tag` objects instead of strings, matching backend response.
+- Updated `BlogContentDetailsComponent` template to display `author.name` and `tag.name`.
+- Updated `BlogComponent` to use `getTags` helper method for converting `Tag[]` to `string[]` for the card component.
+- Updated unit tests and E2E tests (`marketing-blog.cy.js`) to use correct mock data structure.
+- Fixed failing unit tests in `admin/src/app/services/groove-jr.service.spec.ts` and `admin/src/app/services/about.service.spec.ts` by updating expectations for delete operations to `toBeUndefined()`.
+- Silenced expected `console.error` in `BlogContentDetailsComponent` test suite for cleaner output.
+- Fixed Admin E2E race condition by adding request cancellation logic (via `requestId`) to `admin/src/app/pages/blog/blog-content-list/blog.component.ts`.
+- Fixed Marketing E2E scroll/URL issue by increasing auto-scroll timeout in `AllSectionsComponent`.

@@ -1,0 +1,52 @@
+{
+  "name": "admin",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "jest",
+    "build-localhost": "npm run build-admin-localhost",
+    "build-admin-localhost": "ng build --configuration localhost --base-href /admin/",
+    "build-admin-remotedev": "ng build --configuration remotedev",
+    "build-admin-prod": "ng build --configuration production"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^21.1.0",
+    "@angular/common": "^21.1.0",
+    "@angular/compiler": "^21.1.0",
+    "@angular/core": "^21.1.0",
+    "@angular/forms": "^21.1.0",
+    "@angular/platform-browser": "^21.1.0",
+    "@angular/platform-browser-dynamic": "^21.1.0",
+    "@angular/router": "^21.1.0",
+    "@ngrx/signals": "^21.0.1",
+    "@tailwindcss/postcss": "^4.1.18",
+    "@tailwindcss/typography": "^0.5.19",
+    "ngrx": "^0.0.1-security",
+    "ngx-markdown": "^21.1.0",
+    "postcss": "^8.5.6",
+    "rxjs": "~7.8.0",
+    "tailwindcss": "^4.1.18",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@analogjs/vite-plugin-angular": "^2.2.2",
+    "@angular-devkit/build-angular": "^21.1.0",
+    "@angular/cli": "^21.1.0",
+    "@angular/compiler-cli": "^21.1.0",
+    "@testing-library/angular": "^17.4.0",
+    "@testing-library/jest-dom": "^6.4.6",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
+    "autoprefixer": "^10.4.23",
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0",
+    "jest-preset-angular": "^16.0.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.1"
+  }
+}

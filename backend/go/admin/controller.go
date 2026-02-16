@@ -1,0 +1,450 @@
+package admin
+
+import (
+	"bytes"
+	"encoding/json"
+	"io"
+	"net/http"
+	"strconv"
+
+	_ "github.com/lib/pq"
+	"github.com/nathanielBellamy/my_website/backend/go/auth"
+	"github.com/nathanielBellamy/my_website/backend/go/models"
+	"github.com/rs/zerolog"
+)
+
+
+type AdminController struct {
+	Log     *zerolog.Logger
+	Service Service
+}
+
+func NewAdminController(log *zerolog.Logger, service Service) *AdminController {
+	return &AdminController{
+		Log:     log,
+		Service: service,
+	}
+}
+
+func getFilterOptions(r *http.Request) models.FilterOptions {
+	pageStr := r.URL.Query().Get("page")
+	limitStr := r.URL.Query().Get("limit")
+	status := r.URL.Query().Get("status")
+	sortField := r.URL.Query().Get("sort")
+	sortOrder := r.URL.Query().Get("order")
+
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page <= 0 {
+		page = 1
+	}
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit <= 0 {
+		limit = 10
+	}
+
+	if status != "current" && status != "inactive" && status != "past" && status != "future" {
+		status = "current"
+	}
+
+	return models.FilterOptions{
+		Page:      page,
+		Limit:     limit,
+		Status:    status,
+		SortField: sortField,
+		SortOrder: sortOrder,
+	}
+}
+
+func (ac *AdminController) sendJSON(w http.ResponseWriter, data interface{}) {
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		ac.Log.Error().Err(err).Msg("Error encoding response")
+	}
+}
+
+// Blog
+func (ac *AdminController) GetAllBlogPostsHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllBlogPostsHandler Hit")
+	opts := getFilterOptions(r)
+	posts, total, err := ac.Service.GetAllBlogPosts(opts)
+	if err != nil {
+		ac.Log.Error().Err(err).Msg("Error fetching blog posts")
+		http.Error(w, "Error fetching blog posts", http.StatusInternalServerError)
+		return
+	}
+	resp := models.PaginatedResponse[models.BlogPost]{
+		Data:  posts,
+		Total: total,
+		Page:  opts.Page,
+		Limit: opts.Limit,
+	}
+	ac.sendJSON(w, resp)
+}
+
+func (ac *AdminController) GetBlogPostByIDHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetBlogPostByIDHandler Hit")
+	id := r.PathValue("id")
+	ac.Log.Info().Str("id", id).Msg("Fetching blog post by ID")
+	post, err := ac.Service.GetBlogPostByID(id)
+	if err != nil {
+		ac.Log.Error().Err(err).Str("id", id).Msg("Error fetching blog post")
+		http.Error(w, "Error fetching blog post", http.StatusInternalServerError)
+		return
+	}
+
+	if post == nil {
+		ac.Log.Warn().Str("id", id).Msg("Blog post not found")
+		http.Error(w, "Blog post not found", http.StatusNotFound)
+		return
+	}
+
+	ac.Log.Info().Str("id", id).Interface("post", post).Msg("Successfully fetched blog post")
+	ac.sendJSON(w, post)
+}
+
+func (ac *AdminController) GetBlogPostsByTagHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetBlogPostsByTagHandler Hit")
+	tag := r.PathValue("tag")
+	opts := getFilterOptions(r)
+
+	posts, err := ac.Service.GetBlogPostsByTag(tag, opts.Page, opts.Limit)
+	if err != nil {
+		http.Error(w, "Error fetching blog posts by tag", http.StatusInternalServerError)
+		return
+	}
+
+	ac.sendJSON(w, posts)
+}
+
+func (ac *AdminController) CreateBlogPostHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateBlogPostHandler Hit")
+
+	var dto models.CreateBlogPostDTO
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		ac.Log.Error().Err(err).Msg("Error reading request body")
+		http.Error(w, "Error reading request body", http.StatusInternalServerError)
+		return
+	}
+	defer r.Body.Close()
+
+	decoder := json.NewDecoder(bytes.NewReader(bodyBytes))
+	if err := decoder.Decode(&dto); err != nil {
+		ac.Log.Error().Err(err).RawJSON("body", bodyBytes).Msg("Invalid request body")
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// Map DTO to model
+	post := &models.BlogPost{
+		Title:         dto.Title,
+		Ordering:      dto.Order,
+		Content:       dto.Content,
+		ActivatedAt:   dto.ActivatedAt,
+		DeactivatedAt: dto.DeactivatedAt,
+	}
+	if dto.Author != nil {
+		post.Author = &models.Author{Name: dto.Author.Name}
+	}
+	if len(dto.Tags) > 0 {
+		post.Tags = make([]*models.Tag, len(dto.Tags))
+		for i, tagDTO := range dto.Tags {
+			post.Tags[i] = &models.Tag{Name: tagDTO.Name}
+		}
+	}
+
+	newPost, err := ac.Service.CreateBlogPost(post)
+	if err != nil {
+		http.Error(w, "Error creating blog post", http.StatusInternalServerError)
+		return
+	}
+
+	ac.sendJSON(w, newPost)
+}
+
+
+func (ac *AdminController) UpdateBlogPostHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateBlogPostHandler Hit")
+	id := r.PathValue("id")
+	var post models.BlogPost
+	if err := json.NewDecoder(r.Body).Decode(&post); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+	post.ID = id
+
+	updatedPost, err := ac.Service.UpdateBlogPost(&post)
+	if err != nil {
+		http.Error(w, "Error updating blog post", http.StatusInternalServerError)
+		return
+	}
+
+	ac.sendJSON(w, updatedPost)
+}
+
+func (ac *AdminController) DeleteBlogPostHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("DeleteBlogPostHandler Hit")
+	id := r.PathValue("id")
+
+	if err := ac.Service.DeleteBlogPost(id); err != nil {
+		http.Error(w, "Error deleting blog post", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// Home
+func (ac *AdminController) GetAllHomeContentHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllHomeContentHandler Hit")
+	opts := getFilterOptions(r)
+	content, total, err := ac.Service.GetAllHomeContent(opts)
+	if err != nil {
+		http.Error(w, "Error fetching home content", http.StatusInternalServerError)
+		return
+	}
+	resp := models.PaginatedResponse[models.HomeContent]{
+		Data:  content,
+		Total: total,
+		Page:  opts.Page,
+		Limit: opts.Limit,
+	}
+	ac.sendJSON(w, resp)
+}
+
+func (ac *AdminController) GetHomeContentByIDHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetHomeContentByIDHandler Hit")
+	id := r.PathValue("id")
+	content, err := ac.Service.GetHomeContentByID(id)
+	if err != nil {
+		http.Error(w, "Error fetching home content", http.StatusInternalServerError)
+		return
+	}
+
+	if content == nil {
+		http.Error(w, "Home content not found", http.StatusNotFound)
+		return
+	}
+
+	ac.sendJSON(w, content)
+}
+
+func (ac *AdminController) CreateHomeContentHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateHomeContentHandler Hit")
+	var content models.HomeContent
+	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	newContent, err := ac.Service.CreateHomeContent(&content)
+	if err != nil {
+		http.Error(w, "Error creating home content", http.StatusInternalServerError)
+		return
+	}
+
+	ac.sendJSON(w, newContent)
+}
+
+func (ac *AdminController) UpdateHomeContentHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateHomeContentHandler Hit")
+	id := r.PathValue("id")
+	var content models.HomeContent
+	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+	content.ID = id
+
+	updatedContent, err := ac.Service.UpdateHomeContent(&content)
+	if err != nil {
+		http.Error(w, "Error updating home content", http.StatusInternalServerError)
+		return
+	}
+
+	ac.sendJSON(w, updatedContent)
+}
+
+func (ac *AdminController) DeleteHomeContentHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("DeleteHomeContentHandler Hit")
+	id := r.PathValue("id")
+
+	if err := ac.Service.DeleteHomeContent(id); err != nil {
+		http.Error(w, "Error deleting home content", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// GrooveJr
+func (ac *AdminController) GetAllGrooveJrContentHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllGrooveJrContentHandler Hit")
+	opts := getFilterOptions(r)
+	content, total, err := ac.Service.GetAllGrooveJrContent(opts)
+	if err != nil {
+		http.Error(w, "Error fetching groove-jr content", http.StatusInternalServerError)
+		return
+	}
+	resp := models.PaginatedResponse[models.GrooveJrContent]{
+		Data:  content,
+		Total: total,
+		Page:  opts.Page,
+		Limit: opts.Limit,
+	}
+	ac.sendJSON(w, resp)
+}
+
+func (ac *AdminController) GetGrooveJrContentByIDHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetGrooveJrContentByIDHandler Hit")
+	id := r.PathValue("id")
+	content, err := ac.Service.GetGrooveJrContentByID(id)
+	if err != nil {
+		http.Error(w, "Error fetching groove-jr content", http.StatusInternalServerError)
+		return
+	}
+
+	if content == nil {
+		http.Error(w, "GrooveJr content not found", http.StatusNotFound)
+		return
+	}
+
+	ac.sendJSON(w, content)
+}
+
+func (ac *AdminController) CreateGrooveJrContentHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateGrooveJrContentHandler Hit")
+	var content models.GrooveJrContent
+	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	newContent, err := ac.Service.CreateGrooveJrContent(&content)
+	if err != nil {
+		http.Error(w, "Error creating groove-jr content", http.StatusInternalServerError)
+		return
+	}
+
+	ac.sendJSON(w, newContent)
+}
+
+func (ac *AdminController) UpdateGrooveJrContentHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateGrooveJrContentHandler Hit")
+	id := r.PathValue("id")
+	var content models.GrooveJrContent
+	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+	content.ID = id
+
+	updatedContent, err := ac.Service.UpdateGrooveJrContent(&content)
+	if err != nil {
+		http.Error(w, "Error updating groove-jr content", http.StatusInternalServerError)
+		return
+	}
+
+	ac.sendJSON(w, updatedContent)
+}
+
+func (ac *AdminController) DeleteGrooveJrContentHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("DeleteGrooveJrContentHandler Hit")
+	id := r.PathValue("id")
+
+	if err := ac.Service.DeleteGrooveJrContent(id); err != nil {
+		http.Error(w, "Error deleting groove-jr content", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// About
+func (ac *AdminController) GetAllAboutContentHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllAboutContentHandler Hit")
+	opts := getFilterOptions(r)
+	content, total, err := ac.Service.GetAllAboutContent(opts)
+	if err != nil {
+		http.Error(w, "Error fetching about content", http.StatusInternalServerError)
+		return
+	}
+	resp := models.PaginatedResponse[models.AboutContent]{
+		Data:  content,
+		Total: total,
+		Page:  opts.Page,
+		Limit: opts.Limit,
+	}
+	ac.sendJSON(w, resp)
+}
+
+func (ac *AdminController) GetAboutContentByIDHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAboutContentByIDHandler Hit")
+	id := r.PathValue("id")
+	content, err := ac.Service.GetAboutContentByID(id)
+	if err != nil {
+		http.Error(w, "Error fetching about content", http.StatusInternalServerError)
+		return
+	}
+
+	if content == nil {
+		http.Error(w, "About content not found", http.StatusNotFound)
+		return
+	}
+
+	ac.sendJSON(w, content)
+}
+
+func (ac *AdminController) CreateAboutContentHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateAboutContentHandler Hit")
+	var content models.AboutContent
+	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	newContent, err := ac.Service.CreateAboutContent(&content)
+	if err != nil {
+		http.Error(w, "Error creating about content", http.StatusInternalServerError)
+		return
+	}
+
+	ac.sendJSON(w, newContent)
+}
+
+func (ac *AdminController) UpdateAboutContentHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateAboutContentHandler Hit")
+	id := r.PathValue("id")
+	var content models.AboutContent
+	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+	content.ID = id
+
+	updatedContent, err := ac.Service.UpdateAboutContent(&content)
+	if err != nil {
+		http.Error(w, "Error updating about content", http.StatusInternalServerError)
+		return
+	}
+
+	ac.sendJSON(w, updatedContent)
+}
+
+func (ac *AdminController) DeleteAboutContentHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("DeleteAboutContentHandler Hit")
+	id := r.PathValue("id")
+
+	if err := ac.Service.DeleteAboutContent(id); err != nil {
+		http.Error(w, "Error deleting about content", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// AdminFileServer serves static files for the admin site, using the SpaHandler to handle client-side routing.
+func (ac *AdminController) AdminFileServer() http.Handler {
+	handler := auth.SpaHandler("build/admin/browser", "index.html")
+	return http.StripPrefix("/admin/", auth.LogClientIp("/admin/", ac.Log, handler))
+}

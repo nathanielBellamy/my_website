@@ -1,0 +1,155 @@
+<form
+  class="space-y-8 divide-y divide-gray-200"
+  [formGroup]="blogForm"
+  (ngSubmit)="saveForm()">
+  <div class="space-y-8 divide-y divide-gray-200">
+    <div>
+      <div>
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+          Blog Post
+        </h3>
+        <p class="mt-1 text-sm text-gray-500">
+          This information will be displayed publicly so be careful what you share.
+        </p>
+      </div>
+
+      <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+        <div class="sm:col-span-4">
+          <label for="title" class="block text-sm font-medium text-gray-700">
+            Title
+          </label>
+          <div class="mt-1">
+            <input
+              type="text"
+              id="title"
+              formControlName="title"
+              data-testid="input-title"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="order" class="block text-sm font-medium text-gray-700">
+            Order
+          </label>
+          <div class="mt-1">
+            <input
+              type="number"
+              id="order"
+              formControlName="order"
+              data-testid="input-order"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+          </div>
+        </div>
+
+        <div class="sm:col-span-6">
+          <label for="content" class="block text-sm font-medium text-gray-700">
+            Content
+          </label>
+          <div class="mt-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <textarea
+                id="content"
+                formControlName="content"
+                data-testid="input-content"
+                rows="10"
+                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"></textarea>
+            </div>
+            <div class="prose dark:prose-invert border rounded-md p-2">
+              <markdown [data]="blogForm.get('content')?.value"></markdown>
+            </div>
+          </div>
+          <p class="mt-2 text-sm text-gray-500">
+            Write a few sentences about this post.
+          </p>
+        </div>
+
+        <div class="sm:col-span-4" formGroupName="author">
+          <label for="authorName" class="block text-sm font-medium text-gray-700">
+            Author
+          </label>
+          <div class="mt-1">
+            <input
+              type="text"
+              id="authorName"
+              formControlName="name"
+              data-testid="input-author-name"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+          </div>
+        </div>
+
+        <div class="sm:col-span-4">
+          <label for="tags" class="block text-sm font-medium text-gray-700">
+            Tags (comma-separated)
+          </label>
+          <div class="mt-1">
+            <input
+              type="text"
+              id="tags"
+              formControlName="tags"
+              data-testid="input-tags"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+          </div>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label for="activatedAt" class="block text-sm font-medium text-gray-700">
+            Activation Time
+          </label>
+          <div class="mt-1">
+            <input
+              type="datetime-local"
+              id="activatedAt"
+              formControlName="activatedAt"
+              data-testid="input-activatedAt"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+          </div>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label for="deactivatedAt" class="block text-sm font-medium text-gray-700">
+            Deactivation Time
+          </label>
+          <div class="mt-1">
+            <input
+              type="datetime-local"
+              id="deactivatedAt"
+              formControlName="deactivatedAt"
+              data-testid="input-deactivatedAt"
+              class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pt-5">
+    <div class="flex justify-end">
+      @if (blogForm.errors?.['dateRangeInvalid']) {
+        <p class="text-red-500 text-sm mr-4">
+          Deactivation time must be after activation time.
+        </p>
+      }
+      @if (blogForm.invalid && !blogForm.errors?.['dateRangeInvalid']) {
+        <p class="text-red-500 text-sm mr-4">
+          Please fill out all required fields.
+        </p>
+      }
+      <button
+        type="button"
+        (click)="onCancel()"
+        data-testid="button-cancel"
+        class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        Cancel
+      </button>
+      <button
+        type="submit"
+        [disabled]="blogForm.invalid"
+        data-testid="button-save"
+        class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        Save
+      </button>
+    </div>
+  </div>
+
+</form>

@@ -1,0 +1,87 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+  <div class="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">
+      Admin Login
+    </h2>
+
+    @if (error()) {
+      <div class="mb-4 p-3 bg-red-100 text-red-700 rounded border border-red-200">
+        {{ error() }}
+      </div>
+    }
+
+    @if (step() === 'password') {
+      <form (submit)="submitPassword(); $event.preventDefault()">
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+            Admin Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            [(ngModel)]="password"
+            name="password"
+            class="w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter Admin Password"
+            required
+            [disabled]="loading()"
+            autofocus
+          />
+        </div>
+        <button
+          type="submit"
+          [disabled]="loading() || !password()"
+          class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+        >
+          {{ loading() ? 'Validating...' : 'Next' }}
+        </button>
+      </form>
+    } @else if (step() === 'request') {
+      <div class="mb-4">
+        <p class="text-gray-600 mb-4 text-center">
+          Click the button below to send an authentication code to the administrator email on file.
+        </p>
+        <button
+          (click)="requestOtp()"
+          [disabled]="loading()"
+          class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+        >
+          {{ loading() ? 'Sending...' : 'Send Admin OTP' }}
+        </button>
+      </div>
+    } @else {
+      <form (submit)="login(); $event.preventDefault()">
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="otp">
+            One-Time Passcode
+          </label>
+          <input
+            id="otp"
+            type="text"
+            [(ngModel)]="otp"
+            name="otp"
+            class="w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="123456"
+            required
+            [disabled]="loading()"
+            autofocus
+          />
+        </div>
+        <button
+          type="submit"
+          [disabled]="loading() || !otp()"
+          class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50"
+        >
+          {{ loading() ? 'Verifying...' : 'Login' }}
+        </button>
+        <button
+          type="button"
+          (click)="step.set('request')"
+          class="w-full mt-4 text-sm text-blue-600 hover:underline"
+        >
+          Back
+        </button>
+      </form>
+    }
+  </div>
+</div>

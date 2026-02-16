@@ -1,27 +1,32 @@
 .DS_Store
+**/node_modules/**
 
 # env
 config.env
+
 backend/go/.env.prod
 backend/go/.env.remotedev
 
 # Logs
-frontend/logs
-frontend/*.log
-frontend/npm-debug.log*
-frontend/yarn-debug.log*
-frontend/yarn-error.log*
-frontend/pnpm-debug.log*
-frontend/lerna-debug.log*
+backups/
+log/
+old-site/logs
+old-site/*.log
+old-site/npm-debug.log*
+old-site/yarn-debug.log*
+old-site/yarn-error.log*
+old-site/pnpm-debug.log*
+old-site/lerna-debug.log*
 
-# frontend
-frontend/.env.prod
-frontend/.env.remotedev
+# old-site
+old-site/.env.prod
+old-site/.env.remotedev
 
-frontend/node_modules
-frontend/dist
-frontend/dist-ssr
-frontend/*.local
+old-site/node_modules
+old-site/dist
+old-site/dist-ssr
+old-site/*.local
+old-site/pkg/**
 
 # auth
 auth/dev/node_modules
@@ -32,15 +37,16 @@ dist/*
 build/*
 
 # Editor directories and files
-frontend/.idea
-frontend/*.suo
-frontend/*.ntvs*
-frontend/*.njsproj
-frontend/*.sln
-frontend/*.sw?
+old-site/.idea
+old-site/*.suo
+old-site/*.ntvs*
+old-site/*.njsproj
+old-site/*.sln
+old-site/*.sw?
 
 # rust build
-frontend/src-rust/target/
+old-site/src-rust/target/
+old-site/src-rust/give_me_a_sine/
 
 # spec
 spec/node_modules

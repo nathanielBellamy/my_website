@@ -1,0 +1,11 @@
+.infinite-scroll-container {
+  padding: 1rem;
+}
+
+.loading-indicator,
+.all-loaded-indicator {
+  text-align: center;
+  padding: 1rem;
+  font-style: italic;
+  color: #888;
+}

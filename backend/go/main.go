@@ -1,200 +1,197 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
+	"time"
 
-	"github.com/joho/godotenv"
+	"github.com/nathanielBellamy/my_website/backend/go/admin"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
+	"github.com/nathanielBellamy/my_website/backend/go/config"
+	"github.com/nathanielBellamy/my_website/backend/go/db"
 	"github.com/nathanielBellamy/my_website/backend/go/env"
+	"github.com/nathanielBellamy/my_website/backend/go/interfaces"
+	"github.com/nathanielBellamy/my_website/backend/go/marketing"
+	"github.com/nathanielBellamy/my_website/backend/go/models"
+	"github.com/nathanielBellamy/my_website/backend/go/old_site"
 	"github.com/nathanielBellamy/my_website/backend/go/websocket"
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"github.com/rs/zerolog"
+	"github.com/go-pg/pg/v10/orm"
 )
 
 // MODE=<mode> ./main
 func main() {
-    // init log
-    file, err := os.Create("log.txt")
-    if err != nil {
-      fmt.Printf("Failed creating log file: %s", err)
-    }
-    log := zerolog.New(file).With().Timestamp().Logger()
+	// init log
+	log := zerolog.New(os.Stdout).With().Timestamp().Logger()
 
-    // determine runtime env 
-    mode := os.Getenv("MODE")
-    if mode == "" {
-      mode = "localhost"
-    }
+	// determine runtime env
+	mode := os.Getenv("MODE")
+	if mode == "" {
+		mode = "localhost"
+		if err := os.Setenv("MODE", mode); err != nil {
+			log.Warn().Err(err).Msg("Failed to set MODE environment variable")
+		}
+	}
 
-    // read env file
-    log.Info().
-        Msg("Loading ENV")
-    
-    envErr := godotenv.Load(".env." + mode)
-    if envErr != nil {
-      log.Fatal().
-          Err(envErr).
-          Msg("Error loading .env file")
-    }
+	// read env file
+	log.Info().
+		Msg("Loading ENV")
 
-    log.Info().
-        Str("mode", mode).
-        Msg("Runtime Env")
+	cfg, err := config.NewConfig(mode)
+	if err != nil {
+		log.Fatal().
+			Err(err).
+			Msg("Error loading config")
+	}
 
-    cookieJar := cmap.New[auth.Cookie]()
+	log.Info().
+		Str("mode", mode).
+		Msg("Runtime Env")
 
-    log.Info().
-        Msg("Establishing Routes")
+	dbClient, err := db.NewDBClient(cfg)
+	if err != nil {
+		log.Fatal().
+			Err(err).
+			Msg("Error creating DB client")
+	}
 
-    SetupRoutes(&cookieJar, &log)
+	orm.RegisterTable((*models.BlogPostTag)(nil))
 
-    if err := http.ListenAndServe(":8080", nil); err != nil {
-      log.Fatal().
-          Msg("UnableToServe")
-    }
+	cookieJar := cmap.New[auth.Cookie]()
 
-    log.Info().
-        Msg("Now serving on 8080")
+	log.Info().
+		Msg("Establishing Routes")
+
+	feedPool := websocket.NewPool(&log)
+	wasmPool := websocket.NewPool(&log)
+	go feedPool.StartFeed()
+	go wasmPool.StartWasm()
+
+	SetupRoutes(http.DefaultServeMux, &cookieJar, &log, feedPool, wasmPool, db.NewPgDBAdapter(dbClient))
+
+	// Create HTTP server with proper timeouts to prevent resource exhaustion
+	server := &http.Server{
+		Addr:         ":8080",
+		Handler:      nil, // Use DefaultServeMux
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+
+	log.Info().
+		Msg("Starting server on :8080")
+
+	if err := server.ListenAndServe(); err != nil {
+		log.Fatal().
+			Err(err).
+			Msg("UnableToServe")
+	}
 }
 
-func SetupRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
-    mode := os.Getenv("MODE")
-    if env.IsProd(mode) {
-      SetupProdRoutes()
-    } else if env.IsRemotedev(mode) {
-      SetupRemotedevRoutes(cookieJar, log)
-    } else {
-      SetupLocalhostRoutes(cookieJar, log)
-    }
+func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, feedPool *websocket.Pool, wasmPool *websocket.Pool, db interfaces.PgxDB) {
+	mode := os.Getenv("MODE")
+	oldSiteController := old_site.NewOldSiteController(cookieJar, log, feedPool, wasmPool)
 
-    SetupBaseRoutes(cookieJar, log)
+	marketingService := marketing.NewService(db)
+	marketingController := marketing.NewMarketingController(log, marketingService)
+
+	adminService := admin.NewService(db, log)
+	adminController := admin.NewAdminController(log, adminService)
+
+	SetupBaseRoutes(mux, cookieJar, log, oldSiteController, marketingController, adminController)
+
+	if env.IsProd(mode) {
+		SetupProdRoutes(mux, cookieJar, log, marketingController, adminController, oldSiteController, marketing.GetMarketingFileServerNoAuth())
+	} else if env.IsRemotedev(mode) {
+		SetupRemotedevRoutes(mux, cookieJar, log, oldSiteController, adminController, marketing.GetMarketingFileServerNoAuth())
+	} else {
+		SetupLocalhostRoutes(mux, cookieJar, log, oldSiteController, adminController, marketing.GetMarketingFileServerNoAuth())
+	}
 }
 
-func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
-  mode := os.Getenv("MODE")
-  if env.IsProd(mode) {
-    fs := http.FileServer(http.Dir("frontend"))
-    http.Handle("/", auth.LogClientIp("/", log, fs) )
-  }
+func SetupBaseRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, marketingController *marketing.MarketingController, adminController *admin.AdminController) {
+	log.Info().
+		Msg("Setting up BaseRoutes")
 
-  // setup recaptcha
-  http.HandleFunc("/recaptcha", func (w http.ResponseWriter, r *http.Request) {
-    ip := auth.GetClientIpAddr(r)
-    log.Info().
-        Str("ip", ip).
-        Msg("Recaptcha Endpoint Hit")
+	// old-site routes
+	mux.HandleFunc("/old-site/recaptcha", oldSiteController.RecaptchaHandler)
+	mux.HandleFunc("/old-site/public-square-feed-ws", oldSiteController.PublicSquareFeedWsHandler)
+	mux.HandleFunc("/old-site/public-square-wasm-ws", oldSiteController.PublicSquareWasmWsHandler)
 
-    res := auth.ValidateRecaptcha(r, log)
-    log.Info().
-        Str("ip", ip).
-        Bool("res", res).
-        Msg("ValidateRecaptcha")
+	// marketing routes
+	// Blog
+	mux.HandleFunc("GET /api/marketing/blog", marketingController.GetAllBlogPostsHandler)
+	mux.HandleFunc("GET /api/marketing/blog/{id}", marketingController.GetBlogPostByIDHandler)
+	mux.HandleFunc("GET /api/marketing/blog/tag/{tag}", marketingController.GetBlogPostsByTagHandler)
 
-    if res {
-      auth.SetRecaptchaCookieOnClient(w, cookieJar, log)
+	// Home
+	mux.HandleFunc("GET /api/marketing/home", marketingController.GetAllHomeContentHandler)
+	mux.HandleFunc("GET /api/marketing/home/{id}", marketingController.GetHomeContentByIDHandler)
 
-      w.WriteHeader(http.StatusOK)
-      w.Write([]byte("OK"))
-    } else {
-      w.WriteHeader(http.StatusForbidden)
-      w.Write([]byte("NOT OK"))
-    }
-  })
+	// GrooveJr
+	mux.HandleFunc("GET /api/marketing/groovejr", marketingController.GetAllGrooveJrContentHandler)
+	mux.HandleFunc("GET /api/marketing/groovejr/{id}", marketingController.GetGrooveJrContentByIDHandler)
 
-  feedPool := websocket.NewPool(log)
-  wasmPool := websocket.NewPool(log)
-  go feedPool.StartFeed()
-  go wasmPool.StartWasm()
-  http.HandleFunc("/public-square-feed-ws", func(w http.ResponseWriter, r *http.Request) {
-    ip := auth.GetClientIpAddr(r)
-    if !env.IsProd(mode) {
-      // localhost and remote dev require basic login
-      validDev := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-      validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-      log.Info().
-          Str("ip", ip).
-          Bool("validDev", validDev).
-          Bool("validRecaptcha", validRecaptcha).
-          Msg("PS FEED WS")
+	// About
+	mux.HandleFunc("GET /api/marketing/about", marketingController.GetAllAboutContentHandler)
+	mux.HandleFunc("GET /api/marketing/about/{id}", marketingController.GetAboutContentByIDHandler)
 
-      if validDev && validRecaptcha {
-        websocket.ServeFeedWs(feedPool, w, r, log)
-      } else {
-        auth.RedirectToDevAuth(w, r, log)
-      }
-    } else {
-      // prod is public 
-      // but protected by recaptcha
-      validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-      log.Info().
-          Str("ip", ip).
-          Bool("validRecaptcha", validRecaptcha).
-          Msg("PS FEED WS")
+	// admin routes
+	// Blog
+	mux.Handle("GET /api/admin/blog", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllBlogPostsHandler)))
+	mux.Handle("GET /api/admin/blog/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetBlogPostByIDHandler)))
+	mux.Handle("GET /api/admin/blog/tag/{tag}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetBlogPostsByTagHandler)))
+	mux.Handle("POST /api/admin/blog", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateBlogPostHandler)))
+	mux.Handle("PUT /api/admin/blog/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateBlogPostHandler)))
+	mux.Handle("DELETE /api/admin/blog/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteBlogPostHandler)))
 
-      if validRecaptcha {
-        websocket.ServeFeedWs(feedPool, w, r, log)
-      } else {
-        auth.RedirectToHome(w, r, log)
-      }
-    }
-  })
-  http.HandleFunc("/public-square-wasm-ws", func(w http.ResponseWriter, r *http.Request) {
-    ip := auth.GetClientIpAddr(r)
-    mode := os.Getenv("MODE")
-    if !env.IsProd(mode) {
-      // localhost and remote dev require basic login
-      validDev := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-      validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-      log.Info().
-          Str("ip", ip).
-          Bool("validDev", validDev).
-          Bool("validRecaptcha", validRecaptcha).
-          Msg("PS WASM WS")
+	// Home
+	mux.Handle("GET /api/admin/home", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllHomeContentHandler)))
+	mux.Handle("GET /api/admin/home/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetHomeContentByIDHandler)))
+	mux.Handle("POST /api/admin/home", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateHomeContentHandler)))
+	mux.Handle("PUT /api/admin/home/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateHomeContentHandler)))
+	mux.Handle("DELETE /api/admin/home/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteHomeContentHandler)))
 
-      if validDev && validRecaptcha {
-        websocket.ServeWasmWs(wasmPool, w, r, log)
-      } else {
-        auth.RedirectToDevAuth(w, r, log)
-      }
-    } else {
-      // prod is public 
-      // but protected by recaptcha
-      validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, cookieJar, log)
-      log.Info().
-          Str("ip", ip).
-          Bool("validRecaptcha", validRecaptcha).
-          Msg("PS WASM WS")
+	// GrooveJr
+	mux.Handle("GET /api/admin/groovejr", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllGrooveJrContentHandler)))
+	mux.Handle("GET /api/admin/groovejr/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetGrooveJrContentByIDHandler)))
+	mux.Handle("POST /api/admin/groovejr", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateGrooveJrContentHandler)))
+	mux.Handle("PUT /api/admin/groovejr/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateGrooveJrContentHandler)))
+	mux.Handle("DELETE /api/admin/groovejr/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteGrooveJrContentHandler)))
 
-      if validRecaptcha {
-        websocket.ServeWasmWs(wasmPool, w, r, log)
-      } else {
-        auth.RedirectToHome(w, r, log)
-      }
-    }
-  })
+	// About
+	mux.Handle("GET /api/admin/about", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllAboutContentHandler)))
+	mux.Handle("GET /api/admin/about/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAboutContentByIDHandler)))
+	mux.Handle("POST /api/admin/about", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateAboutContentHandler)))
+	mux.Handle("PUT /api/admin/about/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateAboutContentHandler)))
+	mux.Handle("DELETE /api/admin/about/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteAboutContentHandler)))
 }
 
-func SetupRemotedevRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
-  auth.SetupDevAuth(cookieJar, log)
+func SetupRemotedevRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, adminController *admin.AdminController, marketingFileServer http.Handler) {
+	auth.SetupAdminAuthV2(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer(), marketingFileServer)
 }
 
-func SetupLocalhostRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger) {
-  auth.SetupDevAuth(cookieJar, log)
+func SetupLocalhostRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, adminController *admin.AdminController, marketingFileServer http.Handler) {
+	auth.SetupAdminAuthV2(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer(), marketingFileServer)
 }
 
-func SetupProdRoutes() {
-  // TODO: maybe Set cookie when user goes through ep warning
+func SetupProdRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, marketingController *marketing.MarketingController, adminController *admin.AdminController, oldSiteController *old_site.OldSiteController, marketingFileServer http.Handler) {
+	log.Info().
+		Msg("Setting up ProdRoutes")
+
+	// Admin App (auth-protected, /admin/ prefix), Old Site (/old-site/), and Marketing App (/)
+	// are all handled by SetupAdminAuth for consistency across environments.
+	auth.SetupAdminAuthV2(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer(), auth.LogClientIp("/", log, marketingFileServer))
 }
 
 func _SetHeaders(handler http.Handler) http.Handler {
-  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-    // this method wound up being superfluous for what we needed at the time of writing
-    // but it's nice to have the infrastructure established
-    
-    // w.Header().Set("Content-Type", "text/javascript")
-    // w.Header().Set("Content-Type", "text/html, text/css")
-    handler.ServeHTTP(w,r)
-  })
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// this method wound up being superfluous for what we needed at the time of writing
+		// but it's nice to have the infrastructure established
+
+		// w.Header().Set("Content-Type", "text/javascript")
+		// w.Header().Set("Content-Type", "text/html, text/css")
+		handler.ServeHTTP(w, r)
+	})
 }

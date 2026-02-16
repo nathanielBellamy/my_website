@@ -1,0 +1,8 @@
+<div class="container mx-auto p-4 bg-white shadow-md rounded-lg">
+  @if (grooveJrContent()) {
+    <h2 class="text-3xl font-semibold text-gray-800 mb-6">Edit GrooveJr Content</h2>
+    <app-groove-jr-form [contentData]="grooveJrContent()" (submitForm)="updateContent($event)" (cancel)="goBack()"></app-groove-jr-form>
+  } @else {
+    <p class="text-gray-600 text-lg">Loading GrooveJr content...</p>
+  }
+</div>

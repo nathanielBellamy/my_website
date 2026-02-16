@@ -1,0 +1,130 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  backend-test:
+    name: Backend Tests (Go)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          cache-dependency-path: go.sum
+
+      - name: Run Go Tests
+        run: go test ./backend/go/...
+
+  admin-test:
+    name: Admin SPA Tests (Angular)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: admin/package-lock.json
+
+      - name: Install dependencies
+        run: cd admin && npm ci
+
+      - name: Run Tests
+        run: cd admin && npm test
+
+  marketing-test:
+    name: Marketing SPA Tests (Angular)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: marketing/package-lock.json
+
+      - name: Install dependencies
+        run: cd marketing && npm ci
+
+      - name: Run Tests
+        run: cd marketing && npm test
+
+  e2e-test:
+    name: E2E Tests (Cypress)
+    needs: [backend-test, admin-test, marketing-test]
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mw_db
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: e2e/package-lock.json
+
+      - name: Initialize Database
+        run: |
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+          # Create root role to avoid "role root does not exist" errors
+          PGPASSWORD=postgres psql -h localhost -p 5434 -U postgres -d postgres -c "CREATE ROLE root WITH LOGIN PASSWORD 'root';" || true
+          PGPASSWORD=postgres psql -h localhost -p 5434 -U postgres -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE mw_db TO root;" || true
+          PGPASSWORD=postgres psql -h localhost -p 5434 -U postgres -d mw_db -f database/init.sql
+
+      - name: Build and Start Backend
+        run: |
+          cd backend/go
+          go build -o ../../backend-server main.go
+          cd ../..
+          # Use the root .env.localhost but override DATABASE_URL for the service port
+          export DATABASE_URL=postgres://postgres:postgres@localhost:5434/mw_db?sslmode=disable
+          export MODE=localhost
+          ./backend-server > backend.log 2>&1 &
+          BACKEND_PID=$!
+          echo "Backend started with PID: $BACKEND_PID"
+          # Wait for backend to be ready with increased timeout
+          timeout 120s bash -c 'until curl -sf http://localhost:8080/api/marketing/home > /dev/null 2>&1; do echo "Waiting for backend..."; sleep 3; done' || (echo "Backend failed to start. Logs:" && cat backend.log && exit 1)
+          echo "Backend is ready!"
+
+      - name: Install E2E dependencies
+        run: cd e2e && npm ci
+
+      - name: Run E2E Tests
+        run: ./lifecycle/e2e.sh --env localhost
+        env:
+          MODE: localhost
+          DATABASE_URL: postgres://postgres:postgres@localhost:5434/mw_db?sslmode=disable

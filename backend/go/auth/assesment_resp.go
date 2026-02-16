@@ -25,32 +25,30 @@ package auth
 // }
 
 type AssessmentResp struct {
-  Event AssessmentRespEvent `json:"event"`
-  Name string `json:"name"`
-  RiskAnalysis AssessmentRiskAnalysis `json:"riskAnalysis"`
-  TokenProperties AssessmentTokenProperties `json:"tokenProperties"`
+	Event           AssessmentRespEvent       `json:"event"`
+	Name            string                    `json:"name"`
+	RiskAnalysis    AssessmentRiskAnalysis    `json:"riskAnalysis"`
+	TokenProperties AssessmentTokenProperties `json:"tokenProperties"`
 }
 
 type AssessmentRespEvent struct {
-  ExpectedAction string `json:"expectedAction"`
-  HashedAccountId string `json:"hashedAccountId"`
-  SiteKey string `json:"siteKey"`
-  Token string `json:"token"`
-  UserAgent string `json:"userAgent"`
-  UserIpAddress string `json:"userIpAddress`
+	ExpectedAction  string `json:"expectedAction"`
+	HashedAccountId string `json:"hashedAccountId"`
+	SiteKey         string `json:"siteKey"`
+	Token           string `json:"token"`
+	UserAgent       string `json:"userAgent"`
+	UserIpAddress   string `json:"userIpAddress"`
 }
 
 type AssessmentRiskAnalysis struct {
-   Reasons []string `json:"reasons"`
-   Score float32 `json:"score"`
+	Reasons []string `json:"reasons"`
+	Score   float32  `json:"score"`
 }
 
 type AssessmentTokenProperties struct {
-  Action string `json:"action"`
-  CreateTime string `json:"createTime"`
-  Hostname string `json:"hostname"`
-  InvalidREason string `json:"invalidReason"`
-  valid bool `json:"valid"`
+	Action        string `json:"action"`
+	CreateTime    string `json:"createTime"`
+	Hostname      string `json:"hostname"`
+	InvalidREason string `json:"invalidReason"`
+	Valid         bool   `json:"valid"`
 }
-
-
