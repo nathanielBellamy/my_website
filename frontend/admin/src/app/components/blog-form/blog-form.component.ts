@@ -1,8 +1,9 @@
-import { Component, input, output, EventEmitter, OnInit, inject, signal } from '@angular/core';
+import { Component, input, output, EventEmitter, OnInit, inject, signal, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { BlogPost, Tag } from '../../models/data-models';
 import { MarkdownComponent } from 'ngx-markdown';
 import { BlogService } from '../../services/blog.service';
+import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-blog-form',
@@ -11,7 +12,7 @@ import { BlogService } from '../../services/blog.service';
   templateUrl: './blog-form.component.html',
   styleUrl: './blog-form.component.css',
 })
-export class BlogFormComponent implements OnInit {
+export class BlogFormComponent implements OnInit, OnDestroy {
   post = input<BlogPost | undefined>();
   submitForm = output<BlogPost>();
   cancel = output<void>();
@@ -21,6 +22,9 @@ export class BlogFormComponent implements OnInit {
   blogForm!: FormGroup;
   availableTags = signal<Tag[]>([]);
   tagSearch = signal<string>('');
+
+  private readonly searchSubject = new Subject<string>();
+  private readonly destroy$ = new Subject<void>();
 
   ngOnInit() {
     this.fetchTags();
@@ -42,6 +46,20 @@ export class BlogFormComponent implements OnInit {
       activatedAt: [this.formatDateForInput(initialActivatedAt)],
       deactivatedAt: [this.formatDateForInput(this.post()?.deactivatedAt)],
     }, { validators: this.dateRangeValidator });
+
+    this.searchSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(query => {
+      this.tagSearch.set(query);
+      this.fetchTags();
+    });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   fetchTags() {
@@ -52,8 +70,7 @@ export class BlogFormComponent implements OnInit {
 
   onSearchTags(event: Event) {
       const input = event.target as HTMLInputElement;
-      this.tagSearch.set(input.value);
-      this.fetchTags();
+      this.searchSubject.next(input.value);
   }
 
   addTag(tagName: string) {

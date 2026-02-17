@@ -1,8 +1,9 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, OnDestroy } from '@angular/core';
 import { BlogService } from '../../../services/blog.service';
 import { BlogPost, Tag, FilterOptions } from '../../../models/data-models';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-blog',
@@ -11,7 +12,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './blog.component.html',
   styleUrl: './blog.component.css',
 })
-export class BlogComponent implements OnInit {
+export class BlogComponent implements OnInit, OnDestroy {
   private readonly blogService = inject(BlogService);
   
   // State
@@ -26,11 +27,28 @@ export class BlogComponent implements OnInit {
   selectedTags = signal<string[]>([]);
   tagSearch = signal<string>('');
 
+  private readonly searchSubject = new Subject<string>();
+  private readonly destroy$ = new Subject<void>();
+
   totalPages = computed(() => Math.ceil(this.total() / this.limit()));
 
   ngOnInit() {
     this.fetchTags();
     this.fetchBlogPosts();
+
+    this.searchSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(query => {
+      this.tagSearch.set(query);
+      this.fetchTags();
+    });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   fetchTags() {
@@ -41,8 +59,7 @@ export class BlogComponent implements OnInit {
 
   onSearchTags(event: Event) {
       const input = event.target as HTMLInputElement;
-      this.tagSearch.set(input.value);
-      this.fetchTags();
+      this.searchSubject.next(input.value);
   }
 
   onToggleTag(tagId: string) {

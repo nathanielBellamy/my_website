@@ -1,10 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, OnDestroy } from '@angular/core';
 import { BlogStore } from './blog.store';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { InfiniteScrollComponent } from '../../components/infinite-scroll/infinite-scroll.component';
 import { CardComponent } from '../../components/card/card.component';
 import { Tag } from '../../models/blog-post.model';
+import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-blog',
@@ -12,13 +13,28 @@ import { Tag } from '../../models/blog-post.model';
   imports: [CommonModule, InfiniteScrollComponent, CardComponent],
   templateUrl: './blog.component.html',
 })
-export class BlogComponent implements OnInit {
+export class BlogComponent implements OnInit, OnDestroy {
   protected readonly store = inject(BlogStore);
   private readonly router = inject(Router);
+  private readonly searchSubject = new Subject<string>();
+  private readonly destroy$ = new Subject<void>();
 
   ngOnInit() {
     this.store.loadMore();
     this.store.loadTags();
+
+    this.searchSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(query => {
+      this.store.searchTags(query);
+    });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onScroll() {
@@ -45,7 +61,7 @@ export class BlogComponent implements OnInit {
 
   onSearchTags(event: Event) {
     const input = event.target as HTMLInputElement;
-    this.store.searchTags(input.value);
+    this.searchSubject.next(input.value);
   }
 
   onToggleTag(tagId: string) {
