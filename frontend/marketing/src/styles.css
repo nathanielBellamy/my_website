@@ -20,13 +20,14 @@
 
 @layer base {
   html {
-    @apply w-full overflow-x-hidden;
+    @apply w-full h-full overflow-x-hidden;
   }
   
   body {
-    @apply bg-background text-body-text font-sans w-full min-h-screen;
+    @apply bg-background text-body-text font-sans w-full min-h-full;
     position: relative;
     isolation: isolate;
+    overflow-x: hidden;
   }
 
   body::before,
@@ -47,46 +48,24 @@
     left: -20rem;
   }
 
-    body::after {
-
-      background-color: theme('colors.secondary-accent');
-
-      width: 40rem;
-
-      height: 40rem;
-
-      bottom: -20rem;
-
-      right: -20rem;
-
-    }
-
-  
-
-    .bg-blob-3 {
-
-      position: absolute;
-
-      z-index: -1;
-
-      border-radius: 50%;
-
-      filter: blur(100px);
-
-      opacity: 0.1;
-
-      background-color: theme('colors.vibrant-orange');
-
-      width: 25rem;
-
-      height: 25rem;
-
-      top: 40%;
-
-      right: -10rem;
-
-    }
-
+  body::after {
+    background-color: theme('colors.secondary-accent');
+    width: 40rem;
+    height: 40rem;
+    bottom: -20rem;
+    right: -20rem;
   }
 
-  
+  .bg-blob-3 {
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.1;
+    background-color: theme('colors.vibrant-orange');
+    width: 25rem;
+    height: 25rem;
+    top: 40%;
+    right: -10rem;
+  }
+}
