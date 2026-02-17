@@ -30,7 +30,7 @@ type Message struct {
 var ReadFeed = func(c *Client) {
 	defer func() {
 		c.Pool.Unregister <- c
-		(*c.Conn).Close()
+		_ = (*c.Conn).Close()
 	}()
 
 	for {
@@ -55,7 +55,7 @@ var ReadFeed = func(c *Client) {
 var ReadWasm = func(c *Client) {
 	defer func() {
 		c.Pool.Unregister <- c
-		(*c.Conn).Close()
+		_ = (*c.Conn).Close()
 	}()
 
 	for {

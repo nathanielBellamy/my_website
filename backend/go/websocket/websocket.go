@@ -40,7 +40,7 @@ func WriteSlice(conn *net.Conn, slice []uint8, log *zerolog.Logger) {
 		log.Error().
 			Err(err).
 			Msg("WriteServer SLICE Error")
-		(*conn).Close()
+		_ = (*conn).Close()
 		return
 	}
 }
@@ -51,7 +51,7 @@ func Writer(conn *net.Conn, msg []byte, log *zerolog.Logger) {
 		log.Error().
 			Err(err).
 			Msg("WriteServer MESSAGE Error")
-		(*conn).Close()
+		_ = (*conn).Close()
 		return
 	}
 }

@@ -1,15 +1,19 @@
 package websocket
 
 import (
+	"crypto/rand"
+	"math/big"
+
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/rs/zerolog"
-	"math/rand"
-	"time"
 )
 
 func randInRange(min int, max int) int {
-	rand.Seed(time.Now().UnixNano())
-	return rand.Intn(max-min+1) + min
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max-min+1)))
+	if err != nil {
+		return min
+	}
+	return int(n.Int64()) + min
 }
 
 type Pool struct {
