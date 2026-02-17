@@ -80,13 +80,13 @@ func (s *service) GetBlogPostsByTag(tag string, page, limit int) ([]models.BlogP
 
 func (s *service) GetTags(search string, limit int) ([]models.TagWithUsage, error) {
 	var tags []models.TagWithUsage
-	// We want to select from tags and count usage in blog_post_tags.
-	// Since TagWithUsage embeds Tag, we can select columns for Tag and the extra column.
 	
 	query := s.DB.Model(&tags).
 		ColumnExpr("tag.*").
-		ColumnExpr("count(bpt.blog_post_id) as usage_count").
-		Join("LEFT JOIN blog_post_tags bpt ON bpt.tag_id = tag.id").
+		ColumnExpr("count(bp.id) as usage_count").
+		Join("JOIN blog_post_tags bpt ON bpt.tag_id = tag.id").
+		Join("JOIN blog_posts bp ON bp.id = bpt.blog_post_id").
+		Where("bp.activated_at IS NOT NULL AND bp.activated_at < NOW() AND (bp.deactivated_at IS NULL OR bp.deactivated_at > NOW())").
 		Group("tag.id")
 
 	if search != "" {
