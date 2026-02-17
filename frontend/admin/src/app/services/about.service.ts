@@ -35,6 +35,6 @@ export class AboutService {
   }
 
   async deleteAboutContent(id: string): Promise<void> {
-    await firstValueFrom(this.http.delete<void>(`${this.apiUrl}/${id}`));
+    return await firstValueFrom(this.http.delete<void>(`${this.apiUrl}/${id}`));
   }
 }

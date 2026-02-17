@@ -32,7 +32,6 @@ export class BlogContentDetailsComponent implements OnInit {
       this.blogPost.set(post);
     } catch (err) {
       this.error.set('Failed to load blog post');
-      console.error(err);
     } finally {
       this.loading.set(false);
     }
