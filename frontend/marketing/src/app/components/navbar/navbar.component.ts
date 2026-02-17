@@ -10,6 +10,9 @@ import { RouterLink } from '@angular/router';
     `
       :host {
         display: block;
+        position: sticky;
+        top: 0;
+        z-index: 50;
       }
     `,
   ],
