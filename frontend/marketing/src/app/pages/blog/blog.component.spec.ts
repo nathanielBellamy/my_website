@@ -4,7 +4,7 @@ import { BlogComponent } from './blog.component';
 import { CardComponent } from '../../components/card/card.component';
 import { BlogStore } from './blog.store';
 import { signal, WritableSignal } from '@angular/core';
-import { BlogPost } from '../../models/blog-post.model';
+import { BlogPost, Tag } from '../../models/blog-post.model';
 import { provideRouter } from '@angular/router';
 
 const mockBlogPosts: BlogPost[] = [
@@ -16,13 +16,23 @@ describe('BlogComponent', () => {
   let postsSignal: WritableSignal<BlogPost[]>;
   let loadingSignal: WritableSignal<boolean>;
   let errorSignal: WritableSignal<string | null>;
+  let availableTagsSignal: WritableSignal<Tag[]>;
+  let selectedTagsSignal: WritableSignal<string[]>;
   let loadMoreMock: jest.Mock;
+  let loadTagsMock: jest.Mock;
+  let searchTagsMock: jest.Mock;
+  let toggleTagMock: jest.Mock;
 
   beforeEach(async () => {
     postsSignal = signal([]);
     loadingSignal = signal(false);
     errorSignal = signal(null);
+    availableTagsSignal = signal([]);
+    selectedTagsSignal = signal([]);
     loadMoreMock = jest.fn();
+    loadTagsMock = jest.fn();
+    searchTagsMock = jest.fn();
+    toggleTagMock = jest.fn();
 
     await render(BlogComponent, {
       imports: [CardComponent],
@@ -36,7 +46,12 @@ describe('BlogComponent', () => {
             loading: loadingSignal,
             error: errorSignal,
             allLoaded: signal(false),
+            availableTags: availableTagsSignal,
+            selectedTags: selectedTagsSignal,
             loadMore: loadMoreMock,
+            loadTags: loadTagsMock,
+            searchTags: searchTagsMock,
+            toggleTag: toggleTagMock,
           },
         },
       ],

@@ -7,14 +7,15 @@ import { RouterTestingModule } from '@angular/router/testing';
 describe('BlogComponent', () => {
   let mockBlogService: Partial<BlogService>;
   const mockBlogPosts: BlogPost[] = [
-    { id: '1', title: 'Blog 1', content: 'Content 1', author: { name: 'Author 1' }, tags: [{ id: '1', name: 'tag1' }], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    { id: '2', title: 'Blog 2', content: 'Content 2', author: { name: 'Author 2' }, tags: [{ id: '2', name: 'tag2' }], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    { id: '1', title: 'Blog 1', content: 'Content 1', author: { id: '1', name: 'Author 1' }, tags: [{ id: '1', name: 'tag1' }], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), order: 1 },
+    { id: '2', title: 'Blog 2', content: 'Content 2', author: { id: '2', name: 'Author 2' }, tags: [{ id: '2', name: 'tag2' }], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), order: 2 },
   ];
 
   beforeEach(() => {
     mockBlogService = {
       getAllBlogPosts: jest.fn().mockReturnValue(Promise.resolve({ data: mockBlogPosts, total: mockBlogPosts.length })),
       deleteBlogPost: jest.fn().mockReturnValue(Promise.resolve()),
+      getTags: jest.fn().mockReturnValue(Promise.resolve([])),
     };
   });
 

@@ -13,9 +13,10 @@ import (
 )
 
 type MockMarketingService struct {
-	GetAllBlogPostsFunc      func(page, limit int) ([]models.BlogPost, error)
+	GetAllBlogPostsFunc      func(page, limit int, tags []string) ([]models.BlogPost, error)
 	GetBlogPostByIDFunc      func(id string) (*models.BlogPost, error)
 	GetBlogPostsByTagFunc    func(tag string, page, limit int) ([]models.BlogPost, error)
+	GetTagsFunc              func(search string, limit int) ([]models.TagWithUsage, error)
 	GetAllHomeContentFunc    func(page, limit int) ([]models.HomeContent, error)
 	GetHomeContentByIDFunc   func(id string) (*models.HomeContent, error)
 	GetAllGrooveJrContentFunc func(page, limit int) ([]models.GrooveJrContent, error)
@@ -24,14 +25,17 @@ type MockMarketingService struct {
 	GetAboutContentByIDFunc  func(id string) (*models.AboutContent, error)
 }
 
-func (m *MockMarketingService) GetAllBlogPosts(page, limit int) ([]models.BlogPost, error) {
-	return m.GetAllBlogPostsFunc(page, limit)
+func (m *MockMarketingService) GetAllBlogPosts(page, limit int, tags []string) ([]models.BlogPost, error) {
+	return m.GetAllBlogPostsFunc(page, limit, tags)
 }
 func (m *MockMarketingService) GetBlogPostByID(id string) (*models.BlogPost, error) {
 	return m.GetBlogPostByIDFunc(id)
 }
 func (m *MockMarketingService) GetBlogPostsByTag(tag string, page, limit int) ([]models.BlogPost, error) {
 	return m.GetBlogPostsByTagFunc(tag, page, limit)
+}
+func (m *MockMarketingService) GetTags(search string, limit int) ([]models.TagWithUsage, error) {
+	return m.GetTagsFunc(search, limit)
 }
 func (m *MockMarketingService) GetAllHomeContent(page, limit int) ([]models.HomeContent, error) {
 	return m.GetAllHomeContentFunc(page, limit)
@@ -54,7 +58,7 @@ func (m *MockMarketingService) GetAboutContentByID(id string) (*models.AboutCont
 
 func TestGetAllBlogPostsHandler(t *testing.T) {
 	mockService := &MockMarketingService{
-		GetAllBlogPostsFunc: func(page, limit int) ([]models.BlogPost, error) {
+		GetAllBlogPostsFunc: func(page, limit int, tags []string) ([]models.BlogPost, error) {
 			return []models.BlogPost{{ID: "1", Title: "Test Post"}}, nil
 		},
 	}

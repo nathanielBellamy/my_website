@@ -26,7 +26,7 @@ func TestGetAllBlogPosts(t *testing.T) {
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
 	service := NewService(mockDB)
 
-	posts, err := service.GetAllBlogPosts(1, 10)
+	posts, err := service.GetAllBlogPosts(1, 10, nil)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}

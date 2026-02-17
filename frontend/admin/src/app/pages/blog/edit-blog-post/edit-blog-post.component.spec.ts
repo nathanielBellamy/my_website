@@ -24,6 +24,7 @@ describe('EditBlogPostComponent', () => {
     mockBlogService = {
       getBlogPostById: jest.fn().mockReturnValue(Promise.resolve(mockPost)),
       updateBlogPost: jest.fn().mockReturnValue(Promise.resolve(mockPost)),
+      getTags: jest.fn().mockReturnValue(Promise.resolve([])),
     };
     mockActivatedRoute = {
       snapshot: {

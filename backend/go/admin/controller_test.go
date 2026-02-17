@@ -28,6 +28,7 @@ type MockAdminService struct {
 	CreateBlogPostFunc       func(post *models.BlogPost) (*models.BlogPost, error)
 	UpdateBlogPostFunc       func(post *models.BlogPost) (*models.BlogPost, error)
 	DeleteBlogPostFunc       func(id string) error
+	GetTagsFunc              func(search string, limit int) ([]models.TagWithUsage, error)
 	GetAllHomeContentFunc    func(filter models.FilterOptions) ([]models.HomeContent, int, error)
 	GetHomeContentByIDFunc   func(id string) (*models.HomeContent, error)
 	CreateHomeContentFunc    func(content *models.HomeContent) (*models.HomeContent, error)
@@ -62,6 +63,9 @@ func (m *MockAdminService) UpdateBlogPost(post *models.BlogPost) (*models.BlogPo
 }
 func (m *MockAdminService) DeleteBlogPost(id string) error {
 	return m.DeleteBlogPostFunc(id)
+}
+func (m *MockAdminService) GetTags(search string, limit int) ([]models.TagWithUsage, error) {
+	return m.GetTagsFunc(search, limit)
 }
 func (m *MockAdminService) GetAllHomeContent(filter models.FilterOptions) ([]models.HomeContent, int, error) {
 	return m.GetAllHomeContentFunc(filter)

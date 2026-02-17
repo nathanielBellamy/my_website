@@ -52,6 +52,10 @@ func (mq *MockPgQuery) Column(columns ...string) interfaces.PgxQuerySeter {
 	return mq
 }
 
+func (mq *MockPgQuery) ColumnExpr(expr string, params ...interface{}) interfaces.PgxQuerySeter {
+	return mq
+}
+
 func (mq *MockPgQuery) Relation(name string) interfaces.PgxQuerySeter {
 	return mq
 }
@@ -74,6 +78,10 @@ func (mq *MockPgQuery) Where(query string, params ...interface{}) interfaces.Pgx
 }
 
 func (mq *MockPgQuery) Order(orders ...string) interfaces.PgxQuerySeter {
+	return mq
+}
+
+func (mq *MockPgQuery) Group(columns ...string) interfaces.PgxQuerySeter {
 	return mq
 }
 

@@ -11,6 +11,7 @@ describe('CreateBlogPostComponent', () => {
   beforeEach(() => {
     mockBlogService = {
       createBlogPost: jest.fn().mockReturnValue(Promise.resolve({ id: '1', title: 'New', content: 'Test' })),
+      getTags: jest.fn().mockReturnValue(Promise.resolve([])),
     };
     mockRouter = {
       navigate: jest.fn(),
