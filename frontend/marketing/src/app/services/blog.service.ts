@@ -2,13 +2,14 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom, map } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { BlogPost } from '../models/blog-post.model';
+import { BlogPost, Tag } from '../models/blog-post.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BlogService {
   private readonly apiUrl = `${environment.API_BASE_URL}/marketing/blog`;
+  private readonly tagsUrl = `${environment.API_BASE_URL}/marketing/tags`;
   private readonly http = inject(HttpClient);
 
   // TODO: add route to marketing controller in backend/go/marketing
@@ -29,10 +30,22 @@ export class BlogService {
     );
   }
 
-  getAll(page: number, limit: number): Promise<BlogPost[]> {
+  getAll(page: number, limit: number, tags?: string[]): Promise<BlogPost[]> {
+    let url = `${this.apiUrl}?page=${page}&limit=${limit}`;
+    if (tags && tags.length > 0) {
+      url += `&tags=${tags.join(',')}`;
+    }
     return firstValueFrom(
-      this.http.get<BlogPost[]>(`${this.apiUrl}?page=${page}&limit=${limit}`)
+      this.http.get<BlogPost[]>(url)
     );
+  }
+
+  getTags(search: string = '', limit: number = 20): Promise<Tag[]> {
+    let url = `${this.tagsUrl}?limit=${limit}`;
+    if (search) {
+      url += `&search=${search}`;
+    }
+    return firstValueFrom(this.http.get<Tag[]>(url));
   }
 
   // TODO: add route to marketing controller in backend/go/marketing

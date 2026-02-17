@@ -22,6 +22,11 @@ type Tag struct {
 	DeactivatedAt *time.Time `json:"deactivatedAt"`
 }
 
+type TagWithUsage struct {
+	Tag
+	UsageCount int `json:"usageCount"`
+}
+
 // BlogPost represents a blog post entry.
 type BlogPost struct {
 	tableName     struct{}   `pg:"blog_posts"`

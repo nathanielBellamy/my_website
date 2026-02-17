@@ -11,6 +11,39 @@
     <div class="h-1 w-12 bg-vibrant-orange mt-8 mx-auto rounded-full"></div>
   </div>
 
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+      <h3 class="text-xl font-heading font-semibold text-heading-text">Filter by Tags</h3>
+      <input 
+        type="text" 
+        placeholder="Search tags..." 
+        class="px-4 py-2 rounded-lg bg-surface-card border border-border-muted text-body-text focus:outline-none focus:border-vibrant-orange transition-colors"
+        (input)="onSearchTags($event)"
+      >
+    </div>
+    
+    <div class="flex flex-wrap gap-2">
+      @for (tag of store.availableTags(); track tag.id) {
+        <button 
+          (click)="onToggleTag(tag.id)"
+          class="px-3 py-1 rounded-full text-sm font-medium transition-all duration-200 border"
+          [class.bg-vibrant-orange]="store.selectedTags().includes(tag.id)"
+          [class.border-vibrant-orange]="store.selectedTags().includes(tag.id)"
+          [class.text-white]="store.selectedTags().includes(tag.id)"
+          [class.bg-surface-card]="!store.selectedTags().includes(tag.id)"
+          [class.border-border-muted]="!store.selectedTags().includes(tag.id)"
+          [class.text-body-text]="!store.selectedTags().includes(tag.id)"
+          [class.hover:border-vibrant-orange]="!store.selectedTags().includes(tag.id)"
+        >
+          {{ tag.name }}
+          @if (tag.usageCount) {
+            <span class="ml-1 text-xs opacity-75">({{ tag.usageCount }})</span>
+          }
+        </button>
+      }
+    </div>
+  </div>
+
   <app-infinite-scroll
     [items]="store.posts()"
     [loading]="store.loading()"

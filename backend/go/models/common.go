@@ -6,7 +6,8 @@ type FilterOptions struct {
 	Limit     int
 	Status    string // "current", "inactive", "past", "future"
 	SortField string
-	SortOrder string // "asc" or "desc"
+	SortOrder string   // "asc" or "desc"
+	Tags      []string // Filter by tag IDs
 }
 
 // PaginatedResponse is a generic response structure for list endpoints.

@@ -22,11 +22,39 @@ export class BlogComponent implements OnInit {
   status = signal<'current' | 'inactive' | 'past' | 'future'>('current');
   sortField = signal<string>('ordering');
   sortOrder = signal<'asc' | 'desc'>('asc');
+  availableTags = signal<Tag[]>([]);
+  selectedTags = signal<string[]>([]);
+  tagSearch = signal<string>('');
 
   totalPages = computed(() => Math.ceil(this.total() / this.limit()));
 
   ngOnInit() {
+    this.fetchTags();
     this.fetchBlogPosts();
+  }
+
+  fetchTags() {
+    this.blogService.getTags(this.tagSearch()).then(tags => {
+        this.availableTags.set(tags);
+    });
+  }
+
+  onSearchTags(event: Event) {
+      const input = event.target as HTMLInputElement;
+      this.tagSearch.set(input.value);
+      this.fetchTags();
+  }
+
+  onToggleTag(tagId: string) {
+      this.selectedTags.update(tags => {
+          if (tags.includes(tagId)) {
+              return tags.filter(id => id !== tagId);
+          } else {
+              return [...tags, tagId];
+          }
+      });
+      this.page.set(1);
+      this.fetchBlogPosts();
   }
 
   fetchBlogPosts() {
@@ -36,6 +64,7 @@ export class BlogComponent implements OnInit {
       status: this.status(),
       sortField: this.sortField(),
       sortOrder: this.sortOrder(),
+      tags: this.selectedTags(),
     };
 
     this.blogService.getAllBlogPosts(options).then((response) => {

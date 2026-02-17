@@ -1,14 +1,18 @@
 package marketing
 
 import (
+	"fmt"
+
+	"github.com/go-pg/pg/v10"
 	"github.com/nathanielBellamy/my_website/backend/go/interfaces"
 	"github.com/nathanielBellamy/my_website/backend/go/models"
 )
 
 type Service interface {
-	GetAllBlogPosts(page, limit int) ([]models.BlogPost, error)
+	GetAllBlogPosts(page, limit int, tags []string) ([]models.BlogPost, error)
 	GetBlogPostByID(id string) (*models.BlogPost, error)
 	GetBlogPostsByTag(tag string, page, limit int) ([]models.BlogPost, error)
+	GetTags(search string, limit int) ([]models.TagWithUsage, error)
 	GetAllHomeContent(page, limit int) ([]models.HomeContent, error)
 	GetHomeContentByID(id string) (*models.HomeContent, error)
 	GetAllGrooveJrContent(page, limit int) ([]models.GrooveJrContent, error)
@@ -25,13 +29,19 @@ func NewService(db interfaces.PgxDB) Service {
 	return &service{DB: db}
 }
 
-func (s *service) GetAllBlogPosts(page, limit int) ([]models.BlogPost, error) {
+func (s *service) GetAllBlogPosts(page, limit int, tags []string) ([]models.BlogPost, error) {
 	posts := make([]models.BlogPost, 0)
-	err := s.DB.Model(&posts).
+	query := s.DB.Model(&posts).
 		Relation("Author").
 		Relation("Tags").
-		Where("blog_post.activated_at IS NOT NULL AND blog_post.activated_at < NOW() AND (blog_post.deactivated_at IS NULL OR blog_post.deactivated_at > NOW())").
-		Order("blog_post.ordering ASC", "blog_post.activated_at DESC").
+		Where("blog_post.activated_at IS NOT NULL AND blog_post.activated_at < NOW() AND (blog_post.deactivated_at IS NULL OR blog_post.deactivated_at > NOW())")
+
+	if len(tags) > 0 {
+		// We use a subquery to find blog post IDs that match all tags.
+		query.Where("blog_post.id IN (SELECT blog_post_id FROM blog_post_tags WHERE tag_id IN (?) GROUP BY blog_post_id HAVING count(distinct tag_id) = ?)", pg.In(tags), len(tags))
+	}
+
+	err := query.Order("blog_post.ordering ASC", "blog_post.activated_at DESC").
 		Limit(limit).
 		Offset((page - 1) * limit).
 		Select()
@@ -66,6 +76,28 @@ func (s *service) GetBlogPostsByTag(tag string, page, limit int) ([]models.BlogP
 		Offset((page - 1) * limit).
 		Select()
 	return posts, err
+}
+
+func (s *service) GetTags(search string, limit int) ([]models.TagWithUsage, error) {
+	var tags []models.TagWithUsage
+	// We want to select from tags and count usage in blog_post_tags.
+	// Since TagWithUsage embeds Tag, we can select columns for Tag and the extra column.
+	
+	query := s.DB.Model(&tags).
+		ColumnExpr("tag.*").
+		ColumnExpr("count(bpt.blog_post_id) as usage_count").
+		Join("LEFT JOIN blog_post_tags bpt ON bpt.tag_id = tag.id").
+		Group("tag.id")
+
+	if search != "" {
+		query.Where("tag.name ILIKE ?", fmt.Sprintf("%%%s%%", search))
+	}
+
+	err := query.Order("usage_count DESC").
+		Limit(limit).
+		Select()
+	
+	return tags, err
 }
 
 func (s *service) GetAllHomeContent(page, limit int) ([]models.HomeContent, error) {

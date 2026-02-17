@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 
 	_ "github.com/lib/pq"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
@@ -32,6 +33,7 @@ func getFilterOptions(r *http.Request) models.FilterOptions {
 	status := r.URL.Query().Get("status")
 	sortField := r.URL.Query().Get("sort")
 	sortOrder := r.URL.Query().Get("order")
+	tagsStr := r.URL.Query().Get("tags")
 
 	page, err := strconv.Atoi(pageStr)
 	if err != nil || page <= 0 {
@@ -47,12 +49,18 @@ func getFilterOptions(r *http.Request) models.FilterOptions {
 		status = "current"
 	}
 
+	var tags []string
+	if tagsStr != "" {
+		tags = strings.Split(tagsStr, ",")
+	}
+
 	return models.FilterOptions{
 		Page:      page,
 		Limit:     limit,
 		Status:    status,
 		SortField: sortField,
 		SortOrder: sortOrder,
+		Tags:      tags,
 	}
 }
 
@@ -114,6 +122,25 @@ func (ac *AdminController) GetBlogPostsByTagHandler(w http.ResponseWriter, r *ht
 	}
 
 	ac.sendJSON(w, posts)
+}
+
+func (ac *AdminController) GetTagsHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetTagsHandler Hit")
+	search := r.URL.Query().Get("search")
+	limitStr := r.URL.Query().Get("limit")
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit <= 0 {
+		limit = 20
+	}
+
+	tags, err := ac.Service.GetTags(search, limit)
+	if err != nil {
+		ac.Log.Error().Err(err).Msg("Error fetching tags")
+		http.Error(w, "Error fetching tags", http.StatusInternalServerError)
+		return
+	}
+
+	ac.sendJSON(w, tags)
 }
 
 func (ac *AdminController) CreateBlogPostHandler(w http.ResponseWriter, r *http.Request) {

@@ -90,6 +90,31 @@
               data-testid="input-tags"
               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
           </div>
+          <!-- Tag Suggestions -->
+          <div class="mt-2 border rounded-md p-2 bg-gray-50">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="text-xs text-gray-500 font-medium uppercase">Suggestions</span>
+                <input 
+                    type="text" 
+                    placeholder="Search tags..." 
+                    class="px-2 py-0.5 border rounded text-xs focus:outline-none"
+                    (input)="onSearchTags($event)"
+                >
+            </div>
+            <div class="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+                @for (tag of availableTags(); track tag.id) {
+                    <button 
+                        type="button"
+                        (dblclick)="addTag(tag.name)"
+                        title="Double click to add"
+                        class="px-2 py-1 rounded-full text-xs border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 cursor-pointer select-none"
+                    >
+                        {{ tag.name }}
+                    </button>
+                }
+            </div>
+            <p class="text-xs text-gray-400 mt-1">Double-click to add tag.</p>
+          </div>
         </div>
 
         <div class="sm:col-span-3">

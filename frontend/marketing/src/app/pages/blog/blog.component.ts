@@ -18,6 +18,7 @@ export class BlogComponent implements OnInit {
 
   ngOnInit() {
     this.store.loadMore();
+    this.store.loadTags();
   }
 
   onScroll() {
@@ -40,5 +41,14 @@ export class BlogComponent implements OnInit {
 
   getTags(tags: Tag[]): string[] {
     return tags ? tags.map(t => t.name) : [];
+  }
+
+  onSearchTags(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.store.searchTags(input.value);
+  }
+
+  onToggleTag(tagId: string) {
+    this.store.toggleTag(tagId);
   }
 }

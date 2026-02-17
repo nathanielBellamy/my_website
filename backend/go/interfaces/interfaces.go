@@ -4,11 +4,13 @@ import "github.com/go-pg/pg/v10"
 
 type PgxQuerySeter interface {
 	Column(columns ...string) PgxQuerySeter
+	ColumnExpr(expr string, params ...interface{}) PgxQuerySeter
 	Relation(name string) PgxQuerySeter
 	Limit(count int) PgxQuerySeter
 	Offset(offset int) PgxQuerySeter
 	Where(query string, params ...interface{}) PgxQuerySeter
 	Order(orders ...string) PgxQuerySeter
+	Group(columns ...string) PgxQuerySeter
 	Join(join string, params ...interface{}) PgxQuerySeter
 	Select(dest ...interface{}) error
 	SelectAndCount(dest ...interface{}) (int, error)

@@ -33,6 +33,30 @@ describe('Marketing App', () => {
     cy.contains('software engineering').should('be.visible')
   })
 
+  it('should filter blog posts by tags', () => {
+    cy.get('[data-testid="nav-blog"]').click()
+    
+    // Wait for tags to appear
+    cy.contains('Filter by Tags').should('be.visible')
+    
+    // Find a tag (e.g., 'Go') and click it
+    // We use a flexible selector because exact tag names depend on seed data
+    cy.get('button').contains('Go').as('goTag')
+    cy.get('@goTag').should('be.visible')
+    
+    // Initial click to select
+    cy.get('@goTag').click()
+    cy.get('@goTag').should('have.class', 'bg-vibrant-orange')
+    
+    // Verify URL or content update (mocking backend or checking DOM)
+    // Checking if 'Getting Started with Go' is visible (from seed)
+    cy.contains('Getting Started with Go').should('be.visible')
+    
+    // Click again to deselect
+    cy.get('@goTag').click()
+    cy.get('@goTag').should('not.have.class', 'bg-vibrant-orange')
+  })
+
   it('should have functional social links', () => {
     cy.get('[data-testid="navbar-linked-in"]').should('have.attr', 'href').and('include', 'linkedin.com')
     cy.get('[data-testid="navbar-github"]').should('have.attr', 'href').and('include', 'github.com')

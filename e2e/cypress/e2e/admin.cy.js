@@ -115,4 +115,24 @@ describe('Admin App', () => {
     cy.on('window:confirm', () => true)
     cy.contains(updatedTitle).should('not.exist')
   })
+
+  it('should support tag assignment in blog post editor', () => {
+    cy.get('[data-testid="nav-admin-blog"]').click()
+    cy.get('[data-testid="create-new-blog-post"]').click()
+    
+    // Check if tag suggestions are visible
+    cy.contains('Suggestions').should('be.visible')
+    
+    // Double click a tag (assuming 'Go' exists from seed)
+    cy.get('button').contains('Go').dblclick()
+    
+    // Verify tag is added to input
+    cy.get('[data-testid="input-tags"]').should('have.value', 'Go')
+    
+    // Add another tag via double click
+    cy.get('button').contains('PostgreSQL').dblclick()
+    // Value might be "Go, PostgreSQL" or just "PostgreSQL" if my split logic is weird, but expected is comma separated
+    cy.get('[data-testid="input-tags"]').should('contain.value', 'Go')
+    cy.get('[data-testid="input-tags"]').should('contain.value', 'PostgreSQL')
+  })
 })

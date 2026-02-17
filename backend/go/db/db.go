@@ -19,6 +19,10 @@ func (pqa *PgQueryAdapter) Column(columns ...string) interfaces.PgxQuerySeter {
 	return &PgQueryAdapter{pqa.Query.Column(columns...)}
 }
 
+func (pqa *PgQueryAdapter) ColumnExpr(expr string, params ...interface{}) interfaces.PgxQuerySeter {
+	return &PgQueryAdapter{pqa.Query.ColumnExpr(expr, params...)}
+}
+
 func (pqa *PgQueryAdapter) Limit(count int) interfaces.PgxQuerySeter {
 	return &PgQueryAdapter{pqa.Query.Limit(count)}
 }
@@ -33,6 +37,10 @@ func (pqa *PgQueryAdapter) Where(query string, params ...interface{}) interfaces
 
 func (pqa *PgQueryAdapter) Order(orders ...string) interfaces.PgxQuerySeter {
 	return &PgQueryAdapter{pqa.Query.Order(orders...)}
+}
+
+func (pqa *PgQueryAdapter) Group(columns ...string) interfaces.PgxQuerySeter {
+	return &PgQueryAdapter{pqa.Query.Group(columns...)}
 }
 
 func (pqa *PgQueryAdapter) Join(join string, params ...interface{}) interfaces.PgxQuerySeter {

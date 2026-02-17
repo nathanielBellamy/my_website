@@ -10,6 +10,7 @@ export interface Tag {
   name: string;
   activatedAt?: string | null;
   deactivatedAt?: string | null;
+  usageCount?: number;
 }
 
 export interface BlogPost {
@@ -69,4 +70,5 @@ export interface FilterOptions {
   status: 'current' | 'inactive' | 'past' | 'future';
   sortField?: string;
   sortOrder?: 'asc' | 'desc';
+  tags?: string[];
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"os"
 
@@ -58,7 +59,14 @@ func getPaginationParams(r *http.Request) (int, int) {
 func (mc *MarketingController) GetAllBlogPostsHandler(w http.ResponseWriter, r *http.Request) {
 	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllBlogPostsHandler Hit")
 	page, limit := getPaginationParams(r)
-	posts, err := mc.Service.GetAllBlogPosts(page, limit)
+	
+	tagsStr := r.URL.Query().Get("tags")
+	var tags []string
+	if tagsStr != "" {
+		tags = strings.Split(tagsStr, ",")
+	}
+
+	posts, err := mc.Service.GetAllBlogPosts(page, limit, tags)
 	if err != nil {
 		mc.Log.Error().Err(err).Msg("Error fetching blog posts")
 		http.Error(w, "Error fetching blog posts", http.StatusInternalServerError)
@@ -102,6 +110,26 @@ func (mc *MarketingController) GetBlogPostsByTagHandler(w http.ResponseWriter, r
 	}
 
 	mc.sendJSON(w, posts)
+}
+
+// GetTagsHandler handles fetching tags.
+func (mc *MarketingController) GetTagsHandler(w http.ResponseWriter, r *http.Request) {
+	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetTagsHandler Hit")
+	search := r.URL.Query().Get("search")
+	limitStr := r.URL.Query().Get("limit")
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit <= 0 {
+		limit = 20
+	}
+
+	tags, err := mc.Service.GetTags(search, limit)
+	if err != nil {
+		mc.Log.Error().Err(err).Msg("Error fetching tags")
+		http.Error(w, "Error fetching tags", http.StatusInternalServerError)
+		return
+	}
+
+	mc.sendJSON(w, tags)
 }
 
 // Home

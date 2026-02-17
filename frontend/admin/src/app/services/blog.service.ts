@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { BlogPost, FilterOptions, PaginatedResponse } from '../models/data-models';
+import { BlogPost, FilterOptions, PaginatedResponse, Tag } from '../models/data-models';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +9,7 @@ import { BlogPost, FilterOptions, PaginatedResponse } from '../models/data-model
 export class BlogService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'http://localhost:8080/api/admin/blog'; // Adjust as per your backend URL
+  private readonly tagsUrl = 'http://localhost:8080/api/admin/tags';
 
   async getAllBlogPosts(options: Partial<FilterOptions> = {}): Promise<PaginatedResponse<BlogPost>> {
     const params: any = {
@@ -18,8 +19,15 @@ export class BlogService {
     if (options.status) params.status = options.status;
     if (options.sortField) params.sort = options.sortField;
     if (options.sortOrder) params.order = options.sortOrder;
+    if (options.tags && options.tags.length > 0) params.tags = options.tags.join(',');
 
     return await firstValueFrom(this.http.get<PaginatedResponse<BlogPost>>(this.apiUrl, { params }));
+  }
+
+  async getTags(search: string = '', limit: number = 20): Promise<Tag[]> {
+    const params: any = { limit };
+    if (search) params.search = search;
+    return await firstValueFrom(this.http.get<Tag[]>(this.tagsUrl, { params }));
   }
 
   async getBlogPostById(id: string): Promise<BlogPost> {

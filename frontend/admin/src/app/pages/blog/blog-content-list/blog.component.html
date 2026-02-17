@@ -78,6 +78,39 @@
       </button>
   </div>
 
+  <div class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+    <div class="flex items-center gap-4 mb-3">
+      <h3 class="font-semibold text-gray-700">Filter by Tags</h3>
+      <input 
+        type="text" 
+        placeholder="Search tags..." 
+        class="px-3 py-1 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        (input)="onSearchTags($event)"
+      >
+    </div>
+    
+    <div class="flex flex-wrap gap-2">
+      @for (tag of availableTags(); track tag.id) {
+        <button 
+          (click)="onToggleTag(tag.id)"
+          class="px-3 py-1 rounded-full text-xs font-medium border transition-colors duration-200"
+          [class.bg-blue-600]="selectedTags().includes(tag.id)"
+          [class.border-blue-600]="selectedTags().includes(tag.id)"
+          [class.text-white]="selectedTags().includes(tag.id)"
+          [class.bg-white]="!selectedTags().includes(tag.id)"
+          [class.border-gray-300]="!selectedTags().includes(tag.id)"
+          [class.text-gray-700]="!selectedTags().includes(tag.id)"
+          [class.hover:bg-gray-100]="!selectedTags().includes(tag.id)"
+        >
+          {{ tag.name }}
+          @if (tag.usageCount) {
+            <span class="ml-1 opacity-75">({{ tag.usageCount }})</span>
+          }
+        </button>
+      }
+    </div>
+  </div>
+
   <ul class="space-y-4">
     @for (post of blogPosts(); track post.id) {
       <li class="bg-gray-50 p-4 rounded-md shadow-sm border border-gray-200 hover:shadow-md transition duration-200">

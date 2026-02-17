@@ -1,6 +1,9 @@
 package admin
 
 import (
+	"fmt"
+
+	"github.com/go-pg/pg/v10"
 	"github.com/nathanielBellamy/my_website/backend/go/interfaces"
 	"github.com/nathanielBellamy/my_website/backend/go/models"
 	"github.com/rs/zerolog"
@@ -11,6 +14,7 @@ type Service interface {
 	GetAllBlogPosts(filter models.FilterOptions) ([]models.BlogPost, int, error)
 	GetBlogPostByID(id string) (*models.BlogPost, error)
 	GetBlogPostsByTag(tag string, page, limit int) ([]models.BlogPost, error)
+	GetTags(search string, limit int) ([]models.TagWithUsage, error)
 	CreateBlogPost(post *models.BlogPost) (*models.BlogPost, error)
 	UpdateBlogPost(post *models.BlogPost) (*models.BlogPost, error)
 	DeleteBlogPost(id string) error
@@ -79,6 +83,10 @@ func (s *service) GetAllBlogPosts(filter models.FilterOptions) ([]models.BlogPos
 		query.Where("blog_post.activated_at IS NOT NULL AND blog_post.activated_at > NOW()")
 	}
 
+	if len(filter.Tags) > 0 {
+		query.Where("blog_post.id IN (SELECT blog_post_id FROM blog_post_tags WHERE tag_id IN (?) GROUP BY blog_post_id HAVING count(distinct tag_id) = ?)", pg.In(filter.Tags), len(filter.Tags))
+	}
+
 	if filter.SortField != "" {
 		order := "ASC"
 		if filter.SortOrder == "desc" || filter.SortOrder == "DESC" {
@@ -124,6 +132,25 @@ func (s *service) GetBlogPostsByTag(tag string, page, limit int) ([]models.BlogP
 		Offset((page - 1) * limit).
 		Select()
 	return posts, err
+}
+
+func (s *service) GetTags(search string, limit int) ([]models.TagWithUsage, error) {
+	var tags []models.TagWithUsage
+	query := s.DB.Model(&tags).
+		ColumnExpr("tag.*").
+		ColumnExpr("count(bpt.blog_post_id) as usage_count").
+		Join("LEFT JOIN blog_post_tags bpt ON bpt.tag_id = tag.id").
+		Group("tag.id")
+
+	if search != "" {
+		query.Where("tag.name ILIKE ?", fmt.Sprintf("%%%s%%", search))
+	}
+
+	err := query.Order("usage_count DESC").
+		Limit(limit).
+		Select()
+	
+	return tags, err
 }
 
 func (s *service) CreateBlogPost(post *models.BlogPost) (*models.BlogPost, error) {

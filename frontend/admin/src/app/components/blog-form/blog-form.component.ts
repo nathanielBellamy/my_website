@@ -1,7 +1,8 @@
-import { Component, input, output, EventEmitter, OnInit, inject } from '@angular/core';
+import { Component, input, output, EventEmitter, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
-import { BlogPost } from '../../models/data-models';
+import { BlogPost, Tag } from '../../models/data-models';
 import { MarkdownComponent } from 'ngx-markdown';
+import { BlogService } from '../../services/blog.service';
 
 @Component({
   selector: 'app-blog-form',
@@ -16,9 +17,13 @@ export class BlogFormComponent implements OnInit {
   cancel = output<void>();
 
   private readonly fb = inject(FormBuilder);
+  private readonly blogService = inject(BlogService);
   blogForm!: FormGroup;
+  availableTags = signal<Tag[]>([]);
+  tagSearch = signal<string>('');
 
   ngOnInit() {
+    this.fetchTags();
     // Default activatedAt to now for new posts
     const initialActivatedAt = this.post()?.activatedAt || (this.post() ? null : new Date().toISOString());
 
@@ -37,6 +42,27 @@ export class BlogFormComponent implements OnInit {
       activatedAt: [this.formatDateForInput(initialActivatedAt)],
       deactivatedAt: [this.formatDateForInput(this.post()?.deactivatedAt)],
     }, { validators: this.dateRangeValidator });
+  }
+
+  fetchTags() {
+    this.blogService.getTags(this.tagSearch()).then(tags => {
+        this.availableTags.set(tags);
+    });
+  }
+
+  onSearchTags(event: Event) {
+      const input = event.target as HTMLInputElement;
+      this.tagSearch.set(input.value);
+      this.fetchTags();
+  }
+
+  addTag(tagName: string) {
+      const currentTags = this.blogForm.get('tags')?.value || '';
+      const tagArray = currentTags.split(',').map((t: string) => t.trim()).filter((t: string) => t);
+      if (!tagArray.includes(tagName)) {
+          tagArray.push(tagName);
+          this.blogForm.patchValue({ tags: tagArray.join(', ') });
+      }
   }
 
   saveForm() {

@@ -111,6 +111,7 @@ func SetupBaseRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, a
 	mux.HandleFunc("GET /api/marketing/blog", marketingController.GetAllBlogPostsHandler)
 	mux.HandleFunc("GET /api/marketing/blog/{id}", marketingController.GetBlogPostByIDHandler)
 	mux.HandleFunc("GET /api/marketing/blog/tag/{tag}", marketingController.GetBlogPostsByTagHandler)
+	mux.HandleFunc("GET /api/marketing/tags", marketingController.GetTagsHandler)
 
 	// Home
 	mux.HandleFunc("GET /api/marketing/home", marketingController.GetAllHomeContentHandler)
@@ -129,6 +130,7 @@ func SetupBaseRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, a
 	mux.Handle("GET /api/admin/blog", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllBlogPostsHandler)))
 	mux.Handle("GET /api/admin/blog/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetBlogPostByIDHandler)))
 	mux.Handle("GET /api/admin/blog/tag/{tag}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetBlogPostsByTagHandler)))
+	mux.Handle("GET /api/admin/tags", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetTagsHandler)))
 	mux.Handle("POST /api/admin/blog", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateBlogPostHandler)))
 	mux.Handle("PUT /api/admin/blog/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateBlogPostHandler)))
 	mux.Handle("DELETE /api/admin/blog/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteBlogPostHandler)))
