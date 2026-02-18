@@ -101,15 +101,15 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          },
           "configurations": {
             "production": {
               "buildTarget": "marketing:build:production"
             },
             "development": {
-              "buildTarget": "marketing:build:development"
-            },
-            "dev": {
-              "buildTarget": "marketing:build:dev"
+              "buildTarget": "marketing:build:localhost"
             }
           },
           "defaultConfiguration": "development"
