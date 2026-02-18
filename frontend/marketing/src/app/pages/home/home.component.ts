@@ -1,24 +1,12 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CardComponent } from '../../components/card/card.component';
-import { HomeStore } from './home.store';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { InfiniteScrollComponent } from '../../components/infinite-scroll/infinite-scroll.component';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CardComponent, CommonModule, InfiniteScrollComponent, RouterLink],
+  imports: [CommonModule, RouterLink],
   templateUrl: './home.component.html',
 })
-export class HomeComponent implements OnInit {
-  protected readonly store = inject(HomeStore);
-
-  ngOnInit() {
-    this.store.loadMore();
-  }
-
-  onScroll() {
-    this.store.loadMore();
-  }
+export class HomeComponent {
 }

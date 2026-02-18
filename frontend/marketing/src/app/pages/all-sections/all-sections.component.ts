@@ -8,11 +8,12 @@ import { AboutComponent } from '../about/about.component';
 import { GrooveJrComponent } from '../groove-jr/groove-jr.component';
 import { BlogComponent } from '../blog/blog.component';
 import { FeaturedValuesComponent } from '../featured-values/featured-values.component';
+import { LatestPostsComponent } from '../latest-posts/latest-posts.component';
 
 @Component({
   selector: 'app-all-sections',
   standalone: true,
-  imports: [CommonModule, HomeComponent, AboutComponent, GrooveJrComponent, BlogComponent, FeaturedValuesComponent],
+  imports: [CommonModule, HomeComponent, AboutComponent, GrooveJrComponent, BlogComponent, FeaturedValuesComponent, LatestPostsComponent],
   templateUrl: './all-sections.component.html',
 })
 export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -79,7 +80,7 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }, options);
 
-    const sections = ['home', 'featured-values', 'about', 'groovejr', 'blog'];
+    const sections = ['home', 'featured-values', 'latest-posts', 'about', 'groovejr', 'blog'];
     sections.forEach(id => {
       const element = document.getElementById(id);
       if (element) {
@@ -93,6 +94,7 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
     let sectionId = 'home';
     
     if (url.includes('featured-values')) sectionId = 'featured-values';
+    else if (url.includes('latest-posts')) sectionId = 'latest-posts';
     else if (url.includes('about')) sectionId = 'about';
     else if (url.includes('groovejr')) sectionId = 'groovejr';
     else if (url.includes('blog')) sectionId = 'blog';

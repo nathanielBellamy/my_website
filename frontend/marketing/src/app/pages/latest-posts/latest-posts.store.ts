@@ -3,7 +3,7 @@ import { HomeContent } from '../../models/home.model';
 import { inject } from '@angular/core';
 import { HomeService } from '../../services/home.service';
 
-type HomeState = {
+type LatestPostsState = {
   content: HomeContent[];
   loading: boolean;
   error: string | null;
@@ -11,7 +11,7 @@ type HomeState = {
   allLoaded: boolean;
 };
 
-const initialState: HomeState = {
+const initialState: LatestPostsState = {
   content: [],
   loading: false,
   error: null,
@@ -19,7 +19,7 @@ const initialState: HomeState = {
   allLoaded: false,
 };
 
-export const HomeStore = signalStore(
+export const LatestPostsStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withMethods((store, homeService = inject(HomeService)) => ({
@@ -42,7 +42,7 @@ export const HomeStore = signalStore(
           loading: false,
         });
       } catch (error) {
-        patchState(store, { error: `Failed to fetch home content. \nMessage: ${error}`, loading: false });
+        patchState(store, { error: `Failed to fetch latest posts content. \nMessage: ${error}`, loading: false });
       }
     },
   }))

@@ -7,6 +7,7 @@
     </div>
     <div class="hidden sm:flex items-center space-x-4 md:space-x-8">
       <a routerLink="/" data-testid="nav-home" class="text-body-text hover:text-primary-accent font-medium transition-colors duration-200">Home</a>
+      <a routerLink="/latest-posts" data-testid="nav-latest-posts" class="text-body-text hover:text-vibrant-purple font-medium transition-colors duration-200">Latest</a>
       <a routerLink="/about" data-testid="nav-about" class="text-body-text hover:text-vibrant-yellow font-medium transition-colors duration-200">About</a>
       <a routerLink="/groovejr" data-testid="nav-groovejr" class="text-body-text hover:text-vibrant-green font-medium transition-colors duration-200">GrooveJr</a>
       <a routerLink="/blog" data-testid="nav-blog" class="text-body-text hover:text-vibrant-orange font-medium transition-colors duration-200">Blog</a>
@@ -68,6 +69,7 @@
       data-testid="mobile-menu"
     >
       <a routerLink="/" (click)="toggleMenu()" class="text-body-text hover:text-primary-accent font-medium text-lg transition-colors duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-home">Home</a>
+      <a routerLink="/latest-posts" (click)="toggleMenu()" class="text-body-text hover:text-vibrant-purple font-medium text-lg transition-colors duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-latest-posts">Latest</a>
       <a routerLink="/about" (click)="toggleMenu()" class="text-body-text hover:text-vibrant-yellow font-medium text-lg transition-colors duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-about">About</a>
       <a routerLink="/groovejr" (click)="toggleMenu()" class="text-body-text hover:text-vibrant-green font-medium text-lg transition-colors duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-groovejr">GrooveJr</a>
       <a routerLink="/blog" (click)="toggleMenu()" class="text-body-text hover:text-vibrant-orange font-medium text-lg transition-colors duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-blog">Blog</a>

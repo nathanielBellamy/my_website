@@ -6,6 +6,7 @@ import { FeaturedValuesComponent } from './pages/featured-values/featured-values
 export const routes: Routes = [
   { path: '', component: AllSectionsComponent, runGuardsAndResolvers: 'always' },
   { path: 'featured-values', component: AllSectionsComponent, runGuardsAndResolvers: 'always' },
+  { path: 'latest-posts', component: AllSectionsComponent, runGuardsAndResolvers: 'always' },
   { path: 'about', component: AllSectionsComponent, runGuardsAndResolvers: 'always' },
   { path: 'groovejr', component: AllSectionsComponent, runGuardsAndResolvers: 'always' },
   { path: 'blog', component: AllSectionsComponent, runGuardsAndResolvers: 'always' },
