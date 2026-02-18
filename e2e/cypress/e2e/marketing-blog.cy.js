@@ -60,6 +60,14 @@ describe('Marketing Blog', () => {
 
     // Verify back navigation
     cy.contains('Back to Blog').click();
+    
+    // Ensure the blog list is visible again - this is the critical check
+    cy.contains('Test Blog Post').should('be.visible');
+    
+    // Scroll to the blog header to ensure we are in the right section (helps with URL update)
+    // Using a more robust check for URL, or skipping strictly if flaky due to observer
+    // But since we want to be sure:
+    cy.get('[data-testid="blog-header"]').scrollIntoView();
     cy.url().should('include', '/blog');
   });
 });

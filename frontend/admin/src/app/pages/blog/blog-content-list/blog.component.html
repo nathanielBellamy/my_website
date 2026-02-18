@@ -70,7 +70,7 @@
           <span>{{ sortOrder() === 'asc' ? '↑' : '↓' }}</span>
         }
       </button>
-      <button (click)="onSort('ordering')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded transition duration-200">
+      <button (click)="onSort('ordering')" data-testid="sort-ordering" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded transition duration-200">
         Sort by Order
         @if (sortField() === 'ordering') {
           <span>{{ sortOrder() === 'asc' ? '↑' : '↓' }}</span>
@@ -82,7 +82,9 @@
     <div class="flex items-center gap-4 mb-3">
       <h3 class="font-semibold text-gray-700">Filter by Tags</h3>
       <input 
-        type="text" 
+        id="blog-search-tags-input"
+        type="text"
+        data-testid="blog-search-tags-input"
         placeholder="Search tags..." 
         class="px-3 py-1 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         (input)="onSearchTags($event)"

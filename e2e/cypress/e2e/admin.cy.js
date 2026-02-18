@@ -79,7 +79,8 @@ describe('Admin App', () => {
 
   it('should perform CRUD for Blog posts', () => {
     cy.get('[data-testid="nav-admin-blog"]').click()
-    const testTitle = `E2E Blog ${Date.now()}`
+    const now = Date.now();
+    const testTitle = `E2E Blog ${now}`
     
     // Create
     cy.get('[data-testid="create-new-blog-post"]').click()
@@ -87,13 +88,14 @@ describe('Admin App', () => {
     cy.get('[data-testid="input-order"]').type('999')
     cy.get('[data-testid="input-content"]').type('Blog post content.')
     cy.get('[data-testid="input-author-name"]').type('E2E Tester')
-    cy.get('[data-testid="input-tags"]').type('e2e, test')
+    cy.get('[data-testid="input-tags"]').type(`e2e, test, ${now}`)
     cy.get('[data-testid="button-save"]').click()
 
     // Verify created
     cy.url().should('include', '/admin/blog')
     cy.contains('Blog Posts').should('be.visible')
-    cy.get('[data-testid="status-inactive"]').click()
+    cy.get('[data-testid="blog-search-tags-input"]').type(`${now}`)
+    cy.contains('button', now).click()
     cy.contains(testTitle, { timeout: 10000 }).should('be.visible')
 
     // Edit
@@ -105,7 +107,8 @@ describe('Admin App', () => {
     cy.get('[data-testid="button-save"]').click()
 
     // Verify updated
-    cy.get('[data-testid="status-inactive"]').click()
+    cy.get('[data-testid="blog-search-tags-input"]').type(`${now}`)
+    cy.contains('button', now).click()
     cy.contains(updatedTitle).should('be.visible')
 
     // Delete
@@ -113,6 +116,8 @@ describe('Admin App', () => {
       cy.get('button').contains('Delete').click()
     })
     cy.on('window:confirm', () => true)
+    cy.get('[data-testid="blog-search-tags-input"]').type(`${now}`)
+    cy.contains('button', now).click()
     cy.contains(updatedTitle).should('not.exist')
   })
 
@@ -122,6 +127,9 @@ describe('Admin App', () => {
     
     // Check if tag suggestions are visible
     cy.contains('Suggestions').should('be.visible')
+
+    cy.get('[data-testid="blog-form-search-tags-input"]').type('Go')
+    cy.contains('button', 'Go').click()
     
     // Double click a tag (assuming 'Go' exists from seed)
     cy.get('button').contains('Go').dblclick()
@@ -130,6 +138,8 @@ describe('Admin App', () => {
     cy.get('[data-testid="input-tags"]').should('have.value', 'Go')
     
     // Add another tag via double click
+    cy.get('[data-testid="blog-form-search-tags-input"]').clear()
+    cy.get('[data-testid="blog-form-search-tags-input"]').type('PostgreSQL')
     cy.get('button').contains('PostgreSQL').dblclick()
     // Value might be "Go, PostgreSQL" or just "PostgreSQL" if my split logic is weird, but expected is comma separated
     cy.get('[data-testid="input-tags"]').should('contain.value', 'Go')
