@@ -7,11 +7,12 @@ import { HomeComponent } from '../home/home.component';
 import { AboutComponent } from '../about/about.component';
 import { GrooveJrComponent } from '../groove-jr/groove-jr.component';
 import { BlogComponent } from '../blog/blog.component';
+import { FeaturedValuesComponent } from '../featured-values/featured-values.component';
 
 @Component({
   selector: 'app-all-sections',
   standalone: true,
-  imports: [CommonModule, HomeComponent, AboutComponent, GrooveJrComponent, BlogComponent],
+  imports: [CommonModule, HomeComponent, AboutComponent, GrooveJrComponent, BlogComponent, FeaturedValuesComponent],
   templateUrl: './all-sections.component.html',
 })
 export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -78,7 +79,7 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }, options);
 
-    const sections = ['home', 'about', 'groovejr', 'blog'];
+    const sections = ['home', 'featured-values', 'about', 'groovejr', 'blog'];
     sections.forEach(id => {
       const element = document.getElementById(id);
       if (element) {
@@ -91,7 +92,8 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
     const url = this.router.url;
     let sectionId = 'home';
     
-    if (url.includes('about')) sectionId = 'about';
+    if (url.includes('featured-values')) sectionId = 'featured-values';
+    else if (url.includes('about')) sectionId = 'about';
     else if (url.includes('groovejr')) sectionId = 'groovejr';
     else if (url.includes('blog')) sectionId = 'blog';
     

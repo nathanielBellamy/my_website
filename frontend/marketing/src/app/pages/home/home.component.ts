@@ -3,11 +3,12 @@ import { CardComponent } from '../../components/card/card.component';
 import { HomeStore } from './home.store';
 import { CommonModule } from '@angular/common';
 import { InfiniteScrollComponent } from '../../components/infinite-scroll/infinite-scroll.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CardComponent, CommonModule, InfiniteScrollComponent],
+  imports: [CardComponent, CommonModule, InfiniteScrollComponent, RouterLink],
   templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit {
