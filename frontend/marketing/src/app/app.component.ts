@@ -8,7 +8,14 @@ import { NavbarComponent } from './components/navbar/navbar.component';
   standalone: true,
   imports: [RouterOutlet, CommonModule, NavbarComponent],
   templateUrl: './app.component.html',
-  styles: [],
+  styles: [
+    `
+      :host {
+        display: block;
+        height: 100%;
+      }
+    `,
+  ],
 })
 export class AppComponent {
 }

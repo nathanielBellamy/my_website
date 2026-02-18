@@ -24,10 +24,10 @@
   }
   
   body {
-    @apply bg-background text-body-text font-sans w-full min-h-full;
+    @apply bg-background text-body-text font-sans w-full h-full;
     position: relative;
     isolation: isolate;
-    overflow-x: hidden;
+    overflow: hidden;
   }
 
   body::before,
