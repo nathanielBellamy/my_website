@@ -36,13 +36,13 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
-          cache-dependency-path: admin/package-lock.json
+          cache-dependency-path: frontend/admin/package-lock.json
 
       - name: Install dependencies
-        run: cd admin && npm ci
+        run: cd frontend/admin && npm ci
 
       - name: Run Tests
-        run: cd admin && npm test
+        run: cd frontend/admin && npm test
 
   marketing-test:
     name: Marketing SPA Tests (Angular)
@@ -55,13 +55,13 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
-          cache-dependency-path: marketing/package-lock.json
+          cache-dependency-path: frontend/marketing/package-lock.json
 
       - name: Install dependencies
-        run: cd marketing && npm ci
+        run: cd frontend/marketing && npm ci
 
       - name: Run Tests
-        run: cd marketing && npm test
+        run: cd frontend/marketing && npm test
 
   e2e-test:
     name: E2E Tests (Cypress)

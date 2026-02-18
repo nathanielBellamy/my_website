@@ -47,10 +47,10 @@ jobs:
           node-version: '22'
 
       - name: Run npm audit (Admin)
-        run: cd admin && npm audit --audit-level=high
+        run: cd frontend/admin && npm audit --audit-level=high
 
       - name: Run npm audit (Marketing)
-        run: cd marketing && npm audit --audit-level=high
+        run: cd frontend/marketing && npm audit --audit-level=high
 
   website-audit:
     name: Website Audit (Squirrel)
