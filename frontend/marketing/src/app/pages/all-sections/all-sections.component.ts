@@ -7,13 +7,13 @@ import { HomeComponent } from '../home/home.component';
 import { AboutComponent } from '../about/about.component';
 import { GrooveJrComponent } from '../groove-jr/groove-jr.component';
 import { BlogComponent } from '../blog/blog.component';
-import { FeaturedValuesComponent } from '../featured-values/featured-values.component';
+import { FocusComponent } from '../focus/focus.component';
 import { LatestPostsComponent } from '../latest-posts/latest-posts.component';
 
 @Component({
   selector: 'app-all-sections',
   standalone: true,
-  imports: [CommonModule, HomeComponent, AboutComponent, GrooveJrComponent, BlogComponent, FeaturedValuesComponent, LatestPostsComponent],
+  imports: [CommonModule, HomeComponent, AboutComponent, GrooveJrComponent, BlogComponent, FocusComponent, LatestPostsComponent],
   templateUrl: './all-sections.component.html',
 })
 export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -80,7 +80,7 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }, options);
 
-    const sections = ['home', 'featured-values', 'latest-posts', 'about', 'groovejr', 'blog'];
+    const sections = ['home', 'focus', 'latest-posts', 'about', 'groovejr', 'blog'];
     sections.forEach(id => {
       const element = document.getElementById(id);
       if (element) {
@@ -93,7 +93,7 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
     const url = this.router.url;
     let sectionId = 'home';
     
-    if (url.includes('featured-values')) sectionId = 'featured-values';
+    if (url.includes('focus')) sectionId = 'focus';
     else if (url.includes('latest-posts')) sectionId = 'latest-posts';
     else if (url.includes('about')) sectionId = 'about';
     else if (url.includes('groovejr')) sectionId = 'groovejr';
