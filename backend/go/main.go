@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/nathanielBellamy/my_website/backend/go/admin"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
@@ -28,7 +29,9 @@ func main() {
 	mode := os.Getenv("MODE")
 	if mode == "" {
 		mode = "localhost"
-		os.Setenv("MODE", mode)
+		if err := os.Setenv("MODE", mode); err != nil {
+			log.Fatal().Err(err).Msg("Failed to set MODE env var")
+		}
 	}
 
 	// read env file
@@ -67,8 +70,16 @@ func main() {
 
 	SetupRoutes(http.DefaultServeMux, &cookieJar, &log, feedPool, wasmPool, db.NewPgDBAdapter(dbClient))
 
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	server := &http.Server{
+		Addr:         ":8080",
+		Handler:      nil, // uses http.DefaultServeMux
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+	}
+
+	if err := server.ListenAndServe(); err != nil {
 		log.Fatal().
+			Err(err).
 			Msg("UnableToServe")
 	}
 

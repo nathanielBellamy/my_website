@@ -26,9 +26,6 @@ var GetClientIpAddr = func(r *http.Request) string {
 	return res
 }
 
-type IoPassword struct {
-	Password string
-}
 
 var HasValidCookie = func(
 	r *http.Request,

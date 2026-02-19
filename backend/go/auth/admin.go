@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"net/http"
 	"net/smtp"
 	"os"
@@ -217,7 +217,13 @@ func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, 
 		}
 
 		// Generate 6-digit OTP
-		otp := fmt.Sprintf("%06d", rand.Intn(1000000))
+		n, err := crand.Int(crand.Reader, big.NewInt(1000000))
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to generate OTP")
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+		otp := fmt.Sprintf("%06d", n.Int64())
 		pendingOtps.Set(adminEmail, otp)
 
 		// Email delivery

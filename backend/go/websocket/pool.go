@@ -28,7 +28,7 @@ type Pool struct {
 
 func NewPool(log *zerolog.Logger) *Pool {
 	return &Pool{
-		NextClientId:      uint(randInRange(1021, 2150)),
+		NextClientId:      uint(randInRange(1021, 2150)), //nosec G115
 		Register:          make(chan *Client),
 		Unregister:        make(chan *Client),
 		Clients:           make(map[*Client]bool),
@@ -40,7 +40,7 @@ func NewPool(log *zerolog.Logger) *Pool {
 
 func (pool *Pool) NewClientId() uint {
 	newId := pool.NextClientId
-	pool.NextClientId += uint(randInRange(13, 389))
+	pool.NextClientId += uint(randInRange(13, 389)) //nosec G115
 	return newId
 }
 

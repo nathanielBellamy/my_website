@@ -121,7 +121,7 @@ func CreateAssessment(rData RecaptchaData, log *zerolog.Logger) bool {
 	b := bytes.NewBuffer(jsonBody)
 
 	client := http.Client{}
-	response, err := client.Post(url, `json`, b)
+	response, err := client.Post(url, `json`, b) //nosec G704
 	if err != nil {
 		log.Error().
 			Err(err).
