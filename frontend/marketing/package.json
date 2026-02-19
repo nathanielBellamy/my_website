@@ -45,5 +45,9 @@
     "jest-preset-angular": "^16.0.0",
     "typescript": "~5.9.3",
     "vite": "^7.3.1"
+  },
+  "overrides": {
+    "ajv": "^8.18.0",
+    "minimatch": "^10.2.1"
   }
 }
