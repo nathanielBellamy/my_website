@@ -94,7 +94,7 @@ jobs:
 
       - name: Install Squirrel
         run: |
-          curl -sSfL https://squirrelscan.com/download/install.sh | sh
+          curl -sSfL https://squirrelscan.com/install.sh | sh
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Run Squirrel Audit
