@@ -1,6 +1,7 @@
 package websocket
 
 import (
+	"math/big"
 	"net"
 
 	"github.com/gobwas/ws/wsutil"
@@ -13,8 +14,7 @@ type ClientName struct {
 }
 
 type Client struct {
-	// ID = 0 indicates system
-	ID   uint
+	ID   big.Int
 	IP   string
 	Conn *net.Conn
 	Pool *Pool
@@ -43,11 +43,11 @@ var ReadFeed = func(c *Client) {
 		}
 		msg_str := string(msg)
 		c.Pool.Log.Info().
-			Uint("client_id_feed", c.ID).
+			Uint("client_id_feed", uint(c.ID.Uint64())).
 			Str("ip", c.IP).
 			Str("val", msg_str).
 			Msg("USER MESSAGE")
-		message := Message{ClientId: c.ID, Body: msg_str}
+		message := Message{ClientId: uint(c.ID.Uint64()), Body: msg_str}
 		c.Pool.Broadcast <- message
 	}
 }

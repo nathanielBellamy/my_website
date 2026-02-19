@@ -1,18 +1,26 @@
 package websocket
 
 import (
-	mrand "math/rand/v2"
+	"crypto/rand"
+	"math"
+	"math/big"
 
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/rs/zerolog"
 )
 
-func randInRange(min uint, max uint) uint {
-	return min + mrand.UintN(max-min)
+func randInRange(min int64, max int64) (big.Int, error) {
+	targetRange := big.NewInt(max - min + 1)
+	n, err := rand.Int(rand.Reader, targetRange)
+	if err != nil {
+		zero := big.NewInt(0)
+		return *zero, err
+	}
+	return *n, err
 }
 
 type Pool struct {
-	NextClientId      uint
+	NextClientId      big.Int
 	Register          chan *Client
 	Unregister        chan *Client
 	Clients           map[*Client]bool
@@ -22,8 +30,14 @@ type Pool struct {
 }
 
 func NewPool(log *zerolog.Logger) *Pool {
+	firstClientId, err := randInRange(1021, 2150)
+	if err != nil {
+		log.Fatal().Err(err).Msg("New WS Pool Unable To Seed First ClientId")
+		return nil
+	}
+
 	return &Pool{
-		NextClientId:      randInRange(1021, 2150),
+		NextClientId:      firstClientId,
 		Register:          make(chan *Client),
 		Unregister:        make(chan *Client),
 		Clients:           make(map[*Client]bool),
@@ -33,10 +47,18 @@ func NewPool(log *zerolog.Logger) *Pool {
 	}
 }
 
-func (pool *Pool) NewClientId() uint {
+func (pool *Pool) NewClientId() (big.Int, error) {
 	newId := pool.NextClientId
-	pool.NextClientId += randInRange(13, 389)
-	return newId
+	incrBy, err := randInRange(13, 389)
+	if err != nil {
+		pool.Log.Error().Err(err).Msg("New WS Pool Unable To Seed First ClientId")
+		max := big.NewInt(math.MaxInt64)
+		return *max, err
+	}
+	sum := new(big.Int)
+	sum.Add(&pool.NextClientId, &incrBy)
+	pool.NextClientId = *sum
+	return newId, nil
 }
 
 func (pool *Pool) StartFeed() {
@@ -46,34 +68,32 @@ func (pool *Pool) StartFeed() {
 			pool.Clients[client] = true
 			id := client.ID
 			pool.Log.Info().
-				Uint("uint", id).
+				Uint("uint", uint(id.Uint64())).
 				Msg("Client NEW Id")
 			pool.Log.Info().
 				Int("int", len(pool.Clients)).
 				Msg("Size of FEED Connection Pool")
 			//send clientId back to client
-			message := Message{ClientId: id, Body: "__init__connected__", System: true}
+			message := Message{ClientId: uint(id.Uint64()), Body: "__init__connected__", System: true}
 			WriteMessage(client.Conn, message, pool.Log)
 
 			// announce to pool
-			message = Message{ClientId: id, Body: "__sq__connected__", System: true}
+			message = Message{ClientId: uint(id.Uint64()), Body: "__sq__connected__", System: true}
 			for client, _ := range pool.Clients {
 				WriteMessage(client.Conn, message, pool.Log)
 			}
-			break
 		case client := <-pool.Unregister:
 			id := client.ID
 			delete(pool.Clients, client)
 			pool.Log.Info().
-				Uint("uint", id).
+				Uint("uint", uint(id.Uint64())).
 				Msg("Client SIGN OFF Id")
 			pool.Log.Info().
 				Int("int", len(pool.Clients)).
 				Msg("Size of FEED Connection Pool")
 			for client, _ := range pool.Clients {
-				WriteMessage(client.Conn, Message{ClientId: id, Body: "__sq__disconnected__", System: true}, pool.Log)
+				WriteMessage(client.Conn, Message{ClientId: uint(id.Uint64()), Body: "__sq__disconnected__", System: true}, pool.Log)
 			}
-			break
 		case message := <-pool.Broadcast: // reflection point
 			p := bluemonday.StrictPolicy()
 			message.Body = p.Sanitize(message.Body)
