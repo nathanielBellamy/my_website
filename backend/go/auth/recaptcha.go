@@ -3,8 +3,8 @@ package auth
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"time"
 
@@ -84,12 +84,17 @@ func CreateAssessment(rData RecaptchaData, log *zerolog.Logger) bool {
 		Str("token", rData.Token).
 		Msg("CreateAssessment rData")
 
-	apiKey := os.Getenv("GOOGLE_API_KEY")
-	url := fmt.Sprintf(
-		"https://recaptchaenterprise.googleapis.com/v1/projects/%s/assessments?key=%s",
-		rData.ProjectID,
-		apiKey,
-	)
+	const gBase = "https://recaptchaenterprise.googleapis.com/v1/projects/"
+	u, err := url.Parse(gBase)
+	if err != nil {
+		return false
+	}
+	u = u.JoinPath(rData.ProjectID, "assessments")
+	q := u.Query()
+	q.Set("key", os.Getenv("GOOGLE_API_KEY"))
+	u.RawQuery = q.Encode()
+
+	url := u.String()
 
 	log.Info().
 		Str("ip", rData.ClientIP).
@@ -121,7 +126,7 @@ func CreateAssessment(rData RecaptchaData, log *zerolog.Logger) bool {
 	b := bytes.NewBuffer(jsonBody)
 
 	client := http.Client{}
-	response, err := client.Post(url, `json`, b) //nosec G704
+	response, err := client.Post(url, `json`, b)
 	if err != nil {
 		log.Error().
 			Err(err).

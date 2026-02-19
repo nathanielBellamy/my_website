@@ -1,19 +1,14 @@
 package websocket
 
 import (
-	"crypto/rand"
-	"math/big"
+	mrand "math/rand/v2"
 
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/rs/zerolog"
 )
 
-func randInRange(min int, max int) int {
-	n, err := rand.Int(rand.Reader, big.NewInt(int64(max-min+1)))
-	if err != nil {
-		return min
-	}
-	return int(n.Int64()) + min
+func randInRange(min uint, max uint) uint {
+	return min + mrand.UintN(max-min)
 }
 
 type Pool struct {
@@ -28,7 +23,7 @@ type Pool struct {
 
 func NewPool(log *zerolog.Logger) *Pool {
 	return &Pool{
-		NextClientId:      uint(randInRange(1021, 2150)), //nosec G115
+		NextClientId:      randInRange(1021, 2150),
 		Register:          make(chan *Client),
 		Unregister:        make(chan *Client),
 		Clients:           make(map[*Client]bool),
@@ -40,7 +35,7 @@ func NewPool(log *zerolog.Logger) *Pool {
 
 func (pool *Pool) NewClientId() uint {
 	newId := pool.NextClientId
-	pool.NextClientId += uint(randInRange(13, 389)) //nosec G115
+	pool.NextClientId += randInRange(13, 389)
 	return newId
 }
 
