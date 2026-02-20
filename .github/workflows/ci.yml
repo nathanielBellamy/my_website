@@ -20,7 +20,14 @@ jobs:
           cache-dependency-path: go.sum
 
       - name: Run Go Tests
-        run: go test ./backend/go/...
+        run: go test -v ./backend/go/... 2>&1 | tee backend-test.log
+
+      - name: Upload Backend Test Logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-log
+          path: backend-test.log
 
   admin-test:
     name: Admin SPA Tests (Angular)
@@ -39,7 +46,14 @@ jobs:
         run: cd frontend/admin && npm ci
 
       - name: Run Tests
-        run: cd frontend/admin && npm test
+        run: cd frontend/admin && npm test 2>&1 | tee admin-test.log
+
+      - name: Upload Admin Test Logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin-test-log
+          path: frontend/admin/admin-test.log
 
   marketing-test:
     name: Marketing SPA Tests (Angular)
@@ -58,7 +72,14 @@ jobs:
         run: cd frontend/marketing && npm ci
 
       - name: Run Tests
-        run: cd frontend/marketing && npm test
+        run: cd frontend/marketing && npm test 2>&1 | tee marketing-test.log
+
+      - name: Upload Marketing Test Logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: marketing-test-log
+          path: frontend/marketing/marketing-test.log
 
   e2e-test:
     name: E2E Tests (Cypress)
@@ -101,20 +122,44 @@ jobs:
       - name: Install and Build Marketing App
         run: |
           cd frontend/marketing
-          npm ci
-          npm run build-localhost
+          if ! npm ci > ../../marketing-install.log 2>&1; then
+            echo "Marketing Install Failed"
+            cat ../../marketing-install.log
+            exit 1
+          fi
+          if ! npm run build-localhost > ../../marketing-build.log 2>&1; then
+            echo "Marketing Build Failed"
+            cat ../../marketing-build.log
+            exit 1
+          fi
 
       - name: Install and Build Admin App
         run: |
           cd frontend/admin
-          npm ci
-          npm run build-localhost
+          if ! npm ci > ../../admin-install.log 2>&1; then
+            echo "Admin Install Failed"
+            cat ../../admin-install.log
+            exit 1
+          fi
+          if ! npm run build-localhost > ../../admin-build.log 2>&1; then
+            echo "Admin Build Failed"
+            cat ../../admin-build.log
+            exit 1
+          fi
 
       - name: Install and Build Auth Admin App
         run: |
           cd frontend/auth/admin
-          npm ci
-          npm run build-localhost
+          if ! npm ci > ../../auth-admin-install.log 2>&1; then
+            echo "Auth Admin Install Failed"
+            cat ../../auth-admin-install.log
+            exit 1
+          fi
+          if ! npm run build-localhost > ../../auth-admin-build.log 2>&1; then
+            echo "Auth Admin Build Failed"
+            cat ../../auth-admin-build.log
+            exit 1
+          fi
 
       - name: Initialize Database
         run: |
@@ -124,7 +169,11 @@ jobs:
       - name: Build and Start Backend
         run: |
           cd backend/go
-          go build -o ../../backend-server main.go
+          if ! go build -o ../../backend-server main.go > ../../backend-build.log 2>&1; then
+            echo "Backend Build Failed"
+            cat ../../backend-build.log
+            exit 1
+          fi
           cd ../..
           # Use the root .env.localhost but override DATABASE_URL for the service port
           export DATABASE_URL=postgres://postgres:postgres@localhost:5434/mw_db?sslmode=disable
@@ -141,3 +190,41 @@ jobs:
         env:
           MODE: localhost
           DATABASE_URL: postgres://postgres:postgres@localhost:5434/mw_db?sslmode=disable
+
+      - name: Upload Build Logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: |
+            *.log
+
+      - name: Upload Backend Logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-logs
+          path: backend.log
+
+      - name: Upload Cypress Screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: e2e/cypress/screenshots
+
+      - name: Upload Cypress Videos
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-videos
+          path: e2e/cypress/videos
+
+      - name: Upload Build Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            backend-server
+            build/
