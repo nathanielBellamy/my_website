@@ -39,8 +39,12 @@ describe('Marketing Blog', () => {
     // Wait for initial load
     cy.wait('@getBlogPosts');
 
+    // Ensure the section is in view to trigger fade-in
+    cy.get('[data-testid="blog-header"]').scrollIntoView().should('be.visible');
+
     // Check if the blog post card is displayed
-    cy.contains('Test Blog Post').should('be.visible');
+    // Allow more timeout for the fade-in animation to complete
+    cy.contains('Test Blog Post', { timeout: 10000 }).should('be.visible');
     cy.contains('This is a test blog post content.').should('be.visible');
     cy.contains('#test').should('be.visible');
 
@@ -54,19 +58,18 @@ describe('Marketing Blog', () => {
     cy.wait('@getBlogPost');
 
     // Verify details page content
+    cy.contains('Back to Blog', { timeout: 10000 }).scrollIntoView().should('be.visible');
     cy.get('h1').contains('Test Blog Post').should('be.visible');
     cy.contains('This is a test blog post content.').should('be.visible');
-    cy.contains('Back to Blog').should('be.visible');
 
     // Verify back navigation
     cy.contains('Back to Blog').click();
     
-    // Ensure the blog list is visible again - this is the critical check
-    cy.contains('Test Blog Post').should('be.visible');
+    // Ensure the blog list is visible again
+    cy.get('[data-testid="blog-header"]').scrollIntoView().should('be.visible');
+    cy.contains('Test Blog Post', { timeout: 10000 }).should('be.visible');
     
     // Scroll to the blog header to ensure we are in the right section (helps with URL update)
-    // Using a more robust check for URL, or skipping strictly if flaky due to observer
-    // But since we want to be sure:
     cy.get('[data-testid="blog-header"]').scrollIntoView();
     cy.url().should('include', '/blog');
   });

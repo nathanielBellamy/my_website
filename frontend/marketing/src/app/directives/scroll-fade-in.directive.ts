@@ -10,7 +10,7 @@ export class ScrollFadeInDirective implements OnInit, OnDestroy {
   private observer?: IntersectionObserver;
 
   @Input() delay: number = 0;
-  @Input() threshold: number = 0.1;
+  @Input() threshold: number = 0;
   @Input() duration: number = 700;
 
   ngOnInit() {
