@@ -79,16 +79,16 @@ DO $$
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_class WHERE relname = 'seed_data_inserted') THEN
     -- Seed Authors
-    INSERT INTO authors (name) VALUES ('Nate Schieber');
+    INSERT INTO authors (name, activated_at) VALUES ('Nate Schieber', NOW());
 
     -- Seed Tags
-    INSERT INTO tags (name) VALUES ('Go'), ('PostgreSQL'), ('Angular'), ('Software Engineering');
+    INSERT INTO tags (name, activated_at) VALUES ('Go', NOW()), ('PostgreSQL', NOW()), ('Angular', NOW()), ('Software Engineering', NOW());
 
     -- Seed Blog Posts
     WITH author_id AS (SELECT id FROM authors WHERE name = 'Nate Schieber' LIMIT 1)
-    INSERT INTO blog_posts (title, content, author_id) VALUES
-    ('Getting Started with Go', 'A beginner''s guide to the Go programming language.', (SELECT id FROM author_id)),
-    ('Advanced PostgreSQL', 'Exploring advanced features of PostgreSQL.', (SELECT id FROM author_id));
+    INSERT INTO blog_posts (title, content, author_id, activated_at) VALUES
+    ('Getting Started with Go', 'A beginner''s guide to the Go programming language.', (SELECT id FROM author_id), NOW()),
+    ('Advanced PostgreSQL', 'Exploring advanced features of PostgreSQL.', (SELECT id FROM author_id), NOW());
 
     -- Seed Blog Post Tags
     INSERT INTO blog_post_tags (blog_post_id, tag_id)
@@ -102,16 +102,16 @@ BEGIN
 
 
     -- Seed Home Content
-    INSERT INTO home_contents (title, content) VALUES
-    ('Welcome to my Website!', 'This is the home page.');
+    INSERT INTO home_contents (title, content, activated_at) VALUES
+    ('Welcome to my Website!', 'This is the home page.', NOW());
 
     -- Seed GrooveJr Content
-    INSERT INTO groove_jr_contents (title, content) VALUES
-    ('GrooveJr', 'All about GrooveJr.');
+    INSERT INTO groove_jr_contents (title, content, activated_at) VALUES
+    ('GrooveJr', 'All about GrooveJr.', NOW());
 
     -- Seed About Content
-    INSERT INTO about_contents (title, content) VALUES
-    ('About Me', 'My name is Nate and I''m a software engineer.');
+    INSERT INTO about_contents (title, content, activated_at) VALUES
+    ('About Me', 'My name is Nate and I''m a software engineer.', NOW());
 
     CREATE TABLE seed_data_inserted (
       id serial PRIMARY KEY,

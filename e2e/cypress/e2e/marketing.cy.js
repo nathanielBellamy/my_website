@@ -8,7 +8,7 @@ describe('Marketing App', () => {
   it('should display the home page with the correct title', () => {
     cy.get('[data-testid="hero-heading"]').contains('Nate')
     cy.get('[data-testid="hero-heading"]').contains('Schieber')
-    cy.contains('Logic. Language. High Fidelity Code.').should('be.visible')
+    cy.contains('High Fidelity, Human-Readable Code').should('be.visible')
   })
 
   it('should navigate to and display the About page', () => {
