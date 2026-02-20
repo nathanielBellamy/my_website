@@ -3,7 +3,7 @@ FROM node:20-slim AS builder
 WORKDIR /app
 
 # Install build dependencies
-RUN apt-get update && apt-get install -y ca-certificates curl gnupg build-essential wget
+RUN apt-get update && apt-get install -y ca-certificates curl gnupg build-essential
 
 # Install Rustup and wasm target
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
@@ -11,9 +11,8 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 RUN rustup target add wasm32-unknown-unknown
 RUN cargo install wasm-bindgen-cli
 
-# Install Go for arm64
-RUN wget https://golang.org/dl/go1.24.0.linux-arm64.tar.gz
-RUN tar -C /usr/local -xzf go1.24.0.linux-arm64.tar.gz
+# Install Go (Architecture Agnostic)
+COPY --from=golang:1.24 /usr/local/go /usr/local/go
 ENV PATH="/usr/local/go/bin:${PATH}"
 
 # Copy version file for old-site build
@@ -54,7 +53,7 @@ RUN go mod download
 
 # Copy the backend source and build the Go application
 COPY backend/go ./backend/go
-RUN cd backend/go && CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o /app/main .
+RUN cd backend/go && CGO_ENABLED=0 GOOS=linux go build -o /app/main .
 
 # Stage 2: Final application image
 FROM gcr.io/distroless/base-debian11
