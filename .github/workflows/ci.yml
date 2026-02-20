@@ -95,7 +95,29 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
-          cache-dependency-path: e2e/package-lock.json
+          cache-dependency-path: |
+            e2e/package-lock.json
+            frontend/marketing/package-lock.json
+            frontend/admin/package-lock.json
+            frontend/auth/admin/package-lock.json
+
+      - name: Install and Build Marketing App
+        run: |
+          cd frontend/marketing
+          npm ci
+          npm run build-localhost
+
+      - name: Install and Build Admin App
+        run: |
+          cd frontend/admin
+          npm ci
+          npm run build-localhost
+
+      - name: Install and Build Auth Admin App
+        run: |
+          cd frontend/auth/admin
+          npm ci
+          npm run build-localhost
 
       - name: Initialize Database
         run: |
