@@ -1,5 +1,5 @@
 <div class="h-full py-24">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center" appScrollFadeIn>
     <h1 
       data-testid="blog-header"
       class="font-heading text-5xl md:text-7xl font-bold text-heading-text mb-6">
@@ -27,7 +27,7 @@
       </div>
 
       <!-- Left Sidebar / Filter Panel -->
-      <aside class="px-[16px] md:pt-[1rem] w-full lg:w-80 flex-shrink-0 order-1 lg:order-2">
+      <aside class="px-[16px] md:pt-[1rem] w-full lg:w-80 flex-shrink-0 order-1 lg:order-2" appScrollFadeIn [delay]="200">
         <div class="lg:sticky lg:top-24 bg-card border border-white/10 rounded-xl p-6 shadow-sm lg:max-h-[calc(100vh-10rem)] overflow-y-auto">
           <h3 class="text-xl font-heading font-semibold text-heading-text mb-4">Filter by Tags</h3>
           
@@ -67,6 +67,7 @@
 
 <ng-template #itemTmpl let-item>
   <app-card 
+    appScrollFadeIn
     [title]="item.title" 
     [content]="getSnippet(item.content)"
     [tags]="getTags(item.tags)"

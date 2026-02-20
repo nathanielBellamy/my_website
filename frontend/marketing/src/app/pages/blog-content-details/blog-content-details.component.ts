@@ -4,11 +4,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MarkdownComponent } from 'ngx-markdown';
 import { BlogService } from '../../services/blog.service';
 import { BlogPost } from '../../models/blog-post.model';
+import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
 
 @Component({
   selector: 'app-blog-content-details',
   standalone: true,
-  imports: [CommonModule, MarkdownComponent, RouterLink],
+  imports: [CommonModule, MarkdownComponent, RouterLink, ScrollFadeInDirective],
   templateUrl: './blog-content-details.component.html',
 })
 export class BlogContentDetailsComponent implements OnInit {

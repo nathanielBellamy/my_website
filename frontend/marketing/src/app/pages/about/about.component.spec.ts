@@ -6,8 +6,8 @@ import { signal, WritableSignal } from '@angular/core';
 import { AboutContent } from '../../models/about.model';
 
 const mockAboutContent: AboutContent[] = [
-  { id: '1', title: 'Title 1', content: 'Body 1' },
-  { id: '2', title: 'Title 2', content: 'Body 2' },
+  { id: '1', title: 'Title 1', content: 'Body 1', order: 1 },
+  { id: '2', title: 'Title 2', content: 'Body 2', order: 2 },
 ];
 
 describe('AboutComponent', () => {

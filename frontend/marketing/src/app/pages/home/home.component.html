@@ -3,19 +3,33 @@
   <section class="py-24 flex flex-col items-center justify-center min-h-[90vh] text-center relative">
     <div class="max-w-4xl mx-auto z-10">
       <h1 
+        appScrollFadeIn
+        [delay]="0"
         data-testid="hero-heading"
         class="font-heading text-5xl md:text-8xl font-bold tracking-tight text-white">
         <span class="bg-gradient-to-r from-white via-white to-primary-accent/50 text-transparent bg-clip-text pr-2">Nate</span>
         <span class="bg-gradient-to-r from-primary-accent/50 via-white to-white text-transparent bg-clip-text">Schieber</span>
       </h1>
-      <div class="h-2 w-24 bg-gradient-to-r from-primary-accent via-vibrant-orange to-secondary-accent mx-auto mt-6 rounded-full"></div>
-      <h2 class="font-sans text-2xl md:text-4xl text-primary-accent mt-8 font-light">
+      <div 
+        appScrollFadeIn
+        [delay]="200"
+        class="h-2 w-24 bg-gradient-to-r from-primary-accent via-vibrant-orange to-secondary-accent mx-auto mt-6 rounded-full"></div>
+      <h2 
+        appScrollFadeIn
+        [delay]="400"
+        class="font-sans text-2xl md:text-4xl text-primary-accent mt-8 font-light">
         High Fidelity, Human-Readable Code
       </h2>
-      <p class="font-sans text-balance text-lg md:text-xl text-body-text mt-8 max-w-2xl mx-auto leading-relaxed">
+      <p 
+        appScrollFadeIn
+        [delay]="600"
+        class="font-sans text-balance text-lg md:text-xl text-body-text mt-8 max-w-2xl mx-auto leading-relaxed">
         Building robust, maintainable software that gets the job done. 
       </p>
-      <div class="mt-12 flex flex-col md:flex-row items-center justify-center gap-6">
+      <div 
+        appScrollFadeIn
+        [delay]="800"
+        class="mt-12 flex flex-col md:flex-row items-center justify-center gap-6">
         <a
           href="mailto:nbschieber@gmail.com"
           class="inline-block font-sans text-lg font-semibold text-white bg-gradient-to-r from-primary-accent to-secondary-accent py-4 px-10 rounded-xl shadow-xl shadow-primary-accent/20 hover:scale-105 transition-all duration-300"
@@ -32,7 +46,10 @@
     </div>
     
     <!-- Scroll Indicator -->
-    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer opacity-50 hover:opacity-100 transition-opacity">
+    <div 
+      appScrollFadeIn
+      [delay]="1200"
+      class="absolute bottom-0 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer opacity-50 hover:opacity-100 transition-opacity">
       <a routerLink="/focus">
         <svg class="w-8 h-8 text-primary-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7-7-7m14-8l-7 7-7-7"></path>

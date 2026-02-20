@@ -9,11 +9,12 @@ import { GrooveJrComponent } from '../groove-jr/groove-jr.component';
 import { BlogComponent } from '../blog/blog.component';
 import { FocusComponent } from '../focus/focus.component';
 import { LatestPostsComponent } from '../latest-posts/latest-posts.component';
+import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
 
 @Component({
   selector: 'app-all-sections',
   standalone: true,
-  imports: [CommonModule, HomeComponent, AboutComponent, GrooveJrComponent, BlogComponent, FocusComponent, LatestPostsComponent],
+  imports: [CommonModule, HomeComponent, AboutComponent, GrooveJrComponent, BlogComponent, FocusComponent, LatestPostsComponent, ScrollFadeInDirective],
   templateUrl: './all-sections.component.html',
 })
 export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {

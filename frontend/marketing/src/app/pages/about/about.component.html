@@ -1,5 +1,5 @@
 <div class="h-full py-24">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center" appScrollFadeIn>
     <h1 
       data-testid="about-header"
       class="font-heading text-5xl md:text-7xl font-bold text-heading-text mb-6">
@@ -22,5 +22,5 @@
 </div>
 
 <ng-template #itemTmpl let-item>
-  <app-card [title]="item.title" [content]="item.content"></app-card>
+  <app-card appScrollFadeIn [title]="item.title" [content]="item.content"></app-card>
 </ng-template>

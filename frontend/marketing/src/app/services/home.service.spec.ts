@@ -8,8 +8,8 @@ import { HomeContent } from '../models/home.model';
 import { environment } from '../../environments/environment';
 
 const mockHomeContent: HomeContent[] = [
-  { id: 'home-1', title: 'Welcome', content: 'Welcome to the site.' },
-  { id: 'home-2', title: 'About', content: 'This is a section about me.' },
+  { id: 'home-1', title: 'Welcome', content: 'Welcome to the site.', order: 1 },
+  { id: 'home-2', title: 'About', content: 'This is a section about me.', order: 2 },
 ];
 
 describe('HomeService', () => {
@@ -41,4 +41,3 @@ describe('HomeService', () => {
     });
   });
 });
-

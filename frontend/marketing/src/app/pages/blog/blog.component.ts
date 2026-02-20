@@ -4,13 +4,14 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { InfiniteScrollComponent } from '../../components/infinite-scroll/infinite-scroll.component';
 import { CardComponent } from '../../components/card/card.component';
+import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
 import { Tag } from '../../models/blog-post.model';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-blog',
   standalone: true,
-  imports: [CommonModule, InfiniteScrollComponent, CardComponent],
+  imports: [CommonModule, InfiniteScrollComponent, CardComponent, ScrollFadeInDirective],
   templateUrl: './blog.component.html',
 })
 export class BlogComponent implements OnInit, OnDestroy {

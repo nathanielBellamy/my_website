@@ -1,7 +1,7 @@
 
   <!-- Focus Section -->
   <section id="focus" class="py-24 bg-card/30 backdrop-blur-sm border-y border-white/5">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center" appScrollFadeIn>
     <h1 
       data-testid="featured-values-header"
       class="font-heading text-5xl md:text-7xl font-bold text-heading-text mb-6">
@@ -11,21 +11,21 @@
   </div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-        <div class="flex flex-col items-center text-center group">
+        <div class="flex flex-col items-center text-center group" appScrollFadeIn [delay]="100">
           <div class="w-16 h-16 bg-vibrant-yellow/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
             <span class="text-3xl">⚡</span>
           </div>
           <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">Performance</h4>
           <p class="text-body-text">Realtime resource efficiency at scale.</p>
         </div>
-        <div class="flex flex-col items-center text-center group">
+        <div class="flex flex-col items-center text-center group" appScrollFadeIn [delay]="300">
           <div class="w-16 h-16 bg-vibrant-green/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
             <span class="text-3xl">🛡️</span>
           </div>
           <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">Robustness</h4>
           <p class="text-body-text">Type-safe. Fault-tolerant. Battle tested.</p>
         </div>
-        <div class="flex flex-col items-center text-center group">
+        <div class="flex flex-col items-center text-center group" appScrollFadeIn [delay]="500">
           <div class="w-16 h-16 bg-vibrant-orange/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
             <span class="text-3xl">✨</span>
           </div>
@@ -35,12 +35,12 @@
       </div>
     </div>
 
-    <div class="h-1 w-12 bg-vibrant-orange mt-8 mx-auto rounded-full"></div>
-    <p class="my-8 font-sans text-xl text-body-text w-full mx-auto text-center">
+    <div class="h-1 w-12 bg-vibrant-orange mt-8 mx-auto rounded-full" appScrollFadeIn [delay]="600"></div>
+    <p class="my-8 font-sans text-xl text-body-text w-full mx-auto text-center" appScrollFadeIn [delay]="700">
       Building With
     </p>
     <!-- Tech Name Drop Section -->
-    <div class="mt-8 max-w-7xl mx-auto px-8 sm:px-6 lg:px-8 text-center">
+    <div class="mt-8 max-w-7xl mx-auto px-8 sm:px-6 lg:px-8 text-center" appScrollFadeIn [delay]="800">
       <div class="flex flex-wrap items-center justify-between gap-10 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
          <div class="flex flex-col items-center gap-2">
             <span class="font-heading text-xl font-semibold text-body-text">LLMs</span>
