@@ -85,13 +85,13 @@ func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, 
 	}))))
 
 	// Admin app protected by new auth
-	mux.Handle("/admin/", RequireAdminAuthV2(cookieJar, log, adminFileServer))
+	mux.Handle("/admin/", RequireAdminAuthV2(cookieJar, log, WithSecurityHeaders(adminFileServer)))
 
 	// Old site
-	mux.Handle("/old-site/", oldSiteFileServer)
+	mux.Handle("/old-site/", WithSecurityHeaders(oldSiteFileServer))
 
 	// Marketing site
-	mux.Handle("/", marketingFileServer)
+	mux.Handle("/", WithSecurityHeaders(marketingFileServer))
 
 	// Challenge Endpoint
 	mux.HandleFunc("GET /api/auth/admin/challenge", func(w http.ResponseWriter, r *http.Request) {
@@ -378,4 +378,22 @@ var RedirectToHome = func(w http.ResponseWriter, r *http.Request, log *zerolog.L
 		Str("ip", GetClientIpAddr(r)).
 		Msg("REDIRECT To Home")
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func WithSecurityHeaders(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Security Headers
+		// Note: strict-transport-security is handled by Nginx in prod, but good to have if we ever serve HTTPS directly
+		// w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload")
+
+		// CSP: Allow Google Recaptcha, self, and inline styles/scripts (for Angular)
+		// We allow ws: for localhost development
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; frame-src https://www.google.com/recaptcha/; connect-src 'self' ws: wss:;")
+		
+		w.Header().Set("X-Frame-Options", "DENY")
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		w.Header().Set("Referrer-Policy", "origin-when-cross-origin")
+
+		next.ServeHTTP(w, r)
+	})
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, inject, NgZone } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { HomeComponent } from '../home/home.component';
@@ -21,6 +22,7 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly location = inject(Location);
   private readonly ngZone = inject(NgZone);
+  private readonly titleService = inject(Title);
   private routerSubscription?: Subscription;
   private observer?: IntersectionObserver;
   private isAutoScrolling = false;
@@ -75,6 +77,17 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
           if (currentPath !== path) {
             this.ngZone.run(() => {
               this.location.replaceState(path);
+              
+              const titleMap: Record<string, string> = {
+                '': 'Nate Schieber - Software Engineer',
+                'focus': 'Focus - Nate Schieber',
+                'latest-posts': 'Latest Posts - Nate Schieber',
+                'about': 'About - Nate Schieber',
+                'groovejr': 'Groove Jr. - Nate Schieber',
+                'blog': 'Blog - Nate Schieber'
+              };
+              const newTitle = titleMap[path] || 'Nate Schieber - Software Engineer';
+              this.titleService.setTitle(newTitle);
             });
           }
         }

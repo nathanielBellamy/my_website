@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://nateschieber.dev/sitemap.xml
