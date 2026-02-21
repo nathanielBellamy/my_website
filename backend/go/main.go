@@ -100,11 +100,11 @@ func SetupRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.
 	SetupBaseRoutes(mux, cookieJar, log, oldSiteController, marketingController, adminController)
 
 	if env.IsProd(mode) {
-		SetupProdRoutes(mux, cookieJar, log, marketingController, adminController, oldSiteController, marketing.GetMarketingFileServerNoAuth())
+		SetupProdRoutes(mux, cookieJar, log, marketingController, adminController, oldSiteController, marketing.GetMarketingFileServerNoAuth(log))
 	} else if env.IsRemotedev(mode) {
-		SetupRemotedevRoutes(mux, cookieJar, log, oldSiteController, adminController, marketing.GetMarketingFileServerNoAuth())
+		SetupRemotedevRoutes(mux, cookieJar, log, oldSiteController, adminController, marketing.GetMarketingFileServerNoAuth(log))
 	} else {
-		SetupLocalhostRoutes(mux, cookieJar, log, oldSiteController, adminController, marketing.GetMarketingFileServerNoAuth())
+		SetupLocalhostRoutes(mux, cookieJar, log, oldSiteController, adminController, marketing.GetMarketingFileServerNoAuth(log))
 	}
 }
 

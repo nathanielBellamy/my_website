@@ -249,16 +249,24 @@ func (mc *MarketingController) GetAboutContentByIDHandler(w http.ResponseWriter,
 	mc.sendJSON(w, content)
 }
 
-func GetMarketingFileServerNoAuth() http.Handler {
+func GetMarketingFileServerNoAuth(log *zerolog.Logger) http.Handler {
 	root := http.Dir("build/marketing/browser")
 	fs := http.FileServer(root)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Check if the file exists
-		if _, err := root.Open(r.URL.Path); os.IsNotExist(err) {
+		f, err := root.Open(r.URL.Path)
+		if os.IsNotExist(err) {
 			// If not, serve index.html
+			log.Debug().Str("path", r.URL.Path).Msg("File not found, serving index.html")
 			http.ServeFile(w, r, "build/marketing/browser/index.html")
 			return
 		}
+		// Close the file if it was opened successfully to avoid FD leak
+		if f != nil {
+			f.Close()
+		}
+		
+		log.Debug().Str("path", r.URL.Path).Msg("Serving static file")
 		// Otherwise, serve the file
 		fs.ServeHTTP(w, r)
 	})

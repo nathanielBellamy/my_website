@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/nathanielBellamy/my_website/backend/go/models"
@@ -339,11 +340,61 @@ func TestGetAboutContentByIDHandler(t *testing.T) {
 		t.Errorf("expected About content ID 1, got %s", content.ID)
 	}
 
-	// Test not found
-	req, _ = http.NewRequest("GET", "/api/marketing/about/2", nil)
-	rr = httptest.NewRecorder()
-	testMux.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusNotFound {
-		t.Errorf("handler returned wrong status code for not found: got %v want %v", status, http.StatusNotFound)
+		// Test not found
+		req, _ = http.NewRequest("GET", "/api/marketing/about/2", nil)
+		rr = httptest.NewRecorder()
+		testMux.ServeHTTP(rr, req)
+		if status := rr.Code; status != http.StatusNotFound {
+			t.Errorf("handler returned wrong status code for not found: got %v want %v", status, http.StatusNotFound)
+		}
 	}
-}
+	
+	func TestGetMarketingFileServerNoAuth(t *testing.T) {
+		// Setup temporary build directory structure
+		baseDir := "build/marketing/browser"
+		if err := os.MkdirAll(baseDir, 0755); err != nil {
+			t.Fatal(err)
+		}
+		defer os.RemoveAll("build")
+	
+		// Create index.html
+		indexContent := "<html>index</html>"
+		if err := os.WriteFile(baseDir+"/index.html", []byte(indexContent), 0644); err != nil {
+			t.Fatal(err)
+		}
+	
+		// Create sitemap.xml
+		sitemapContent := "<xml>sitemap</xml>"
+		if err := os.WriteFile(baseDir+"/sitemap.xml", []byte(sitemapContent), 0644); err != nil {
+			t.Fatal(err)
+		}
+	
+		mockLogOutput := &testutils.MockLogger{}
+		log := zerolog.New(mockLogOutput)
+		handler := GetMarketingFileServerNoAuth(&log)
+	
+		// Test serving sitemap.xml
+		req, _ := http.NewRequest("GET", "/sitemap.xml", nil)
+		rr := httptest.NewRecorder()
+		handler.ServeHTTP(rr, req)
+	
+		if status := rr.Code; status != http.StatusOK {
+			t.Errorf("handler returned wrong status code for sitemap.xml: got %v want %v", status, http.StatusOK)
+		}
+		if rr.Body.String() != sitemapContent {
+			t.Errorf("handler returned wrong content for sitemap.xml: got %v want %v", rr.Body.String(), sitemapContent)
+		}
+	
+		// Test serving index.html fallback for unknown file
+		req, _ = http.NewRequest("GET", "/unknown", nil)
+		rr = httptest.NewRecorder()
+		handler.ServeHTTP(rr, req)
+	
+		if status := rr.Code; status != http.StatusOK {
+			t.Errorf("handler returned wrong status code for fallback: got %v want %v", status, http.StatusOK)
+		}
+		if rr.Body.String() != indexContent {
+			t.Errorf("handler returned wrong content for fallback: got %v want %v", rr.Body.String(), indexContent)
+		}
+	}
+	
