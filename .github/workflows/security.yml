@@ -120,7 +120,7 @@ jobs:
 
       - name: Install Squirrel
         run: |
-          curl -sSfL https://squirrelscan.com/install.sh | sh
+          curl -sSfL https://squirrelscan.com/install.sh | bash
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Run Squirrel Audit
