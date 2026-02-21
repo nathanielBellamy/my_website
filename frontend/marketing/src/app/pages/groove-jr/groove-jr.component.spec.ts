@@ -5,6 +5,7 @@ import { GrooveJrStore } from './groove-jr.store';
 import { signal, WritableSignal } from '@angular/core';
 import { GrooveJrContent } from '../../models/groove-jr.model';
 import { RenderResult } from '@testing-library/angular';
+import { provideRouter } from '@angular/router';
 
 const mockGrooveJrContent: GrooveJrContent[] = [
   { id: '1', title: 'Title 1', content: 'Body 1', order: 1 },
@@ -27,6 +28,7 @@ describe('GrooveJrComponent', () => {
     const renderResult = await render(GrooveJrComponent, {
       providers: [
         provideMarkdown(),
+        provideRouter([]),
         {
           provide: GrooveJrStore,
           useValue: {
@@ -69,5 +71,9 @@ describe('GrooveJrComponent', () => {
     await waitFor(() => {
       screen.getByText('Error: Test Error');
     });
+  });
+
+  it('should render scroll indicator', () => {
+    screen.getByTestId('scroll-to-blog');
   });
 });

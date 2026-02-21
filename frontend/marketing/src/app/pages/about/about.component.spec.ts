@@ -4,6 +4,7 @@ import { AboutComponent } from './about.component';
 import { AboutStore } from './about.store';
 import { signal, WritableSignal } from '@angular/core';
 import { AboutContent } from '../../models/about.model';
+import { provideRouter } from '@angular/router';
 
 const mockAboutContent: AboutContent[] = [
   { id: '1', title: 'Title 1', content: 'Body 1', order: 1 },
@@ -25,6 +26,7 @@ describe('AboutComponent', () => {
     await render(AboutComponent, {
       providers: [
         provideMarkdown(),
+        provideRouter([]),
         {
           provide: AboutStore,
           useValue: {
@@ -64,5 +66,9 @@ describe('AboutComponent', () => {
     await waitFor(() => {
       screen.getByText('Error: Test Error');
     });
+  });
+
+  it('should render scroll indicator', () => {
+    screen.getByTestId('scroll-to-groovejr');
   });
 });

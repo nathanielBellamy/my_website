@@ -5,6 +5,7 @@ import { CardComponent } from '../../components/card/card.component';
 import { LatestPostsStore } from './latest-posts.store';
 import { signal, WritableSignal } from '@angular/core';
 import { HomeContent } from '../../models/home.model';
+import { provideRouter } from '@angular/router';
 
 const mockHomeContent: HomeContent[] = [
   { id: '1', title: 'Title 1', content: 'Body 1', order: 1 },
@@ -29,6 +30,7 @@ describe('LatestPostsComponent', () => {
       imports: [CardComponent],
       providers: [
         provideMarkdown(),
+        provideRouter([]),
         {
           provide: LatestPostsStore,
           useValue: {
@@ -69,5 +71,9 @@ describe('LatestPostsComponent', () => {
     await waitFor(() => {
       screen.getByText('Error: Test Error');
     });
+  });
+
+  it('should render scroll indicator', () => {
+    screen.getByTestId('scroll-to-about');
   });
 });

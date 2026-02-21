@@ -1,4 +1,4 @@
-<div class="h-full py-24">
+<div class="h-full py-24 relative">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center" appScrollFadeIn>
     <h1 
       data-testid="groovejr-header"
@@ -19,6 +19,7 @@
     [itemTemplate]="itemTmpl"
     [error]="store.error()"
   ></app-infinite-scroll>
+  <app-scroll-indicator target="/blog"></app-scroll-indicator>
 </div>
 
 <ng-template #itemTmpl let-item>

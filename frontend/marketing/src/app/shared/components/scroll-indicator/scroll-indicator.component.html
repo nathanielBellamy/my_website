@@ -1,0 +1,10 @@
+<div 
+  appScrollFadeIn
+  [delay]="1200"
+  class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer opacity-50 hover:opacity-100 transition-opacity z-10">
+  <a [routerLink]="target()" [attr.data-testid]="'scroll-to-' + target().replace('/', '')">
+    <svg class="w-8 h-8 text-primary-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7-7-7m14-8l-7 7-7-7"></path>
+    </svg>
+  </a>
+</div>

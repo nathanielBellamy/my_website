@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { InfiniteScrollComponent } from '../../components/infinite-scroll/infinite-scroll.component';
 import { CardComponent } from '../../components/card/card.component';
 import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
+import { ScrollIndicatorComponent } from '../../shared/components/scroll-indicator/scroll-indicator.component';
 
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [CommonModule, InfiniteScrollComponent, CardComponent, ScrollFadeInDirective],
+  imports: [CommonModule, InfiniteScrollComponent, CardComponent, ScrollFadeInDirective, ScrollIndicatorComponent],
   templateUrl: './about.component.html',
 })
 export class AboutComponent implements OnInit {
