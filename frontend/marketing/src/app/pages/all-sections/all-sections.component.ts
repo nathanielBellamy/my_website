@@ -100,8 +100,15 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
     else if (url.includes('groovejr')) sectionId = 'groovejr';
     else if (url.includes('blog')) sectionId = 'blog';
     
+    // Find the scroll container
+    const container = document.querySelector('[data-testid="main-scroll-container"]');
+
     if (sectionId === 'home') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (container) {
+        container.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
       return;
     }
 
@@ -109,7 +116,11 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (container) {
+        container.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
   }
 }
