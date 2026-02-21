@@ -185,13 +185,4 @@ func SetupProdRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, a
 	auth.SetupAdminAuthV2(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer(), auth.LogClientIp("/", log, marketingFileServer))
 }
 
-func _SetHeaders(handler http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// this method wound up being superfluous for what we needed at the time of writing
-		// but it's nice to have the infrastructure established
 
-		// w.Header().Set("Content-Type", "text/javascript")
-		// w.Header().Set("Content-Type", "text/html, text/css")
-		handler.ServeHTTP(w, r)
-	})
-}

@@ -30,9 +30,11 @@
           {{ post.title }}
         </h1>
         <div class="text-body-text/60 text-sm flex items-center gap-4">
-          <span>{{ post.createdAt | date:'longDate' }}</span>
+          <span itemprop="datePublished">{{ post.createdAt | date:'longDate' }}</span>
           <span>•</span>
-          <span>{{ post.author.name }}</span>
+          <span itemprop="author" itemscope itemtype="https://schema.org/Person">
+            By <span itemprop="name">{{ post.author.name }}</span>
+          </span>
         </div>
       </header>
 

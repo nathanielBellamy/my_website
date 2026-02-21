@@ -388,7 +388,7 @@ func WithSecurityHeaders(next http.Handler) http.Handler {
 
 		// CSP: Allow Google Recaptcha, self, and inline styles/scripts (for Angular)
 		// We allow ws: for localhost development
-		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; frame-src https://www.google.com/recaptcha/; connect-src 'self' ws: wss:;")
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; frame-src https://www.google.com/recaptcha/; connect-src 'self' ws: wss:; frame-ancestors 'none';")
 		
 		w.Header().Set("X-Frame-Options", "DENY")
 		w.Header().Set("X-Content-Type-Options", "nosniff")
