@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
@@ -472,6 +473,23 @@ func (ac *AdminController) DeleteAboutContentHandler(w http.ResponseWriter, r *h
 
 // AdminFileServer serves static files for the admin site, using the SpaHandler to handle client-side routing.
 func (ac *AdminController) AdminFileServer() http.Handler {
-	handler := auth.SpaHandler("build/admin/browser", "index.html")
+	rootPath := "build/admin/browser"
+	root := http.Dir(rootPath)
+	fs := http.FileServer(root)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Try to open file
+		f, err := root.Open(r.URL.Path)
+		if os.IsNotExist(err) {
+			// Not found, serve index.html
+			http.ServeFile(w, r, rootPath+"/index.html")
+			return
+		}
+		defer f.Close()
+
+		// If it exists, let FileServer handle it
+		fs.ServeHTTP(w, r)
+	})
+
 	return http.StripPrefix("/admin/", auth.LogClientIp("/admin/", ac.Log, handler))
 }

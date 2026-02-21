@@ -114,6 +114,7 @@ A detailed, step-by-step plan will be maintained using the `TODO` list feature. 
     *   Set up CI/CD pipeline (e.g., using ArgoCD).
     *   [x] Fix ambiguous column issue in `GetAllBlogPosts` (backend)
     *   [x] Fix persistence of `activatedAt` and `deactivatedAt` timestamps for Blog Posts (Frontend default + Backend DTO mapping)
+    *   [x] Fix Admin app loading in CI by aligning file serving logic with Marketing app (manual index.html fallback)
 
 ## Architectural Decisions
 
