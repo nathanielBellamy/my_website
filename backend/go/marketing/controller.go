@@ -59,7 +59,7 @@ func getPaginationParams(r *http.Request) (int, int) {
 func (mc *MarketingController) GetAllBlogPostsHandler(w http.ResponseWriter, r *http.Request) {
 	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllBlogPostsHandler Hit")
 	page, limit := getPaginationParams(r)
-	
+
 	tagsStr := r.URL.Query().Get("tags")
 	var tags []string
 	if tagsStr != "" {
@@ -263,9 +263,11 @@ func GetMarketingFileServerNoAuth(log *zerolog.Logger) http.Handler {
 		}
 		// Close the file if it was opened successfully to avoid FD leak
 		if f != nil {
-			f.Close()
+			if err := f.Close(); err != nil {
+				log.Printf("failed to close file: %v", err)
+			}
 		}
-		
+
 		log.Debug().Str("path", r.URL.Path).Msg("Serving static file")
 		// Otherwise, serve the file
 		fs.ServeHTTP(w, r)
