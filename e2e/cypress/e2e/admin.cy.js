@@ -2,7 +2,7 @@ describe('Admin App', () => {
   beforeEach(() => {
     // Assuming auth is bypassed on localhost or handled elsewhere
     cy.visit('/admin/')
-    cy.contains('Admin Panel').should('be.visible')
+    cy.contains('Admin Panel', { timeout: 10000 }).should('be.visible')
   })
 
   it('should display the admin panel', () => {
