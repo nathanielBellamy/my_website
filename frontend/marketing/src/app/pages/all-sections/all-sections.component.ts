@@ -100,6 +100,11 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
     else if (url.includes('groovejr')) sectionId = 'groovejr';
     else if (url.includes('blog')) sectionId = 'blog';
     
+    if (sectionId === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
