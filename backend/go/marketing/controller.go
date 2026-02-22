@@ -2,6 +2,8 @@ package marketing
 
 import (
 	"encoding/json"
+	"encoding/xml"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -269,40 +271,54 @@ func (mc *MarketingController) SitemapHandler(w http.ResponseWriter, r *http.Req
 		}
 	}
 
-	w.Header().Set("Content-Type", "application/xml")
-	w.Write([]byte(`<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`))
+	type URL struct {
+		Loc        string `xml:"loc"`
+		LastMod    string `xml:"lastmod,omitempty"`
+		ChangeFreq string `xml:"changefreq,omitempty"`
+		Priority   string `xml:"priority,omitempty"`
+	}
+
+	type URLSet struct {
+		XMLName xml.Name `xml:"http://www.sitemaps.org/schemas/sitemap/0.9 urlset"`
+		URLs    []URL    `xml:"url"`
+	}
+
+	var urls []URL
 
 	// Static Pages
 	pages := []string{"", "focus", "latest-posts", "about", "groovejr", "blog", "privacy-policy"}
 	for _, page := range pages {
-		url := baseUrl
+		urlStr := baseUrl
 		if page != "" {
-			url += "/" + page
+			urlStr += "/" + page
 		}
-		w.Write([]byte(`
-	<url>
-		<loc>` + url + `</loc>
-		<changefreq>weekly</changefreq>
-		<priority>0.8</priority>
-	</url>`))
+		urls = append(urls, URL{
+			Loc:        urlStr,
+			ChangeFreq: "weekly",
+			Priority:   "0.8",
+		})
 	}
 
 	// Dynamic Blog Posts
 	for _, post := range posts {
-		url := baseUrl + "/blog/" + post.ID
+		urlStr := baseUrl + "/blog/" + post.ID
 		lastMod := post.UpdatedAt.Format("2006-01-02")
-		w.Write([]byte(`
-	<url>
-		<loc>` + url + `</loc>
-		<lastmod>` + lastMod + `</lastmod>
-		<changefreq>monthly</changefreq>
-		<priority>0.6</priority>
-	</url>`))
+		urls = append(urls, URL{
+			Loc:        urlStr,
+			LastMod:    lastMod,
+			ChangeFreq: "monthly",
+			Priority:   "0.6",
+		})
 	}
 
-	w.Write([]byte(`
-</urlset>`))
+	w.Header().Set("Content-Type", "application/xml")
+	if _, err := w.Write([]byte(xml.Header)); err != nil {
+		mc.Log.Error().Err(err).Msg("Error writing XML header")
+		return
+	}
+	if err := xml.NewEncoder(w).Encode(URLSet{URLs: urls}); err != nil {
+		mc.Log.Error().Err(err).Msg("Error encoding sitemap")
+	}
 }
 
 // RobotsTxtHandler serves the robots.txt file.
@@ -319,11 +335,10 @@ func (mc *MarketingController) RobotsTxtHandler(w http.ResponseWriter, r *http.R
 	}
 
 	w.Header().Set("Content-Type", "text/plain")
-	w.Write([]byte(`User-agent: *
-Allow: /
-
-Sitemap: ` + baseUrl + `/sitemap.xml
-`))
+	robotsContent := fmt.Sprintf("User-agent: *\nAllow: /\n\nSitemap: %s/sitemap.xml\n", baseUrl)
+	if _, err := w.Write([]byte(robotsContent)); err != nil {
+		mc.Log.Error().Err(err).Msg("Error writing robots.txt")
+	}
 }
 
 func GetMarketingFileServerNoAuth(log *zerolog.Logger) http.Handler {
