@@ -3,7 +3,7 @@ package marketing
 import (
 	"encoding/json"
 	"encoding/xml"
-	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
 	"strings"
@@ -251,6 +251,27 @@ func (mc *MarketingController) GetAboutContentByIDHandler(w http.ResponseWriter,
 	mc.sendJSON(w, content)
 }
 
+func (mc *MarketingController) determineBaseURL(r *http.Request) string {
+	// Default to production
+	baseUrl := "https://nateschieber.dev"
+
+	if host := r.Header.Get("Host"); host != "" {
+		// Allow localhost for development
+		if strings.HasPrefix(host, "localhost") {
+			return "http://" + host
+		}
+		// Allow www subdomain
+		if host == "www.nateschieber.dev" {
+			return "https://" + host
+		}
+		// Allow root domain
+		if host == "nateschieber.dev" {
+			return "https://" + host
+		}
+	}
+	return baseUrl
+}
+
 // SitemapHandler generates the XML sitemap.
 func (mc *MarketingController) SitemapHandler(w http.ResponseWriter, r *http.Request) {
 	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("SitemapHandler Hit")
@@ -262,14 +283,7 @@ func (mc *MarketingController) SitemapHandler(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	baseUrl := "https://nateschieber.dev" // Should ideally come from config/env
-	if host := r.Header.Get("Host"); host != "" {
-		if strings.Contains(host, "localhost") {
-			baseUrl = "http://" + host
-		} else {
-			baseUrl = "https://" + host
-		}
-	}
+	baseUrl := mc.determineBaseURL(r)
 
 	type URL struct {
 		Loc        string `xml:"loc"`
@@ -325,19 +339,30 @@ func (mc *MarketingController) SitemapHandler(w http.ResponseWriter, r *http.Req
 func (mc *MarketingController) RobotsTxtHandler(w http.ResponseWriter, r *http.Request) {
 	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("RobotsTxtHandler Hit")
 
-	baseUrl := "https://nateschieber.dev" // Should ideally come from config/env
-	if host := r.Header.Get("Host"); host != "" {
-		if strings.Contains(host, "localhost") {
-			baseUrl = "http://" + host
-		} else {
-			baseUrl = "https://" + host
-		}
-	}
+	baseUrl := mc.determineBaseURL(r)
 
 	w.Header().Set("Content-Type", "text/plain")
-	robotsContent := fmt.Sprintf("User-agent: *\nAllow: /\n\nSitemap: %s/sitemap.xml\n", baseUrl)
-	if _, err := w.Write([]byte(robotsContent)); err != nil {
-		mc.Log.Error().Err(err).Msg("Error writing robots.txt")
+
+	const robotsTemplate = `User-agent: *
+Allow: /
+
+Sitemap: {{.BaseUrl}}/sitemap.xml
+`
+	tmpl, err := template.New("robots").Parse(robotsTemplate)
+	if err != nil {
+		mc.Log.Error().Err(err).Msg("Error parsing robots.txt template")
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	data := struct {
+		BaseUrl string
+	}{
+		BaseUrl: baseUrl,
+	}
+
+	if err := tmpl.Execute(w, data); err != nil {
+		mc.Log.Error().Err(err).Msg("Error executing robots.txt template")
 	}
 }
 
