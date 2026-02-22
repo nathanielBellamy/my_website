@@ -5,11 +5,12 @@ import { InfiniteScrollComponent } from '../../components/infinite-scroll/infini
 import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
 import { LatestPostsStore } from './latest-posts.store';
 import { ScrollIndicatorComponent } from '../../shared/components/scroll-indicator/scroll-indicator.component';
+import { PageComponent } from '../../components/page/page.component';
 
 @Component({
   selector: 'app-latest-posts',
   standalone: true,
-  imports: [CommonModule, CardComponent, InfiniteScrollComponent, ScrollFadeInDirective, ScrollIndicatorComponent],
+  imports: [CommonModule, CardComponent, InfiniteScrollComponent, ScrollFadeInDirective, ScrollIndicatorComponent, PageComponent],
   templateUrl: './latest-posts.component.html',
 })
 export class LatestPostsComponent implements OnInit {

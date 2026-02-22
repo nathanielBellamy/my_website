@@ -7,11 +7,12 @@ import { CardComponent } from '../../components/card/card.component';
 import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
 import { Tag } from '../../models/blog-post.model';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { PageComponent } from '../../components/page/page.component';
 
 @Component({
   selector: 'app-blog',
   standalone: true,
-  imports: [CommonModule, InfiniteScrollComponent, CardComponent, ScrollFadeInDirective],
+  imports: [CommonModule, InfiniteScrollComponent, CardComponent, ScrollFadeInDirective, PageComponent],
   templateUrl: './blog.component.html',
 })
 export class BlogComponent implements OnInit, OnDestroy {

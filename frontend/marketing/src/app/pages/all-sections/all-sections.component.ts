@@ -105,13 +105,13 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private scrollToSection() {
     const url = this.router.url;
-    let sectionId = 'home';
+    let sectionId = 'home-page';
     
-    if (url.includes('focus')) sectionId = 'focus';
-    else if (url.includes('latest-posts')) sectionId = 'latest-posts';
-    else if (url.includes('about')) sectionId = 'about';
-    else if (url.includes('groovejr')) sectionId = 'groovejr';
-    else if (url.includes('blog')) sectionId = 'blog';
+    if (url.includes('focus')) sectionId = 'focus-page';
+    else if (url.includes('latest-posts')) sectionId = 'latest-posts-page';
+    else if (url.includes('about')) sectionId = 'about-page';
+    else if (url.includes('groovejr')) sectionId = 'groovejr-page';
+    else if (url.includes('blog')) sectionId = 'blog-page';
 
     this._scrollToSection(sectionId);
   }
@@ -121,16 +121,14 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!element)
       return;
 
+    element.scrollTo(0, 0);
+
     const headerOffset = 20; // Your extra 50px nudge
     const elementPosition = element.getBoundingClientRect().top;
     const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
-    const allSections = document.getElementById("main-scroll-container");
-    if (!allSections)
-      return;
-
-    allSections.scrollTo({
-      top: offsetPosition,
+    element.scrollIntoView({
+      block: 'start',
       behavior: 'smooth'
     });
   }

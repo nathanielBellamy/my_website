@@ -1,15 +1,15 @@
-<section 
-  id="content-feed" 
-  class="py-24 border-t border-white/5 relative page-size">
-    <div class="h-[10%]">
+<app-page
+  id="latest-posts-page">
+    <div class="w-full h-[10%]">
       <div class="flex flex-col items-center mb-16" appScrollFadeIn>
         <h3 class="font-heading text-4xl font-bold text-center text-heading-text">
           Latest Posts
         </h3>
         <div class="h-1 w-12 bg-primary-accent mt-4 rounded-full"></div>
       </div>
-      <div class="h-full">
+      <div class="size-full">
         <app-infinite-scroll
+          class="w-full"
           [items]="store.content()"
           [loading]="store.loading()"
           [allLoaded]="store.allLoaded()"
@@ -24,4 +24,4 @@
       </ng-template>
     </div>
     <app-scroll-indicator target="/about"></app-scroll-indicator>
-  </section>
+</app-page>
