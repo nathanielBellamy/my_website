@@ -43,7 +43,7 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
       // Allow scroll tracking after a delay
       setTimeout(() => {
         this.isAutoScrolling = false;
-      }, 1000);
+      }, 2500);
     });
   }
 
@@ -66,7 +66,7 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
     };
 
     this.observer = new IntersectionObserver((entries) => {
-      if (this.isAutoScrolling || (Date.now() - this.lastNavTime < 1000)) return;
+      if (this.isAutoScrolling || (Date.now() - this.lastNavTime < 2500)) return;
 
       entries.forEach(entry => {
         if (entry.isIntersecting) {

@@ -16,8 +16,9 @@
   <div class="w-full mx-auto">
     <div class="flex flex-col lg:flex-row-reverse gap-6">
       
-      <!-- Main Content Area -->
-      <div class="flex-1 order-2 lg:order-1 min-w-0">
+      <div 
+        data-testid="blog-list"
+        class="flex-1 order-2 lg:order-1 min-w-0">
         <app-infinite-scroll
           class="w-full"
           [items]="store.posts()"
