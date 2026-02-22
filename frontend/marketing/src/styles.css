@@ -69,8 +69,8 @@
   }
 
   .page-size {
-    min-height: calc(100vh - 140px);
-    max-height: calc(100vh - 140px);
+    min-height: calc(100vh - 155px);
+    max-height: calc(100vh - 155px);
     min-width: 100vw;
     max-width: 100vw;
   }

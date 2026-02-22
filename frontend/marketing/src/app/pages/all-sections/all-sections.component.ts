@@ -123,13 +123,11 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     element.scrollTo(0, 0);
 
-    const headerOffset = 20; // Your extra 50px nudge
-    const elementPosition = element.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    const navbar = document.getElementById('nav-bar');
+    const navbarBottom = navbar?.getBoundingClientRect().bottom ?? 0;
+    const elementTop = element?.getBoundingClientRect().top;
+    const allSections = document.getElementById('all-sections');
 
-    element.scrollIntoView({
-      block: 'start',
-      behavior: 'smooth'
-    });
+    element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
   }
 }
