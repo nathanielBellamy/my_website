@@ -1,7 +1,13 @@
-<div class="size-full flex flex-col items-stretch overflow-y-auto overflow-x-hidden" data-testid="main-scroll-container">
+<div class="h-full flex flex-col items-stretch justify-between">
     <app-navbar></app-navbar>
-    <div class="bg-blob-3 pointer-events-none"></div>
-        <router-outlet />
-        <app-footer></app-footer>
+    <div 
+        id="main-scroll-container"
+        class="grow flex flex-col items-stretch overflow-y-auto" 
+        data-testid="main-scroll-container">
+        <div class="grow flex flex-col items-center justify-around">
+            <router-outlet />
+        </div>
     </div>
+    <app-footer></app-footer>
+</div>
     

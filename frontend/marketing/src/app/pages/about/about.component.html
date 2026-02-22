@@ -1,5 +1,5 @@
-<div class="page-size py-24 relative">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center" appScrollFadeIn>
+<app-page id="about">
+  <div class="w-full px-4 sm:px-6 lg:px-8 mb-16 text-center" appScrollFadeIn>
     <h1 
       data-testid="about-header"
       class="font-heading text-5xl md:text-7xl font-bold text-heading-text mb-6">
@@ -12,6 +12,7 @@
   </div>
 
   <app-infinite-scroll
+    class="w-full"
     [items]="store.content()"
     [loading]="store.loading()"
     [allLoaded]="store.allLoaded()"
@@ -20,8 +21,8 @@
     [error]="store.error()"
   ></app-infinite-scroll>
   <app-scroll-indicator target="/groovejr"></app-scroll-indicator>
-</div>
 
-<ng-template #itemTmpl let-item>
-  <app-card appScrollFadeIn [title]="item.title" [content]="item.content"></app-card>
-</ng-template>
+  <ng-template #itemTmpl let-item>
+    <app-card appScrollFadeIn [title]="item.title" [content]="item.content"></app-card>
+  </ng-template>
+</app-page>

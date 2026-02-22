@@ -249,6 +249,83 @@ func (mc *MarketingController) GetAboutContentByIDHandler(w http.ResponseWriter,
 	mc.sendJSON(w, content)
 }
 
+// SitemapHandler generates the XML sitemap.
+func (mc *MarketingController) SitemapHandler(w http.ResponseWriter, r *http.Request) {
+	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("SitemapHandler Hit")
+
+	posts, err := mc.Service.GetSitemapData()
+	if err != nil {
+		mc.Log.Error().Err(err).Msg("Error fetching sitemap data")
+		http.Error(w, "Error fetching sitemap data", http.StatusInternalServerError)
+		return
+	}
+
+	baseUrl := "https://nateschieber.dev" // Should ideally come from config/env
+	if host := r.Header.Get("Host"); host != "" {
+		if strings.Contains(host, "localhost") {
+			baseUrl = "http://" + host
+		} else {
+			baseUrl = "https://" + host
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/xml")
+	w.Write([]byte(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`))
+
+	// Static Pages
+	pages := []string{"", "focus", "latest-posts", "about", "groovejr", "blog", "privacy-policy"}
+	for _, page := range pages {
+		url := baseUrl
+		if page != "" {
+			url += "/" + page
+		}
+		w.Write([]byte(`
+	<url>
+		<loc>` + url + `</loc>
+		<changefreq>weekly</changefreq>
+		<priority>0.8</priority>
+	</url>`))
+	}
+
+	// Dynamic Blog Posts
+	for _, post := range posts {
+		url := baseUrl + "/blog/" + post.ID
+		lastMod := post.UpdatedAt.Format("2006-01-02")
+		w.Write([]byte(`
+	<url>
+		<loc>` + url + `</loc>
+		<lastmod>` + lastMod + `</lastmod>
+		<changefreq>monthly</changefreq>
+		<priority>0.6</priority>
+	</url>`))
+	}
+
+	w.Write([]byte(`
+</urlset>`))
+}
+
+// RobotsTxtHandler serves the robots.txt file.
+func (mc *MarketingController) RobotsTxtHandler(w http.ResponseWriter, r *http.Request) {
+	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("RobotsTxtHandler Hit")
+
+	baseUrl := "https://nateschieber.dev" // Should ideally come from config/env
+	if host := r.Header.Get("Host"); host != "" {
+		if strings.Contains(host, "localhost") {
+			baseUrl = "http://" + host
+		} else {
+			baseUrl = "https://" + host
+		}
+	}
+
+	w.Header().Set("Content-Type", "text/plain")
+	w.Write([]byte(`User-agent: *
+Allow: /
+
+Sitemap: ` + baseUrl + `/sitemap.xml
+`))
+}
+
 func GetMarketingFileServerNoAuth(log *zerolog.Logger) http.Handler {
 	root := http.Dir("build/marketing/browser")
 	fs := http.FileServer(root)

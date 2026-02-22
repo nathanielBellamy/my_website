@@ -112,28 +112,26 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
     else if (url.includes('about')) sectionId = 'about';
     else if (url.includes('groovejr')) sectionId = 'groovejr';
     else if (url.includes('blog')) sectionId = 'blog';
-    
-    // Find the scroll container
-    const container = document.querySelector('[data-testid="main-scroll-container"]');
 
-    if (sectionId === 'home') {
-      if (container) {
-        container.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+    this._scrollToSection(sectionId);
+  }
+
+  _scrollToSection(elementId: string) {
+    const element = document.getElementById(elementId);
+    if (!element)
       return;
-    }
 
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      if (container) {
-        container.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }
+    const headerOffset = 20; // Your extra 50px nudge
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+    const allSections = document.getElementById("main-scroll-container");
+    if (!allSections)
+      return;
+
+    allSections.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
   }
 }

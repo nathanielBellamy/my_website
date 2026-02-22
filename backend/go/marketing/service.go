@@ -19,6 +19,7 @@ type Service interface {
 	GetGrooveJrContentByID(id string) (*models.GrooveJrContent, error)
 	GetAllAboutContent(page, limit int) ([]models.AboutContent, error)
 	GetAboutContentByID(id string) (*models.AboutContent, error)
+	GetSitemapData() ([]models.BlogPost, error)
 }
 
 type service struct {
@@ -27,6 +28,16 @@ type service struct {
 
 func NewService(db interfaces.PgxDB) Service {
 	return &service{DB: db}
+}
+
+func (s *service) GetSitemapData() ([]models.BlogPost, error) {
+	posts := make([]models.BlogPost, 0)
+	err := s.DB.Model(&posts).
+		Column("id", "updated_at").
+		Where("activated_at IS NOT NULL AND activated_at < NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())").
+		Order("activated_at DESC").
+		Select()
+	return posts, err
 }
 
 func (s *service) GetAllBlogPosts(page, limit int, tags []string) ([]models.BlogPost, error) {

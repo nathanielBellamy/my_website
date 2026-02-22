@@ -38,7 +38,7 @@ describe('AppComponent', () => {
 
       });
 
-      screen.getByRole('navigation');
+      screen.getByRole('navigation', { name: /main/i });
 
     });
 

@@ -136,6 +136,11 @@ func SetupBaseRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, a
 	mux.HandleFunc("GET /api/marketing/about", marketingController.GetAllAboutContentHandler)
 	mux.HandleFunc("GET /api/marketing/about/{id}", marketingController.GetAboutContentByIDHandler)
 
+	// Sitemap
+	mux.HandleFunc("GET /sitemap.xml", marketingController.SitemapHandler)
+	// Robots.txt
+	mux.HandleFunc("GET /robots.txt", marketingController.RobotsTxtHandler)
+
 	// admin routes
 	// Blog
 	mux.Handle("GET /api/admin/blog", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllBlogPostsHandler)))

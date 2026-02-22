@@ -5,11 +5,12 @@ import { InfiniteScrollComponent } from '../../components/infinite-scroll/infini
 import { CardComponent } from '../../components/card/card.component';
 import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
 import { ScrollIndicatorComponent } from '../../shared/components/scroll-indicator/scroll-indicator.component';
+import { PageComponent } from '../../components/page/page.component';
 
 @Component({
   selector: 'app-groove-jr',
   standalone: true,
-  imports: [CommonModule, InfiniteScrollComponent, CardComponent, ScrollFadeInDirective, ScrollIndicatorComponent],
+  imports: [CommonModule, InfiniteScrollComponent, CardComponent, ScrollFadeInDirective, ScrollIndicatorComponent, PageComponent],
   templateUrl: './groove-jr.component.html',
 })
 export class GrooveJrComponent implements OnInit {
