@@ -1,13 +1,11 @@
 <footer class="grow size-full border-t border-white flex flex-col items-stretch justify-around">
-  <div class="w-full px-4 py-2 mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-    <div class="flex flex-col gap-2">
+  <div class="w-full px-2 py-1 mx-auto flex flex-row flex-nowrap justify-between items-center">
+    <div class="grow flex flex-col">
       <span class="font-heading font-bold text-heading-text">Nate Schieber</span>
-      <span class="text-sm text-body-text/60">&copy; {{ currentYear }} All rights reserved.</span>
+      <span class="text-xs text-body-text/60">&copy; {{ currentYear }} All rights reserved.</span>
     </div>
 
-    <nav class="flex flex-wrap gap-8 justify-center md:justify-end" aria-label="Footer Navigation">
-      <a routerLink="/about" class="text-sm font-medium text-body-text/80 hover:text-primary-accent transition-colors">About</a>
-      <a routerLink="/blog" class="text-sm font-medium text-body-text/80 hover:text-primary-accent transition-colors">Blog</a>
+    <nav class="grow flex flex-wrap gap-2 justify-center md:justify-end text-sm" aria-label="Footer Navigation">
       <a href="mailto:hello@nateschieber.dev" class="text-sm font-medium text-body-text/80 hover:text-primary-accent transition-colors">Contact</a>
       <a routerLink="/privacy-policy" class="text-sm font-medium text-body-text/80 hover:text-primary-accent transition-colors">Privacy Policy</a>
     </nav>
