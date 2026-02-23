@@ -43,62 +43,22 @@
       Building With
     </p>
     <!-- Tech Name Drop Section -->
-    <div class="mt-8 max-w-7xl mx-auto px-8 sm:px-6 lg:px-8 text-center" appScrollFadeIn [delay]="800">
-      <div class="flex flex-wrap items-center justify-between gap-10 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">LLMs</span>
-         </div>
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">C++</span>
-         </div>
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">TypeScript</span>
-         </div>
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">Java</span>
-         </div>
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">Scala</span>
-         </div>
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">Go</span>
-         </div>
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">Rust</span>
-         </div>
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">Ruby</span>
-         </div>
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">PostgreSQL</span>
-         </div>
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">SQLite</span>
-         </div>
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">NixOS</span>
-         </div>
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">Qt</span>
-         </div>
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">Angular</span>
-         </div>
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">Vue</span>
-         </div>
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">Spring</span>
-         </div>
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">Rails</span>
-         </div>
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">Akka</span>
-         </div>
-         <div class="flex flex-col items-center gap-2">
-            <span class="font-heading text-xl font-semibold text-body-text">CAF</span>
-         </div>
+    <div class="mt-8 max-w-7xl mx-auto text-center" appScrollFadeIn [delay]="800">
+      <div class="group relative flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+        <div class="flex animate-marquee gap-10 md:gap-16 min-w-full shrink-0 items-center justify-around opacity-50 grayscale group-hover:grayscale-0 transition-all duration-500 py-4">
+          @for (tech of technologies; track tech) {
+             <div class="flex flex-col items-center gap-2">
+                <span class="font-heading text-xl font-semibold text-body-text whitespace-nowrap">{{tech}}</span>
+             </div>
+          }
+        </div>
+        <div class="flex animate-marquee gap-10 md:gap-16 min-w-full shrink-0 items-center justify-around opacity-50 grayscale group-hover:grayscale-0 transition-all duration-500 py-4" aria-hidden="true">
+          @for (tech of technologies; track tech) {
+             <div class="flex flex-col items-center gap-2">
+                <span class="font-heading text-xl font-semibold text-body-text whitespace-nowrap">{{tech}}</span>
+             </div>
+          }
+        </div>
       </div>
     </div>
    </div>

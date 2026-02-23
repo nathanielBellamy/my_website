@@ -10,4 +10,9 @@ import { PageComponent } from '../../components/page/page.component';
   templateUrl: './focus.component.html',
 })
 export class FocusComponent {
+  readonly technologies = [
+    'LLMs', 'C++', 'TypeScript', 'Java', 'Scala', 'Go', 'Rust', 'Ruby',
+    'PostgreSQL', 'SQLite', 'NixOS', 'Qt', 'Angular', 'Vue', 'Spring',
+    'Rails', 'Akka', 'CAF'
+  ];
 }
