@@ -36,7 +36,9 @@
       <!-- Left Sidebar / Filter Panel -->
       <aside class="px-[16px] md:pt-[1rem] w-full lg:w-80 flex-shrink-0 order-1 lg:order-2" appScrollFadeIn [delay]="200">
         <div class="lg:sticky lg:top-24 bg-card border border-white/10 rounded-xl p-6 shadow-sm lg:max-h-[calc(100vh-10rem)] overflow-y-auto">
-          <h3 class="text-xl font-heading font-semibold text-heading-text mb-4">Filter by Tags</h3>
+          <h3
+            data-testid="filter-by-tags-heading"
+            class="text-xl font-heading font-semibold text-heading-text mb-4">Filter by Tags</h3>
           
           <input 
             type="text" 

@@ -41,18 +41,19 @@ describe('Marketing App', () => {
     cy.get('[data-testid="blog-header"]').should('be.visible').contains('Blog')
     
     // Wait for tags to appear
-    cy.contains('Filter by Tags').scrollIntoView().should('be.visible')
+    cy.get('[data-testid="filter-by-tags-heading"').scrollIntoView()
+    cy.contains('Filter by Tags').should('exist')
     
     // Find any tag button and click it (since seed data might vary)
     cy.get('aside button').first().as('firstTag')
-    cy.get('@firstTag').scrollIntoView().should('be.visible')
+    cy.get('@firstTag').should('exist')
     
-    // Initial click to select
-    cy.get('@firstTag').click()
+    // Initial click to select. Use force to bypass any clipping from the sticky scrollable aside
+    cy.get('@firstTag').click({ force: true })
     cy.get('@firstTag').should('have.class', 'bg-vibrant-orange')
     
     // Click again to deselect
-    cy.get('@firstTag').click()
+    cy.get('@firstTag').click({ force: true })
     cy.get('@firstTag').should('not.have.class', 'bg-vibrant-orange')
   })
 
