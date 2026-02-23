@@ -3,11 +3,12 @@ import { AboutService } from '../../../services/about.service';
 import { AboutContent, FilterOptions } from '../../../models/data-models';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { CsvControlsComponent } from '../../../components/csv-controls/csv-controls.component';
 
 @Component({
   selector: 'app-about-content-list',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, CsvControlsComponent],
   templateUrl: './about-content-list.component.html',
   styleUrl: './about-content-list.component.css',
 })

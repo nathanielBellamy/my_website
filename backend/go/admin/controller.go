@@ -2,12 +2,15 @@ package admin
 
 import (
 	"bytes"
+	"encoding/csv"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	_ "github.com/lib/pq"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
@@ -492,4 +495,310 @@ func (ac *AdminController) AdminFileServer() http.Handler {
 	})
 
 	return http.StripPrefix("/admin/", auth.LogClientIp("/admin/", ac.Log, handler))
+}
+
+// CSV Handlers
+
+func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Request) {
+	entity := r.PathValue("entity")
+	ac.Log.Info().Str("entity", entity).Msg("ExportCSVHandler Hit")
+
+	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment;filename=%s.csv", entity))
+
+	writer := csv.NewWriter(w)
+	defer writer.Flush()
+
+	switch entity {
+	case "blog":
+		posts, err := ac.Service.ExportBlogPosts()
+		if err != nil {
+			http.Error(w, "Error exporting blog posts", http.StatusInternalServerError)
+			return
+		}
+		// Headers
+		writer.Write([]string{"id", "title", "content", "author_name", "author_id", "tags", "ordering", "created_at", "updated_at", "activated_at", "deactivated_at"})
+		// Data
+		for _, p := range posts {
+			tags := []string{}
+			for _, t := range p.Tags {
+				tags = append(tags, t.Name)
+			}
+			authorName := ""
+			authorID := ""
+			if p.Author != nil {
+				authorName = p.Author.Name
+				authorID = p.Author.ID
+			}
+			writer.Write([]string{
+				p.ID,
+				p.Title,
+				p.Content,
+				authorName,
+				authorID,
+				strings.Join(tags, "|"),
+				strconv.Itoa(p.Ordering),
+				p.CreatedAt.Format(time.RFC3339),
+				p.UpdatedAt.Format(time.RFC3339),
+				formatTimePtr(p.ActivatedAt),
+				formatTimePtr(p.DeactivatedAt),
+			})
+		}
+	case "home":
+		content, err := ac.Service.ExportHomeContent()
+		if err != nil {
+			http.Error(w, "Error exporting home content", http.StatusInternalServerError)
+			return
+		}
+		writer.Write([]string{"id", "title", "content", "ordering", "activated_at", "deactivated_at"})
+		for _, c := range content {
+			writer.Write([]string{
+				c.ID,
+				c.Title,
+				c.Content,
+				strconv.Itoa(c.Ordering),
+				formatTimePtr(c.ActivatedAt),
+				formatTimePtr(c.DeactivatedAt),
+			})
+		}
+	case "groove-jr":
+		content, err := ac.Service.ExportGrooveJrContent()
+		if err != nil {
+			http.Error(w, "Error exporting groove-jr content", http.StatusInternalServerError)
+			return
+		}
+		writer.Write([]string{"id", "title", "content", "ordering", "activated_at", "deactivated_at"})
+		for _, c := range content {
+			writer.Write([]string{
+				c.ID,
+				c.Title,
+				c.Content,
+				strconv.Itoa(c.Ordering),
+				formatTimePtr(c.ActivatedAt),
+				formatTimePtr(c.DeactivatedAt),
+			})
+		}
+	case "about":
+		content, err := ac.Service.ExportAboutContent()
+		if err != nil {
+			http.Error(w, "Error exporting about content", http.StatusInternalServerError)
+			return
+		}
+		writer.Write([]string{"id", "title", "content", "ordering", "activated_at", "deactivated_at"})
+		for _, c := range content {
+			writer.Write([]string{
+				c.ID,
+				c.Title,
+				c.Content,
+				strconv.Itoa(c.Ordering),
+				formatTimePtr(c.ActivatedAt),
+				formatTimePtr(c.DeactivatedAt),
+			})
+		}
+	case "tags":
+		tags, err := ac.Service.ExportTags()
+		if err != nil {
+			http.Error(w, "Error exporting tags", http.StatusInternalServerError)
+			return
+		}
+		writer.Write([]string{"id", "name", "activated_at", "deactivated_at"})
+		for _, t := range tags {
+			writer.Write([]string{
+				t.ID,
+				t.Name,
+				formatTimePtr(t.ActivatedAt),
+				formatTimePtr(t.DeactivatedAt),
+			})
+		}
+	case "authors":
+		authors, err := ac.Service.ExportAuthors()
+		if err != nil {
+			http.Error(w, "Error exporting authors", http.StatusInternalServerError)
+			return
+		}
+		writer.Write([]string{"id", "name", "activated_at", "deactivated_at"})
+		for _, a := range authors {
+			writer.Write([]string{
+				a.ID,
+				a.Name,
+				formatTimePtr(a.ActivatedAt),
+				formatTimePtr(a.DeactivatedAt),
+			})
+		}
+	default:
+		http.Error(w, "Unknown entity", http.StatusBadRequest)
+	}
+}
+
+func (ac *AdminController) ImportCSVHandler(w http.ResponseWriter, r *http.Request) {
+	entity := r.PathValue("entity")
+	ac.Log.Info().Str("entity", entity).Msg("ImportCSVHandler Hit")
+
+	file, _, err := r.FormFile("file")
+	if err != nil {
+		http.Error(w, "Error retrieving file", http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+	records, err := reader.ReadAll()
+	if err != nil {
+		http.Error(w, "Error reading CSV", http.StatusBadRequest)
+		return
+	}
+
+	if len(records) < 2 {
+		http.Error(w, "Empty CSV or missing header", http.StatusBadRequest)
+		return
+	}
+
+	header := records[0]
+	// Basic map to index
+	colIdx := make(map[string]int)
+	for i, h := range header {
+		colIdx[h] = i
+	}
+
+	switch entity {
+	case "blog":
+		var posts []models.BlogPost
+		for _, row := range records[1:] {
+			post := models.BlogPost{}
+			if idx, ok := colIdx["id"]; ok { post.ID = row[idx] }
+			if idx, ok := colIdx["title"]; ok { post.Title = row[idx] }
+			if idx, ok := colIdx["content"]; ok { post.Content = row[idx] }
+			if idx, ok := colIdx["ordering"]; ok { post.Ordering, _ = strconv.Atoi(row[idx]) }
+			if idx, ok := colIdx["created_at"]; ok { post.CreatedAt, _ = time.Parse(time.RFC3339, row[idx]) }
+			if idx, ok := colIdx["updated_at"]; ok { post.UpdatedAt, _ = time.Parse(time.RFC3339, row[idx]) }
+			if idx, ok := colIdx["activated_at"]; ok { post.ActivatedAt = parseTimePtr(row[idx]) }
+			if idx, ok := colIdx["deactivated_at"]; ok { post.DeactivatedAt = parseTimePtr(row[idx]) }
+
+			// Relations
+			authorName := ""
+			authorID := ""
+			if idx, ok := colIdx["author_name"]; ok { authorName = row[idx] }
+			if idx, ok := colIdx["author_id"]; ok { authorID = row[idx] }
+			if authorName != "" || authorID != "" {
+				post.Author = &models.Author{Name: authorName, ID: authorID}
+			}
+
+			if idx, ok := colIdx["tags"]; ok && row[idx] != "" {
+				tagNames := strings.Split(row[idx], "|")
+				for _, name := range tagNames {
+					post.Tags = append(post.Tags, &models.Tag{Name: name})
+				}
+			}
+			posts = append(posts, post)
+		}
+		if err := ac.Service.ImportBlogPosts(posts); err != nil {
+			ac.Log.Error().Err(err).Msg("Error importing blog posts")
+			http.Error(w, "Error importing blog posts", http.StatusInternalServerError)
+			return
+		}
+
+	case "home":
+		var content []models.HomeContent
+		for _, row := range records[1:] {
+			c := models.HomeContent{}
+			if idx, ok := colIdx["id"]; ok { c.ID = row[idx] }
+			if idx, ok := colIdx["title"]; ok { c.Title = row[idx] }
+			if idx, ok := colIdx["content"]; ok { c.Content = row[idx] }
+			if idx, ok := colIdx["ordering"]; ok { c.Ordering, _ = strconv.Atoi(row[idx]) }
+			if idx, ok := colIdx["activated_at"]; ok { c.ActivatedAt = parseTimePtr(row[idx]) }
+			if idx, ok := colIdx["deactivated_at"]; ok { c.DeactivatedAt = parseTimePtr(row[idx]) }
+			content = append(content, c)
+		}
+		if err := ac.Service.ImportHomeContent(content); err != nil {
+			http.Error(w, "Error importing home content", http.StatusInternalServerError)
+			return
+		}
+
+	case "groove-jr":
+		var content []models.GrooveJrContent
+		for _, row := range records[1:] {
+			c := models.GrooveJrContent{}
+			if idx, ok := colIdx["id"]; ok { c.ID = row[idx] }
+			if idx, ok := colIdx["title"]; ok { c.Title = row[idx] }
+			if idx, ok := colIdx["content"]; ok { c.Content = row[idx] }
+			if idx, ok := colIdx["ordering"]; ok { c.Ordering, _ = strconv.Atoi(row[idx]) }
+			if idx, ok := colIdx["activated_at"]; ok { c.ActivatedAt = parseTimePtr(row[idx]) }
+			if idx, ok := colIdx["deactivated_at"]; ok { c.DeactivatedAt = parseTimePtr(row[idx]) }
+			content = append(content, c)
+		}
+		if err := ac.Service.ImportGrooveJrContent(content); err != nil {
+			http.Error(w, "Error importing groove-jr content", http.StatusInternalServerError)
+			return
+		}
+
+	case "about":
+		var content []models.AboutContent
+		for _, row := range records[1:] {
+			c := models.AboutContent{}
+			if idx, ok := colIdx["id"]; ok { c.ID = row[idx] }
+			if idx, ok := colIdx["title"]; ok { c.Title = row[idx] }
+			if idx, ok := colIdx["content"]; ok { c.Content = row[idx] }
+			if idx, ok := colIdx["ordering"]; ok { c.Ordering, _ = strconv.Atoi(row[idx]) }
+			if idx, ok := colIdx["activated_at"]; ok { c.ActivatedAt = parseTimePtr(row[idx]) }
+			if idx, ok := colIdx["deactivated_at"]; ok { c.DeactivatedAt = parseTimePtr(row[idx]) }
+			content = append(content, c)
+		}
+		if err := ac.Service.ImportAboutContent(content); err != nil {
+			http.Error(w, "Error importing about content", http.StatusInternalServerError)
+			return
+		}
+
+	case "tags":
+		var tags []models.Tag
+		for _, row := range records[1:] {
+			t := models.Tag{}
+			if idx, ok := colIdx["id"]; ok { t.ID = row[idx] }
+			if idx, ok := colIdx["name"]; ok { t.Name = row[idx] }
+			if idx, ok := colIdx["activated_at"]; ok { t.ActivatedAt = parseTimePtr(row[idx]) }
+			if idx, ok := colIdx["deactivated_at"]; ok { t.DeactivatedAt = parseTimePtr(row[idx]) }
+			tags = append(tags, t)
+		}
+		if err := ac.Service.ImportTags(tags); err != nil {
+			http.Error(w, "Error importing tags", http.StatusInternalServerError)
+			return
+		}
+
+	case "authors":
+		var authors []models.Author
+		for _, row := range records[1:] {
+			a := models.Author{}
+			if idx, ok := colIdx["id"]; ok { a.ID = row[idx] }
+			if idx, ok := colIdx["name"]; ok { a.Name = row[idx] }
+			if idx, ok := colIdx["activated_at"]; ok { a.ActivatedAt = parseTimePtr(row[idx]) }
+			if idx, ok := colIdx["deactivated_at"]; ok { a.DeactivatedAt = parseTimePtr(row[idx]) }
+			authors = append(authors, a)
+		}
+		if err := ac.Service.ImportAuthors(authors); err != nil {
+			http.Error(w, "Error importing authors", http.StatusInternalServerError)
+			return
+		}
+
+	default:
+		http.Error(w, "Unknown entity", http.StatusBadRequest)
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func formatTimePtr(t *time.Time) string {
+	if t == nil {
+		return ""
+	}
+	return t.Format(time.RFC3339)
+}
+
+func parseTimePtr(s string) *time.Time {
+	if s == "" {
+		return nil
+	}
+	t, err := time.Parse(time.RFC3339, s)
+	if err != nil {
+		return nil
+	}
+	return &t
 }

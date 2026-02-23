@@ -39,6 +39,25 @@ type Service interface {
 	CreateAboutContent(content *models.AboutContent) (*models.AboutContent, error)
 	UpdateAboutContent(content *models.AboutContent) (*models.AboutContent, error)
 	DeleteAboutContent(id string) error
+
+	// CSV Export/Import
+	ExportBlogPosts() ([]models.BlogPost, error)
+	ImportBlogPosts(posts []models.BlogPost) error
+
+	ExportHomeContent() ([]models.HomeContent, error)
+	ImportHomeContent(content []models.HomeContent) error
+
+	ExportGrooveJrContent() ([]models.GrooveJrContent, error)
+	ImportGrooveJrContent(content []models.GrooveJrContent) error
+
+	ExportAboutContent() ([]models.AboutContent, error)
+	ImportAboutContent(content []models.AboutContent) error
+
+	ExportTags() ([]models.Tag, error)
+	ImportTags(tags []models.Tag) error
+
+	ExportAuthors() ([]models.Author, error)
+	ImportAuthors(authors []models.Author) error
 }
 
 type service struct {
@@ -481,4 +500,262 @@ func (s *service) UpdateAboutContent(content *models.AboutContent) (*models.Abou
 func (s *service) DeleteAboutContent(id string) error {
 	_, err := s.DB.Model(&models.AboutContent{}).Where("id = ?", id).Delete()
 	return err
+}
+
+// CSV Export/Import Implementation
+
+func (s *service) ExportBlogPosts() ([]models.BlogPost, error) {
+	var posts []models.BlogPost
+	err := s.DB.Model(&posts).
+		Relation("Author").
+		Relation("Tags").
+		Order("ordering ASC", "activated_at DESC").
+		Select()
+	return posts, err
+}
+
+func (s *service) ImportBlogPosts(posts []models.BlogPost) error {
+	// Using transaction for bulk operation
+	return s.DB.RunInTransaction(func(tx *pg.Tx) error {
+		for _, post := range posts {
+			// Handle Author
+			if post.Author != nil {
+				if post.Author.ID != "" {
+					post.AuthorID = post.Author.ID
+					_, err := tx.Model(post.Author).
+						OnConflict("(id) DO UPDATE").
+						Set("name = EXCLUDED.name, activated_at = EXCLUDED.activated_at, deactivated_at = EXCLUDED.deactivated_at").
+						Insert()
+					if err != nil {
+						return err
+					}
+				} else if post.Author.Name != "" {
+					// Check if author exists by name
+					var existing models.Author
+					err := tx.Model(&existing).Where("name = ?", post.Author.Name).Select()
+					if err == nil {
+						post.AuthorID = existing.ID
+						post.Author = &existing
+					} else {
+						_, err := tx.Model(post.Author).Insert()
+						if err != nil {
+							return err
+						}
+						post.AuthorID = post.Author.ID
+					}
+				}
+			}
+
+			// Handle Tags
+			var tagIDs []string
+			if len(post.Tags) > 0 {
+				for _, tag := range post.Tags {
+					if tag.ID != "" {
+						_, err := tx.Model(tag).
+							OnConflict("(id) DO UPDATE").
+							Set("name = EXCLUDED.name, activated_at = EXCLUDED.activated_at, deactivated_at = EXCLUDED.deactivated_at").
+							Insert()
+						if err != nil {
+							return err
+						}
+						tagIDs = append(tagIDs, tag.ID)
+					} else if tag.Name != "" {
+						var existing models.Tag
+						err := tx.Model(&existing).Where("name = ?", tag.Name).Select()
+						if err == nil {
+							tagIDs = append(tagIDs, existing.ID)
+						} else {
+							_, err := tx.Model(tag).Insert()
+							if err != nil {
+								return err
+							}
+							tagIDs = append(tagIDs, tag.ID)
+						}
+					}
+				}
+			}
+
+			// Upsert Post
+			if post.ID != "" {
+				_, err := tx.Model(&post).
+					OnConflict("(id) DO UPDATE").
+					Set("title = EXCLUDED.title, content = EXCLUDED.content, author_id = EXCLUDED.author_id, ordering = EXCLUDED.ordering, created_at = EXCLUDED.created_at, updated_at = EXCLUDED.updated_at, activated_at = EXCLUDED.activated_at, deactivated_at = EXCLUDED.deactivated_at").
+					Insert()
+				if err != nil {
+					return err
+				}
+			} else {
+				_, err := tx.Model(&post).Insert()
+				if err != nil {
+					return err
+				}
+			}
+
+			// Handle Post-Tags relations
+			// First, remove existing relations if we are updating, or just ensure we add new ones.
+			// Ideally, we sync: delete those not in list, add those in list.
+			// For simplicity: delete all for this post, then add all.
+			_, err := tx.Model((*models.BlogPostTag)(nil)).
+				Where("blog_post_id = ?", post.ID).
+				Delete()
+			if err != nil {
+				return err
+			}
+
+			if len(tagIDs) > 0 {
+				var blogPostTags []models.BlogPostTag
+				for _, tID := range tagIDs {
+					blogPostTags = append(blogPostTags, models.BlogPostTag{
+						BlogPostID: post.ID,
+						TagID:      tID,
+					})
+				}
+				_, err = tx.Model(&blogPostTags).Insert()
+				if err != nil {
+					return err
+				}
+			}
+		}
+		return nil
+	})
+}
+
+func (s *service) ExportHomeContent() ([]models.HomeContent, error) {
+	var content []models.HomeContent
+	err := s.DB.Model(&content).Order("ordering ASC", "activated_at DESC").Select()
+	return content, err
+}
+
+func (s *service) ImportHomeContent(content []models.HomeContent) error {
+	return s.DB.RunInTransaction(func(tx *pg.Tx) error {
+		for _, item := range content {
+			if item.ID != "" {
+				_, err := tx.Model(&item).
+					OnConflict("(id) DO UPDATE").
+					Set("title = EXCLUDED.title, content = EXCLUDED.content, ordering = EXCLUDED.ordering, activated_at = EXCLUDED.activated_at, deactivated_at = EXCLUDED.deactivated_at").
+					Insert()
+				if err != nil {
+					return err
+				}
+			} else {
+				_, err := tx.Model(&item).Insert()
+				if err != nil {
+					return err
+				}
+			}
+		}
+		return nil
+	})
+}
+
+func (s *service) ExportGrooveJrContent() ([]models.GrooveJrContent, error) {
+	var content []models.GrooveJrContent
+	err := s.DB.Model(&content).Order("ordering ASC", "activated_at DESC").Select()
+	return content, err
+}
+
+func (s *service) ImportGrooveJrContent(content []models.GrooveJrContent) error {
+	return s.DB.RunInTransaction(func(tx *pg.Tx) error {
+		for _, item := range content {
+			if item.ID != "" {
+				_, err := tx.Model(&item).
+					OnConflict("(id) DO UPDATE").
+					Set("title = EXCLUDED.title, content = EXCLUDED.content, ordering = EXCLUDED.ordering, activated_at = EXCLUDED.activated_at, deactivated_at = EXCLUDED.deactivated_at").
+					Insert()
+				if err != nil {
+					return err
+				}
+			} else {
+				_, err := tx.Model(&item).Insert()
+				if err != nil {
+					return err
+				}
+			}
+		}
+		return nil
+	})
+}
+
+func (s *service) ExportAboutContent() ([]models.AboutContent, error) {
+	var content []models.AboutContent
+	err := s.DB.Model(&content).Order("ordering ASC", "activated_at DESC").Select()
+	return content, err
+}
+
+func (s *service) ImportAboutContent(content []models.AboutContent) error {
+	return s.DB.RunInTransaction(func(tx *pg.Tx) error {
+		for _, item := range content {
+			if item.ID != "" {
+				_, err := tx.Model(&item).
+					OnConflict("(id) DO UPDATE").
+					Set("title = EXCLUDED.title, content = EXCLUDED.content, ordering = EXCLUDED.ordering, activated_at = EXCLUDED.activated_at, deactivated_at = EXCLUDED.deactivated_at").
+					Insert()
+				if err != nil {
+					return err
+				}
+			} else {
+				_, err := tx.Model(&item).Insert()
+				if err != nil {
+					return err
+				}
+			}
+		}
+		return nil
+	})
+}
+
+func (s *service) ExportTags() ([]models.Tag, error) {
+	var tags []models.Tag
+	err := s.DB.Model(&tags).Order("name ASC").Select()
+	return tags, err
+}
+
+func (s *service) ImportTags(tags []models.Tag) error {
+	return s.DB.RunInTransaction(func(tx *pg.Tx) error {
+		for _, tag := range tags {
+			if tag.ID != "" {
+				_, err := tx.Model(&tag).
+					OnConflict("(id) DO UPDATE").
+					Set("name = EXCLUDED.name, activated_at = EXCLUDED.activated_at, deactivated_at = EXCLUDED.deactivated_at").
+					Insert()
+				if err != nil {
+					return err
+				}
+			} else {
+				_, err := tx.Model(&tag).Insert()
+				if err != nil {
+					return err
+				}
+			}
+		}
+		return nil
+	})
+}
+
+func (s *service) ExportAuthors() ([]models.Author, error) {
+	var authors []models.Author
+	err := s.DB.Model(&authors).Order("name ASC").Select()
+	return authors, err
+}
+
+func (s *service) ImportAuthors(authors []models.Author) error {
+	return s.DB.RunInTransaction(func(tx *pg.Tx) error {
+		for _, author := range authors {
+			if author.ID != "" {
+				_, err := tx.Model(&author).
+					OnConflict("(id) DO UPDATE").
+					Set("name = EXCLUDED.name, activated_at = EXCLUDED.activated_at, deactivated_at = EXCLUDED.deactivated_at").
+					Insert()
+				if err != nil {
+					return err
+				}
+			} else {
+				_, err := tx.Model(&author).Insert()
+				if err != nil {
+					return err
+				}
+			}
+		}
+		return nil
+	})
 }

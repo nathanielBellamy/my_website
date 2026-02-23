@@ -1,6 +1,8 @@
 package db
 
 import (
+	"context"
+
 	"github.com/go-pg/pg/v10"
 	"github.com/nathanielBellamy/my_website/backend/go/config"
 	"github.com/nathanielBellamy/my_website/backend/go/interfaces" // Import interfaces package
@@ -75,6 +77,11 @@ type PgDBAdapter struct {
 // Model implements interfaces.PgxDB.Model
 func (pda *PgDBAdapter) Model(model ...interface{}) interfaces.PgxQuerySeter {
 	return &PgQueryAdapter{pda.DB.Model(model...)}
+}
+
+// RunInTransaction implements interfaces.PgxDB.RunInTransaction
+func (pda *PgDBAdapter) RunInTransaction(fn func(*pg.Tx) error) error {
+	return pda.DB.RunInTransaction(context.Background(), fn)
 }
 
 func NewDBClient(cfg *config.Config) (*pg.DB, error) {

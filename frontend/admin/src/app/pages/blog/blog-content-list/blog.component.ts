@@ -4,11 +4,12 @@ import { BlogPost, Tag, FilterOptions } from '../../../models/data-models';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { CsvControlsComponent } from '../../../components/csv-controls/csv-controls.component';
 
 @Component({
   selector: 'app-blog',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, CsvControlsComponent],
   templateUrl: './blog.component.html',
   styleUrl: './blog.component.css',
 })

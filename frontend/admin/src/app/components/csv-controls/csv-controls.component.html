@@ -1,0 +1,20 @@
+<div class="flex gap-4 items-center">
+  <button
+    (click)="onExport()"
+    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+  >
+    Export {{ entity() }} CSV
+  </button>
+
+  <label
+    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer"
+  >
+    Import {{ entity() }} CSV
+    <input
+      type="file"
+      class="hidden"
+      accept=".csv"
+      (change)="onFileSelected($event)"
+    />
+  </label>
+</div>

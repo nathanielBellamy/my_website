@@ -21,4 +21,5 @@ type PgxQuerySeter interface {
 
 type PgxDB interface {
 	Model(model ...interface{}) PgxQuerySeter
+	RunInTransaction(fn func(*pg.Tx) error) error
 }

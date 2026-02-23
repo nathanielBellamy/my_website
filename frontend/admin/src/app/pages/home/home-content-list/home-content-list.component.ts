@@ -3,11 +3,12 @@ import { HomeService } from '../../../services/home.service';
 import { HomeContent, FilterOptions } from '../../../models/data-models';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { CsvControlsComponent } from '../../../components/csv-controls/csv-controls.component';
 
 @Component({
   selector: 'app-home-content-list',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, CsvControlsComponent],
   templateUrl: './home-content-list.component.html',
   styleUrl: './home-content-list.component.css',
 })

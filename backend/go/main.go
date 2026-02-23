@@ -171,6 +171,10 @@ func SetupBaseRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, a
 	mux.Handle("POST /api/admin/about", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateAboutContentHandler)))
 	mux.Handle("PUT /api/admin/about/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateAboutContentHandler)))
 	mux.Handle("DELETE /api/admin/about/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteAboutContentHandler)))
+
+	// CSV
+	mux.Handle("GET /api/admin/csv/{entity}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.ExportCSVHandler)))
+	mux.Handle("POST /api/admin/csv/{entity}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.ImportCSVHandler)))
 }
 
 func SetupRemotedevRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, adminController *admin.AdminController, marketingFileServer http.Handler) {
