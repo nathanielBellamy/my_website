@@ -38,6 +38,7 @@ describe('Marketing App', () => {
 
   it('should filter blog posts by tags', () => {
     cy.get('[data-testid="nav-blog"]').click()
+    cy.get('[data-testid="blog-header"]').should('be.visible').contains('Blog')
     
     // Wait for tags to appear
     cy.contains('Filter by Tags').scrollIntoView().should('be.visible')
