@@ -257,7 +257,7 @@ func (mc *MarketingController) determineBaseURL(r *http.Request) string {
 
 	if host := r.Header.Get("Host"); host != "" {
 		// Allow localhost for development
-		if strings.HasPrefix(host, "localhost") {
+		if strings.HasPrefix(host, "localhost") || strings.HasPrefix(host, "127.0.0.1") {
 			return "http://" + host
 		}
 		// Allow www subdomain
@@ -370,6 +370,13 @@ func GetMarketingFileServerNoAuth(log *zerolog.Logger) http.Handler {
 	root := http.Dir("build/marketing/browser")
 	fs := http.FileServer(root)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Add Security Headers
+		w.Header().Set("X-Frame-Options", "DENY")
+		// CSP: strict but allows necessary assets.
+		// script-src 'unsafe-inline' 'unsafe-eval' is often needed for Angular/SPA dev/prod builds unless strictly managed.
+		// style-src 'unsafe-inline' is needed for Angular component styles.
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:;")
+
 		// Check if the file exists
 		f, err := root.Open(r.URL.Path)
 		if os.IsNotExist(err) {
