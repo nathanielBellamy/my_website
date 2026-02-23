@@ -517,7 +517,10 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 			return
 		}
 		// Headers
-		writer.Write([]string{"id", "title", "content", "author_name", "author_id", "tags", "ordering", "created_at", "updated_at", "activated_at", "deactivated_at"})
+		if err := writer.Write([]string{"id", "title", "content", "author_name", "author_id", "tags", "ordering", "created_at", "updated_at", "activated_at", "deactivated_at"}); err != nil {
+			ac.Log.Error().Err(err).Msg("Error writing CSV header")
+			return
+		}
 		// Data
 		for _, p := range posts {
 			tags := []string{}
@@ -530,7 +533,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 				authorName = p.Author.Name
 				authorID = p.Author.ID
 			}
-			writer.Write([]string{
+			if err := writer.Write([]string{
 				p.ID,
 				p.Title,
 				p.Content,
@@ -542,7 +545,10 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 				p.UpdatedAt.Format(time.RFC3339),
 				formatTimePtr(p.ActivatedAt),
 				formatTimePtr(p.DeactivatedAt),
-			})
+			}); err != nil {
+				ac.Log.Error().Err(err).Msg("Error writing CSV record")
+				return
+			}
 		}
 	case "home":
 		content, err := ac.Service.ExportHomeContent()
@@ -550,16 +556,22 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 			http.Error(w, "Error exporting home content", http.StatusInternalServerError)
 			return
 		}
-		writer.Write([]string{"id", "title", "content", "ordering", "activated_at", "deactivated_at"})
+		if err := writer.Write([]string{"id", "title", "content", "ordering", "activated_at", "deactivated_at"}); err != nil {
+			ac.Log.Error().Err(err).Msg("Error writing CSV header")
+			return
+		}
 		for _, c := range content {
-			writer.Write([]string{
+			if err := writer.Write([]string{
 				c.ID,
 				c.Title,
 				c.Content,
 				strconv.Itoa(c.Ordering),
 				formatTimePtr(c.ActivatedAt),
 				formatTimePtr(c.DeactivatedAt),
-			})
+			}); err != nil {
+				ac.Log.Error().Err(err).Msg("Error writing CSV record")
+				return
+			}
 		}
 	case "groove-jr":
 		content, err := ac.Service.ExportGrooveJrContent()
@@ -567,16 +579,22 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 			http.Error(w, "Error exporting groove-jr content", http.StatusInternalServerError)
 			return
 		}
-		writer.Write([]string{"id", "title", "content", "ordering", "activated_at", "deactivated_at"})
+		if err := writer.Write([]string{"id", "title", "content", "ordering", "activated_at", "deactivated_at"}); err != nil {
+			ac.Log.Error().Err(err).Msg("Error writing CSV header")
+			return
+		}
 		for _, c := range content {
-			writer.Write([]string{
+			if err := writer.Write([]string{
 				c.ID,
 				c.Title,
 				c.Content,
 				strconv.Itoa(c.Ordering),
 				formatTimePtr(c.ActivatedAt),
 				formatTimePtr(c.DeactivatedAt),
-			})
+			}); err != nil {
+				ac.Log.Error().Err(err).Msg("Error writing CSV record")
+				return
+			}
 		}
 	case "about":
 		content, err := ac.Service.ExportAboutContent()
@@ -584,16 +602,22 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 			http.Error(w, "Error exporting about content", http.StatusInternalServerError)
 			return
 		}
-		writer.Write([]string{"id", "title", "content", "ordering", "activated_at", "deactivated_at"})
+		if err := writer.Write([]string{"id", "title", "content", "ordering", "activated_at", "deactivated_at"}); err != nil {
+			ac.Log.Error().Err(err).Msg("Error writing CSV header")
+			return
+		}
 		for _, c := range content {
-			writer.Write([]string{
+			if err := writer.Write([]string{
 				c.ID,
 				c.Title,
 				c.Content,
 				strconv.Itoa(c.Ordering),
 				formatTimePtr(c.ActivatedAt),
 				formatTimePtr(c.DeactivatedAt),
-			})
+			}); err != nil {
+				ac.Log.Error().Err(err).Msg("Error writing CSV record")
+				return
+			}
 		}
 	case "tags":
 		tags, err := ac.Service.ExportTags()
@@ -601,14 +625,20 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 			http.Error(w, "Error exporting tags", http.StatusInternalServerError)
 			return
 		}
-		writer.Write([]string{"id", "name", "activated_at", "deactivated_at"})
+		if err := writer.Write([]string{"id", "name", "activated_at", "deactivated_at"}); err != nil {
+			ac.Log.Error().Err(err).Msg("Error writing CSV header")
+			return
+		}
 		for _, t := range tags {
-			writer.Write([]string{
+			if err := writer.Write([]string{
 				t.ID,
 				t.Name,
 				formatTimePtr(t.ActivatedAt),
 				formatTimePtr(t.DeactivatedAt),
-			})
+			}); err != nil {
+				ac.Log.Error().Err(err).Msg("Error writing CSV record")
+				return
+			}
 		}
 	case "authors":
 		authors, err := ac.Service.ExportAuthors()
@@ -616,14 +646,20 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 			http.Error(w, "Error exporting authors", http.StatusInternalServerError)
 			return
 		}
-		writer.Write([]string{"id", "name", "activated_at", "deactivated_at"})
+		if err := writer.Write([]string{"id", "name", "activated_at", "deactivated_at"}); err != nil {
+			ac.Log.Error().Err(err).Msg("Error writing CSV header")
+			return
+		}
 		for _, a := range authors {
-			writer.Write([]string{
+			if err := writer.Write([]string{
 				a.ID,
 				a.Name,
 				formatTimePtr(a.ActivatedAt),
 				formatTimePtr(a.DeactivatedAt),
-			})
+			}); err != nil {
+				ac.Log.Error().Err(err).Msg("Error writing CSV record")
+				return
+			}
 		}
 	default:
 		http.Error(w, "Unknown entity", http.StatusBadRequest)
