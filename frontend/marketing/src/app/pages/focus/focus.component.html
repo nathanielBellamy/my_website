@@ -1,6 +1,7 @@
-
 <app-page id="focus-page">
-   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center" appScrollFadeIn>
+   <div 
+      page-header
+      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center" appScrollFadeIn>
       <h1 
          data-testid="featured-values-header"
          class="font-heading text-5xl md:text-7xl font-bold text-heading-text mb-6">
@@ -8,7 +9,9 @@
       </h1>
       <div class="h-1 w-12 bg-vibrant-green mt-8 mx-auto rounded-full"></div>
    </div>
-   <div class="pb-24 flex flex-col items-stretch justify-around overflow-y-auto">
+   <div 
+      page-body
+      class="pb-24 flex flex-col items-stretch justify-around overflow-y-auto">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
         <div class="flex flex-col items-center text-center group" appScrollFadeIn [delay]="100">
@@ -98,6 +101,9 @@
          </div>
       </div>
     </div>
-    <app-scroll-indicator target="/latest-posts"></app-scroll-indicator>
    </div>
+    
+   <app-scroll-indicator
+      page-footer
+      target="/latest-posts"></app-scroll-indicator>
 </app-page>

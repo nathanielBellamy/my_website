@@ -1,6 +1,8 @@
 <app-page id="home-page" >
-  <span></span>
-  <div class="
+  <span page-header></span>
+  <div
+      page-body
+      class="
         size-full
         max-w-4xl mx-auto z-10 text-center text-balance 
         flex flex-col items-strech justify-between gap-4
@@ -34,7 +36,7 @@
       <div 
         appScrollFadeIn
         [delay]="800"
-        class="mt-12 flex flex-row items-center justify-center gap-6">
+        class="px-4 mt-12 flex flex-row items-center justify-center gap-6">
         <a
           href="mailto:nbschieber@gmail.com"
           class="inline-block font-sans text-lg font-semibold text-white bg-gradient-to-r from-primary-accent to-secondary-accent py-4 px-10 rounded-xl shadow-xl shadow-primary-accent/20 hover:scale-105 transition-all duration-300"
@@ -51,6 +53,7 @@
     </div>
   </div>
   <app-scroll-indicator 
+    page-footer
     target="/focus"
     appScrollFadeIn
     [delay]="1000"

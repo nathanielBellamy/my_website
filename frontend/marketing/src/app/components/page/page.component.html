@@ -1,4 +1,11 @@
 <section 
-  class="scroll-my-[75px] page-size mt-4 flex flex-col items-center justify-around">
-  <ng-content> </ng-content>
+  class="scroll-my-[75px] page-size mt-4 flex flex-col items-center justify-between gap-4">
+  <ng-content select="[page-header]"> </ng-content>
+  <div class="grow w-full flex flex-col items-stretch justify-around overflow-y-auto">
+    <ng-content select="[page-body]"> </ng-content>
+  </div>
+  <div class="max-h-[20px]">
+    <ng-content select="[page-footer]"></ng-content>
+
+  </div>
 </section>

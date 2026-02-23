@@ -1,15 +1,15 @@
-<div class="flex gap-4 items-center">
+<div class="flex gap-2 items-center">
   <button
     (click)="onExport()"
-    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+    class="text-xs py-1 px-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded shadow-sm font-medium transition-colors"
   >
-    Export {{ entity() }} CSV
+    Export CSV
   </button>
 
   <label
-    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer"
+    class="text-xs py-1 px-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded shadow-sm font-medium cursor-pointer transition-colors"
   >
-    Import {{ entity() }} CSV
+    Import CSV
     <input
       type="file"
       class="hidden"

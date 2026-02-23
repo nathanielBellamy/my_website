@@ -1,27 +1,33 @@
 <app-page
   id="latest-posts-page">
-    <div class="w-full h-[10%] pb-16">
-      <div class="flex flex-col items-center mb-16" appScrollFadeIn>
-        <h1 class="font-heading text-5xl md:text-7xl font-bold text-heading-text mb-6">
-          Latest Posts
-        </h1>
-        <div class="h-1 w-12 bg-primary-accent mt-4 rounded-full"></div>
-      </div>
-      <div class="size-full">
-        <app-infinite-scroll
-          class="w-full"
-          [items]="store.content()"
-          [loading]="store.loading()"
-          [allLoaded]="store.allLoaded()"
-          (scrolled)="onScroll()"
-          [itemTemplate]="itemTmpl"
-          [error]="store.error()"
-        ></app-infinite-scroll>
-      </div>
+    <div 
+      page-header
+      class="flex flex-col items-center mb-16" appScrollFadeIn>
+      <h1 class="font-heading text-5xl md:text-7xl font-bold text-heading-text mb-6">
+        Latest Posts
+      </h1>
+      <div class="h-1 w-12 bg-primary-accent mt-4 rounded-full"></div>
+    </div>
+    <div
+      page-body
+      class="size-full">
+      <app-infinite-scroll
+        class="w-full"
+        [items]="store.content()"
+        [loading]="store.loading()"
+        [allLoaded]="store.allLoaded()"
+        (scrolled)="onScroll()"
+        [itemTemplate]="itemTmpl"
+        [error]="store.error()"
+      ></app-infinite-scroll>
 
       <ng-template #itemTmpl let-item>
         <app-card appScrollFadeIn [title]="item.title" [content]="item.content"></app-card>
       </ng-template>
+      
     </div>
-    <app-scroll-indicator target="/about"></app-scroll-indicator>
+    <app-scroll-indicator
+      page-footer
+      target="/about">
+    </app-scroll-indicator>
 </app-page>
