@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 	"errors"
+	"mime/multipart"
 
 	"github.com/nathanielBellamy/my_website/backend/go/models"
 	"github.com/rs/zerolog"
@@ -44,6 +45,19 @@ type MockAdminService struct {
 	CreateAboutContentFunc   func(content *models.AboutContent) (*models.AboutContent, error)
 	UpdateAboutContentFunc   func(content *models.AboutContent) (*models.AboutContent, error)
 	DeleteAboutContentFunc   func(id string) error
+
+	ExportBlogPostsFunc       func() ([]models.BlogPost, error)
+	ImportBlogPostsFunc       func(posts []models.BlogPost) error
+	ExportHomeContentFunc     func() ([]models.HomeContent, error)
+	ImportHomeContentFunc     func(content []models.HomeContent) error
+	ExportGrooveJrContentFunc func() ([]models.GrooveJrContent, error)
+	ImportGrooveJrContentFunc func(content []models.GrooveJrContent) error
+	ExportAboutContentFunc    func() ([]models.AboutContent, error)
+	ImportAboutContentFunc    func(content []models.AboutContent) error
+	ExportTagsFunc            func() ([]models.Tag, error)
+	ImportTagsFunc            func(tags []models.Tag) error
+	ExportAuthorsFunc         func() ([]models.Author, error)
+	ImportAuthorsFunc         func(authors []models.Author) error
 }
 
 func (m *MockAdminService) GetAllBlogPosts(filter models.FilterOptions) ([]models.BlogPost, int, error) {
@@ -111,6 +125,79 @@ func (m *MockAdminService) UpdateAboutContent(content *models.AboutContent) (*mo
 }
 func (m *MockAdminService) DeleteAboutContent(id string) error {
 	return m.DeleteAboutContentFunc(id)
+}
+
+func (m *MockAdminService) ExportBlogPosts() ([]models.BlogPost, error) {
+	if m.ExportBlogPostsFunc != nil {
+		return m.ExportBlogPostsFunc()
+	}
+	return nil, nil
+}
+func (m *MockAdminService) ImportBlogPosts(posts []models.BlogPost) error {
+	if m.ImportBlogPostsFunc != nil {
+		return m.ImportBlogPostsFunc(posts)
+	}
+	return nil
+}
+func (m *MockAdminService) ExportHomeContent() ([]models.HomeContent, error) {
+	if m.ExportHomeContentFunc != nil {
+		return m.ExportHomeContentFunc()
+	}
+	return nil, nil
+}
+func (m *MockAdminService) ImportHomeContent(content []models.HomeContent) error {
+	if m.ImportHomeContentFunc != nil {
+		return m.ImportHomeContentFunc(content)
+	}
+	return nil
+}
+func (m *MockAdminService) ExportGrooveJrContent() ([]models.GrooveJrContent, error) {
+	if m.ExportGrooveJrContentFunc != nil {
+		return m.ExportGrooveJrContentFunc()
+	}
+	return nil, nil
+}
+func (m *MockAdminService) ImportGrooveJrContent(content []models.GrooveJrContent) error {
+	if m.ImportGrooveJrContentFunc != nil {
+		return m.ImportGrooveJrContentFunc(content)
+	}
+	return nil
+}
+func (m *MockAdminService) ExportAboutContent() ([]models.AboutContent, error) {
+	if m.ExportAboutContentFunc != nil {
+		return m.ExportAboutContentFunc()
+	}
+	return nil, nil
+}
+func (m *MockAdminService) ImportAboutContent(content []models.AboutContent) error {
+	if m.ImportAboutContentFunc != nil {
+		return m.ImportAboutContentFunc(content)
+	}
+	return nil
+}
+func (m *MockAdminService) ExportTags() ([]models.Tag, error) {
+	if m.ExportTagsFunc != nil {
+		return m.ExportTagsFunc()
+	}
+	return nil, nil
+}
+func (m *MockAdminService) ImportTags(tags []models.Tag) error {
+	if m.ImportTagsFunc != nil {
+		return m.ImportTagsFunc(tags)
+	}
+	return nil
+}
+func (m *MockAdminService) ExportAuthors() ([]models.Author, error) {
+	if m.ExportAuthorsFunc != nil {
+		return m.ExportAuthorsFunc()
+	}
+	return nil, nil
+}
+func (m *MockAdminService) ImportAuthors(authors []models.Author) error {
+	if m.ImportAuthorsFunc != nil {
+		return m.ImportAuthorsFunc(authors)
+	}
+	return nil
 }
 
 func TestAdminGetAllBlogPostsHandler(t *testing.T) {
@@ -766,5 +853,66 @@ func TestAdminDeleteAboutContentHandler(t *testing.T) {
 
 	if status := rr.Code; status != http.StatusNoContent {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusNoContent)
+	}
+}
+
+func TestAdminExportCSVHandler(t *testing.T) {
+	mockService := &MockAdminService{
+		ExportBlogPostsFunc: func() ([]models.BlogPost, error) {
+			return []models.BlogPost{{ID: "1", Title: "CSV Post"}}, nil
+		},
+	}
+	mockLogOutput := &MockLogger{}
+	log := zerolog.New(mockLogOutput)
+	controller := NewAdminController(&log, mockService)
+
+	testMux := http.NewServeMux()
+	testMux.HandleFunc("/api/admin/csv/{entity}", controller.ExportCSVHandler)
+
+	req, _ := http.NewRequest("GET", "/api/admin/csv/blog", nil)
+	rr := httptest.NewRecorder()
+	testMux.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+	}
+	if rr.Header().Get("Content-Type") != "text/csv" {
+		t.Errorf("handler returned wrong content type: got %v want %v", rr.Header().Get("Content-Type"), "text/csv")
+	}
+	if rr.Header().Get("Content-Disposition") != "attachment;filename=blog.csv" {
+		t.Errorf("handler returned wrong content disposition: got %v want %v", rr.Header().Get("Content-Disposition"), "attachment;filename=blog.csv")
+	}
+}
+
+func TestAdminImportCSVHandler(t *testing.T) {
+	mockService := &MockAdminService{
+		ImportBlogPostsFunc: func(posts []models.BlogPost) error {
+			if len(posts) != 1 || posts[0].Title != "Imported Post" {
+				return errors.New("unexpected post data")
+			}
+			return nil
+		},
+	}
+	mockLogOutput := &MockLogger{}
+	log := zerolog.New(mockLogOutput)
+	controller := NewAdminController(&log, mockService)
+
+	testMux := http.NewServeMux()
+	testMux.HandleFunc("/api/admin/csv/{entity}", controller.ImportCSVHandler)
+
+	csvContent := "title,content,ordering,created_at,updated_at,activated_at,deactivated_at,tags\nImported Post,Content,1,2023-01-01T00:00:00Z,2023-01-01T00:00:00Z,,,"
+	body := new(bytes.Buffer)
+	writer := multipart.NewWriter(body)
+	part, _ := writer.CreateFormFile("file", "test.csv")
+	part.Write([]byte(csvContent))
+	writer.Close()
+
+	req, _ := http.NewRequest("POST", "/api/admin/csv/blog", body)
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+	rr := httptest.NewRecorder()
+	testMux.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
 }

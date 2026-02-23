@@ -89,6 +89,14 @@ func (mq *MockPgQuery) Join(join string, params ...interface{}) interfaces.PgxQu
 	return mq
 }
 
+func (mq *MockPgQuery) OnConflict(s string) interfaces.PgxQuerySeter {
+	return mq
+}
+
+func (mq *MockPgQuery) Set(s string) interfaces.PgxQuerySeter {
+	return mq
+}
+
 func (mq *MockPgQuery) Select(dest ...interface{}) error {
 	if mq.Err != nil {
 		return mq.Err
@@ -160,4 +168,8 @@ func (m *MockPgDB) Model(model ...interface{}) interfaces.PgxQuerySeter {
 		return m.MockQuery
 	}
 	return &MockPgQuery{modelDest: model[0]}
+}
+
+func (m *MockPgDB) RunInTransaction(fn func(interfaces.PgxDB) error) error {
+	return fn(m)
 }

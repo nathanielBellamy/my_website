@@ -69,6 +69,14 @@ func (pqa *PgQueryAdapter) Delete(dest ...interface{}) (pg.Result, error) {
 	return pqa.Query.Delete(dest...)
 }
 
+func (pqa *PgQueryAdapter) OnConflict(s string) interfaces.PgxQuerySeter {
+	return &PgQueryAdapter{pqa.Query.OnConflict(s)}
+}
+
+func (pqa *PgQueryAdapter) Set(s string) interfaces.PgxQuerySeter {
+	return &PgQueryAdapter{pqa.Query.Set(s)}
+}
+
 // PgDBAdapter adapts *pg.DB to interfaces.PgxDB
 type PgDBAdapter struct {
 	*pg.DB
@@ -80,8 +88,25 @@ func (pda *PgDBAdapter) Model(model ...interface{}) interfaces.PgxQuerySeter {
 }
 
 // RunInTransaction implements interfaces.PgxDB.RunInTransaction
-func (pda *PgDBAdapter) RunInTransaction(fn func(*pg.Tx) error) error {
-	return pda.DB.RunInTransaction(context.Background(), fn)
+func (pda *PgDBAdapter) RunInTransaction(fn func(interfaces.PgxDB) error) error {
+	return pda.DB.RunInTransaction(context.Background(), func(tx *pg.Tx) error {
+		return fn(&PgTxAdapter{Tx: tx})
+	})
+}
+
+// PgTxAdapter adapts *pg.Tx to interfaces.PgxDB
+type PgTxAdapter struct {
+	*pg.Tx
+}
+
+func (pta *PgTxAdapter) Model(model ...interface{}) interfaces.PgxQuerySeter {
+	return &PgQueryAdapter{pta.Tx.Model(model...)}
+}
+
+func (pta *PgTxAdapter) RunInTransaction(fn func(interfaces.PgxDB) error) error {
+	return pta.Tx.RunInTransaction(context.Background(), func(tx *pg.Tx) error {
+		return fn(&PgTxAdapter{Tx: tx})
+	})
 }
 
 func NewDBClient(cfg *config.Config) (*pg.DB, error) {

@@ -115,6 +115,7 @@ A detailed, step-by-step plan will be maintained using the `TODO` list feature. 
     *   [x] Fix ambiguous column issue in `GetAllBlogPosts` (backend)
     *   [x] Fix persistence of `activatedAt` and `deactivatedAt` timestamps for Blog Posts (Frontend default + Backend DTO mapping)
     *   [x] Fix Admin app loading in CI by aligning file serving logic with Marketing app (manual index.html fallback)
+    *   [x] Add CSV Export/Import functionality for all entity types (Backend & Frontend)
 
 ## Architectural Decisions
 

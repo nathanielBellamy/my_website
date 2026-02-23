@@ -516,7 +516,7 @@ func (s *service) ExportBlogPosts() ([]models.BlogPost, error) {
 
 func (s *service) ImportBlogPosts(posts []models.BlogPost) error {
 	// Using transaction for bulk operation
-	return s.DB.RunInTransaction(func(tx *pg.Tx) error {
+	return s.DB.RunInTransaction(func(tx interfaces.PgxDB) error {
 		for _, post := range posts {
 			// Handle Author
 			if post.Author != nil {
@@ -627,7 +627,7 @@ func (s *service) ExportHomeContent() ([]models.HomeContent, error) {
 }
 
 func (s *service) ImportHomeContent(content []models.HomeContent) error {
-	return s.DB.RunInTransaction(func(tx *pg.Tx) error {
+	return s.DB.RunInTransaction(func(tx interfaces.PgxDB) error {
 		for _, item := range content {
 			if item.ID != "" {
 				_, err := tx.Model(&item).
@@ -655,7 +655,7 @@ func (s *service) ExportGrooveJrContent() ([]models.GrooveJrContent, error) {
 }
 
 func (s *service) ImportGrooveJrContent(content []models.GrooveJrContent) error {
-	return s.DB.RunInTransaction(func(tx *pg.Tx) error {
+	return s.DB.RunInTransaction(func(tx interfaces.PgxDB) error {
 		for _, item := range content {
 			if item.ID != "" {
 				_, err := tx.Model(&item).
@@ -683,7 +683,7 @@ func (s *service) ExportAboutContent() ([]models.AboutContent, error) {
 }
 
 func (s *service) ImportAboutContent(content []models.AboutContent) error {
-	return s.DB.RunInTransaction(func(tx *pg.Tx) error {
+	return s.DB.RunInTransaction(func(tx interfaces.PgxDB) error {
 		for _, item := range content {
 			if item.ID != "" {
 				_, err := tx.Model(&item).
@@ -711,7 +711,7 @@ func (s *service) ExportTags() ([]models.Tag, error) {
 }
 
 func (s *service) ImportTags(tags []models.Tag) error {
-	return s.DB.RunInTransaction(func(tx *pg.Tx) error {
+	return s.DB.RunInTransaction(func(tx interfaces.PgxDB) error {
 		for _, tag := range tags {
 			if tag.ID != "" {
 				_, err := tx.Model(&tag).
@@ -739,7 +739,7 @@ func (s *service) ExportAuthors() ([]models.Author, error) {
 }
 
 func (s *service) ImportAuthors(authors []models.Author) error {
-	return s.DB.RunInTransaction(func(tx *pg.Tx) error {
+	return s.DB.RunInTransaction(func(tx interfaces.PgxDB) error {
 		for _, author := range authors {
 			if author.ID != "" {
 				_, err := tx.Model(&author).

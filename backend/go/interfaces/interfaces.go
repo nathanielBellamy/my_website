@@ -17,9 +17,11 @@ type PgxQuerySeter interface {
 	Insert(dest ...interface{}) (pg.Result, error)
 	Update(dest ...interface{}) (pg.Result, error)
 	Delete(dest ...interface{}) (pg.Result, error)
+	OnConflict(s string) PgxQuerySeter
+	Set(s string) PgxQuerySeter
 }
 
 type PgxDB interface {
 	Model(model ...interface{}) PgxQuerySeter
-	RunInTransaction(fn func(*pg.Tx) error) error
+	RunInTransaction(fn func(PgxDB) error) error
 }

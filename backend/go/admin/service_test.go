@@ -529,3 +529,76 @@ func TestAdminDeleteAboutContent(t *testing.T) {
 		t.Errorf("expected no error, got %v", err)
 	}
 }
+
+func TestAdminExportBlogPosts(t *testing.T) {
+	mockQuery := &testutils.MockPgQuery{
+		SelectFunc: func(modelDest any, dest ...interface{}) error {
+			if v, ok := modelDest.(*[]models.BlogPost); ok {
+				*v = []models.BlogPost{
+					{ID: "1", Title: "Post 1", Ordering: 1},
+					{ID: "2", Title: "Post 2", Ordering: 2},
+				}
+			}
+			return nil
+		},
+	}
+	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
+	service := NewService(mockDB, &zerolog.Logger{})
+
+	posts, err := service.ExportBlogPosts()
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+	if len(posts) != 2 {
+		t.Errorf("expected 2 posts, got %d", len(posts))
+	}
+}
+
+func TestAdminImportBlogPosts(t *testing.T) {
+	insertCount := 0
+	mockQuery := &testutils.MockPgQuery{
+		InsertFunc: func(modelDest any, dest ...interface{}) (pg.Result, error) {
+			insertCount++
+			return &testutils.MockPgResult{NumRowsAffected: 1}, nil
+		},
+		SelectFunc: func(modelDest any, dest ...interface{}) error {
+			// Simulate finding existing author/tags if searched by name
+			return nil 
+		},
+	}
+	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
+	service := NewService(mockDB, &zerolog.Logger{})
+
+	posts := []models.BlogPost{
+		{
+			ID:    "1",
+			Title: "Imported Post",
+			Author: &models.Author{Name: "New Author"},
+			Tags:   []*models.Tag{{Name: "Tag1"}},
+		},
+	}
+
+	err := service.ImportBlogPosts(posts)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+	// Expected inserts: 
+	// 1. Author (if ID not present and not found - logic is complex, assumes found if select returns nil err for now)
+	// Actually logic says: if Author.ID == "", search by name. If found (err==nil), use it. Else Insert.
+	// My mock SelectFunc returns nil, so it finds author.
+	// 2. Tags: same logic. Finds Tag1.
+	// 3. Post: Upsert (Insert).
+	// 4. PostTags: Insert.
+	
+	// With SelectFunc returning nil (found):
+	// Author: No insert.
+	// Tag: No insert.
+	// Post: Insert (Upsert).
+	// PostTags: Insert.
+	// Total 2 inserts? 
+	// Wait, code deletes PostTags then Inserts new ones. Delete is mocked too.
+	
+	if insertCount == 0 {
+		t.Error("expected inserts to happen")
+	}
+}
