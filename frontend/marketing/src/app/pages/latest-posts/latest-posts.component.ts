@@ -4,7 +4,7 @@ import { CardComponent } from '../../components/card/card.component';
 import { InfiniteScrollComponent } from '../../components/infinite-scroll/infinite-scroll.component';
 import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
 import { LatestPostsStore } from './latest-posts.store';
-import { ScrollIndicatorComponent } from '../../shared/components/scroll-indicator/scroll-indicator.component';
+import { ScrollIndicatorComponent } from '../../components/scroll-indicator/scroll-indicator.component';
 import { PageComponent } from '../../components/page/page.component';
 
 @Component({

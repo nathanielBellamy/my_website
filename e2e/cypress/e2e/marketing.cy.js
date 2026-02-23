@@ -31,7 +31,8 @@ describe('Marketing App', () => {
 
   it('should navigate to and display the Blog page', () => {
     cy.get('[data-testid="nav-blog"]').click()
-    cy.get('[data-testid="blog-list"]').scrollIntoView().should('be.visible').contains('Blog')
+    cy.get('[data-testid="blog"]').should('be.visible').contains('Blog')
+    cy.wait(1000000);
     cy.url({ timeout: 10000 }).should('include', '/blog')
     cy.contains('Thoughts on software').should('be.visible')
   })

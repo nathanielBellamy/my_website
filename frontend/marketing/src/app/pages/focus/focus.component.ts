@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
-import { ScrollIndicatorComponent } from '../../shared/components/scroll-indicator/scroll-indicator.component';
+import { ScrollIndicatorComponent } from '../../components/scroll-indicator/scroll-indicator.component';
 import { PageComponent } from '../../components/page/page.component';
 
 @Component({
