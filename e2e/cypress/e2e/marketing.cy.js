@@ -40,11 +40,11 @@ describe('Marketing App', () => {
     cy.get('[data-testid="nav-blog"]').click()
     
     // Wait for tags to appear
-    cy.contains('Filter by Tags').should('be.visible')
+    cy.contains('Filter by Tags').scrollIntoView().should('be.visible')
     
     // Find any tag button and click it (since seed data might vary)
     cy.get('aside button').first().as('firstTag')
-    cy.get('@firstTag').should('be.visible')
+    cy.get('@firstTag').scrollIntoView().should('be.visible')
     
     // Initial click to select
     cy.get('@firstTag').click()
