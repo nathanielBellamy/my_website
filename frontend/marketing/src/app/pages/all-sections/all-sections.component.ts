@@ -107,14 +107,14 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private scrollToSection() {
     const url = this.router.url;
-    let sectionId = 'home-page';
+    let sectionId = 'home';
     
-    if (url.includes('focus')) sectionId = 'focus-page';
-    else if (url.includes('latest-posts')) sectionId = 'latest-posts-page';
-    else if (url.includes('about')) sectionId = 'about-page';
-    else if (url.includes('groovejr')) sectionId = 'groovejr-page';
-    else if (url.includes('old-site-preview')) sectionId = 'old-site-page';
-    else if (url.includes('blog')) sectionId = 'blog-page';
+    if (url.includes('focus')) sectionId = 'focus';
+    else if (url.includes('latest-posts')) sectionId = 'latest-posts';
+    else if (url.includes('about')) sectionId = 'about';
+    else if (url.includes('groovejr')) sectionId = 'groovejr';
+    else if (url.includes('old-site-preview')) sectionId = 'old-site-preview';
+    else if (url.includes('blog')) sectionId = 'blog';
 
     this._scrollToSection(sectionId);
   }
@@ -123,13 +123,6 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
     const element = document.getElementById(elementId);
     if (!element)
       return;
-
-    element.scrollTo(0, 0);
-
-    const navbar = document.getElementById('nav-bar');
-    const navbarBottom = navbar?.getBoundingClientRect().bottom ?? 0;
-    const elementTop = element?.getBoundingClientRect().top;
-    const allSections = document.getElementById('all-sections');
 
     element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
   }
