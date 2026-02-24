@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { HomeComponent } from '../home/home.component';
 import { AboutComponent } from '../about/about.component';
 import { GrooveJrComponent } from '../groove-jr/groove-jr.component';
+import { OldSiteComponent } from '../old-site/old-site.component';
 import { BlogComponent } from '../blog/blog.component';
 import { FocusComponent } from '../focus/focus.component';
 import { LatestPostsComponent } from '../latest-posts/latest-posts.component';
@@ -15,7 +16,7 @@ import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive
 @Component({
   selector: 'app-all-sections',
   standalone: true,
-  imports: [CommonModule, HomeComponent, AboutComponent, GrooveJrComponent, BlogComponent, FocusComponent, LatestPostsComponent, ScrollFadeInDirective],
+  imports: [CommonModule, HomeComponent, AboutComponent, GrooveJrComponent, OldSiteComponent, BlogComponent, FocusComponent, LatestPostsComponent, ScrollFadeInDirective],
   templateUrl: './all-sections.component.html',
 })
 export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -84,6 +85,7 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
                 'latest-posts': 'Latest Posts - Nate Schieber',
                 'about': 'About - Nate Schieber',
                 'groovejr': 'Groove Jr. - Nate Schieber',
+                'old-site-preview': 'Old Site - Nate Schieber',
                 'blog': 'Blog - Nate Schieber'
               };
               const newTitle = titleMap[path] || 'Nate Schieber - Software Engineer';
@@ -94,7 +96,7 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }, options);
 
-    const sections = ['home', 'focus', 'latest-posts', 'about', 'groovejr', 'blog'];
+    const sections = ['home', 'focus', 'latest-posts', 'about', 'groovejr', 'old-site-preview', 'blog'];
     sections.forEach(id => {
       const element = document.getElementById(id);
       if (element) {
@@ -111,6 +113,7 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
     else if (url.includes('latest-posts')) sectionId = 'latest-posts-page';
     else if (url.includes('about')) sectionId = 'about-page';
     else if (url.includes('groovejr')) sectionId = 'groovejr-page';
+    else if (url.includes('old-site-preview')) sectionId = 'old-site-page';
     else if (url.includes('blog')) sectionId = 'blog-page';
 
     this._scrollToSection(sectionId);

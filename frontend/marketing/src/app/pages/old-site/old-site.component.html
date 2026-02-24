@@ -1,0 +1,98 @@
+<app-page id="old-site-page">
+  <div 
+    page-header
+    class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center" 
+    appScrollFadeIn>
+    <h1 
+      data-testid="old-site-header"
+      class="font-heading text-5xl md:text-7xl font-bold text-heading-text mb-6">
+      Old Site
+    </h1>
+    <p class="font-sans text-xl text-body-text max-w-2xl mx-auto">
+      Interactive CV
+    </p>
+    <div class="h-1 w-12 bg-secondary-accent mt-8 mx-auto rounded-full"></div>
+  </div>
+
+  <div 
+    page-body
+    class="pb-24 flex flex-col items-stretch justify-around overflow-y-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div 
+          class="flex flex-col items-center text-center group" 
+          appScrollFadeIn 
+          [delay]="100">
+          <div 
+            class="
+              w-16 h-16 bg-primary-accent/10 rounded-2xl flex items-center justify-center 
+              mb-6 group-hover:scale-110 transition-transform">
+            <span class="text-3xl">
+              🎮
+            </span>
+          </div>
+          <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
+            WebGL
+          </h4>
+          <p class="text-body-text">
+            Immersive 3D experiences in the browser.
+          </p>
+        </div>
+        <div 
+          class="flex flex-col items-center text-center group" 
+          appScrollFadeIn 
+          [delay]="300">
+          <div 
+            class="
+              w-16 h-16 bg-vibrant-purple/10 rounded-2xl flex items-center 
+              justify-center mb-6 group-hover:scale-110 transition-transform">
+            <span class="text-3xl">
+              ⚙️
+            </span>
+          </div>
+          <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
+            wasm-bindgen
+          </h4>
+          <p class="text-body-text">
+            High-performance Rust modules in JavaScript.
+          </p>
+        </div>
+        <div 
+          class="flex flex-col items-center text-center group"
+          appScrollFadeIn [delay]="500">
+          <div class="
+            w-16 h-16 bg-vibrant-orange/10 rounded-2xl flex items-center justify-center 
+            mb-6 group-hover:scale-110 transition-transform">
+            <span class="text-3xl">
+              🤝
+            </span>
+          </div>
+          <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
+            Real-time Collaboration
+          </h4>
+          <p class="text-body-text">
+            Seamless multi-user synchronization.
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <div 
+      appScrollFadeIn
+      [delay]="800"
+      class="px-4 mt-16 flex flex-row items-center justify-center gap-6">
+      <a
+        href="/old-site"
+        target="_blank"
+        class="inline-block font-sans text-lg font-semibold text-white bg-gradient-to-r from-primary-accent to-secondary-accent py-4 px-10 rounded-xl shadow-xl shadow-primary-accent/20 hover:scale-105 transition-all duration-300"
+      >
+        Visit Old Site
+      </a>
+    </div>
+  </div>
+
+  <app-scroll-indicator
+    page-footer
+    target="/blog">
+  </app-scroll-indicator>
+</app-page>
