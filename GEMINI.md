@@ -13,6 +13,9 @@ This document outlines the plan and process for developing the new Angular front
   - Each app, `marketing` and `admin` will exist in its own directory of the same name.
   - We will never explicitly set `undefined` as a value.
 
+  ## Code Style
+  - We use 2 Spaces for indents.
+
   ## Angular Conventions
   - We will be using signal stores.
   - We will only use the `@`-style notation for conditional HTML - that is, no `*ngIf`. 
