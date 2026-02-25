@@ -15,64 +15,70 @@
   </div>
 
   <div 
+    id="app_main"
     page-body
     class="pb-24 flex flex-col items-stretch justify-around overflow-y-auto">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-        <div 
-          class="flex flex-col items-center text-center group" 
-          appScrollFadeIn 
-          [delay]="100">
+    
+    <div id="magic_square">
+      <!-- Hidden form required by the Rust WebGL code -->
+      <form id="magic_square_control_rack" class="hidden"></form>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
           <div 
-            class="
-              w-16 h-16 bg-primary-accent/10 rounded-2xl flex items-center justify-center 
-              mb-6 group-hover:scale-110 transition-transform">
-            <span class="text-3xl">
-              🎮
-            </span>
+            class="flex flex-col items-center text-center group" 
+            appScrollFadeIn 
+            [delay]="100">
+            <div 
+              id="magic_square_canvas_container"
+              class="
+                w-full aspect-square bg-primary-accent/10 rounded-2xl flex items-center justify-center 
+                mb-6 overflow-hidden relative group-hover:scale-[1.02] transition-transform">
+              <canvas id="magic_square_canvas" class="w-full h-full cursor-crosshair"></canvas>
+            </div>
+            <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
+              WebGL
+            </h4>
+            <p class="text-body-text">
+              Immersive 3D experiences in the browser.
+            </p>
           </div>
-          <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
-            WebGL
-          </h4>
-          <p class="text-body-text">
-            Immersive 3D experiences in the browser.
-          </p>
-        </div>
-        <div 
-          class="flex flex-col items-center text-center group" 
-          appScrollFadeIn 
-          [delay]="300">
           <div 
-            class="
-              w-16 h-16 bg-vibrant-purple/10 rounded-2xl flex items-center 
-              justify-center mb-6 group-hover:scale-110 transition-transform">
-            <span class="text-3xl">
-              ⚙️
-            </span>
+            class="flex flex-col items-center text-center group" 
+            appScrollFadeIn 
+            [delay]="300">
+            <div 
+              class="
+                w-16 h-16 bg-vibrant-purple/10 rounded-2xl flex items-center 
+                justify-center mb-6 group-hover:scale-110 transition-transform mx-auto">
+              <span class="text-3xl">
+                ⚙️
+              </span>
+            </div>
+            <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
+              wasm-bindgen
+            </h4>
+            <p class="text-body-text">
+              High-performance Rust modules in JavaScript.
+            </p>
           </div>
-          <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
-            wasm-bindgen
-          </h4>
-          <p class="text-body-text">
-            High-performance Rust modules in JavaScript.
-          </p>
-        </div>
-        <div 
-          class="flex flex-col items-center text-center group"
-          appScrollFadeIn [delay]="500">
-          <div class="
-            w-16 h-16 bg-vibrant-orange/10 rounded-2xl flex items-center justify-center 
-            mb-6 group-hover:scale-110 transition-transform">
-            <span class="text-3xl">
-              🤝
-            </span>
+          <div 
+            class="flex flex-col items-center text-center group"
+            appScrollFadeIn [delay]="500">
+            <div class="
+              w-16 h-16 bg-vibrant-orange/10 rounded-2xl flex items-center justify-center 
+              mb-6 group-hover:scale-110 transition-transform mx-auto">
+              <span class="text-3xl">
+                🤝
+              </span>
+            </div>
+            <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
+              Real-time Collaboration
+            </h4>
+            <p class="text-body-text">
+              Seamless multi-user synchronization.
+            </p>
           </div>
-          <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
-            Real-time Collaboration
-          </h4>
-          <p class="text-body-text">
-            Seamless multi-user synchronization.
-          </p>
         </div>
       </div>
     </div>

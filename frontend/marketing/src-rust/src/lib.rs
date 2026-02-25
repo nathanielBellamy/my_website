@@ -1,10 +1,8 @@
 #[allow(unused)]
-use give_me_a_sine;
 use wasm_bindgen::prelude::*; // ensure wasm-bindgen creates bindings for sub-module
 
 #[macro_use]
 pub mod magic_square;
-pub mod public_square;
 
 #[wasm_bindgen]
 pub fn rust_init_message(message: String) {

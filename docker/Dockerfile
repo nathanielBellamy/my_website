@@ -10,6 +10,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --de
 ENV PATH="/root/.cargo/bin:${PATH}"
 RUN rustup target add wasm32-unknown-unknown
 RUN cargo install wasm-bindgen-cli
+RUN cargo install wasm-pack
 
 # Install Go (Architecture Agnostic)
 COPY --from=golang:1.24 /usr/local/go /usr/local/go
