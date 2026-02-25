@@ -1,13 +1,12 @@
-<div class="h-full flex flex-col items-stretch justify-between">
+<div class="h-full flex flex-col items-stretch justify-between overflow-hidden">
     <app-navbar></app-navbar>
     <div 
         id="main-scroll-container"
-        class="grow flex flex-col items-stretch overflow-y-auto" 
+        class="grow flex flex-col items-stretch relative overflow-hidden" 
         data-testid="main-scroll-container">
-        <div class="grow flex flex-col items-center justify-around">
+        <div [@routeAnimations]="getRouteAnimationData()" class="grow w-full h-full relative">
             <router-outlet />
         </div>
     </div>
     <app-footer></app-footer>
 </div>
-    

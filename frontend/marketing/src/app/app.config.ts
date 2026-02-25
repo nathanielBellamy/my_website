@@ -1,10 +1,10 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter, withRouterConfig, withInMemoryScrolling, RouteReuseStrategy } from '@angular/router';
+import { provideRouter, withRouterConfig, withInMemoryScrolling } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideMarkdown } from 'ngx-markdown';
 
 import { routes } from './app.routes';
-import { ScrollReuseStrategy } from './strategies/scroll-reuse.strategy';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,7 +15,7 @@ export const appConfig: ApplicationConfig = {
       withInMemoryScrolling({ scrollPositionRestoration: 'enabled' })
     ),
     provideHttpClient(),
-    provideMarkdown(),
-    { provide: RouteReuseStrategy, useClass: ScrollReuseStrategy }
+    provideAnimationsAsync(),
+    provideMarkdown()
   ]
 };

@@ -1,17 +1,24 @@
 import { Routes } from '@angular/router';
-import { AllSectionsComponent } from './pages/all-sections/all-sections.component';
+import { HomeComponent } from './pages/home/home.component';
+import { FocusComponent } from './pages/focus/focus.component';
+import { LatestPostsComponent } from './pages/latest-posts/latest-posts.component';
+import { AboutComponent } from './pages/about/about.component';
+import { GrooveJrComponent } from './pages/groove-jr/groove-jr.component';
+import { OldSiteComponent } from './pages/old-site/old-site.component';
+import { BlogComponent } from './pages/blog/blog.component';
 import { BlogContentDetailsComponent } from './pages/blog-content-details/blog-content-details.component';
 import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
 
 export const routes: Routes = [
-  { path: '', component: AllSectionsComponent, title: 'Nate Schieber - Software Engineer', runGuardsAndResolvers: 'always' },
-  { path: 'focus', component: AllSectionsComponent, title: 'Focus - Nate Schieber', runGuardsAndResolvers: 'always' },
-  { path: 'latest-posts', component: AllSectionsComponent, title: 'Latest Posts - Nate Schieber', runGuardsAndResolvers: 'always' },
-  { path: 'about', component: AllSectionsComponent, title: 'About - Nate Schieber', runGuardsAndResolvers: 'always' },
-  { path: 'groovejr', component: AllSectionsComponent, title: 'Groove Jr. - Nate Schieber', runGuardsAndResolvers: 'always' },
-  { path: 'old-site-preview', component: AllSectionsComponent, title: 'Old Site - Nate Schieber', runGuardsAndResolvers: 'always' },
-  { path: 'blog', component: AllSectionsComponent, title: 'Blog - Nate Schieber', runGuardsAndResolvers: 'always' },
-  { path: 'blog/:id', component: BlogContentDetailsComponent, title: 'Blog Post - Nate Schieber' },
-  { path: 'privacy-policy', component: PrivacyPolicyComponent, title: 'Privacy Policy - Nate Schieber' },
+  { path: '', component: HomeComponent, title: 'Nate Schieber - Software Engineer', data: { animation: 0 } },
+  { path: 'focus', component: FocusComponent, title: 'Focus - Nate Schieber', data: { animation: 1 } },
+  { path: 'latest-posts', component: LatestPostsComponent, title: 'Latest Posts - Nate Schieber', data: { animation: 2 } },
+  { path: 'about', component: AboutComponent, title: 'About - Nate Schieber', data: { animation: 3 } },
+  { path: 'groovejr', component: GrooveJrComponent, title: 'Groove Jr. - Nate Schieber', data: { animation: 4 } },
+  { path: 'old-site-preview', component: OldSiteComponent, title: 'Old Site - Nate Schieber', data: { animation: 5 } },
+  { path: 'blog', component: BlogComponent, title: 'Blog - Nate Schieber', data: { animation: 6 } },
+  { path: 'blog/:id', component: BlogContentDetailsComponent, title: 'Blog Post - Nate Schieber', data: { animation: 7 } },
+  { path: 'privacy-policy', component: PrivacyPolicyComponent, title: 'Privacy Policy - Nate Schieber', data: { animation: 8 } },
   { path: '**', redirectTo: '' }
 ];
+

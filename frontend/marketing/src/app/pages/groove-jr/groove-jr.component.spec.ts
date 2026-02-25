@@ -74,6 +74,6 @@ describe('GrooveJrComponent', () => {
   });
 
   it('should render scroll indicator', () => {
-    screen.getByTestId('scroll-to-blog');
+    screen.getByTestId('scroll-to-old-site-preview');
   });
 });
