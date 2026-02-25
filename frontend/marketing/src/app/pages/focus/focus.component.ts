@@ -11,8 +11,8 @@ import { PageComponent } from '../../components/page/page.component';
 })
 export class FocusComponent {
   readonly technologies = [
-    'LLMs', 'C++', 'TypeScript', 'Java', 'Scala', 'Go', 'Rust', 'Ruby',
-    'PostgreSQL', 'SQLite', 'NixOS', 'Qt', 'Angular', 'Vue', 'Spring',
-    'Rails', 'Akka', 'CAF', 'Vim'
+    'NixOS', 'Vim', 'LLMs', 'TypeScript', 'Java', 'Scala', 'Go', 'C++', 'Rust', 'Ruby',
+    'PostgreSQL', 'SQLite', 'Qt', 'Angular', 'Vue', 'Spring',
+    'Rails', 'Akka', 'CAF', ''
   ];
 }
