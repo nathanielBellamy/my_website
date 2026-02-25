@@ -46,22 +46,6 @@
     opacity: 0.15;
   }
 
-  body::before {
-    background-color: theme('colors.primary-accent');
-    width: 30rem;
-    height: 30rem;
-    top: -10rem;
-    left: -20rem;
-  }
-
-  body::after {
-    background-color: theme('colors.secondary-accent');
-    width: 40rem;
-    height: 40rem;
-    bottom: -20rem;
-    right: -20rem;
-  }
-
   .bg-blob-3 {
     position: absolute;
     z-index: -1;
@@ -76,8 +60,8 @@
   }
 
   .page-size {
-    min-height: calc(100vh - 155px);
-    max-height: calc(100vh - 155px);
+    min-height: calc(100vh - 100px);
+    max-height: calc(100vh - 100px);
     min-width: 100vw;
     max-width: 100vw;
   }
