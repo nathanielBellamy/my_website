@@ -119,6 +119,11 @@ jobs:
             frontend/admin/package-lock.json
             frontend/auth/admin/package-lock.json
 
+      - name: Install wasm-pack
+        uses: jetli/wasm-pack-action@v0.4.0
+        with:
+          version: 'latest'
+
       - name: Install and Build Marketing App
         run: |
           cd frontend/marketing
