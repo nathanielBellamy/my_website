@@ -8,19 +8,34 @@
       </a>
     </div>
     <div class="hidden sm:flex items-center space-x-4 md:space-x-8">
-      <a routerLink="/" data-testid="nav-home" class="text-body-text hover:text-primary-accent font-medium transition-colors duration-200">Home</a>
-      <a routerLink="/focus" data-testid="nav-focus" class="text-body-text hover:text-white font-medium transition-colors duration-200">Focus</a>
-      <a routerLink="/latest-posts" data-testid="nav-latest-posts" class="text-body-text hover:text-vibrant-purple font-medium transition-colors duration-200">Latest</a>
-      <a routerLink="/about" data-testid="nav-about" class="text-body-text hover:text-vibrant-yellow font-medium transition-colors duration-200">About</a>
-      <a routerLink="/groovejr" data-testid="nav-groovejr" class="text-body-text hover:text-vibrant-green font-medium transition-colors duration-200">GrooveJr</a>
-      <a routerLink="/old-site-preview" data-testid="nav-old-site" class="text-body-text hover:text-secondary-accent font-medium transition-colors duration-200">Old Site</a>
-      <a routerLink="/blog" data-testid="nav-blog" class="text-body-text hover:text-vibrant-orange font-medium transition-colors duration-200">Blog</a>
+      <a routerLink="/" routerLinkActive="!text-primary-accent font-bold" [routerLinkActiveOptions]="{exact: true}" data-testid="nav-home" class="text-body-text hover:text-primary-accent font-medium transition-all duration-200">Home</a>
+      <a routerLink="/focus" routerLinkActive="!text-secondary-accent font-bold" data-testid="nav-focus" class="text-body-text hover:text-white font-medium transition-all duration-200">Focus</a>
+      <a routerLink="/latest-posts" routerLinkActive="!text-vibrant-orange font-bold" data-testid="nav-latest-posts" class="text-body-text hover:text-vibrant-purple font-medium transition-all duration-200">Latest</a>
+      <a routerLink="/about" routerLinkActive="!text-vibrant-yellow font-bold" data-testid="nav-about" class="text-body-text hover:text-vibrant-yellow font-medium transition-all duration-200">About</a>
+      <a routerLink="/groovejr" routerLinkActive="!text-vibrant-green font-bold" data-testid="nav-groovejr" class="text-body-text hover:text-vibrant-green font-medium transition-all duration-200">GrooveJr</a>
+      <a routerLink="/old-site-preview" routerLinkActive="!text-secondary-accent font-bold" data-testid="nav-old-site" class="text-body-text hover:text-secondary-accent font-medium transition-all duration-200">Old Site</a>
+      <a routerLink="/blog" routerLinkActive="!text-vibrant-orange font-bold" data-testid="nav-blog" class="text-body-text hover:text-vibrant-orange font-medium transition-all duration-200">Blog</a>
     </div>
     <div class="flex items-center space-x-4">
+      
+      <!-- Scroll Indicators -->
+      <div class="flex items-center space-x-1 sm:space-x-2 mr-2">
+        <a [routerLink]="prevRoute()" class="text-body-text hover:text-primary-accent opacity-50 hover:opacity-100 transition-all duration-300 hover:scale-110 cursor-pointer" aria-label="Previous Page" data-testid="nav-prev">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </a>
+        <a [routerLink]="nextRoute()" class="text-body-text hover:text-primary-accent opacity-50 hover:opacity-100 transition-all duration-300 hover:scale-110 cursor-pointer" aria-label="Next Page" data-testid="nav-next">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+
       <a
         href="mailto:nateschieber@gmail.com"
         target="_blank"
-        class="text-body-text hover:text-vibrant-yellow transition-all duration-300 hover:scale-110"
+        class="hidden sm:block text-body-text hover:text-vibrant-yellow transition-all duration-300 hover:scale-110"
         data-testid="navbar-mailto"
         >
         <svg
@@ -34,7 +49,7 @@
       <a
         href="https://www.linkedin.com/in/nateschieber/"
         target="_blank"
-        class="text-body-text hover:text-primary-accent transition-all duration-300 hover:scale-110"
+        class="hidden sm:block text-body-text hover:text-primary-accent transition-all duration-300 hover:scale-110"
         data-testid="navbar-linked-in">
         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
@@ -43,7 +58,7 @@
       <a
         href="https://github.com/nathanielBellamy"
         target="_blank"
-        class="text-body-text hover:text-secondary-accent transition-all duration-300 hover:scale-110"
+        class="hidden sm:block text-body-text hover:text-secondary-accent transition-all duration-300 hover:scale-110"
         data-testid="navbar-github">
         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
@@ -71,13 +86,13 @@
       class="sm:hidden absolute top-full left-0 w-full bg-card/95 backdrop-blur-md border-b border-white/10 py-4 flex flex-col space-y-4 px-4 shadow-xl z-50 animate-fade-in-down"
       data-testid="mobile-menu"
     >
-      <a routerLink="/" (click)="toggleMenu()" class="text-body-text hover:text-primary-accent font-medium text-lg transition-colors duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-home">Home</a>
-      <a routerLink="/focus" (click)="toggleMenu()" class="text-body-text hover:text-white font-medium text-lg transition-colors duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-focus">Focus</a>
-      <a routerLink="/latest-posts" (click)="toggleMenu()" class="text-body-text hover:text-vibrant-purple font-medium text-lg transition-colors duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-latest-posts">Latest</a>
-      <a routerLink="/about" (click)="toggleMenu()" class="text-body-text hover:text-vibrant-yellow font-medium text-lg transition-colors duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-about">About</a>
-      <a routerLink="/groovejr" (click)="toggleMenu()" class="text-body-text hover:text-vibrant-green font-medium text-lg transition-colors duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-groovejr">GrooveJr</a>
-      <a routerLink="/old-site-preview" (click)="toggleMenu()" class="text-body-text hover:text-secondary-accent font-medium text-lg transition-colors duration-200 pb-2" data-testid="mobile-nav-old-site">Old Site</a>
-      <a routerLink="/blog" (click)="toggleMenu()" class="text-body-text hover:text-vibrant-orange font-medium text-lg transition-colors duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-blog">Blog</a>
+      <a routerLink="/" routerLinkActive="!text-primary-accent font-bold" [routerLinkActiveOptions]="{exact: true}" (click)="toggleMenu()" class="text-body-text hover:text-primary-accent font-medium text-lg transition-all duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-home">Home</a>
+      <a routerLink="/focus" routerLinkActive="!text-white font-bold" (click)="toggleMenu()" class="text-body-text hover:text-white font-medium text-lg transition-all duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-focus">Focus</a>
+      <a routerLink="/latest-posts" routerLinkActive="!text-vibrant-purple font-bold" (click)="toggleMenu()" class="text-body-text hover:text-vibrant-purple font-medium text-lg transition-all duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-latest-posts">Latest</a>
+      <a routerLink="/about" routerLinkActive="!text-vibrant-yellow font-bold" (click)="toggleMenu()" class="text-body-text hover:text-vibrant-yellow font-medium text-lg transition-all duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-about">About</a>
+      <a routerLink="/groovejr" routerLinkActive="!text-vibrant-green font-bold" (click)="toggleMenu()" class="text-body-text hover:text-vibrant-green font-medium text-lg transition-all duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-groovejr">GrooveJr</a>
+      <a routerLink="/old-site-preview" routerLinkActive="!text-secondary-accent font-bold" (click)="toggleMenu()" class="text-body-text hover:text-secondary-accent font-medium text-lg transition-all duration-200 pb-2" data-testid="mobile-nav-old-site">Old Site</a>
+      <a routerLink="/blog" routerLinkActive="!text-vibrant-orange font-bold" (click)="toggleMenu()" class="text-body-text hover:text-vibrant-orange font-medium text-lg transition-all duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-blog">Blog</a>
     </div>
   }
 </nav>
