@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, inject, NgZone } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, inject, NgZone, signal } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
@@ -28,6 +28,8 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
   private observer?: IntersectionObserver;
   private isAutoScrolling = false;
   private lastNavTime = 0;
+  
+  public readonly activeSection = signal<string>('home');
 
   ngOnInit() {
     this.routerSubscription = this.router.events.pipe(
@@ -77,6 +79,7 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
           
           if (currentPath !== path) {
             this.ngZone.run(() => {
+              this.activeSection.set(sectionId);
               this.location.replaceState(path);
               
               const titleMap: Record<string, string> = {
@@ -116,6 +119,7 @@ export class AllSectionsComponent implements OnInit, AfterViewInit, OnDestroy {
     else if (url.includes('old-site-preview')) sectionId = 'old-site-preview';
     else if (url.includes('blog')) sectionId = 'blog';
 
+    this.activeSection.set(sectionId);
     this._scrollToSection(sectionId);
   }
 

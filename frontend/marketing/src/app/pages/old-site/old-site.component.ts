@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PageComponent } from '../../components/page/page.component';
 import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
@@ -12,6 +12,7 @@ import init, { MagicSquare } from '../../../../pkg/src_rust.js';
   templateUrl: './old-site.component.html'
 })
 export class OldSiteComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('appMain', { static: false }) appMainRef?: ElementRef;
   private magicSquarePromise: Promise<any> | null = null;
 
   async ngAfterViewInit(): Promise<void> {
@@ -31,7 +32,7 @@ export class OldSiteComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     // Rust code listens for the 'destroymswasm' event on the 'app_main' element
     // to stop requestAnimationFrame loop
-    const appMain = document.getElementById('app_main');
+    const appMain = this.appMainRef?.nativeElement || document.getElementById('app_main');
     if (appMain) {
       appMain.dispatchEvent(new Event('destroymswasm'));
     }
