@@ -24,7 +24,7 @@ export class AppComponent {
   private contexts = inject(ChildrenOutletContexts);
 
   getRouteAnimationData() {
-    return this.contexts.getContext('primary')?.route?.data?.['animation'];
+    return this.contexts.getContext('primary')?.route?.snapshot?.data?.['animation'];
   }
 }
 
