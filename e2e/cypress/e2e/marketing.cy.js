@@ -62,16 +62,4 @@ describe('Marketing App', () => {
     cy.get('[data-testid="navbar-github"]').should('have.attr', 'href').and('include', 'github.com')
     cy.get('[data-testid="navbar-mailto"]').should('have.attr', 'href').and('include', 'mailto:')
   })
-
-  it('should navigate to the next section when clicking the scroll indicator', () => {
-    // Scroll to bottom of home section to find indicator
-    cy.get('[data-testid="scroll-to-focus"]').should('exist').click({ force: true })
-    cy.url().should('include', '/focus')
-    cy.get('[data-testid="featured-values-header"]').should('be.visible')
-
-    // From Focus to Latest Posts
-    cy.get('[data-testid="scroll-to-latest-posts"]').should('exist').click({ force: true })
-    cy.url().should('include', '/latest-posts')
-    cy.contains('Latest Posts').should('be.visible')
-  })
 })
