@@ -83,7 +83,7 @@
   <!-- Mobile Menu -->
   @if (isOpen()) {
     <div
-      class="sm:hidden absolute top-full left-0 w-full bg-card/95 backdrop-blur-md border-b border-white/10 py-4 flex flex-col space-y-4 px-4 shadow-xl z-50 animate-fade-in-down"
+      class="absolute top-full left-0 w-full bg-card/95 backdrop-blur-md border-b border-white/10 py-4 flex flex-col space-y-4 px-4 shadow-xl z-50 animate-fade-in-down"
       data-testid="mobile-menu"
     >
       <a routerLink="/" routerLinkActive="!text-primary-accent font-bold" [routerLinkActiveOptions]="{exact: true}" (click)="toggleMenu()" class="text-body-text hover:text-primary-accent font-medium text-lg transition-all duration-200 border-b border-white/5 pb-2" data-testid="mobile-nav-home">Home</a>
