@@ -2,13 +2,12 @@ import { Component, AfterViewInit, OnDestroy, ElementRef, ViewChild } from '@ang
 import { CommonModule } from '@angular/common';
 import { PageComponent } from '../../components/page/page.component';
 import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
-import { ScrollIndicatorComponent } from '../../components/scroll-indicator/scroll-indicator.component';
 import init, { MagicSquare } from '../../../../pkg/src_rust.js';
 
 @Component({
   selector: 'app-old-site',
   standalone: true,
-  imports: [CommonModule, PageComponent, ScrollFadeInDirective, ScrollIndicatorComponent],
+  imports: [CommonModule, PageComponent, ScrollFadeInDirective],
   templateUrl: './old-site.component.html'
 })
 export class OldSiteComponent implements AfterViewInit, OnDestroy {

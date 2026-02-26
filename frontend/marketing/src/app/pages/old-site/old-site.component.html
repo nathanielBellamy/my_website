@@ -38,54 +38,56 @@
               <canvas id="magic_square_canvas" class="w-full h-full cursor-crosshair"></canvas>
             </div>
           </div>
-          <div class="size-full flex flex-col-reverse md:flex-col items-stretch justify-between gap-4">
-            <div 
-              class="flex flex-col items-stretch gap-8 group">
+          <div class="size-full flex flex-col items-stretch justify-around">
+            <div class="flex flex-col-reverse md:flex-col items-stretch gap-8">
               <div 
-                class="flex flex-col items-stretch justify-around"
-                appScrollFadeIn 
-                [delay]="200">
-                <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
-                  WebGL
-                </h4>
-                <p class="text-body-text pl-8">
-                  Interactive 3D (Try it with your mouse!)
-                </p>
+                class="flex flex-col items-stretch gap-8 group">
+                <div 
+                  class="flex flex-col items-stretch justify-around"
+                  appScrollFadeIn 
+                  [delay]="200">
+                  <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
+                    WebGL
+                  </h4>
+                  <p class="text-body-text pl-8">
+                    Interactive 3D (Try it with your mouse!)
+                  </p>
+                </div>
+                <div 
+                  class="flex flex-col items-stretch justify-around"
+                  appScrollFadeIn 
+                  [delay]="300">
+                  <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
+                    wasm-bindgen
+                  </h4>
+                  <p class="text-body-text pl-8">
+                    Rust modules compiled to WASM
+                  </p>
+                </div>
+                <div 
+                  class="flex flex-col items-stretch justify-around"
+                  appScrollFadeIn 
+                  [delay]="400">
+                  <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
+                    Real-time Collaboration
+                  </h4>
+                  <p class="text-body-text pl-8">
+                    Seamless multi-user synchronization
+                  </p>
+                </div>
               </div>
               <div 
-                class="flex flex-col items-stretch justify-around"
-                appScrollFadeIn 
-                [delay]="300">
-                <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
-                  wasm-bindgen
-                </h4>
-                <p class="text-body-text pl-8">
-                  Rust modules compiled to WASM
-                </p>
+                appScrollFadeIn
+                [delay]="500"
+                class="px-4 flex flex-row items-center justify-center gap-6">
+                <a
+                  href="/old-site"
+                  target="_blank"
+                  class="inline-block font-sans text-lg font-semibold text-white bg-gradient-to-r from-primary-accent to-secondary-accent py-4 px-10 rounded-xl shadow-xl shadow-primary-accent/20 hover:scale-105 transition-all duration-300"
+                >
+                  Visit Old Site
+                </a>
               </div>
-              <div 
-                class="flex flex-col items-stretch justify-around"
-                appScrollFadeIn 
-                [delay]="400">
-                <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
-                  Real-time Collaboration
-                </h4>
-                <p class="text-body-text pl-8">
-                  Seamless multi-user synchronization
-                </p>
-              </div>
-            </div>
-            <div 
-              appScrollFadeIn
-              [delay]="500"
-              class="px-4 flex flex-row items-center justify-center gap-6">
-              <a
-                href="/old-site"
-                target="_blank"
-                class="inline-block font-sans text-lg font-semibold text-white bg-gradient-to-r from-primary-accent to-secondary-accent py-4 px-10 rounded-xl shadow-xl shadow-primary-accent/20 hover:scale-105 transition-all duration-300"
-              >
-                Visit Old Site
-              </a>
             </div>
           </div>
         </div>
