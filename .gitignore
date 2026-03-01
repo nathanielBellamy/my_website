@@ -28,6 +28,9 @@ old-site/dist-ssr
 old-site/*.local
 old-site/pkg/**
 
+deploy_key
+deploy_key.pub
+
 # auth
 auth/dev/node_modules
 

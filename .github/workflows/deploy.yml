@@ -22,9 +22,11 @@ jobs:
           docker build --platform linux/amd64 -t my_website_backend:latest -f docker/Dockerfile .
 
       - name: Setup SSH Key
+        env:
+          SSH_KEY: ${{ github.ref_name == 'main' && secrets.SSH_PRIVATE_KEY_PROD || secrets.SSH_PRIVATE_KEY_DEV }}
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
       - name: Generate .env file
