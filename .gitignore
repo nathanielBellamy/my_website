@@ -46,7 +46,6 @@ old-site/*.sw?
 
 # rust build
 old-site/src-rust/target/
-old-site/src-rust/give_me_a_sine/
 
 # spec
 spec/node_modules
