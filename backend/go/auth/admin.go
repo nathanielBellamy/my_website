@@ -7,10 +7,9 @@ import (
 	"fmt"
 	"math/big"
 	"net/http"
-	"net/smtp"
 	"os"
 	"path/filepath"
-	"strings"
+	"strconv"
 	"time"
 
 	crand "crypto/rand"
@@ -19,6 +18,7 @@ import (
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"github.com/pquerna/otp/totp"
 	"github.com/rs/zerolog"
+	"github.com/wneessen/go-mail"
 )
 
 type OtpRequest struct {
@@ -35,27 +35,45 @@ var validPreAuthTokens = cmap.New[string]()
 
 func sendEmail(to, subject, body string) error {
 	host := os.Getenv("SMTP_HOST")
-	port := os.Getenv("SMTP_PORT")
+	portStr := os.Getenv("SMTP_PORT")
 	user := os.Getenv("SMTP_USER")
 	pass := os.Getenv("SMTP_PASS")
 
-	if host == "" || port == "" || user == "" || pass == "" {
+	if host == "" || portStr == "" || user == "" || pass == "" {
 		return fmt.Errorf("SMTP configuration missing")
 	}
 
-	auth := smtp.PlainAuth("", user, pass, host)
-	addr := fmt.Sprintf("%s:%s", host, port)
+	port, err := strconv.Atoi(portStr)
+	if err != nil {
+		return fmt.Errorf("invalid SMTP port: %w", err)
+	}
 
-	// Sanitize inputs to prevent SMTP header injection
-	safeTo := strings.ReplaceAll(strings.ReplaceAll(to, "\r", ""), "\n", "")
-	safeSubject := strings.ReplaceAll(strings.ReplaceAll(subject, "\r", ""), "\n", "")
+	// go-mail handles header sanitization automatically
+	msg := mail.NewMsg()
+	if err := msg.From(user); err != nil {
+		return fmt.Errorf("failed to set sender: %w", err)
+	}
+	if err := msg.To(to); err != nil {
+		return fmt.Errorf("failed to set recipient: %w", err)
+	}
+	msg.Subject(subject)
+	msg.SetBodyString(mail.TypeTextPlain, body)
 
-	msg := []byte(fmt.Sprintf("To: %s\r\n"+
-		"Subject: %s\r\n"+
-		"\r\n"+
-		"%s\r\n", safeTo, safeSubject, body))
+	client, err := mail.NewClient(host,
+		mail.WithPort(port),
+		mail.WithSMTPAuth(mail.SMTPAuthPlain),
+		mail.WithUsername(user),
+		mail.WithPassword(pass),
+	)
+	if err != nil {
+		return fmt.Errorf("failed to create mail client: %w", err)
+	}
 
-	return smtp.SendMail(addr, auth, user, []string{safeTo}, msg)
+	if err := client.DialAndSend(msg); err != nil {
+		return fmt.Errorf("failed to send mail: %w", err)
+	}
+
+	return nil
 }
 
 func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger, oldSiteFileServer http.Handler, adminFileServer http.Handler, marketingFileServer http.Handler) {
@@ -394,7 +412,7 @@ func WithSecurityHeaders(next http.Handler) http.Handler {
 		// CSP: Allow Google Recaptcha, self, and inline styles/scripts (for Angular)
 		// We allow ws: for localhost development
 		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; frame-src https://www.google.com/recaptcha/; connect-src 'self' ws: wss:; frame-ancestors 'none';")
-		
+
 		w.Header().Set("X-Frame-Options", "DENY")
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("Referrer-Policy", "origin-when-cross-origin")
