@@ -1,6 +1,14 @@
--- Create a new user and database for the marketing app
-CREATE USER marketing WITH PASSWORD 'marketing';
-CREATE USER admin WITH PASSWORD 'admin';
+-- Create users safely (idempotent)
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'marketing') THEN
+    CREATE USER marketing WITH PASSWORD 'marketing';
+  END IF;
+  IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'admin') THEN
+    CREATE USER admin WITH PASSWORD 'admin';
+  END IF;
+END
+$$;
 
 -- Grant read-only privileges to marketing user
 GRANT CONNECT ON DATABASE mw_db TO marketing;

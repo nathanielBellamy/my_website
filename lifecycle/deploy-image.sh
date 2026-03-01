@@ -65,7 +65,11 @@ $SSH_CMD $SSH_USER@$SSH_HOST << EOF
   echo "   [Remote] Restarting services..."
   # We use up -d which intelligently recreates containers only if image changed or config changed
   # We force recreate the backend to ensure it picks up the new image even if 'latest' tag confusion exists
-  docker compose up -d --force-recreate backend
+  docker compose up -d --force-recreate backend || {
+    echo "❌ Deployment failed! Fetching postgres-db logs for debugging:"
+    docker logs my_website_db
+    exit 1
+  }
   docker compose up -d postgres-db # Ensure DB is up (won't restart if healthy)
 
   # Cleanup

@@ -1,1 +1,2 @@
-CREATE USER admin WITH PASSWORD 'admin';
+\c mw_db;
+CREATE TABLE test (id int);
