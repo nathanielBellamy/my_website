@@ -10,6 +10,7 @@ import (
 	"net/smtp"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	crand "crypto/rand"
@@ -45,12 +46,16 @@ func sendEmail(to, subject, body string) error {
 	auth := smtp.PlainAuth("", user, pass, host)
 	addr := fmt.Sprintf("%s:%s", host, port)
 
+	// Sanitize inputs to prevent SMTP header injection
+	safeTo := strings.ReplaceAll(strings.ReplaceAll(to, "\r", ""), "\n", "")
+	safeSubject := strings.ReplaceAll(strings.ReplaceAll(subject, "\r", ""), "\n", "")
+
 	msg := []byte(fmt.Sprintf("To: %s\r\n"+
 		"Subject: %s\r\n"+
 		"\r\n"+
-		"%s\r\n", to, subject, body))
+		"%s\r\n", safeTo, safeSubject, body))
 
-	return smtp.SendMail(addr, auth, user, []string{to}, msg)
+	return smtp.SendMail(addr, auth, user, []string{safeTo}, msg)
 }
 
 func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger, oldSiteFileServer http.Handler, adminFileServer http.Handler, marketingFileServer http.Handler) {
