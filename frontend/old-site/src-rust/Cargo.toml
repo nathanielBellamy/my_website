@@ -8,7 +8,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 bytemuck = "1.24.0"
-wasm-bindgen = "0.2.108"
+wasm-bindgen = "0.2.114"
 wasm-bindgen-futures = "0.4.58"
 gloo-utils = { version = "0.1.7", features = ["serde"] }
 js-sys = "0.3.85"

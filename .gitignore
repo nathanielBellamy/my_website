@@ -35,6 +35,7 @@ auth/dev/node_modules
 dist/*
 # keep builds out of git
 build/*
+**/target/**
 
 # Editor directories and files
 old-site/.idea
