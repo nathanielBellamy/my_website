@@ -96,6 +96,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     certbot
+    docker
     docker-compose
     git
     go
@@ -109,6 +110,8 @@
   ];
 
   # List services that you want to enable:
+
+  virtualisation.docker.enable = true;
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
