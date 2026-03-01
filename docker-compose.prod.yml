@@ -16,6 +16,7 @@ services:
       test: ['CMD', 'pg_isready', "-q", "-d", "${POSTGRES_DB:-mw_db}", "-U", "${POSTGRES_USER:-postgres}"]
       interval: 10s
       retries: 5
+      start_period: 60s
       timeout: 5s
 
   backend:
