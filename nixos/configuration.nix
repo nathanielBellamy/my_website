@@ -76,10 +76,19 @@
      "mydomain.com".email = "example@email.com";
   };
 
+  # Enable Docker
+  virtualisation.docker.enable = true;
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.nate = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" "docker" ]; # Enable ‘sudo’ and 'docker' for the user.
+    openssh.authorizedKeys.keys = ["ssh-ed25519  <Rest of SSH KEY>"];
+   };
+
+  users.users.deploy = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "networkmanager" "docker" ]; # Enable ‘sudo’ and 'docker' for the user.
     openssh.authorizedKeys.keys = ["ssh-ed25519  <Rest of SSH KEY>"];
    };
 
@@ -87,6 +96,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     certbot
+    docker-compose
     git
     go
     inetutils
