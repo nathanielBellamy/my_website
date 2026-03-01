@@ -27,6 +27,8 @@ services:
     depends_on:
       postgres-db:
         condition: service_healthy
+    env_file:
+      - .env
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres-db:5432/${POSTGRES_DB:-mw_db}?sslmode=disable
       MODE: ${MODE:-production}
