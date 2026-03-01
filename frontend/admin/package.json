@@ -14,14 +14,14 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^21.1.0",
-    "@angular/common": "^21.1.0",
-    "@angular/compiler": "^21.1.0",
-    "@angular/core": "^21.1.0",
-    "@angular/forms": "^21.1.0",
-    "@angular/platform-browser": "^21.1.0",
-    "@angular/platform-browser-dynamic": "^21.1.0",
-    "@angular/router": "^21.1.0",
+    "@angular/animations": "^21.2.0",
+    "@angular/common": "^21.2.0",
+    "@angular/compiler": "^21.2.0",
+    "@angular/core": "^21.2.0",
+    "@angular/forms": "^21.2.0",
+    "@angular/platform-browser": "^21.2.0",
+    "@angular/platform-browser-dynamic": "^21.2.0",
+    "@angular/router": "^21.2.0",
     "@ngrx/signals": "^21.0.1",
     "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/typography": "^0.5.19",
@@ -36,9 +36,9 @@
   },
   "devDependencies": {
     "@analogjs/vite-plugin-angular": "^2.2.2",
-    "@angular-devkit/build-angular": "^21.1.0",
-    "@angular/cli": "^21.1.0",
-    "@angular/compiler-cli": "^21.1.0",
+    "@angular-devkit/build-angular": "^21.2.0",
+    "@angular/cli": "^21.2.0",
+    "@angular/compiler-cli": "^21.2.0",
     "@testing-library/angular": "^17.4.0",
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/user-event": "^14.6.1",
@@ -52,6 +52,9 @@
   },
   "overrides": {
     "ajv": "^8.18.0",
-    "minimatch": "^10.2.1"
+    "minimatch": "^10.2.1",
+    "serialize-javascript": "^7.0.3",
+    "test-exclude": "^7.0.1",
+    "glob": "^13.0.6"
   }
 }

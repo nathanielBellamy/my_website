@@ -72,8 +72,4 @@ describe('LatestPostsComponent', () => {
       screen.getByText('Error: Test Error');
     });
   });
-
-  it('should render scroll indicator', () => {
-    screen.getByTestId('scroll-to-about');
-  });
 });

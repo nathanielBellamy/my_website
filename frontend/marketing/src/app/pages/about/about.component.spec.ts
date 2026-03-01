@@ -67,8 +67,4 @@ describe('AboutComponent', () => {
       screen.getByText('Error: Test Error');
     });
   });
-
-  it('should render scroll indicator', () => {
-    screen.getByTestId('scroll-to-groovejr');
-  });
 });

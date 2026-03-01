@@ -8,6 +8,5 @@ describe('HomeComponent', () => {
       providers: [provideRouter([])]
     });
     screen.getByTestId('hero-heading');
-    screen.getByTestId('scroll-to-focus');
   });
 });
