@@ -7,9 +7,20 @@ on:
       - main
 
 jobs:
+  test:
+    name: Tests & E2E
+    uses: ./.github/workflows/ci.yml
+
+  security:
+    name: Security Scans
+    uses: ./.github/workflows/security.yml
+
   deploy:
     name: Deploy to ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+    needs: [test, security]
     runs-on: ubuntu-latest
+    environment: 
+      name: ${{ github.ref_name == 'main' && 'production' || 'development' }}
     steps:
       - uses: actions/checkout@v4
 
