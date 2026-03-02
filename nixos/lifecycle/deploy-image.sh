@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
 # Usage: ./deploy-image.sh <USER> <HOST> <SSH_KEY_PATH> <TARGET_ENV>
@@ -44,7 +44,7 @@ $SCP_CMD database/init.sql $SSH_USER@$SSH_HOST:~/database/init.sql
 
 echo "   Transferring lifecycle scripts..."
 $SSH_CMD $SSH_USER@$SSH_HOST "mkdir -p ~/lifecycle"
-$SCP_CMD nixos/lifecycle/*.sh $SSH_USER@$SSH_HOST:~/lifecycle/
+$SCP_CMD lifecycle/*.sh $SSH_USER@$SSH_HOST:~/lifecycle/
 $SSH_CMD $SSH_USER@$SSH_HOST "chmod +x ~/lifecycle/*.sh"
 
 echo "   Securing .env file..."
