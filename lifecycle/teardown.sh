@@ -2,6 +2,8 @@
 
 set -e
 
+cd "$(dirname "$0")/.."
+
 # Function to display usage information
 usage() {
     echo "Usage: $0 [ -f | -d | -b | -l ]"
@@ -48,9 +50,9 @@ fi
 case "$1" in
     -f|--full)
         copy_logs
-        echo "Tearing down entire docker-compose stack..."
-        docker-compose down
-        echo "Entire docker-compose stack torn down."
+        echo "Tearing down entire docker compose stack..."
+        docker compose down
+        echo "Entire docker compose stack torn down."
         ;;
     -d|--db)
         teardown_db

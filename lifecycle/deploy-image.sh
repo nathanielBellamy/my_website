@@ -41,6 +41,12 @@ fi
 echo "   Ensuring database directory exists..."
 $SSH_CMD $SSH_USER@$SSH_HOST "mkdir -p ~/database"
 $SCP_CMD database/init.sql $SSH_USER@$SSH_HOST:~/database/init.sql
+
+echo "   Transferring lifecycle scripts..."
+$SSH_CMD $SSH_USER@$SSH_HOST "mkdir -p ~/lifecycle"
+$SCP_CMD lifecycle/*.sh $SSH_USER@$SSH_HOST:~/lifecycle/
+$SSH_CMD $SSH_USER@$SSH_HOST "chmod +x ~/lifecycle/*.sh"
+
 echo "   Securing .env file..."
 $SSH_CMD $SSH_USER@$SSH_HOST "chmod 600 ~/.env || true"
 echo "✅ Files transferred."
