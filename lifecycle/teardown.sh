@@ -51,7 +51,7 @@ case "$1" in
     -f|--full)
         copy_logs
         echo "Tearing down entire docker compose stack..."
-        docker compose down
+        docker-compose down
         echo "Entire docker compose stack torn down."
         ;;
     -d|--db)
