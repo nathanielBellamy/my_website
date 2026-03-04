@@ -19,11 +19,40 @@ export class InfiniteScrollComponent implements OnInit, AfterViewInit, OnDestroy
   @ViewChild('sentinel') sentinel!: ElementRef<HTMLElement>;
   private observer?: IntersectionObserver;
   private isIntersecting = false;
+  
+  private retryCount = 0;
+  private maxRetries = 5;
+  private retryTimeoutId?: any;
 
   constructor() {
     effect(() => {
-      if (!this.loading() && !this.allLoaded() && this.isIntersecting) {
-        this.scrolled.emit();
+      const isLoading = this.loading();
+      const isAllLoaded = this.allLoaded();
+      const hasError = !!this.error();
+
+      if (isLoading || isAllLoaded) {
+        if (this.retryTimeoutId) {
+          clearTimeout(this.retryTimeoutId);
+          this.retryTimeoutId = undefined;
+        }
+        return;
+      }
+
+      if (this.isIntersecting) {
+        if (hasError) {
+          if (this.retryCount < this.maxRetries) {
+            const backoffTime = Math.pow(2, this.retryCount) * 1000;
+            this.retryCount++;
+            
+            this.retryTimeoutId = setTimeout(() => {
+              this.scrolled.emit();
+            }, backoffTime);
+          }
+        } else {
+          // Success or initial state, reset retries
+          this.retryCount = 0;
+          this.scrolled.emit();
+        }
       }
     });
   }
@@ -31,7 +60,16 @@ export class InfiniteScrollComponent implements OnInit, AfterViewInit, OnDestroy
   ngOnInit() {
     this.observer = new IntersectionObserver((entries) => {
       this.isIntersecting = entries[0].isIntersecting;
-      if (this.isIntersecting && !this.loading() && !this.allLoaded()) {
+      
+      if (!this.isIntersecting) {
+        if (this.retryTimeoutId) {
+          clearTimeout(this.retryTimeoutId);
+          this.retryTimeoutId = undefined;
+        }
+      } else if (!this.loading() && !this.allLoaded()) {
+        // We just scrolled into view and we aren't loading, emit immediately.
+        // We reset the retry count assuming a new manual scroll attempt represents user intent
+        this.retryCount = 0;
         this.scrolled.emit();
       }
     });
@@ -44,6 +82,9 @@ export class InfiniteScrollComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngOnDestroy() {
+    if (this.retryTimeoutId) {
+      clearTimeout(this.retryTimeoutId);
+    }
     this.observer?.disconnect();
   }
 }

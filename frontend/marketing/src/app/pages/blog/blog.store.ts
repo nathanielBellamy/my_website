@@ -40,6 +40,7 @@ export const BlogStore = signalStore(
           posts: [...store.posts(), ...newPosts],
           page: store.page() + 1,
           loading: false,
+          error: null,
         });
       } catch (error) {
         patchState(store, { error: 'Failed to fetch blog posts', loading: false });
@@ -92,6 +93,7 @@ export const BlogStore = signalStore(
               posts: newPosts,
               page: 2,
               loading: false,
+              error: null,
             });
         } catch (error) {
             patchState(store, { error: 'Failed to fetch blog posts', loading: false });

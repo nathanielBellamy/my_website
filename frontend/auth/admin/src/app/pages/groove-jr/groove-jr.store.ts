@@ -36,6 +36,7 @@ export const GrooveJrStore = signalStore(
           content: [...store.content(), ...newContent],
           page: store.page() + 1,
           loading: false,
+          error: null,
         });
       } catch (error) {
         patchState(store, { error: 'Failed to fetch groove-jr content', loading: false });

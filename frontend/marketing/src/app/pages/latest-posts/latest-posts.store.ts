@@ -40,6 +40,7 @@ export const LatestPostsStore = signalStore(
           content: [...store.content(), ...newContent],
           page: store.page() + 1,
           loading: false,
+          error: null,
         });
       } catch (error) {
         patchState(store, { error: `Failed to fetch latest posts content. \nMessage: ${error}`, loading: false });
