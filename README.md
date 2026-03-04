@@ -19,16 +19,13 @@
 - `./lifecycel/teardown.sh`
   - copies logs out of `my_website_backend` onto host machine
   - tears down docker containers
-- Reads `MODE=` from `config.env`
-- NOTE: these scripts alter asset import paths in `index.html` files
+- NOTE: these scripts alter asset import paths in `index.html` files for `/old-site`
 
 ### build only Go server (fast)
 `./lifecycle/build.sh --server-only`
 
 ### serve
-- `MODE=<mode> PW=<my_password> ./lifecycle/serve.sh`
-- or more directly
-  - `cd backend/go && MODE=<mode> PW=<my_password> ./main`
+- `./lifecycle/serve.sh`
 - serves on `localhost:8080`
 
 ### .env/.env.${MODE}
@@ -57,12 +54,8 @@ POSTGRES_DB=my_db
 
 #### mode
 - `localhost`
-- `prod`
+- `production`
 - `remotdev`
-
-#### my_password
-- password for dev site
-- `localhost` and `remotedev` modes only
 
 ### cross-compiling
 - set `MODE` in `config.env`
@@ -70,6 +63,12 @@ POSTGRES_DB=my_db
   - build compiles Go for localhost architecture
 - `MODE=remotedev, prod`
   - build compiles Go for Linux
+
+### local development
+- `./lifecycle/serve.sh`
+- cd into project, either `frontend/marketing` or `frontend/admin`
+- `ng serve` on :4200
+- hmr frontend talks to backend service on :8080
 
 ### old-site local SPA development
 - `cd old-site`
