@@ -4,11 +4,12 @@ import { BlogPost, Tag } from '../../models/data-models';
 import { MarkdownComponent } from 'ngx-markdown';
 import { BlogService } from '../../services/blog.service';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { ImageGalleryComponent } from '../image-gallery/image-gallery.component';
 
 @Component({
   selector: 'app-blog-form',
   standalone: true,
-  imports: [ReactiveFormsModule, MarkdownComponent], // Add MarkdownComponent
+  imports: [ReactiveFormsModule, MarkdownComponent, ImageGalleryComponent], // Add ImageGalleryComponent
   templateUrl: './blog-form.component.html',
   styleUrl: './blog-form.component.css',
 })
@@ -22,6 +23,7 @@ export class BlogFormComponent implements OnInit, OnDestroy {
   blogForm!: FormGroup;
   availableTags = signal<Tag[]>([]);
   tagSearch = signal<string>('');
+  showGallery = signal<boolean>(false);
 
   private readonly searchSubject = new Subject<string>();
   private readonly destroy$ = new Subject<void>();
@@ -80,6 +82,10 @@ export class BlogFormComponent implements OnInit, OnDestroy {
           tagArray.push(tagName);
           this.blogForm.patchValue({ tags: tagArray.join(', ') });
       }
+  }
+
+  toggleGallery() {
+    this.showGallery.update(show => !show);
   }
 
   saveForm() {

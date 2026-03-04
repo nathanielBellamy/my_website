@@ -28,6 +28,8 @@ services:
     depends_on:
       postgres-db:
         condition: service_healthy
+    volumes:
+      - ./uploads:/app/uploads
     env_file:
       - .env/.env.localhost
     environment:

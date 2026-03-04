@@ -43,9 +43,24 @@
         </div>
 
         <div class="sm:col-span-6">
-          <label for="content" class="block text-sm font-medium text-gray-700">
-            Content
-          </label>
+          <div class="flex justify-between items-center mb-2">
+            <label for="content" class="block text-sm font-medium text-gray-700">
+              Content
+            </label>
+            <button 
+              type="button"
+              (click)="toggleGallery()"
+              class="text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded transition-colors">
+              {{ showGallery() ? 'Hide Gallery' : 'Show Gallery' }}
+            </button>
+          </div>
+
+          @if (showGallery()) {
+            <div class="mb-4 border rounded-md overflow-hidden">
+              <app-image-gallery></app-image-gallery>
+            </div>
+          }
+
           <div class="mt-1 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <textarea

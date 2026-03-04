@@ -158,6 +158,9 @@ func SetupBaseRoutes(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJa
 	// Robots.txt
 	marketingMux.HandleFunc("GET /robots.txt", marketingController.RobotsTxtHandler)
 
+	// Images
+	marketingMux.HandleFunc("GET /api/images/{filename}", marketingController.ImageServingHandler)
+
 	// admin routes
 	// Blog
 	adminMux.Handle("GET /api/admin/blog", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllBlogPostsHandler)))
@@ -192,6 +195,11 @@ func SetupBaseRoutes(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJa
 	// CSV
 	adminMux.Handle("GET /api/admin/csv/{entity}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.ExportCSVHandler)))
 	adminMux.Handle("POST /api/admin/csv/{entity}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.ImportCSVHandler)))
+
+	// Images
+	adminMux.Handle("POST /api/admin/upload", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UploadImageHandler)))
+	adminMux.Handle("GET /api/admin/images", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.ListImagesHandler)))
+	adminMux.Handle("DELETE /api/admin/images/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteImageHandler)))
 }
 
 func SetupRemotedevRoutes(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, adminController *admin.AdminController, marketingFileServer http.Handler) {

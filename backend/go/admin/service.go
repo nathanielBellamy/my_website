@@ -2,6 +2,7 @@ package admin
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/go-pg/pg/v10"
 	"github.com/nathanielBellamy/my_website/backend/go/interfaces"
@@ -39,6 +40,11 @@ type Service interface {
 	CreateAboutContent(content *models.AboutContent) (*models.AboutContent, error)
 	UpdateAboutContent(content *models.AboutContent) (*models.AboutContent, error)
 	DeleteAboutContent(id string) error
+
+	// Images
+	UploadImage(filename, originalName, altText string) (*models.Image, error)
+	ListImages() ([]models.Image, error)
+	DeleteImage(id string) error
 
 	// CSV Export/Import
 	ExportBlogPosts() ([]models.BlogPost, error)
@@ -498,6 +504,42 @@ func (s *service) UpdateAboutContent(content *models.AboutContent) (*models.Abou
 func (s *service) DeleteAboutContent(id string) error {
 	_, err := s.DB.Model(&models.AboutContent{}).Where("id = ?", id).Delete()
 	return err
+}
+
+// Images
+
+func (s *service) UploadImage(filename, originalName, altText string) (*models.Image, error) {
+	image := &models.Image{
+		Filename:     filename,
+		OriginalName: originalName,
+		AltText:      altText,
+	}
+	_, err := s.DB.Model(image).Insert()
+	return image, err
+}
+
+func (s *service) ListImages() ([]models.Image, error) {
+	var images []models.Image
+	err := s.DB.Model(&images).Order("created_at DESC").Select()
+	return images, err
+}
+
+func (s *service) DeleteImage(id string) error {
+	var image models.Image
+	err := s.DB.Model(&image).Where("id = ?", id).Select()
+	if err != nil {
+		return err
+	}
+
+	// Delete from DB
+	_, err = s.DB.Model(&image).Where("id = ?", id).Delete()
+	if err != nil {
+		return err
+	}
+
+	// Delete from Disk
+	uploadDir := "uploads/images"
+	return os.Remove(fmt.Sprintf("%s/%s", uploadDir, image.Filename))
 }
 
 // CSV Export/Import Implementation

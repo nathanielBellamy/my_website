@@ -19,6 +19,9 @@ old-site/yarn-error.log*
 old-site/pnpm-debug.log*
 old-site/lerna-debug.log*
 
+# assets
+uploads/
+
 # old-site
 old-site/.env.prod
 old-site/.env.remotedev
@@ -57,3 +60,4 @@ spec/node_modules
 spec/**/*.swp
 spec/cypress/screenshots/*
 
+\n# User Uploads\nuploads/

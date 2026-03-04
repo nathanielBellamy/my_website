@@ -3,6 +3,7 @@ package marketing
 import (
 	"encoding/json"
 	"encoding/xml"
+	"fmt"
 	"github.com/nathanielBellamy/my_website/backend/go/utils"
 	"html/template"
 	"net/http"
@@ -365,6 +366,31 @@ Sitemap: {{.BaseUrl}}/sitemap.xml
 	if err := tmpl.Execute(w, data); err != nil {
 		mc.Log.Error().Err(err).Msg("Error executing robots.txt template")
 	}
+}
+
+// ImageServingHandler serves images from the uploads directory.
+func (mc *MarketingController) ImageServingHandler(w http.ResponseWriter, r *http.Request) {
+	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("ImageServingHandler Hit")
+	filename := r.PathValue("filename")
+
+	// Sanitize filename to prevent directory traversal
+	if strings.Contains(filename, "..") || strings.Contains(filename, "/") || strings.Contains(filename, "\\") {
+		http.Error(w, "Invalid filename", http.StatusBadRequest)
+		return
+	}
+
+	filePath := fmt.Sprintf("uploads/images/%s", filename)
+
+	// Check if file exists
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		http.Error(w, "Image not found", http.StatusNotFound)
+		return
+	}
+
+	// Set caching headers (1 year)
+	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+
+	http.ServeFile(w, r, filePath)
 }
 
 func GetMarketingFileServerNoAuth(log *zerolog.Logger) http.Handler {

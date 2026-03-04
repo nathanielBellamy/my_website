@@ -11,6 +11,7 @@ import { EditGrooveJrContentComponent } from './pages/groovejr/edit-groove-jr-co
 import { AboutContentListComponent } from './pages/about/about-content-list/about-content-list.component';
 import { CreateAboutContentComponent } from './pages/about/create-about-content/create-about-content.component';
 import { EditAboutContentComponent } from './pages/about/edit-about-content/edit-about-content.component';
+import { GalleryComponent } from './pages/gallery/gallery.component';
 
 export const routes: Routes = [
   {
@@ -65,5 +66,9 @@ export const routes: Routes = [
   {
     path: 'blog/:id/edit',
     component: EditBlogPostComponent,
+  },
+  {
+    path: 'gallery',
+    component: GalleryComponent,
   },
 ];

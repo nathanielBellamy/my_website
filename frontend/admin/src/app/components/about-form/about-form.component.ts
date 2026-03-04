@@ -1,12 +1,13 @@
-import { Component, input, output, OnInit, inject } from '@angular/core';
+import { Component, input, output, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { AboutContent } from '../../models/data-models';
 import { MarkdownComponent } from 'ngx-markdown';
+import { ImageGalleryComponent } from '../image-gallery/image-gallery.component';
 
 @Component({
   selector: 'app-about-form',
   standalone: true,
-  imports: [ReactiveFormsModule, MarkdownComponent],
+  imports: [ReactiveFormsModule, MarkdownComponent, ImageGalleryComponent],
   templateUrl: './about-form.component.html',
   styleUrl: './about-form.component.css',
 })
@@ -17,6 +18,7 @@ export class AboutFormComponent implements OnInit {
 
   private readonly fb = inject(FormBuilder);
   form!: FormGroup;
+  showGallery = signal<boolean>(false);
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -27,6 +29,10 @@ export class AboutFormComponent implements OnInit {
       activatedAt: [this.formatDateForInput(this.contentData()?.activatedAt)],
       deactivatedAt: [this.formatDateForInput(this.contentData()?.deactivatedAt)],
     }, { validators: this.dateRangeValidator });
+  }
+
+  toggleGallery() {
+    this.showGallery.update(show => !show);
   }
 
   saveForm() {

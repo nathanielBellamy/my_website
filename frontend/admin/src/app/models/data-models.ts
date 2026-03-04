@@ -53,6 +53,14 @@ export interface AboutContent {
   order: number;
 }
 
+export interface Image {
+  id: string;
+  filename: string;
+  originalName: string;
+  altText: string;
+  createdAt: string;
+}
+
 export interface TrackerData {
   ip: string;
 }

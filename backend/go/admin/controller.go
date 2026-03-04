@@ -473,6 +473,90 @@ func (ac *AdminController) DeleteAboutContentHandler(w http.ResponseWriter, r *h
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// Images
+
+func (ac *AdminController) UploadImageHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UploadImageHandler Hit")
+
+	// Limit upload size to 10MB
+	r.Body = http.MaxBytesReader(w, r.Body, 10<<20)
+	if err := r.ParseMultipartForm(10 << 20); err != nil {
+		http.Error(w, "File too large", http.StatusBadRequest)
+		return
+	}
+
+	file, header, err := r.FormFile("image")
+	if err != nil {
+		http.Error(w, "Error retrieving file", http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+
+	altText := r.FormValue("altText")
+
+	// Create directory if it doesn't exist
+	uploadDir := "uploads/images"
+	if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
+		ac.Log.Error().Err(err).Msg("Error creating upload directory")
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Generate unique filename
+	ext := strings.ToLower(header.Filename[strings.LastIndex(header.Filename, "."):])
+	filename := fmt.Sprintf("%d%s", time.Now().UnixNano(), ext)
+	filePath := fmt.Sprintf("%s/%s", uploadDir, filename)
+
+	// Save to disk
+	dst, err := os.Create(filePath)
+	if err != nil {
+		ac.Log.Error().Err(err).Msg("Error saving file to disk")
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	defer dst.Close()
+
+	if _, err := io.Copy(dst, file); err != nil {
+		ac.Log.Error().Err(err).Msg("Error copying file content")
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Save metadata to DB
+	image, err := ac.Service.UploadImage(filename, header.Filename, altText)
+	if err != nil {
+		ac.Log.Error().Err(err).Msg("Error saving image metadata")
+		// Clean up file if DB fails
+		os.Remove(filePath)
+		utils.HandleDBError(w, err, "Error saving image metadata")
+		return
+	}
+
+	ac.sendJSON(w, image)
+}
+
+func (ac *AdminController) ListImagesHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("ListImagesHandler Hit")
+	images, err := ac.Service.ListImages()
+	if err != nil {
+		utils.HandleDBError(w, err, "Error listing images")
+		return
+	}
+	ac.sendJSON(w, images)
+}
+
+func (ac *AdminController) DeleteImageHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("DeleteImageHandler Hit")
+	id := r.PathValue("id")
+
+	if err := ac.Service.DeleteImage(id); err != nil {
+		utils.HandleDBError(w, err, "Error deleting image")
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
 // AdminFileServer serves static files for the admin site, using the SpaHandler to handle client-side routing.
 func (ac *AdminController) AdminFileServer() http.Handler {
 	rootPath := "build/admin/browser"

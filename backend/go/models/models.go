@@ -83,6 +83,16 @@ type AboutContent struct {
 	Ordering      int        `json:"order" pg:"ordering"`
 }
 
+// Image represents an uploaded image metadata.
+type Image struct {
+	tableName    struct{}  `pg:"images"`
+	ID           string    `json:"id" pg:",pk,type:uuid"`
+	Filename     string    `json:"filename" pg:",unique"`
+	OriginalName string    `json:"originalName"`
+	AltText      string    `json:"altText"`
+	CreatedAt    time.Time `json:"createdAt"`
+}
+
 // TrackerData represents tracking information.
 type TrackerData struct {
 	IP string `json:"ip"`

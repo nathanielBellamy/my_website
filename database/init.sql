@@ -79,6 +79,15 @@ CREATE TABLE about_contents (
     content TEXT NOT NULL
 );
 
+-- Create Images Table
+CREATE TABLE images (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    filename VARCHAR(255) NOT NULL UNIQUE,
+    original_name VARCHAR(255) NOT NULL,
+    alt_text VARCHAR(255),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 -- Seed Data
 DO $$
 BEGIN
