@@ -1,5 +1,23 @@
 # Nate's Website
 
+### Project Structure
+
+```text
+my_website/
+├── backend/            # Go backend application (API, models, DB access)
+├── frontend/           # Frontend SPA applications
+│   ├── admin/          # New Angular admin dashboard
+│   ├── auth/           # Authentication app guarding the admin area
+│   ├── marketing/      # New Angular public-facing application
+│   └── old-site/       # Legacy Svelte application
+├── database/           # PostgreSQL initialization and migration scripts
+├── e2e/                # Cypress end-to-end tests
+├── lifecycle/          # Build, deploy, and orchestration shell scripts
+├── nixos/              # NixOS VM configuration files
+├── docker/             # Docker configuration (Dockerfile)
+└── .github/            # CI/CD GitHub Action workflows
+```
+
 ### dev environment
 - suggest [Nix](https://nixos.org/guides/how-nix-works)
 - [rustup](https://rustup.rs/)
