@@ -493,7 +493,7 @@ func (ac *AdminController) AdminFileServer() http.Handler {
 		fs.ServeHTTP(w, r)
 	})
 
-	return http.StripPrefix("/admin/", auth.LogClientIp("/admin/", ac.Log, handler))
+	return auth.LogClientIp("/", ac.Log, handler)
 }
 
 // CSV Handlers

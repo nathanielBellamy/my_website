@@ -51,7 +51,7 @@
           },
           "configurations": {
             "production": {
-              "baseHref": "/admin/",
+              "baseHref": "/",
               "budgets": [
                 {
                   "type": "initial",
@@ -67,13 +67,13 @@
               "outputHashing": "all"
             },
             "development": {
-              "baseHref": "/admin/",
+              "baseHref": "/",
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
             },
             "localhost": {
-              "baseHref": "/admin/",
+              "baseHref": "/",
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true

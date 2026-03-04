@@ -9,7 +9,7 @@ export default defineConfig({
         preprocess: sveltePreprocess()
     })
   ],
-  base: '/old-site/',
+  base: '/',
   build: {
     outDir: '../../build/old-site/'
   }

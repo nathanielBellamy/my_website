@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "jest",
     "build-localhost": "npm run build-admin-localhost",
-    "build-admin-localhost": "ng build --configuration localhost --base-href /admin/",
+    "build-admin-localhost": "ng build --configuration localhost",
     "build-admin-remotedev": "ng build --configuration remotedev",
     "build-admin-prod": "ng build --configuration production"
   },

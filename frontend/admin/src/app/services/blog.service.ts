@@ -8,8 +8,8 @@ import { BlogPost, FilterOptions, PaginatedResponse, Tag } from '../models/data-
 })
 export class BlogService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/api/admin/blog'; // Adjust as per your backend URL
-  private readonly tagsUrl = 'http://localhost:8080/api/admin/tags';
+  private readonly apiUrl = '/api/admin/blog'; // Adjust as per your backend URL
+  private readonly tagsUrl = '/api/admin/tags';
 
   async getAllBlogPosts(options: Partial<FilterOptions> = {}): Promise<PaginatedResponse<BlogPost>> {
     const params: any = {

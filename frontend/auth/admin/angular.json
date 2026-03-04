@@ -35,7 +35,7 @@
           },
           "configurations": {
             "production": {
-              "baseHref": "/auth/admin/",
+              "baseHref": "/auth/",
               "budgets": [
                 {
                   "type": "initial",
@@ -57,7 +57,7 @@
               ]
             },
             "localhost": {
-              "baseHref": "/auth/admin/",
+              "baseHref": "/auth/",
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
@@ -69,7 +69,7 @@
               ]
             },
             "remotedev": {
-              "baseHref": "/auth/admin/",
+              "baseHref": "/auth/",
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
@@ -81,7 +81,7 @@
               ]
             },
             "development": {
-              "baseHref": "/auth/admin/",
+              "baseHref": "/auth/",
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true

@@ -76,7 +76,7 @@ func sendEmail(to, subject, body string) error {
 	return nil
 }
 
-func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger, oldSiteFileServer http.Handler, adminFileServer http.Handler, marketingFileServer http.Handler) {
+func SetupAdminAuthV2(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Logger, oldSiteFileServer http.Handler, adminFileServer http.Handler, marketingFileServer http.Handler) {
 	// Debug: Log build directory structure
 	log.Info().Msg("Checking build directory structure...")
 	buildDirs := []string{
@@ -102,22 +102,22 @@ func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, 
 	authRoot := "build/auth/admin/browser"
 	fs_auth := SpaHandler(authRoot, "index.html")
 
-	mux.Handle("/auth/admin/", LogClientIp("/auth/admin/", log, http.StripPrefix("/auth/admin/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	adminMux.Handle("/auth/", LogClientIp("/auth/", log, http.StripPrefix("/auth/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Debug().Str("path", r.URL.Path).Msg("Auth App Request")
 		fs_auth.ServeHTTP(w, r)
 	}))))
 
 	// Admin app protected by new auth
-	mux.Handle("/admin/", RequireAdminAuthV2(cookieJar, log, WithSecurityHeaders(adminFileServer)))
+	adminMux.Handle("/", RequireAdminAuthV2(cookieJar, log, WithSecurityHeaders(adminFileServer)))
 
 	// Old site
-	mux.Handle("/old-site/", WithSecurityHeaders(oldSiteFileServer))
+	oldSiteMux.Handle("/", WithSecurityHeaders(oldSiteFileServer))
 
 	// Marketing site
-	mux.Handle("/", WithSecurityHeaders(marketingFileServer))
+	marketingMux.Handle("/", WithSecurityHeaders(marketingFileServer))
 
 	// Challenge Endpoint
-	mux.HandleFunc("GET /api/auth/admin/challenge", func(w http.ResponseWriter, r *http.Request) {
+	adminMux.HandleFunc("GET /api/auth/admin/challenge", func(w http.ResponseWriter, r *http.Request) {
 		b := make([]byte, 32)
 		if _, err := crand.Read(b); err != nil {
 			http.Error(w, "Internal Error", http.StatusInternalServerError)
@@ -151,7 +151,7 @@ func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, 
 	})
 
 	// Password Validation Endpoint
-	mux.HandleFunc("POST /api/auth/admin/password", func(w http.ResponseWriter, r *http.Request) {
+	adminMux.HandleFunc("POST /api/auth/admin/password", func(w http.ResponseWriter, r *http.Request) {
 		var req struct {
 			Hash string `json:"hash"`
 		}
@@ -216,7 +216,7 @@ func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, 
 	})
 
 	// OTP Routes
-	mux.HandleFunc("POST /api/auth/admin/otp/request", func(w http.ResponseWriter, r *http.Request) {
+	adminMux.HandleFunc("POST /api/auth/admin/otp/request", func(w http.ResponseWriter, r *http.Request) {
 		// Verify Pre-Auth
 		cookie, err := r.Cookie("nbs-pre-auth")
 		if err != nil {
@@ -271,7 +271,7 @@ func SetupAdminAuthV2(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, 
 		w.WriteHeader(http.StatusOK)
 	})
 
-	mux.HandleFunc("POST /api/auth/admin/otp/verify", func(w http.ResponseWriter, r *http.Request) {
+	adminMux.HandleFunc("POST /api/auth/admin/otp/verify", func(w http.ResponseWriter, r *http.Request) {
 		log.Debug().Msg("OTP Verify Endpoint Hit")
 		var req OtpVerify
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -361,7 +361,7 @@ func RequireAdminAuthV2(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zero
 		}
 
 		log.Warn().Str("ip", GetClientIpAddr(r)).Msg("Admin auth required")
-		http.Redirect(w, r, "/auth/admin/?return_to="+r.URL.Path, http.StatusSeeOther)
+		http.Redirect(w, r, "/auth/?return_to="+r.URL.Path, http.StatusSeeOther)
 	})
 }
 
@@ -392,7 +392,7 @@ var RedirectToAdminAuthV2 = func(w http.ResponseWriter, r *http.Request, log *ze
 	log.Warn().
 		Str("ip", GetClientIpAddr(r)).
 		Msg("REDIRECT To Admin Auth")
-	http.Redirect(w, r, "/auth/admin/?return_to="+r.URL.Path, http.StatusSeeOther)
+	http.Redirect(w, r, "/auth/?return_to="+r.URL.Path, http.StatusSeeOther)
 }
 
 // RedirectToHome redirects to the home page.

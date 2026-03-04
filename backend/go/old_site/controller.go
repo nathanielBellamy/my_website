@@ -135,6 +135,27 @@ func (osc *OldSiteController) PublicSquareWasmWsHandler(w http.ResponseWriter, r
 
 // OldSiteFileServer serves static files for the old site.
 func (osc *OldSiteController) OldSiteFileServer() http.Handler {
-	fs_old_site := http.FileServer(http.Dir("build/old-site"))
-	return auth.LogClientIp("/old-site/", osc.Log, http.StripPrefix("/old-site/", fs_old_site))
+	rootPath := "build/old-site"
+	root := http.Dir(rootPath)
+	fs := http.FileServer(root)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Try to open file
+		f, err := root.Open(r.URL.Path)
+		if os.IsNotExist(err) {
+			// Not found, serve index.html for SPA routing
+			http.ServeFile(w, r, rootPath+"/index.html")
+			return
+		}
+		if err != nil {
+			http.Error(w, "Internal Error", http.StatusInternalServerError)
+			return
+		}
+		defer f.Close()
+
+		// If it exists, let FileServer handle it
+		fs.ServeHTTP(w, r)
+	})
+
+	return auth.LogClientIp("/", osc.Log, handler)
 }

@@ -58,6 +58,26 @@
       };
     };
 
+    virtualHosts."admin.mydomain.dev" = {
+      forceSSL = true;
+      enableACME = true;
+      serverName = "admin.mydomain.dev";
+      locations."/"= {
+        proxyPass = "http://localhost:8080";
+        proxyWebsockets = true;
+      };
+    };
+
+    virtualHosts."old-site.mydomain.dev" = {
+      forceSSL = true;
+      enableACME = true;
+      serverName = "old-site.mydomain.dev";
+      locations."/"= {
+        proxyPass = "http://localhost:8080";
+        proxyWebsockets = true;
+      };
+    };
+
     # HTTPS redirect secondary domain
     virtualHosts."mydomain.com" = {
       forceSSL = true;
@@ -74,6 +94,8 @@
   security.acme.certs = {
      "mydomain.dev".email = "example@email.com";
      "mydomain.com".email = "example@email.com";
+     "admin.mydomain.dev".email = "example@email.com";
+     "old-site.mydomain.dev".email = "example@email.com";
   };
 
   # Enable Docker. NOTE: Ensure containers bind to 127.0.0.1 to avoid bypassing the firewall.

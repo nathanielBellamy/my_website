@@ -63,7 +63,7 @@ export class LoginComponent {
     this.error.set(null);
     try {
       await this.authService.verifyOtp(this.otp());
-      const returnTo = new URLSearchParams(window.location.search).get('return_to') || '/admin/';
+      const returnTo = new URLSearchParams(window.location.search).get('return_to') || '/';
       window.location.href = returnTo;
     } catch (err: any) {
       this.error.set(err.message || 'Invalid OTP');
