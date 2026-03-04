@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/go-pg/pg/v10"
 	"github.com/nathanielBellamy/my_website/backend/go/config"
@@ -114,6 +115,15 @@ func NewDBClient(cfg *config.Config) (*pg.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// Add robust connection pooling to prevent silent drop hanging
+	opt.PoolSize = 20
+	opt.MinIdleConns = 5
+	opt.IdleTimeout = 30 * time.Minute
+	opt.IdleCheckFrequency = 1 * time.Minute
+	opt.ReadTimeout = 10 * time.Second
+	opt.WriteTimeout = 10 * time.Second
+	opt.DialTimeout = 5 * time.Second
 
 	db := pg.Connect(opt)
 	return db, nil

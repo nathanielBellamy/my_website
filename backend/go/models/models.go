@@ -23,9 +23,9 @@ type Tag struct {
 }
 
 type TagWithUsage struct {
-	tableName  struct{} `pg:"tags,alias:tag"`
+	tableName struct{} `pg:"tags,alias:tag"`
 	Tag
-	UsageCount int      `json:"usageCount"`
+	UsageCount int `json:"usageCount"`
 }
 
 // BlogPost represents a blog post entry.

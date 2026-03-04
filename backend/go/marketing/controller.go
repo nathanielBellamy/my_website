@@ -3,6 +3,7 @@ package marketing
 import (
 	"encoding/json"
 	"encoding/xml"
+	"github.com/nathanielBellamy/my_website/backend/go/utils"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -71,7 +72,7 @@ func (mc *MarketingController) GetAllBlogPostsHandler(w http.ResponseWriter, r *
 	posts, err := mc.Service.GetAllBlogPosts(page, limit, tags)
 	if err != nil {
 		mc.Log.Error().Err(err).Msg("Error fetching blog posts")
-		http.Error(w, "Error fetching blog posts", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching blog posts")
 		return
 	}
 	mc.sendJSON(w, posts)
@@ -85,7 +86,7 @@ func (mc *MarketingController) GetBlogPostByIDHandler(w http.ResponseWriter, r *
 	post, err := mc.Service.GetBlogPostByID(id)
 	if err != nil {
 		mc.Log.Error().Err(err).Msg("Error fetching blog post")
-		http.Error(w, "Error fetching blog post", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching blog post")
 		return
 	}
 
@@ -107,7 +108,7 @@ func (mc *MarketingController) GetBlogPostsByTagHandler(w http.ResponseWriter, r
 	posts, err := mc.Service.GetBlogPostsByTag(tag, page, limit)
 	if err != nil {
 		mc.Log.Error().Err(err).Msg("Error fetching blog posts by tag")
-		http.Error(w, "Error fetching blog posts by tag", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching blog posts by tag")
 		return
 	}
 
@@ -127,7 +128,7 @@ func (mc *MarketingController) GetTagsHandler(w http.ResponseWriter, r *http.Req
 	tags, err := mc.Service.GetTags(search, limit)
 	if err != nil {
 		mc.Log.Error().Err(err).Msg("Error fetching tags")
-		http.Error(w, "Error fetching tags", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching tags")
 		return
 	}
 
@@ -145,7 +146,7 @@ func (mc *MarketingController) GetAllHomeContentHandler(w http.ResponseWriter, r
 	content, err := mc.Service.GetAllHomeContent(page, limit)
 	if err != nil {
 		mc.Log.Error().Err(err).Msg("Error fetching home content")
-		http.Error(w, "Error fetching home content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching home content")
 		return
 	}
 
@@ -161,7 +162,7 @@ func (mc *MarketingController) GetHomeContentByIDHandler(w http.ResponseWriter, 
 	content, err := mc.Service.GetHomeContentByID(id)
 	if err != nil {
 		mc.Log.Error().Err(err).Msg("Error fetching home content")
-		http.Error(w, "Error fetching home content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching home content")
 		return
 	}
 
@@ -184,7 +185,7 @@ func (mc *MarketingController) GetAllGrooveJrContentHandler(w http.ResponseWrite
 	content, err := mc.Service.GetAllGrooveJrContent(page, limit)
 	if err != nil {
 		mc.Log.Error().Err(err).Msg("Error fetching groove-jr content")
-		http.Error(w, "Error fetching groove-jr content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching groove-jr content")
 		return
 	}
 
@@ -200,7 +201,7 @@ func (mc *MarketingController) GetGrooveJrContentByIDHandler(w http.ResponseWrit
 	content, err := mc.Service.GetGrooveJrContentByID(id)
 	if err != nil {
 		mc.Log.Error().Err(err).Msg("Error fetching groove-jr content")
-		http.Error(w, "Error fetching groove-jr content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching groove-jr content")
 		return
 	}
 
@@ -223,7 +224,7 @@ func (mc *MarketingController) GetAllAboutContentHandler(w http.ResponseWriter, 
 	content, err := mc.Service.GetAllAboutContent(page, limit)
 	if err != nil {
 		mc.Log.Error().Err(err).Msg("Error fetching about content")
-		http.Error(w, "Error fetching about content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching about content")
 		return
 	}
 
@@ -239,7 +240,7 @@ func (mc *MarketingController) GetAboutContentByIDHandler(w http.ResponseWriter,
 	content, err := mc.Service.GetAboutContentByID(id)
 	if err != nil {
 		mc.Log.Error().Err(err).Msg("Error fetching about content")
-		http.Error(w, "Error fetching about content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching about content")
 		return
 	}
 
@@ -279,7 +280,7 @@ func (mc *MarketingController) SitemapHandler(w http.ResponseWriter, r *http.Req
 	posts, err := mc.Service.GetSitemapData()
 	if err != nil {
 		mc.Log.Error().Err(err).Msg("Error fetching sitemap data")
-		http.Error(w, "Error fetching sitemap data", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching sitemap data")
 		return
 	}
 

@@ -168,7 +168,7 @@ func (s *service) GetTags(search string, limit int) ([]models.TagWithUsage, erro
 	err := query.Order("usage_count DESC").
 		Limit(limit).
 		Select()
-	
+
 	return tags, err
 }
 
@@ -204,7 +204,6 @@ func (s *service) CreateBlogPost(post *models.BlogPost) (*models.BlogPost, error
 	}
 	s.Log.Info().Interface("post", post).Msg("Post after insert")
 
-
 	// 3. Handle Tags
 	if len(post.Tags) > 0 {
 		var newTags []*models.Tag
@@ -225,7 +224,6 @@ func (s *service) CreateBlogPost(post *models.BlogPost) (*models.BlogPost, error
 		}
 		post.Tags = newTags
 		s.Log.Info().Interface("post", post).Msg("Post after tag handling")
-
 
 		// 4. Create new tag associations.
 		if len(post.Tags) > 0 {

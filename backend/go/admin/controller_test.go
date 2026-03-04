@@ -3,11 +3,11 @@ package admin
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"errors"
-	"mime/multipart"
 
 	"github.com/nathanielBellamy/my_website/backend/go/models"
 	"github.com/rs/zerolog"
@@ -23,28 +23,28 @@ func (m *MockLogger) Write(p []byte) (n int, err error) {
 }
 
 type MockAdminService struct {
-	GetAllBlogPostsFunc      func(filter models.FilterOptions) ([]models.BlogPost, int, error)
-	GetBlogPostByIDFunc      func(id string) (*models.BlogPost, error)
-	GetBlogPostsByTagFunc    func(tag string, page, limit int) ([]models.BlogPost, error)
-	CreateBlogPostFunc       func(post *models.BlogPost) (*models.BlogPost, error)
-	UpdateBlogPostFunc       func(post *models.BlogPost) (*models.BlogPost, error)
-	DeleteBlogPostFunc       func(id string) error
-	GetTagsFunc              func(search string, limit int) ([]models.TagWithUsage, error)
-	GetAllHomeContentFunc    func(filter models.FilterOptions) ([]models.HomeContent, int, error)
-	GetHomeContentByIDFunc   func(id string) (*models.HomeContent, error)
-	CreateHomeContentFunc    func(content *models.HomeContent) (*models.HomeContent, error)
-	UpdateHomeContentFunc    func(content *models.HomeContent) (*models.HomeContent, error)
-	DeleteHomeContentFunc    func(id string) error
-	GetAllGrooveJrContentFunc func(filter models.FilterOptions) ([]models.GrooveJrContent, int, error)
+	GetAllBlogPostsFunc        func(filter models.FilterOptions) ([]models.BlogPost, int, error)
+	GetBlogPostByIDFunc        func(id string) (*models.BlogPost, error)
+	GetBlogPostsByTagFunc      func(tag string, page, limit int) ([]models.BlogPost, error)
+	CreateBlogPostFunc         func(post *models.BlogPost) (*models.BlogPost, error)
+	UpdateBlogPostFunc         func(post *models.BlogPost) (*models.BlogPost, error)
+	DeleteBlogPostFunc         func(id string) error
+	GetTagsFunc                func(search string, limit int) ([]models.TagWithUsage, error)
+	GetAllHomeContentFunc      func(filter models.FilterOptions) ([]models.HomeContent, int, error)
+	GetHomeContentByIDFunc     func(id string) (*models.HomeContent, error)
+	CreateHomeContentFunc      func(content *models.HomeContent) (*models.HomeContent, error)
+	UpdateHomeContentFunc      func(content *models.HomeContent) (*models.HomeContent, error)
+	DeleteHomeContentFunc      func(id string) error
+	GetAllGrooveJrContentFunc  func(filter models.FilterOptions) ([]models.GrooveJrContent, int, error)
 	GetGrooveJrContentByIDFunc func(id string) (*models.GrooveJrContent, error)
-	CreateGrooveJrContentFunc func(content *models.GrooveJrContent) (*models.GrooveJrContent, error)
-	UpdateGrooveJrContentFunc func(content *models.GrooveJrContent) (*models.GrooveJrContent, error)
-	DeleteGrooveJrContentFunc func(id string) error
-	GetAllAboutContentFunc   func(filter models.FilterOptions) ([]models.AboutContent, int, error)
-	GetAboutContentByIDFunc  func(id string) (*models.AboutContent, error)
-	CreateAboutContentFunc   func(content *models.AboutContent) (*models.AboutContent, error)
-	UpdateAboutContentFunc   func(content *models.AboutContent) (*models.AboutContent, error)
-	DeleteAboutContentFunc   func(id string) error
+	CreateGrooveJrContentFunc  func(content *models.GrooveJrContent) (*models.GrooveJrContent, error)
+	UpdateGrooveJrContentFunc  func(content *models.GrooveJrContent) (*models.GrooveJrContent, error)
+	DeleteGrooveJrContentFunc  func(id string) error
+	GetAllAboutContentFunc     func(filter models.FilterOptions) ([]models.AboutContent, int, error)
+	GetAboutContentByIDFunc    func(id string) (*models.AboutContent, error)
+	CreateAboutContentFunc     func(content *models.AboutContent) (*models.AboutContent, error)
+	UpdateAboutContentFunc     func(content *models.AboutContent) (*models.AboutContent, error)
+	DeleteAboutContentFunc     func(id string) error
 
 	ExportBlogPostsFunc       func() ([]models.BlogPost, error)
 	ImportBlogPostsFunc       func(posts []models.BlogPost) error

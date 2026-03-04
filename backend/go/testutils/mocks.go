@@ -19,17 +19,17 @@ func (m *MockLogger) Write(p []byte) (n int, err error) {
 
 // MockPgQuery for pg.Query
 type MockPgQuery struct {
-	Err       error
-	modelDest any
-	WhereID   string
-	SelectFunc func(modelDest any, dest ...interface{}) error // Function to customize Select behavior
+	Err        error
+	modelDest  any
+	WhereID    string
+	SelectFunc func(modelDest any, dest ...interface{}) error              // Function to customize Select behavior
 	InsertFunc func(modelDest any, dest ...interface{}) (pg.Result, error) // Function to customize Insert behavior
 	UpdateFunc func(modelDest any, dest ...interface{}) (pg.Result, error) // Function to customize Update behavior
 }
 
 type MockPgResult struct {
 	NumRowsAffected int
-	Err          error
+	Err             error
 }
 
 func (r *MockPgResult) RowsAffected() int {

@@ -26,7 +26,6 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-
 func TestSetupBaseRoutes_MarketingBlogPosts(t *testing.T) {
 	// Mock logger
 	mockLogOutput := &testutils.MockLogger{}
@@ -34,7 +33,7 @@ func TestSetupBaseRoutes_MarketingBlogPosts(t *testing.T) {
 
 	// Mock dependencies
 	cookieJar := cmap.New[auth.Cookie]()
-	
+
 	// Configure mock DB to return a sample blog post
 	mockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {

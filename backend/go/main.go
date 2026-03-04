@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/go-pg/pg/v10/orm"
 	"github.com/nathanielBellamy/my_website/backend/go/admin"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
 	"github.com/nathanielBellamy/my_website/backend/go/config"
@@ -17,7 +18,6 @@ import (
 	"github.com/nathanielBellamy/my_website/backend/go/websocket"
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"github.com/rs/zerolog"
-	"github.com/go-pg/pg/v10/orm"
 )
 
 // MODE=<mode> ./main
@@ -193,5 +193,3 @@ func SetupProdRoutes(mux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, a
 	// are all handled by SetupAdminAuth for consistency across environments.
 	auth.SetupAdminAuthV2(mux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer(), auth.LogClientIp("/", log, marketingFileServer))
 }
-
-

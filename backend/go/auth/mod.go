@@ -26,7 +26,6 @@ var GetClientIpAddr = func(r *http.Request) string {
 	return res
 }
 
-
 var HasValidCookie = func(
 	r *http.Request,
 	cookieType CookieType,

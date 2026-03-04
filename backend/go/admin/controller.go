@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
+	"github.com/nathanielBellamy/my_website/backend/go/utils"
 	"io"
 	"net/http"
 	"os"
@@ -17,7 +18,6 @@ import (
 	"github.com/nathanielBellamy/my_website/backend/go/models"
 	"github.com/rs/zerolog"
 )
-
 
 type AdminController struct {
 	Log     *zerolog.Logger
@@ -81,7 +81,7 @@ func (ac *AdminController) GetAllBlogPostsHandler(w http.ResponseWriter, r *http
 	posts, total, err := ac.Service.GetAllBlogPosts(opts)
 	if err != nil {
 		ac.Log.Error().Err(err).Msg("Error fetching blog posts")
-		http.Error(w, "Error fetching blog posts", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching blog posts")
 		return
 	}
 	resp := models.PaginatedResponse[models.BlogPost]{
@@ -100,7 +100,7 @@ func (ac *AdminController) GetBlogPostByIDHandler(w http.ResponseWriter, r *http
 	post, err := ac.Service.GetBlogPostByID(id)
 	if err != nil {
 		ac.Log.Error().Err(err).Str("id", id).Msg("Error fetching blog post")
-		http.Error(w, "Error fetching blog post", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching blog post")
 		return
 	}
 
@@ -121,7 +121,7 @@ func (ac *AdminController) GetBlogPostsByTagHandler(w http.ResponseWriter, r *ht
 
 	posts, err := ac.Service.GetBlogPostsByTag(tag, opts.Page, opts.Limit)
 	if err != nil {
-		http.Error(w, "Error fetching blog posts by tag", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching blog posts by tag")
 		return
 	}
 
@@ -140,7 +140,7 @@ func (ac *AdminController) GetTagsHandler(w http.ResponseWriter, r *http.Request
 	tags, err := ac.Service.GetTags(search, limit)
 	if err != nil {
 		ac.Log.Error().Err(err).Msg("Error fetching tags")
-		http.Error(w, "Error fetching tags", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching tags")
 		return
 	}
 
@@ -186,13 +186,12 @@ func (ac *AdminController) CreateBlogPostHandler(w http.ResponseWriter, r *http.
 
 	newPost, err := ac.Service.CreateBlogPost(post)
 	if err != nil {
-		http.Error(w, "Error creating blog post", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error creating blog post")
 		return
 	}
 
 	ac.sendJSON(w, newPost)
 }
-
 
 func (ac *AdminController) UpdateBlogPostHandler(w http.ResponseWriter, r *http.Request) {
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateBlogPostHandler Hit")
@@ -206,7 +205,7 @@ func (ac *AdminController) UpdateBlogPostHandler(w http.ResponseWriter, r *http.
 
 	updatedPost, err := ac.Service.UpdateBlogPost(&post)
 	if err != nil {
-		http.Error(w, "Error updating blog post", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error updating blog post")
 		return
 	}
 
@@ -218,7 +217,7 @@ func (ac *AdminController) DeleteBlogPostHandler(w http.ResponseWriter, r *http.
 	id := r.PathValue("id")
 
 	if err := ac.Service.DeleteBlogPost(id); err != nil {
-		http.Error(w, "Error deleting blog post", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error deleting blog post")
 		return
 	}
 
@@ -231,7 +230,7 @@ func (ac *AdminController) GetAllHomeContentHandler(w http.ResponseWriter, r *ht
 	opts := getFilterOptions(r)
 	content, total, err := ac.Service.GetAllHomeContent(opts)
 	if err != nil {
-		http.Error(w, "Error fetching home content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching home content")
 		return
 	}
 	resp := models.PaginatedResponse[models.HomeContent]{
@@ -248,7 +247,7 @@ func (ac *AdminController) GetHomeContentByIDHandler(w http.ResponseWriter, r *h
 	id := r.PathValue("id")
 	content, err := ac.Service.GetHomeContentByID(id)
 	if err != nil {
-		http.Error(w, "Error fetching home content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching home content")
 		return
 	}
 
@@ -270,7 +269,7 @@ func (ac *AdminController) CreateHomeContentHandler(w http.ResponseWriter, r *ht
 
 	newContent, err := ac.Service.CreateHomeContent(&content)
 	if err != nil {
-		http.Error(w, "Error creating home content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error creating home content")
 		return
 	}
 
@@ -289,7 +288,7 @@ func (ac *AdminController) UpdateHomeContentHandler(w http.ResponseWriter, r *ht
 
 	updatedContent, err := ac.Service.UpdateHomeContent(&content)
 	if err != nil {
-		http.Error(w, "Error updating home content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error updating home content")
 		return
 	}
 
@@ -301,7 +300,7 @@ func (ac *AdminController) DeleteHomeContentHandler(w http.ResponseWriter, r *ht
 	id := r.PathValue("id")
 
 	if err := ac.Service.DeleteHomeContent(id); err != nil {
-		http.Error(w, "Error deleting home content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error deleting home content")
 		return
 	}
 
@@ -314,7 +313,7 @@ func (ac *AdminController) GetAllGrooveJrContentHandler(w http.ResponseWriter, r
 	opts := getFilterOptions(r)
 	content, total, err := ac.Service.GetAllGrooveJrContent(opts)
 	if err != nil {
-		http.Error(w, "Error fetching groove-jr content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching groove-jr content")
 		return
 	}
 	resp := models.PaginatedResponse[models.GrooveJrContent]{
@@ -331,7 +330,7 @@ func (ac *AdminController) GetGrooveJrContentByIDHandler(w http.ResponseWriter, 
 	id := r.PathValue("id")
 	content, err := ac.Service.GetGrooveJrContentByID(id)
 	if err != nil {
-		http.Error(w, "Error fetching groove-jr content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching groove-jr content")
 		return
 	}
 
@@ -353,7 +352,7 @@ func (ac *AdminController) CreateGrooveJrContentHandler(w http.ResponseWriter, r
 
 	newContent, err := ac.Service.CreateGrooveJrContent(&content)
 	if err != nil {
-		http.Error(w, "Error creating groove-jr content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error creating groove-jr content")
 		return
 	}
 
@@ -372,7 +371,7 @@ func (ac *AdminController) UpdateGrooveJrContentHandler(w http.ResponseWriter, r
 
 	updatedContent, err := ac.Service.UpdateGrooveJrContent(&content)
 	if err != nil {
-		http.Error(w, "Error updating groove-jr content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error updating groove-jr content")
 		return
 	}
 
@@ -384,7 +383,7 @@ func (ac *AdminController) DeleteGrooveJrContentHandler(w http.ResponseWriter, r
 	id := r.PathValue("id")
 
 	if err := ac.Service.DeleteGrooveJrContent(id); err != nil {
-		http.Error(w, "Error deleting groove-jr content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error deleting groove-jr content")
 		return
 	}
 
@@ -397,7 +396,7 @@ func (ac *AdminController) GetAllAboutContentHandler(w http.ResponseWriter, r *h
 	opts := getFilterOptions(r)
 	content, total, err := ac.Service.GetAllAboutContent(opts)
 	if err != nil {
-		http.Error(w, "Error fetching about content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching about content")
 		return
 	}
 	resp := models.PaginatedResponse[models.AboutContent]{
@@ -414,7 +413,7 @@ func (ac *AdminController) GetAboutContentByIDHandler(w http.ResponseWriter, r *
 	id := r.PathValue("id")
 	content, err := ac.Service.GetAboutContentByID(id)
 	if err != nil {
-		http.Error(w, "Error fetching about content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error fetching about content")
 		return
 	}
 
@@ -436,7 +435,7 @@ func (ac *AdminController) CreateAboutContentHandler(w http.ResponseWriter, r *h
 
 	newContent, err := ac.Service.CreateAboutContent(&content)
 	if err != nil {
-		http.Error(w, "Error creating about content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error creating about content")
 		return
 	}
 
@@ -455,7 +454,7 @@ func (ac *AdminController) UpdateAboutContentHandler(w http.ResponseWriter, r *h
 
 	updatedContent, err := ac.Service.UpdateAboutContent(&content)
 	if err != nil {
-		http.Error(w, "Error updating about content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error updating about content")
 		return
 	}
 
@@ -467,7 +466,7 @@ func (ac *AdminController) DeleteAboutContentHandler(w http.ResponseWriter, r *h
 	id := r.PathValue("id")
 
 	if err := ac.Service.DeleteAboutContent(id); err != nil {
-		http.Error(w, "Error deleting about content", http.StatusInternalServerError)
+		utils.HandleDBError(w, err, "Error deleting about content")
 		return
 	}
 
@@ -513,7 +512,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 	case "blog":
 		posts, err := ac.Service.ExportBlogPosts()
 		if err != nil {
-			http.Error(w, "Error exporting blog posts", http.StatusInternalServerError)
+			utils.HandleDBError(w, err, "Error exporting blog posts")
 			return
 		}
 		// Headers
@@ -553,7 +552,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 	case "home":
 		content, err := ac.Service.ExportHomeContent()
 		if err != nil {
-			http.Error(w, "Error exporting home content", http.StatusInternalServerError)
+			utils.HandleDBError(w, err, "Error exporting home content")
 			return
 		}
 		if err := writer.Write([]string{"id", "title", "content", "ordering", "activated_at", "deactivated_at"}); err != nil {
@@ -576,7 +575,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 	case "groove-jr":
 		content, err := ac.Service.ExportGrooveJrContent()
 		if err != nil {
-			http.Error(w, "Error exporting groove-jr content", http.StatusInternalServerError)
+			utils.HandleDBError(w, err, "Error exporting groove-jr content")
 			return
 		}
 		if err := writer.Write([]string{"id", "title", "content", "ordering", "activated_at", "deactivated_at"}); err != nil {
@@ -599,7 +598,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 	case "about":
 		content, err := ac.Service.ExportAboutContent()
 		if err != nil {
-			http.Error(w, "Error exporting about content", http.StatusInternalServerError)
+			utils.HandleDBError(w, err, "Error exporting about content")
 			return
 		}
 		if err := writer.Write([]string{"id", "title", "content", "ordering", "activated_at", "deactivated_at"}); err != nil {
@@ -622,7 +621,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 	case "tags":
 		tags, err := ac.Service.ExportTags()
 		if err != nil {
-			http.Error(w, "Error exporting tags", http.StatusInternalServerError)
+			utils.HandleDBError(w, err, "Error exporting tags")
 			return
 		}
 		if err := writer.Write([]string{"id", "name", "activated_at", "deactivated_at"}); err != nil {
@@ -643,7 +642,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 	case "authors":
 		authors, err := ac.Service.ExportAuthors()
 		if err != nil {
-			http.Error(w, "Error exporting authors", http.StatusInternalServerError)
+			utils.HandleDBError(w, err, "Error exporting authors")
 			return
 		}
 		if err := writer.Write([]string{"id", "name", "activated_at", "deactivated_at"}); err != nil {
@@ -701,20 +700,40 @@ func (ac *AdminController) ImportCSVHandler(w http.ResponseWriter, r *http.Reque
 		var posts []models.BlogPost
 		for _, row := range records[1:] {
 			post := models.BlogPost{}
-			if idx, ok := colIdx["id"]; ok { post.ID = row[idx] }
-			if idx, ok := colIdx["title"]; ok { post.Title = row[idx] }
-			if idx, ok := colIdx["content"]; ok { post.Content = row[idx] }
-			if idx, ok := colIdx["ordering"]; ok { post.Ordering, _ = strconv.Atoi(row[idx]) }
-			if idx, ok := colIdx["created_at"]; ok { post.CreatedAt, _ = time.Parse(time.RFC3339, row[idx]) }
-			if idx, ok := colIdx["updated_at"]; ok { post.UpdatedAt, _ = time.Parse(time.RFC3339, row[idx]) }
-			if idx, ok := colIdx["activated_at"]; ok { post.ActivatedAt = parseTimePtr(row[idx]) }
-			if idx, ok := colIdx["deactivated_at"]; ok { post.DeactivatedAt = parseTimePtr(row[idx]) }
+			if idx, ok := colIdx["id"]; ok {
+				post.ID = row[idx]
+			}
+			if idx, ok := colIdx["title"]; ok {
+				post.Title = row[idx]
+			}
+			if idx, ok := colIdx["content"]; ok {
+				post.Content = row[idx]
+			}
+			if idx, ok := colIdx["ordering"]; ok {
+				post.Ordering, _ = strconv.Atoi(row[idx])
+			}
+			if idx, ok := colIdx["created_at"]; ok {
+				post.CreatedAt, _ = time.Parse(time.RFC3339, row[idx])
+			}
+			if idx, ok := colIdx["updated_at"]; ok {
+				post.UpdatedAt, _ = time.Parse(time.RFC3339, row[idx])
+			}
+			if idx, ok := colIdx["activated_at"]; ok {
+				post.ActivatedAt = parseTimePtr(row[idx])
+			}
+			if idx, ok := colIdx["deactivated_at"]; ok {
+				post.DeactivatedAt = parseTimePtr(row[idx])
+			}
 
 			// Relations
 			authorName := ""
 			authorID := ""
-			if idx, ok := colIdx["author_name"]; ok { authorName = row[idx] }
-			if idx, ok := colIdx["author_id"]; ok { authorID = row[idx] }
+			if idx, ok := colIdx["author_name"]; ok {
+				authorName = row[idx]
+			}
+			if idx, ok := colIdx["author_id"]; ok {
+				authorID = row[idx]
+			}
 			if authorName != "" || authorID != "" {
 				post.Author = &models.Author{Name: authorName, ID: authorID}
 			}
@@ -729,7 +748,7 @@ func (ac *AdminController) ImportCSVHandler(w http.ResponseWriter, r *http.Reque
 		}
 		if err := ac.Service.ImportBlogPosts(posts); err != nil {
 			ac.Log.Error().Err(err).Msg("Error importing blog posts")
-			http.Error(w, "Error importing blog posts", http.StatusInternalServerError)
+			utils.HandleDBError(w, err, "Error importing blog posts")
 			return
 		}
 
@@ -737,16 +756,28 @@ func (ac *AdminController) ImportCSVHandler(w http.ResponseWriter, r *http.Reque
 		var content []models.HomeContent
 		for _, row := range records[1:] {
 			c := models.HomeContent{}
-			if idx, ok := colIdx["id"]; ok { c.ID = row[idx] }
-			if idx, ok := colIdx["title"]; ok { c.Title = row[idx] }
-			if idx, ok := colIdx["content"]; ok { c.Content = row[idx] }
-			if idx, ok := colIdx["ordering"]; ok { c.Ordering, _ = strconv.Atoi(row[idx]) }
-			if idx, ok := colIdx["activated_at"]; ok { c.ActivatedAt = parseTimePtr(row[idx]) }
-			if idx, ok := colIdx["deactivated_at"]; ok { c.DeactivatedAt = parseTimePtr(row[idx]) }
+			if idx, ok := colIdx["id"]; ok {
+				c.ID = row[idx]
+			}
+			if idx, ok := colIdx["title"]; ok {
+				c.Title = row[idx]
+			}
+			if idx, ok := colIdx["content"]; ok {
+				c.Content = row[idx]
+			}
+			if idx, ok := colIdx["ordering"]; ok {
+				c.Ordering, _ = strconv.Atoi(row[idx])
+			}
+			if idx, ok := colIdx["activated_at"]; ok {
+				c.ActivatedAt = parseTimePtr(row[idx])
+			}
+			if idx, ok := colIdx["deactivated_at"]; ok {
+				c.DeactivatedAt = parseTimePtr(row[idx])
+			}
 			content = append(content, c)
 		}
 		if err := ac.Service.ImportHomeContent(content); err != nil {
-			http.Error(w, "Error importing home content", http.StatusInternalServerError)
+			utils.HandleDBError(w, err, "Error importing home content")
 			return
 		}
 
@@ -754,16 +785,28 @@ func (ac *AdminController) ImportCSVHandler(w http.ResponseWriter, r *http.Reque
 		var content []models.GrooveJrContent
 		for _, row := range records[1:] {
 			c := models.GrooveJrContent{}
-			if idx, ok := colIdx["id"]; ok { c.ID = row[idx] }
-			if idx, ok := colIdx["title"]; ok { c.Title = row[idx] }
-			if idx, ok := colIdx["content"]; ok { c.Content = row[idx] }
-			if idx, ok := colIdx["ordering"]; ok { c.Ordering, _ = strconv.Atoi(row[idx]) }
-			if idx, ok := colIdx["activated_at"]; ok { c.ActivatedAt = parseTimePtr(row[idx]) }
-			if idx, ok := colIdx["deactivated_at"]; ok { c.DeactivatedAt = parseTimePtr(row[idx]) }
+			if idx, ok := colIdx["id"]; ok {
+				c.ID = row[idx]
+			}
+			if idx, ok := colIdx["title"]; ok {
+				c.Title = row[idx]
+			}
+			if idx, ok := colIdx["content"]; ok {
+				c.Content = row[idx]
+			}
+			if idx, ok := colIdx["ordering"]; ok {
+				c.Ordering, _ = strconv.Atoi(row[idx])
+			}
+			if idx, ok := colIdx["activated_at"]; ok {
+				c.ActivatedAt = parseTimePtr(row[idx])
+			}
+			if idx, ok := colIdx["deactivated_at"]; ok {
+				c.DeactivatedAt = parseTimePtr(row[idx])
+			}
 			content = append(content, c)
 		}
 		if err := ac.Service.ImportGrooveJrContent(content); err != nil {
-			http.Error(w, "Error importing groove-jr content", http.StatusInternalServerError)
+			utils.HandleDBError(w, err, "Error importing groove-jr content")
 			return
 		}
 
@@ -771,16 +814,28 @@ func (ac *AdminController) ImportCSVHandler(w http.ResponseWriter, r *http.Reque
 		var content []models.AboutContent
 		for _, row := range records[1:] {
 			c := models.AboutContent{}
-			if idx, ok := colIdx["id"]; ok { c.ID = row[idx] }
-			if idx, ok := colIdx["title"]; ok { c.Title = row[idx] }
-			if idx, ok := colIdx["content"]; ok { c.Content = row[idx] }
-			if idx, ok := colIdx["ordering"]; ok { c.Ordering, _ = strconv.Atoi(row[idx]) }
-			if idx, ok := colIdx["activated_at"]; ok { c.ActivatedAt = parseTimePtr(row[idx]) }
-			if idx, ok := colIdx["deactivated_at"]; ok { c.DeactivatedAt = parseTimePtr(row[idx]) }
+			if idx, ok := colIdx["id"]; ok {
+				c.ID = row[idx]
+			}
+			if idx, ok := colIdx["title"]; ok {
+				c.Title = row[idx]
+			}
+			if idx, ok := colIdx["content"]; ok {
+				c.Content = row[idx]
+			}
+			if idx, ok := colIdx["ordering"]; ok {
+				c.Ordering, _ = strconv.Atoi(row[idx])
+			}
+			if idx, ok := colIdx["activated_at"]; ok {
+				c.ActivatedAt = parseTimePtr(row[idx])
+			}
+			if idx, ok := colIdx["deactivated_at"]; ok {
+				c.DeactivatedAt = parseTimePtr(row[idx])
+			}
 			content = append(content, c)
 		}
 		if err := ac.Service.ImportAboutContent(content); err != nil {
-			http.Error(w, "Error importing about content", http.StatusInternalServerError)
+			utils.HandleDBError(w, err, "Error importing about content")
 			return
 		}
 
@@ -788,14 +843,22 @@ func (ac *AdminController) ImportCSVHandler(w http.ResponseWriter, r *http.Reque
 		var tags []models.Tag
 		for _, row := range records[1:] {
 			t := models.Tag{}
-			if idx, ok := colIdx["id"]; ok { t.ID = row[idx] }
-			if idx, ok := colIdx["name"]; ok { t.Name = row[idx] }
-			if idx, ok := colIdx["activated_at"]; ok { t.ActivatedAt = parseTimePtr(row[idx]) }
-			if idx, ok := colIdx["deactivated_at"]; ok { t.DeactivatedAt = parseTimePtr(row[idx]) }
+			if idx, ok := colIdx["id"]; ok {
+				t.ID = row[idx]
+			}
+			if idx, ok := colIdx["name"]; ok {
+				t.Name = row[idx]
+			}
+			if idx, ok := colIdx["activated_at"]; ok {
+				t.ActivatedAt = parseTimePtr(row[idx])
+			}
+			if idx, ok := colIdx["deactivated_at"]; ok {
+				t.DeactivatedAt = parseTimePtr(row[idx])
+			}
 			tags = append(tags, t)
 		}
 		if err := ac.Service.ImportTags(tags); err != nil {
-			http.Error(w, "Error importing tags", http.StatusInternalServerError)
+			utils.HandleDBError(w, err, "Error importing tags")
 			return
 		}
 
@@ -803,14 +866,22 @@ func (ac *AdminController) ImportCSVHandler(w http.ResponseWriter, r *http.Reque
 		var authors []models.Author
 		for _, row := range records[1:] {
 			a := models.Author{}
-			if idx, ok := colIdx["id"]; ok { a.ID = row[idx] }
-			if idx, ok := colIdx["name"]; ok { a.Name = row[idx] }
-			if idx, ok := colIdx["activated_at"]; ok { a.ActivatedAt = parseTimePtr(row[idx]) }
-			if idx, ok := colIdx["deactivated_at"]; ok { a.DeactivatedAt = parseTimePtr(row[idx]) }
+			if idx, ok := colIdx["id"]; ok {
+				a.ID = row[idx]
+			}
+			if idx, ok := colIdx["name"]; ok {
+				a.Name = row[idx]
+			}
+			if idx, ok := colIdx["activated_at"]; ok {
+				a.ActivatedAt = parseTimePtr(row[idx])
+			}
+			if idx, ok := colIdx["deactivated_at"]; ok {
+				a.DeactivatedAt = parseTimePtr(row[idx])
+			}
 			authors = append(authors, a)
 		}
 		if err := ac.Service.ImportAuthors(authors); err != nil {
-			http.Error(w, "Error importing authors", http.StatusInternalServerError)
+			utils.HandleDBError(w, err, "Error importing authors")
 			return
 		}
 

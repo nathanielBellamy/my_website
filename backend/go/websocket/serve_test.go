@@ -22,4 +22,3 @@ type MockNetConn struct {
 	Closed   bool
 	once     sync.Once
 }
-

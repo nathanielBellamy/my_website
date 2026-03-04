@@ -1,10 +1,10 @@
 package admin
 
 import (
-	"github.com/rs/zerolog"
-	"github.com/nathanielBellamy/my_website/backend/go/models"
 	"errors" // Import errors package
 	"fmt"
+	"github.com/nathanielBellamy/my_website/backend/go/models"
+	"github.com/rs/zerolog"
 	"testing"
 
 	"github.com/go-pg/pg/v10"
@@ -110,15 +110,15 @@ func TestAdminGetBlogPostsByTag(t *testing.T) {
 func TestAdminCreateBlogPost(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		InsertFunc: func(modelDest any, dest ...interface{}) (pg.Result, error) {
-			            if v, ok := modelDest.(*models.BlogPost); ok {
-			                // Simulate database setting an ID
-			                v.ID = "3"
-			            }
-			            return &testutils.MockPgResult{NumRowsAffected: 1}, nil
-			        },
-			    }
-			    mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
-			    service := NewService(mockDB, &zerolog.Logger{})
+			if v, ok := modelDest.(*models.BlogPost); ok {
+				// Simulate database setting an ID
+				v.ID = "3"
+			}
+			return &testutils.MockPgResult{NumRowsAffected: 1}, nil
+		},
+	}
+	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
+	service := NewService(mockDB, &zerolog.Logger{})
 	post := &models.BlogPost{Title: "New Post"} // ID will be set by the mock InsertFunc
 	newPost, err := service.CreateBlogPost(post)
 	if err != nil {
@@ -134,10 +134,10 @@ func TestAdminUpdateBlogPost(t *testing.T) {
 		UpdateFunc: func(modelDest any, dest ...interface{}) (pg.Result, error) {
 			if v, ok := modelDest.(*models.BlogPost); ok {
 				// Simulate database returning the updated object
-							                *v = models.BlogPost{ID: v.ID, Title: v.Title} // The passed 'post' already has the updated title
-							            }
-							            return &testutils.MockPgResult{NumRowsAffected: 1}, nil
-							        },	}
+				*v = models.BlogPost{ID: v.ID, Title: v.Title} // The passed 'post' already has the updated title
+			}
+			return &testutils.MockPgResult{NumRowsAffected: 1}, nil
+		}}
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
 	service := NewService(mockDB, &zerolog.Logger{})
 	post := &models.BlogPost{ID: "1", Title: "Updated Post"}
@@ -563,7 +563,7 @@ func TestAdminImportBlogPosts(t *testing.T) {
 		},
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
 			// Simulate finding existing author/tags if searched by name
-			return nil 
+			return nil
 		},
 	}
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
@@ -571,8 +571,8 @@ func TestAdminImportBlogPosts(t *testing.T) {
 
 	posts := []models.BlogPost{
 		{
-			ID:    "1",
-			Title: "Imported Post",
+			ID:     "1",
+			Title:  "Imported Post",
 			Author: &models.Author{Name: "New Author"},
 			Tags:   []*models.Tag{{Name: "Tag1"}},
 		},
@@ -582,22 +582,22 @@ func TestAdminImportBlogPosts(t *testing.T) {
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
-	// Expected inserts: 
+	// Expected inserts:
 	// 1. Author (if ID not present and not found - logic is complex, assumes found if select returns nil err for now)
 	// Actually logic says: if Author.ID == "", search by name. If found (err==nil), use it. Else Insert.
 	// My mock SelectFunc returns nil, so it finds author.
 	// 2. Tags: same logic. Finds Tag1.
 	// 3. Post: Upsert (Insert).
 	// 4. PostTags: Insert.
-	
+
 	// With SelectFunc returning nil (found):
 	// Author: No insert.
 	// Tag: No insert.
 	// Post: Insert (Upsert).
 	// PostTags: Insert.
-	// Total 2 inserts? 
+	// Total 2 inserts?
 	// Wait, code deletes PostTags then Inserts new ones. Delete is mocked too.
-	
+
 	if insertCount == 0 {
 		t.Error("expected inserts to happen")
 	}

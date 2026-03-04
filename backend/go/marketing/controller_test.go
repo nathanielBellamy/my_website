@@ -16,17 +16,17 @@ import (
 )
 
 type MockMarketingService struct {
-	GetAllBlogPostsFunc      func(page, limit int, tags []string) ([]models.BlogPost, error)
-	GetBlogPostByIDFunc      func(id string) (*models.BlogPost, error)
-	GetBlogPostsByTagFunc    func(tag string, page, limit int) ([]models.BlogPost, error)
-	GetTagsFunc              func(search string, limit int) ([]models.TagWithUsage, error)
-	GetAllHomeContentFunc    func(page, limit int) ([]models.HomeContent, error)
-	GetHomeContentByIDFunc   func(id string) (*models.HomeContent, error)
-	GetAllGrooveJrContentFunc func(page, limit int) ([]models.GrooveJrContent, error)
+	GetAllBlogPostsFunc        func(page, limit int, tags []string) ([]models.BlogPost, error)
+	GetBlogPostByIDFunc        func(id string) (*models.BlogPost, error)
+	GetBlogPostsByTagFunc      func(tag string, page, limit int) ([]models.BlogPost, error)
+	GetTagsFunc                func(search string, limit int) ([]models.TagWithUsage, error)
+	GetAllHomeContentFunc      func(page, limit int) ([]models.HomeContent, error)
+	GetHomeContentByIDFunc     func(id string) (*models.HomeContent, error)
+	GetAllGrooveJrContentFunc  func(page, limit int) ([]models.GrooveJrContent, error)
 	GetGrooveJrContentByIDFunc func(id string) (*models.GrooveJrContent, error)
-	GetAllAboutContentFunc   func(page, limit int) ([]models.AboutContent, error)
-	GetAboutContentByIDFunc  func(id string) (*models.AboutContent, error)
-	GetSitemapDataFunc       func() ([]models.BlogPost, error)
+	GetAllAboutContentFunc     func(page, limit int) ([]models.AboutContent, error)
+	GetAboutContentByIDFunc    func(id string) (*models.AboutContent, error)
+	GetSitemapDataFunc         func() ([]models.BlogPost, error)
 }
 
 func (m *MockMarketingService) GetAllBlogPosts(page, limit int, tags []string) ([]models.BlogPost, error) {
@@ -460,4 +460,3 @@ func TestRobotsTxtHandler(t *testing.T) {
 		t.Errorf("robots.txt missing Sitemap link")
 	}
 }
-	

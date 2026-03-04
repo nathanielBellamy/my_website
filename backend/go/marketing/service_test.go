@@ -1,9 +1,9 @@
 package marketing
 
 import (
-	"github.com/nathanielBellamy/my_website/backend/go/models"
 	"errors" // Import errors package
 	"fmt"
+	"github.com/nathanielBellamy/my_website/backend/go/models"
 	"testing"
 
 	"github.com/go-pg/pg/v10"
@@ -38,7 +38,7 @@ func TestGetAllBlogPosts(t *testing.T) {
 func TestGetBlogPostByID(t *testing.T) {
 	// Test case: Blog post found
 	var foundMockQuery *testutils.MockPgQuery // Declare first
-	foundMockQuery = &testutils.MockPgQuery{ // Initialize
+	foundMockQuery = &testutils.MockPgQuery{  // Initialize
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
 			if v, ok := modelDest.(*models.BlogPost); ok {
 				*v = models.BlogPost{ID: foundMockQuery.WhereID, Title: "Test Post " + foundMockQuery.WhereID}
@@ -132,7 +132,7 @@ func TestGetAllHomeContent(t *testing.T) {
 func TestGetHomeContentByID(t *testing.T) {
 	// Test case: Home content found
 	var foundMockQuery *testutils.MockPgQuery // Declare first
-	foundMockQuery = &testutils.MockPgQuery{ // Initialize
+	foundMockQuery = &testutils.MockPgQuery{  // Initialize
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
 			if v, ok := modelDest.(*models.HomeContent); ok {
 				*v = models.HomeContent{ID: foundMockQuery.WhereID, Title: "Test Home " + foundMockQuery.WhereID}
@@ -201,7 +201,7 @@ func TestGetAllGrooveJrContent(t *testing.T) {
 func TestGetGrooveJrContentByID(t *testing.T) {
 	// Test case: GrooveJr content found
 	var foundMockQuery *testutils.MockPgQuery // Declare first
-	foundMockQuery = &testutils.MockPgQuery{ // Initialize
+	foundMockQuery = &testutils.MockPgQuery{  // Initialize
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
 			if v, ok := modelDest.(*models.GrooveJrContent); ok {
 				*v = models.GrooveJrContent{ID: foundMockQuery.WhereID, Title: "Test GrooveJr " + foundMockQuery.WhereID}
@@ -270,7 +270,7 @@ func TestGetAllAboutContent(t *testing.T) {
 func TestGetAboutContentByID(t *testing.T) {
 	// Test case: About content found
 	var foundMockQuery *testutils.MockPgQuery // Declare first
-	foundMockQuery = &testutils.MockPgQuery{ // Initialize
+	foundMockQuery = &testutils.MockPgQuery{  // Initialize
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
 			if v, ok := modelDest.(*models.AboutContent); ok {
 				*v = models.AboutContent{ID: foundMockQuery.WhereID, Title: "Test About " + foundMockQuery.WhereID}
