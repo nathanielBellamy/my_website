@@ -15,7 +15,7 @@ type Config struct {
 
 func NewConfig(mode string) (*Config, error) {
 	if mode == "localhost" {
-		err := godotenv.Load(".env.localhost")
+		err := godotenv.Load(".env/.env.localhost")
 		if err != nil {
 			return nil, err
 		}

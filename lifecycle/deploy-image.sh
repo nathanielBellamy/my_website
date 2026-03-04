@@ -33,8 +33,11 @@ echo "✅ Image compressed to backend.tar.gz"
 echo "📤 Transferring files to server..."
 $SCP_CMD backend.tar.gz $SSH_USER@$SSH_HOST:/tmp/backend.tar.gz
 $SCP_CMD docker-compose.prod.yml $SSH_USER@$SSH_HOST:~/docker-compose.yml
-if [ -f .env ]; then
-  $SCP_CMD .env $SSH_USER@$SSH_HOST:~/.env
+echo "   Securing .env file..."
+$SSH_CMD $SSH_USER@$SSH_HOST "mkdir -p ~/.env"
+if [ -f .env/.env.production ]; then
+  $SCP_CMD .env/.env.production $SSH_USER@$SSH_HOST:~/.env/.env.production
+  $SSH_CMD $SSH_USER@$SSH_HOST "chmod 600 ~/.env/.env.production || true"
 fi
 # Also transfer the database init script if needed, though usually it's in the volume or image
 # For this setup, we mount ./database/init.sql, so we must ensure it exists on remote

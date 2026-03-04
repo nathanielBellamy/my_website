@@ -52,6 +52,9 @@ RUN npm run build-localhost --prefix marketing
 COPY go.mod go.sum ./
 RUN go mod download
 
+# Copy environment variables
+COPY .env/ ./.env/
+
 # Copy the backend source and build the Go application
 COPY backend/go ./backend/go
 RUN cd backend/go && CGO_ENABLED=0 GOOS=linux go build -o /app/main .
@@ -67,7 +70,7 @@ COPY --from=builder /app/main .
 COPY --from=builder /build ./build
 
 # Copy the environment file
-COPY --from=builder /app/backend/go/.env.localhost .
+COPY --from=builder /app/.env/ ./.env/
 
 # Expose the port the backend runs on
 EXPOSE 8080

@@ -28,6 +28,8 @@ services:
     depends_on:
       postgres-db:
         condition: service_healthy
+    env_file:
+      - .env/.env.localhost
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-db:5432/${POSTGRES_DB}?sslmode=disable
       MODE: ${MODE:-remotedev}

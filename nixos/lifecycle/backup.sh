@@ -7,9 +7,9 @@ if [ -f .env ]; then
   source .env
   set +a
 fi
-if [ -f .env.localhost ]; then
+if [ -f .env/.env.localhost ]; then
   set -a
-  source .env.localhost
+  source .env/.env.localhost
   set +a
 fi
 

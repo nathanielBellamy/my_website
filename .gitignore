@@ -4,6 +4,7 @@
 # env
 config.env
 
+**/.env.*
 backend/go/.env.prod
 backend/go/.env.remotedev
 
