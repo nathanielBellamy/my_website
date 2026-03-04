@@ -4,9 +4,6 @@ BEGIN
   IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'marketing') THEN
     CREATE USER marketing WITH PASSWORD 'marketing';
   END IF;
-  IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'admin') THEN
-    CREATE USER admin WITH PASSWORD 'admin';
-  END IF;
 END
 $$;
 

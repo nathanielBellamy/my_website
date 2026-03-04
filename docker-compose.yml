@@ -3,12 +3,10 @@ services:
     platform: linux/arm64
     image: postgres:18
     container_name: my_website_db
-    ports:
-      - "5434:5432"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: mw_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -31,7 +29,7 @@ services:
       postgres-db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgres://postgres:postgres@postgres-db:5432/mw_db?sslmode=disable
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-db:5432/${POSTGRES_DB}?sslmode=disable
       MODE: ${MODE:-remotedev}
       ENABLE_AUTH_LOCAL: ${ENABLE_AUTH_LOCAL:-false}
     logging:
