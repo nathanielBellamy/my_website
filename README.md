@@ -31,8 +31,29 @@
   - `cd backend/go && MODE=<mode> PW=<my_password> ./main`
 - serves on `localhost:8080`
 
-### config.env
-- `MODE=mode`
+### .env/.env.${MODE}
+```bash
+MODE=localhost # | remotedev | production
+
+GOOGLE_API_KEY=xxxx
+RECAPTCHA_PROJECT_ID=xxxx # test google project
+RECAPTCHA_SITE_KEY=xxxx # test site key
+
+# totp
+ENABLE_AUTH_LOCAL=false # Optional: Set to true to test the login flow on localhost
+TOTP_SECRET=xxxx
+ADMIN_EMAIL=xxxx
+SMTP_HOST=xxxx
+SMTP_PORT=587
+SMTP_USER=xxxx
+SMTP_PASS=xxxx
+
+# postgres
+DATABASE_URL=postgres://admin:admin@localhost:5432/mw_db?sslmode=disable
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=password
+POSTGRES_DB=my_db
+```
 
 #### mode
 - `localhost`
