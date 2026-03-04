@@ -7,7 +7,7 @@ export default defineConfig({
   resolve: {
     mainFields: ['module'],
   },
-  base: '/admin/',
+  base: '/',
   build: {
     outDir: '../../build/admin/'
   }

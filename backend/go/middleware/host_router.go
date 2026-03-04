@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"net/http"
-	"os"
 	"strings"
 )
 
@@ -14,18 +13,15 @@ type HostRouter struct {
 
 func (hr *HostRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	host := strings.ToLower(r.Host)
-	domainBase := strings.ToLower(os.Getenv("DOMAIN_BASE"))
-	if domainBase == "" {
-		domainBase = "localhost:8080"
-	}
 
-	// Route based on subdomain
-	if strings.HasPrefix(host, "admin."+domainBase) || host == "admin.localhost:8080" {
+	// Route based on subdomain prefix
+	// This supports admin.localhost, admin.mydomain.dev, and admin.127.0.0.1.nip.io (for E2E)
+	if strings.HasPrefix(host, "admin.") {
 		hr.AdminMux.ServeHTTP(w, r)
 		return
 	}
 
-	if strings.HasPrefix(host, "old-site."+domainBase) || host == "old-site.localhost:8080" {
+	if strings.HasPrefix(host, "old-site.") {
 		hr.OldSiteMux.ServeHTTP(w, r)
 		return
 	}

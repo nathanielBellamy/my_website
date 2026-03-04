@@ -1,7 +1,7 @@
 describe('Admin App', () => {
   beforeEach(() => {
     // Assuming auth is bypassed on localhost or handled elsewhere
-    cy.visit('/admin/')
+    cy.visit(Cypress.env('adminUrl'))
     cy.contains('Admin Panel').should('be.visible')
   })
 
@@ -11,19 +11,19 @@ describe('Admin App', () => {
 
   it('should navigate between admin sections', () => {
     cy.get('[data-testid="nav-admin-blog"]').click()
-    cy.url().should('include', '/admin/blog')
+    cy.url().should('include', '/blog')
     cy.contains('Blog Posts').should('be.visible')
 
     cy.get('[data-testid="nav-admin-about"]').click()
-    cy.url().should('include', '/admin/about')
+    cy.url().should('include', '/about')
     cy.contains('About Content').should('be.visible')
 
     cy.get('[data-testid="nav-admin-groovejr"]').click()
-    cy.url().should('include', '/admin/groovejr')
+    cy.url().should('include', '/groovejr')
     cy.contains('GrooveJr Content').should('be.visible')
 
     cy.get('[data-testid="nav-admin-home"]').click()
-    cy.url().should('include', '/admin/home')
+    cy.url().should('include', '/home')
     cy.contains('Home Content').should('be.visible')
   })
 
@@ -38,7 +38,7 @@ describe('Admin App', () => {
     cy.get('[data-testid="button-save"]').click()
 
     // Verify created in Inactive tab (since no dates set)
-    cy.url().should('include', `/admin/${section}`)
+    cy.url().should('include', `/${section}`)
     cy.get('[data-testid="status-inactive"]').click()
     cy.contains(testTitle).should('be.visible')
 
@@ -92,7 +92,7 @@ describe('Admin App', () => {
     cy.get('[data-testid="button-save"]').click()
 
     // Verify created
-    cy.url().should('include', '/admin/blog')
+    cy.url().should('include', '/blog')
     cy.contains('Blog Posts').should('be.visible')
     cy.get('[data-testid="blog-search-tags-input"]').type(`${now}`)
     cy.contains('button', now).click()
