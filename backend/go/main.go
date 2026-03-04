@@ -13,11 +13,13 @@ import (
 	"github.com/nathanielBellamy/my_website/backend/go/env"
 	"github.com/nathanielBellamy/my_website/backend/go/interfaces"
 	"github.com/nathanielBellamy/my_website/backend/go/marketing"
+	"github.com/nathanielBellamy/my_website/backend/go/middleware"
 	"github.com/nathanielBellamy/my_website/backend/go/models"
 	"github.com/nathanielBellamy/my_website/backend/go/old_site"
 	"github.com/nathanielBellamy/my_website/backend/go/websocket"
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"github.com/rs/zerolog"
+	"golang.org/x/time/rate"
 )
 
 // MODE=<mode> ./main
@@ -68,11 +70,15 @@ func main() {
 	go feedPool.StartFeed()
 	go wasmPool.StartWasm()
 
-	SetupRoutes(http.DefaultServeMux, &cookieJar, &log, feedPool, wasmPool, db.NewPgDBAdapter(dbClient))
+	mux := http.DefaultServeMux
+	SetupRoutes(mux, &cookieJar, &log, feedPool, wasmPool, db.NewPgDBAdapter(dbClient))
+
+	// Setup Global Rate Limiter: Allows 5 requests per second per IP with a burst of 10
+	limiter := middleware.NewIPRateLimiter(rate.Limit(5), 10)
 
 	server := &http.Server{
 		Addr:         ":8080",
-		Handler:      nil, // uses http.DefaultServeMux
+		Handler:      middleware.RateLimitMiddleware(limiter, &log, mux),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
