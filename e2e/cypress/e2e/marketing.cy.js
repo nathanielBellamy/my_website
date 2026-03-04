@@ -9,7 +9,7 @@ describe('Marketing App', () => {
     cy.get('[data-testid="hero-heading"]').contains('Nate')
     cy.get('[data-testid="hero-heading"]').contains('Schieber')
     cy.contains('Code That\'s Easy To Work With').should('be.visible')
-    cy.contains('Building performant, robust, meaintainable systems.').should('be.visible')
+    cy.contains('Building performant, robust, maintainable systems.').should('be.visible')
   })
 
   it('should navigate to and display the About page', () => {
