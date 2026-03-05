@@ -3,7 +3,6 @@ package marketing
 import (
 	"encoding/json"
 	"encoding/xml"
-	"fmt"
 	"github.com/nathanielBellamy/my_website/backend/go/utils"
 	"html/template"
 	"net/http"
@@ -11,6 +10,7 @@ import (
 	"strings"
 
 	"os"
+	"path/filepath"
 
 	_ "github.com/lib/pq"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
@@ -379,10 +379,20 @@ func (mc *MarketingController) ImageServingHandler(w http.ResponseWriter, r *htt
 		return
 	}
 
-	filePath := fmt.Sprintf("uploads/images/%s", filename)
+	uploadDir := "uploads/images"
+	filePath := filepath.Join(uploadDir, filepath.Clean(filename))
+
+	// Use os.Root to scope file access under uploadDir
+	root, err := os.OpenRoot(uploadDir)
+	if err != nil {
+		mc.Log.Error().Err(err).Msg("Error opening upload root directory")
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	defer root.Close()
 
 	// Check if file exists
-	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+	if _, err := root.Stat(filename); err != nil {
 		http.Error(w, "Image not found", http.StatusNotFound)
 		return
 	}

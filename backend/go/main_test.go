@@ -50,12 +50,14 @@ func TestSetupBaseRoutes_MarketingBlogPosts(t *testing.T) {
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
 
 	// Create an http.ServeMux to register routes
-	mux := http.NewServeMux()
 
 	// Call SetupBaseRoutes to register handlers
 	// Pass nil for oldSiteController as it's not relevant for this marketing test
 	marketingService := marketing.NewService(mockDB)
-	SetupBaseRoutes(mux, &cookieJar, &log, nil, marketing.NewMarketingController(&log, marketingService), nil)
+	marketingMux := http.NewServeMux()
+	adminMux := http.NewServeMux()
+	oldSiteMux := http.NewServeMux()
+	SetupBaseRoutes(adminMux, oldSiteMux, marketingMux, &cookieJar, &log, nil, marketing.NewMarketingController(&log, marketingService), nil)
 
 	// Create a request to the marketing blog posts endpoint
 	req, err := http.NewRequest("GET", "/api/marketing/blog?page=1&limit=5", nil)
@@ -65,7 +67,7 @@ func TestSetupBaseRoutes_MarketingBlogPosts(t *testing.T) {
 
 	// Record the response
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	marketingMux.ServeHTTP(rr, req)
 
 	// Assert the status code
 	if status := rr.Code; status != http.StatusOK {

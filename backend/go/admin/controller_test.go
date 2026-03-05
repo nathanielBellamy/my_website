@@ -200,6 +200,16 @@ func (m *MockAdminService) ImportAuthors(authors []models.Author) error {
 	return nil
 }
 
+func (m *MockAdminService) UploadImage(filename, originalName, altText string) (*models.Image, error) {
+	return nil, nil
+}
+func (m *MockAdminService) ListImages() ([]models.Image, error) {
+	return nil, nil
+}
+func (m *MockAdminService) DeleteImage(id string) error {
+	return nil
+}
+
 func TestAdminGetAllBlogPostsHandler(t *testing.T) {
 	mockService := &MockAdminService{
 		GetAllBlogPostsFunc: func(filter models.FilterOptions) ([]models.BlogPost, int, error) {

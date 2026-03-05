@@ -56,30 +56,49 @@
   <!-- Image Grid -->
   <div class="image-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
     @for (image of images(); track image.id) {
-      <div class="image-card group relative bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-        <img 
-          [src]="'/api/images/' + image.filename" 
-          [alt]="image.altText"
-          class="w-full h-40 object-cover" />
-        
-        <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center space-y-2 p-2 text-center">
-          <p class="text-white text-xs font-medium truncate w-full px-2">{{ image.originalName }}</p>
+      <div
+        class="image-card group bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex flex-col"
+        data-testid="image-card">
+        <div class="relative">
+          <img 
+            [src]="'/api/images/' + image.filename" 
+            [alt]="image.altText"
+            class="w-full h-40 object-cover" />
           
-          <button 
-            type="button"
-            (click)="copyMarkdown(image)"
-            data-testid="copy-markdown-button"
-            class="bg-white text-gray-800 text-xs px-2 py-1 rounded hover:bg-gray-200 transition-colors w-full">
-            {{ copiedImageId() === image.id ? '✓ Copied!' : 'Copy Markdown' }}
-          </button>
+          <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center space-y-2 p-2 text-center">
+            <button 
+              type="button"
+              (click)="copyMarkdown(image)"
+              data-testid="copy-markdown-button"
+              class="bg-white text-gray-800 text-xs px-2 py-1 rounded hover:bg-gray-200 transition-colors w-full">
+              {{ copiedImageId() === image.id ? '✓ Copied!' : 'Copy Markdown' }}
+            </button>
 
-          <button 
-            type="button"
-            (click)="deleteImage(image.id)"
-            data-testid="delete-image-button"
-            class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700 transition-colors w-full">
-            Delete
-          </button>
+            <button 
+              type="button"
+              (click)="deleteImage(image.id)"
+              data-testid="delete-image-button"
+              class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700 transition-colors w-full">
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <div class="p-2 text-xs text-gray-700 border-t border-gray-200 bg-white">
+          <p
+            class="font-medium truncate"
+            [title]="image.originalName"
+            data-testid="image-name">
+            {{ image.originalName }}
+          </p>
+          @if (image.altText) {
+            <p
+              class="text-gray-500 truncate mt-0.5"
+              [title]="image.altText"
+              data-testid="image-alt-text">
+              {{ image.altText }}
+            </p>
+          }
         </div>
       </div>
     } @empty {

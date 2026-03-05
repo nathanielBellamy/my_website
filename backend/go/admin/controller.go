@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -496,7 +497,7 @@ func (ac *AdminController) UploadImageHandler(w http.ResponseWriter, r *http.Req
 
 	// Create directory if it doesn't exist
 	uploadDir := "uploads/images"
-	if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
+	if err := os.MkdirAll(uploadDir, 0750); err != nil {
 		ac.Log.Error().Err(err).Msg("Error creating upload directory")
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
@@ -505,10 +506,17 @@ func (ac *AdminController) UploadImageHandler(w http.ResponseWriter, r *http.Req
 	// Generate unique filename
 	ext := strings.ToLower(header.Filename[strings.LastIndex(header.Filename, "."):])
 	filename := fmt.Sprintf("%d%s", time.Now().UnixNano(), ext)
-	filePath := fmt.Sprintf("%s/%s", uploadDir, filename)
 
-	// Save to disk
-	dst, err := os.Create(filePath)
+	// Use os.Root to scope file access under uploadDir and prevent directory traversal
+	root, err := os.OpenRoot(uploadDir)
+	if err != nil {
+		ac.Log.Error().Err(err).Msg("Error opening upload root directory")
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	defer root.Close()
+
+	dst, err := root.Create(filename)
 	if err != nil {
 		ac.Log.Error().Err(err).Msg("Error saving file to disk")
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -523,11 +531,14 @@ func (ac *AdminController) UploadImageHandler(w http.ResponseWriter, r *http.Req
 	}
 
 	// Save metadata to DB
+	filePath := filepath.Join(uploadDir, filename)
 	image, err := ac.Service.UploadImage(filename, header.Filename, altText)
 	if err != nil {
 		ac.Log.Error().Err(err).Msg("Error saving image metadata")
 		// Clean up file if DB fails
-		os.Remove(filePath)
+		if removeErr := root.Remove(filename); removeErr != nil {
+			ac.Log.Error().Err(removeErr).Str("filePath", filePath).Msg("Error cleaning up file after DB failure")
+		}
 		utils.HandleDBError(w, err, "Error saving image metadata")
 		return
 	}
