@@ -81,8 +81,9 @@
                 [delay]="500"
                 class="px-4 flex flex-row items-center justify-center gap-6">
                 <a
-                  href="/old-site"
+                  [href]="oldSiteUrl"
                   target="_blank"
+                  data-testid="visit-old-site-link"
                   class="inline-block font-sans text-lg font-semibold text-white bg-gradient-to-r from-primary-accent to-secondary-accent py-4 px-10 rounded-xl shadow-xl shadow-primary-accent/20 hover:scale-105 transition-all duration-300"
                 >
                   Visit Old Site

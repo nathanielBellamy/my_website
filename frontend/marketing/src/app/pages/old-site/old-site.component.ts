@@ -2,6 +2,7 @@ import { Component, AfterViewInit, OnDestroy, ElementRef, ViewChild } from '@ang
 import { CommonModule } from '@angular/common';
 import { PageComponent } from '../../components/page/page.component';
 import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
+import { environment } from '../../../environments/environment';
 import init, { MagicSquare } from '../../../../pkg/src_rust.js';
 
 @Component({
@@ -13,6 +14,8 @@ import init, { MagicSquare } from '../../../../pkg/src_rust.js';
 export class OldSiteComponent implements AfterViewInit, OnDestroy {
   @ViewChild('appMain', { static: false }) appMainRef?: ElementRef;
   private magicSquarePromise: Promise<any> | null = null;
+
+  readonly oldSiteUrl = environment.OLD_SITE_URL;
 
   async ngAfterViewInit(): Promise<void> {
     try {
