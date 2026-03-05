@@ -34,7 +34,7 @@ echo "📤 Transferring files to server..."
 $SCP_CMD backend.tar.gz $SSH_USER@$SSH_HOST:/tmp/backend.tar.gz
 $SCP_CMD docker-compose.prod.yml $SSH_USER@$SSH_HOST:~/docker-compose.yml
 echo "   Securing .env file..."
-$SSH_CMD $SSH_USER@$SSH_HOST "if [ -f ~/.env ]; then rm ~/.env; fi && mkdir -p ~/.env"
+$SSH_CMD $SSH_USER@$SSH_HOST "if [ -f ~/.env ]; then rm ~/.env; fi && mkdir -p ~/.env && chmod 700 ~/.env"
 if [ -f .env/.env.production ]; then
   $SCP_CMD .env/.env.production $SSH_USER@$SSH_HOST:~/.env/.env.production
   $SSH_CMD $SSH_USER@$SSH_HOST "chmod 600 ~/.env/.env.production || true"
