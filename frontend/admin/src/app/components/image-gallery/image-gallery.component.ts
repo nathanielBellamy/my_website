@@ -17,6 +17,8 @@ export class ImageGalleryComponent implements OnInit {
   uploading = signal<boolean>(false);
   selectedFile: File | null = null;
   altText = '';
+  imageWidth = '';
+  imageHeight = '';
 
   ngOnInit() {
     this.fetchImages();
@@ -66,10 +68,17 @@ export class ImageGalleryComponent implements OnInit {
     }
   }
 
+  copiedImageId = signal<string>('');
+
   copyMarkdown(image: Image) {
-    const markdown = `![${image.altText || image.originalName}](/api/images/${image.filename})`;
+    const alt = image.altText || image.originalName;
+    const size = (this.imageWidth && this.imageHeight)
+      ? `|${this.imageWidth}x${this.imageHeight}`
+      : '';
+    const markdown = `![${alt}${size}](/api/images/${image.filename})`;
     navigator.clipboard.writeText(markdown).then(() => {
-      alert('Markdown copied to clipboard!');
+      this.copiedImageId.set(image.id);
+      setTimeout(() => this.copiedImageId.set(''), 2000);
     }).catch(err => {
       console.error('Could not copy text: ', err);
     });
