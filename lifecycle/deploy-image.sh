@@ -72,6 +72,10 @@ $SSH_CMD $SSH_USER@$SSH_HOST << EOF
 
   # Restart service
   echo "   [Remote] Restarting services..."
+  # Export env vars so docker-compose can interpolate them (e.g. POSTGRES_USER, DATABASE_URL)
+  set -a
+  . ~/.env/.env.production
+  set +a
   # We use up -d which intelligently recreates containers only if image changed or config changed
   # We force recreate the backend to ensure it picks up the new image even if 'latest' tag confusion exists
   docker compose up -d --force-recreate backend || {
