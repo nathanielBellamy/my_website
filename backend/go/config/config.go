@@ -1,8 +1,10 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
 	"os"
+
+	"github.com/joho/godotenv"
+	"github.com/rs/zerolog/log"
 )
 
 type Db struct {
@@ -15,9 +17,13 @@ type Config struct {
 
 func NewConfig(mode string) (*Config, error) {
 	if mode == "localhost" {
-		err := godotenv.Load(".env/.env.localhost")
-		if err != nil {
-			return nil, err
+		if _, err := os.Stat(".env/.env.localhost"); err == nil {
+			if loadErr := godotenv.Load(".env/.env.localhost"); loadErr != nil {
+				return nil, loadErr
+			}
+			log.Info().Msg("Loaded .env/.env.localhost")
+		} else {
+			log.Warn().Msg(".env/.env.localhost not found, using environment variables directly")
 		}
 	}
 

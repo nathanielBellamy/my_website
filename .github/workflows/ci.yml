@@ -172,6 +172,13 @@ jobs:
           sudo apt-get update && sudo apt-get install -y postgresql-client
           PGPASSWORD=postgres psql -h localhost -p 5434 -U postgres -d mw_db -f database/init.sql
 
+      - name: Create Environment File
+        env:
+          ENV_FILE_CONTENT: ${{ secrets.DEV_ENV_FILE }}
+        run: |
+          mkdir -p .env
+          echo "$ENV_FILE_CONTENT" > .env/.env.localhost
+
       - name: Build and Start Backend
         run: |
           cd backend/go
