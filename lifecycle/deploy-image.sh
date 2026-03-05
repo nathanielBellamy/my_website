@@ -50,8 +50,8 @@ $SSH_CMD $SSH_USER@$SSH_HOST "mkdir -p ~/lifecycle"
 $SCP_CMD nixos/lifecycle/*.sh $SSH_USER@$SSH_HOST:~/lifecycle/
 $SSH_CMD $SSH_USER@$SSH_HOST "chmod +x ~/lifecycle/*.sh"
 
-echo "   Securing .env file..."
-$SSH_CMD $SSH_USER@$SSH_HOST "chmod 600 ~/.env || true"
+echo "   Securing .env directory..."
+$SSH_CMD $SSH_USER@$SSH_HOST "chmod 700 ~/.env || true"
 echo "✅ Files transferred."
 
 # 3. Execute deployment on server
