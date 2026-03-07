@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  API_BASE_URL: '/api',
-  OLD_SITE_URL: 'http://old-site.localhost:8080'
+  API_BASE_URL: '',
+  OLD_SITE_URL: ''
 };

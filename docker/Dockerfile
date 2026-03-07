@@ -35,6 +35,9 @@ RUN npm --prefix admin install
 COPY frontend/marketing/package.json frontend/marketing/package-lock.json ./marketing/
 RUN npm --prefix marketing install
 
+# Copy environment variables before building SPAs so set-env scripts can read them
+COPY .env/ ./.env/
+
 # Build frontend applications
 COPY frontend/auth/admin ./auth/admin
 RUN npm run build-localhost --prefix auth/admin
@@ -46,14 +49,11 @@ COPY frontend/admin ./admin
 RUN npm run build-localhost --prefix admin
 
 COPY frontend/marketing ./marketing
-RUN npm run build-localhost --prefix marketing
+RUN npm run build-marketing-prod --prefix marketing
 
 # Copy the go module files and download dependencies
 COPY go.mod go.sum ./
 RUN go mod download
-
-# Copy environment variables
-COPY .env/ ./.env/
 
 # Copy the backend source and build the Go application
 COPY backend/go ./backend/go
