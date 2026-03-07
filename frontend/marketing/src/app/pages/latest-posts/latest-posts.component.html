@@ -22,7 +22,16 @@
       ></app-infinite-scroll>
 
       <ng-template #itemTmpl let-item>
-        <app-card appScrollFadeIn [title]="item.title" [content]="item.content"></app-card>
+        <app-card
+          appScrollFadeIn
+          [title]="item.title"
+          [content]="getSnippet(item.content)"
+          tabindex="0"
+          role="button"
+          [attr.aria-label]="'View details for ' + item.title"
+          (click)="viewContent(item.id)"
+          (keydown.enter)="viewContent(item.id)">
+        </app-card>
       </ng-template>
       
     </div>
