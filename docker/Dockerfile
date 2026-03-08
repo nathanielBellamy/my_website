@@ -2,6 +2,8 @@
 FROM node:20-slim AS builder
 WORKDIR /app
 
+RUN echo "fooooooooo \n\n\n\n BABBABABABBABABBBAYBYYYYY \n\n\n\n"
+
 # Install build dependencies
 RUN apt-get update && apt-get install -y ca-certificates curl gnupg build-essential
 
@@ -38,18 +40,21 @@ RUN npm --prefix marketing install
 # Copy environment variables before building SPAs so set-env scripts can read them
 COPY .env/ ./.env/
 
+# Accept MODE as a build argument so it's available during RUN steps
+ARG MODE
+
 # Build frontend applications
 COPY frontend/auth/admin ./auth/admin
-RUN npm run build-localhost --prefix auth/admin
+RUN npm run build-${MODE} --prefix auth/admin
 
 COPY frontend/old-site ./old-site
-RUN npm run build-old-site-localhost --prefix old-site
+RUN npm run build-old-site-${MODE} --prefix old-site
 
 COPY frontend/admin ./admin
-RUN npm run build-localhost --prefix admin
+RUN npm run build-${MODE} --prefix admin
 
 COPY frontend/marketing ./marketing
-RUN npm run build-marketing-prod --prefix marketing
+RUN npm run build-marketing-${MODE} --prefix marketing
 
 # Copy the go module files and download dependencies
 COPY go.mod go.sum ./

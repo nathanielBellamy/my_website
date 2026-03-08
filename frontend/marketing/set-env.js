@@ -46,6 +46,10 @@ function parseEnvFile(filePath) {
 
 const vars = parseEnvFile(resolvedEnvFile);
 const isProduction = mode === 'production';
+const baseUrl = vars["BASE_URL"];
+const baseUrlApi = vars["BASE_URL_API"];
+const baseUrlOldSite = vars["BASE_URL_OLD_SITE"];
+
 
 function escapeForTs(value) {
   return value
@@ -53,13 +57,11 @@ function escapeForTs(value) {
     .replace(/'/g, "\\'");
 }
 
-const apiBaseUrl = escapeForTs(vars['API_BASE_URL'] || '');
-const oldSiteUrl = escapeForTs(vars['OLD_SITE_URL'] || '');
-
 const outputContent = `export const environment = {
   production: ${isProduction},
-  API_BASE_URL: '${apiBaseUrl}',
-  OLD_SITE_URL: '${oldSiteUrl}'
+  BASE_URL: '${baseUrl}',
+  BASE_URL_API: '${baseUrlApi}',
+  BASE_URL_OLD_SITE: '${baseUrlOldSite}'
 };
 `;
 

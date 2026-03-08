@@ -50,6 +50,12 @@ my_website/
 ```bash
 MODE=localhost # | remotedev | production
 
+# url
+BASE_URL=http://localhost:8080
+BASE_URL_API=http://localhost:8080/api
+BASE_URL_OLD_SITE=http://old-site.localhost:8080
+
+# recaptcha
 GOOGLE_API_KEY=xxxx
 RECAPTCHA_PROJECT_ID=xxxx # test google project
 RECAPTCHA_SITE_KEY=xxxx # test site key
