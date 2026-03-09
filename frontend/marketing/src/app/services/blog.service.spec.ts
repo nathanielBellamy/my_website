@@ -15,7 +15,7 @@ const mockBlogPosts: BlogPost[] = [
 describe('BlogService', () => {
   let service: BlogService;
   let httpMock: HttpTestingController;
-  const API_URL = `${environment.BASE_URL_API}/marketing/blog`;
+  const API_URL = `${environment.BASE_URL}/api/marketing/blog`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

@@ -2,8 +2,6 @@
 FROM node:20-slim AS builder
 WORKDIR /app
 
-RUN echo "fooooooooo \n\n\n\n BABBABABABBABABBBAYBYYYYY \n\n\n\n"
-
 # Install build dependencies
 RUN apt-get update && apt-get install -y ca-certificates curl gnupg build-essential
 

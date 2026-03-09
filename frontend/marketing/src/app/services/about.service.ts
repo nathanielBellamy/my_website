@@ -8,7 +8,7 @@ import { AboutContent } from '../models/about.model';
   providedIn: 'root',
 })
 export class AboutService {
-  private readonly apiUrl = `${environment.BASE_URL_API}/marketing/about`;
+  private readonly apiUrl = `${environment.BASE_URL}/api/marketing/about`;
   private readonly http = inject(HttpClient);
 
   getAll(page: number, limit: number): Promise<AboutContent[]> {

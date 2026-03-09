@@ -46,9 +46,8 @@ function parseEnvFile(filePath) {
 
 const vars = parseEnvFile(resolvedEnvFile);
 const isProduction = mode === 'production';
-const baseUrl = vars["BASE_URL"];
-const baseUrlApi = vars["BASE_URL_API"];
-const baseUrlOldSite = vars["BASE_URL_OLD_SITE"];
+const baseUrl = vars["BASE_URL"] || '';
+const baseUrlOldSite = vars["BASE_URL_OLD_SITE"] || '';
 
 
 function escapeForTs(value) {
@@ -59,11 +58,12 @@ function escapeForTs(value) {
 
 const outputContent = `export const environment = {
   production: ${isProduction},
-  BASE_URL: '${baseUrl}',
-  BASE_URL_API: '${baseUrlApi}',
-  BASE_URL_OLD_SITE: '${baseUrlOldSite}'
+  BASE_URL: '${escapeForTs(baseUrl)}',
+  BASE_URL_OLD_SITE: '${escapeForTs(baseUrlOldSite)}'
 };
 `;
+
+console.dir({outputContent})
 
 const resolvedOutput = path.resolve(process.cwd(), outputFilePath);
 fs.writeFileSync(resolvedOutput, outputContent);
