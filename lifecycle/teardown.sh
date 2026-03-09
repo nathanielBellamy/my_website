@@ -6,11 +6,12 @@ cd "$(dirname "$0")/.."
 
 # Function to display usage information
 usage() {
-    echo "Usage: $0 [ -f | -d | -b | -l ]"
+    echo "Usage: $0 [ -f | -d | -b | -l | -v ]"
     echo "  -f, --full      Teardown both the my_website_db and my_website_backend containers"
     echo "  -d, --db        Teardown only the my_website_db container"
     echo "  -b, --be        Teardown only the my_website_backend container"
     echo "  -l, --logs      Copy logs from the my_website_backend container without tearing down"
+    echo "  -v, --volumes   Teardown entire stack AND erase all volumes and stored data (full reset)"
     exit 1
 }
 
@@ -63,6 +64,12 @@ case "$1" in
         ;;
     -l|--logs)
         copy_logs
+        ;;
+    -v|--volumes)
+        copy_logs
+        echo "Tearing down entire docker compose stack and erasing all volumes..."
+        docker-compose down -v
+        echo "Entire docker compose stack torn down. All volumes erased."
         ;;
     *)
         usage

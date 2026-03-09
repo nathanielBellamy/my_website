@@ -61,7 +61,7 @@ RECAPTCHA_PROJECT_ID=xxxx # test google project
 RECAPTCHA_SITE_KEY=xxxx # test site key
 
 # totp
-ENABLE_AUTH_LOCAL=false # Optional: Set to true to test the login flow on localhost
+ENABLE_AUTH_LOCAL=false 
 TOTP_SECRET=xxxx
 ADMIN_EMAIL=xxxx
 SMTP_HOST=xxxx
