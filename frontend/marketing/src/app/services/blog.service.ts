@@ -8,8 +8,8 @@ import { BlogPost, Tag } from '../models/blog-post.model';
   providedIn: 'root',
 })
 export class BlogService {
-  private readonly apiUrl = `${environment.API_BASE_URL}/marketing/blog`;
-  private readonly tagsUrl = `${environment.API_BASE_URL}/marketing/tags`;
+  private readonly apiUrl = `${environment.BASE_URL}/api/marketing/blog`;
+  private readonly tagsUrl = `${environment.BASE_URL}/api/marketing/tags`;
   private readonly http = inject(HttpClient);
 
   // TODO: add route to marketing controller in backend/go/marketing

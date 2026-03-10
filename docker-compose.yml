@@ -22,6 +22,8 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
+      args:
+        MODE: ${MODE:-localhost}
     container_name: my_website_backend
     ports:
       - "8080:8080"
@@ -34,7 +36,7 @@ services:
       - .env/.env.localhost
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-db:5432/${POSTGRES_DB}?sslmode=disable
-      MODE: ${MODE:-remotedev}
+      MODE: ${MODE:-localhost}
       ENABLE_AUTH_LOCAL: ${ENABLE_AUTH_LOCAL:-false}
     logging:
       driver: "json-file"

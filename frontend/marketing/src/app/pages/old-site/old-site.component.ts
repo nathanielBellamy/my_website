@@ -15,7 +15,7 @@ export class OldSiteComponent implements AfterViewInit, OnDestroy {
   @ViewChild('appMain', { static: false }) appMainRef?: ElementRef;
   private magicSquarePromise: Promise<any> | null = null;
 
-  readonly oldSiteUrl = environment.OLD_SITE_URL;
+  readonly oldSiteUrl = environment.BASE_URL_OLD_SITE;
 
   async ngAfterViewInit(): Promise<void> {
     try {
