@@ -8,6 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "jest",
     "build-localhost": "npm run build-admin-localhost",
+    "build-remotedev": "npm run build-admin-remotedev",
+    "build-prod": "npm run build-admin-prod",
     "build-admin-localhost": "ng build --configuration localhost",
     "build-admin-remotedev": "ng build --configuration remotedev",
     "build-admin-prod": "ng build --configuration production"
