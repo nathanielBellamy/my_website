@@ -63,8 +63,6 @@ const outputContent = `export const environment = {
 };
 `;
 
-console.dir({outputContent})
-
 const resolvedOutput = path.resolve(process.cwd(), outputFilePath);
 fs.writeFileSync(resolvedOutput, outputContent);
 console.log(`Generated ${resolvedOutput} from ${resolvedEnvFile}`);
