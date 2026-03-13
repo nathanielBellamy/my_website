@@ -37,6 +37,9 @@ RUN npm --prefix marketing install
 
 # Copy environment variables before building SPAs so set-env scripts can read them
 COPY .env/ ./.env/
+# In Docker, SPAs are at /app/<spa>/ (1 level deep) but their set-env paths use ../../.env/
+# (designed for local layout: frontend/<spa>/, 2 levels deep). Symlink bridges the gap.
+RUN ln -s /app/.env /.env
 
 # Accept MODE as a build argument so it's available during RUN steps
 ARG MODE
