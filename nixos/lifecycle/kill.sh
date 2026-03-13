@@ -16,13 +16,17 @@ usage() {
 
 # --- Log copy function ---
 copy_logs() {
+    if ! docker inspect my_website_backend > /dev/null 2>&1; then
+        echo "No existing my_website_backend container found — skipping log copy."
+        return 0
+    fi
     echo "Copying logs from my_website_backend container..."
     YEAR=$(date -u +"%Y")
     MONTH=$(date -u +"%m")
     mkdir -p "log/$YEAR/$MONTH"
     TIMESTAMP=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
     LOG_FILE_NAME="${TIMESTAMP}-log.txt"
-    docker logs my_website_backend > "log/$YEAR/$MONTH/$LOG_FILE_NAME"
+    docker logs my_website_backend > "log/$YEAR/$MONTH/$LOG_FILE_NAME" 2>&1
     echo "Logs copied to log/$YEAR/$MONTH/$LOG_FILE_NAME"
 }
 
@@ -51,7 +55,7 @@ case "$1" in
     -f|--full)
         copy_logs
         echo "Tearing down entire docker compose stack..."
-        docker compose down
+        docker compose down || echo "No running compose stack to tear down."
         echo "Entire docker compose stack torn down."
         ;;
     -d|--db)
