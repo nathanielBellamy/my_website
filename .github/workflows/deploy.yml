@@ -52,8 +52,14 @@ jobs:
         if: github.ref == 'refs/heads/develop'
         run: |
           ./lifecycle/deploy-image.sh "${{ secrets.SSH_USER }}" "${{ secrets.SSH_HOST_DEV }}" ~/.ssh/id_rsa "develop"
+          echo "📂 Syncing nixos/lifecycle to ~/deploy/lifecycle on remote..."
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_DEV }}" "mkdir -p ~/deploy"
+          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -r nixos/lifecycle "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_DEV }}:~/deploy/"
 
       - name: Deploy to Production
         if: github.ref == 'refs/heads/main'
         run: |
           ./lifecycle/deploy-image.sh "${{ secrets.SSH_USER }}" "${{ secrets.SSH_HOST_PROD }}" ~/.ssh/id_rsa "production"
+          echo "📂 Syncing nixos/lifecycle to ~/deploy/lifecycle on remote..."
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_PROD }}" "mkdir -p ~/deploy"
+          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -r nixos/lifecycle "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_PROD }}:~/deploy/"
