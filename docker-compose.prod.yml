@@ -4,7 +4,7 @@ services:
     container_name: my_website_db
     restart: always
     env_file:
-      - .env/.env.production
+      - .env/.env.docker
     volumes:
       - postgres_data:/var/lib/postgresql
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -27,10 +27,7 @@ services:
     volumes:
       - ./uploads:/app/uploads
     env_file:
-      - .env/.env.production
-    environment:
-      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-db:5432/${POSTGRES_DB}?sslmode=disable
-      MODE: ${MODE:-production}
+      - .env/.env.docker
     logging:
       driver: "json-file"
       options:
