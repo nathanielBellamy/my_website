@@ -47,8 +47,4 @@ case $ENV in
         ;;
 esac
 
-echo "🌐 Base URL: $BASE_URL"
-echo "🔐 Admin URL: $ADMIN_URL"
-echo "🕰️ Old Site URL: $OLD_SITE_URL"
-
 cd e2e && $CYPRESS_CMD --env mode=$ENV,baseUrl=$BASE_URL,adminUrl=$ADMIN_URL,oldSiteUrl=$OLD_SITE_URL

@@ -37,7 +37,8 @@ jobs:
       - name: Build Docker Image
         run: |
           # Build for linux/amd64 since our target servers are standard Linux VMs
-          docker build --platform linux/amd64 -t my_website_backend:latest -f docker/Dockerfile .
+          # MODE=prod for all deploys: Angular production config + .env.production (populated per-branch from secrets)
+          docker build --platform linux/amd64 --build-arg MODE=prod -t my_website_backend:latest -f docker/Dockerfile .
 
       - name: Setup SSH Key
         env:
