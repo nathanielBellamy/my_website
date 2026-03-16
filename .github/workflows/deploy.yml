@@ -57,3 +57,54 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           ./lifecycle/deploy-image.sh "${{ secrets.SSH_USER }}" "${{ secrets.SSH_HOST_PROD }}" ~/.ssh/id_rsa "production"
+
+  post-release-e2e:
+    name: Post-Release E2E Smoke Tests
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+    environment:
+      name: ${{ github.ref_name == 'main' && 'production' || 'development' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: e2e/package-lock.json
+
+      - name: Create Environment File
+        env:
+          ENV_FILE_CONTENT: ${{ github.ref_name == 'main' && secrets.PROD_ENV_FILE || secrets.DEV_ENV_FILE }}
+        run: |
+          mkdir -p .env
+          echo "$ENV_FILE_CONTENT" > .env/.env.e2e
+
+      - name: Install E2E dependencies
+        run: cd e2e && npm ci
+
+      - name: Run Marketing E2E Smoke Tests
+        env:
+          E2E_ENV: ${{ github.ref_name == 'main' && 'prod' || 'remotedev' }}
+        run: |
+          ./lifecycle/e2e.sh \
+            --env "$E2E_ENV" \
+            --spec "cypress/e2e/marketing.cy.js,cypress/e2e/marketing-blog.cy.js,cypress/e2e/navbar-sticky.cy.js,cypress/e2e/rate-limit.cy.js"
+
+      - name: Upload Cypress Screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-test-screenshots
+          path: e2e/cypress/screenshots
+
+      - name: Upload Cypress Videos
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-test-videos
+          path: e2e/cypress/videos
