@@ -6,6 +6,7 @@ import { InfiniteScrollComponent } from '../../components/infinite-scroll/infini
 import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
 import { LatestPostsStore } from './latest-posts.store';
 import { PageComponent } from '../../components/page/page.component';
+import { encodeId } from '../../utils/id-encoder';
 
 @Component({
   selector: 'app-latest-posts',
@@ -26,7 +27,7 @@ export class LatestPostsComponent implements OnInit {
   }
 
   viewContent(id: string) {
-    this.router.navigate(['/home', id]);
+    this.router.navigate(['/home', encodeId(id)]);
   }
 
   getSnippet(content: string): string {

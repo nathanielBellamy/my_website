@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { BlogStore } from './blog.store';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -8,6 +8,7 @@ import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive
 import { Tag } from '../../models/blog-post.model';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { PageComponent } from '../../components/page/page.component';
+import { encodeId } from '../../utils/id-encoder';
 
 @Component({
   selector: 'app-blog',
@@ -44,7 +45,7 @@ export class BlogComponent implements OnInit, OnDestroy {
   }
 
   viewPost(id: string) {
-    this.router.navigate(['/blog', id]);
+    this.router.navigate(['/blog', encodeId(id)]);
   }
 
   getSnippet(content: string): string {

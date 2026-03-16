@@ -6,6 +6,7 @@ import { Title, Meta } from '@angular/platform-browser';
 import { GrooveJrService } from '../../services/groove-jr.service';
 import { GrooveJrContent } from '../../models/groove-jr.model';
 import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
+import { decodeId } from '../../utils/id-encoder';
 
 @Component({
   selector: 'app-groove-jr-content-details',
@@ -24,12 +25,14 @@ export class GrooveJrContentDetailsComponent implements OnInit {
   error = signal<string | null>(null);
 
   async ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id) {
+    const rawId = this.route.snapshot.paramMap.get('id');
+    if (!rawId) {
       this.error.set('No GrooveJr content ID provided');
       this.loading.set(false);
       return;
     }
+
+    const id = decodeId(rawId);
 
     try {
       const content = await this.grooveJrService.getById(id);

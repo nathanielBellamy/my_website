@@ -6,6 +6,7 @@ import { InfiniteScrollComponent } from '../../components/infinite-scroll/infini
 import { CardComponent } from '../../components/card/card.component';
 import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
 import { PageComponent } from '../../components/page/page.component';
+import { encodeId } from '../../utils/id-encoder';
 
 @Component({
   selector: 'app-groove-jr',
@@ -26,7 +27,7 @@ export class GrooveJrComponent implements OnInit {
   }
 
   viewContent(id: string) {
-    this.router.navigate(['/groovejr', id]);
+    this.router.navigate(['/groovejr', encodeId(id)]);
   }
 
   getSnippet(content: string): string {

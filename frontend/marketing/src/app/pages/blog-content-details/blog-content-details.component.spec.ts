@@ -8,7 +8,7 @@ import { provideMarkdown } from 'ngx-markdown';
 
 describe('BlogContentDetailsComponent', () => {
   const mockBlogPost: BlogPost = {
-    id: '123',
+    id: '550e8400-e29b-41d4-a716-446655440000',
     title: 'Test Post',
     content: 'This is a test post content.',
     author: { id: '1', name: 'Test Author' },
@@ -85,5 +85,35 @@ describe('BlogContentDetailsComponent', () => {
     });
 
     expect(await screen.findByText('Failed to load blog post')).toBeTruthy();
+  });
+
+  it('should decode a hex-encoded UUID from the URL before calling the service', async () => {
+    const hexId = '550e8400e29b41d4a716446655440000';
+    const expectedUuid = '550e8400-e29b-41d4-a716-446655440000';
+
+    const hexIdRoute = {
+      snapshot: {
+        paramMap: {
+          get: jest.fn().mockReturnValue(hexId),
+        },
+      },
+    };
+
+    const trackingService = {
+      getById: jest.fn().mockResolvedValue(mockBlogPost),
+    };
+
+    await render(BlogContentDetailsComponent, {
+      componentProviders: [
+        { provide: BlogService, useValue: trackingService },
+        { provide: ActivatedRoute, useValue: hexIdRoute },
+      ],
+      providers: [
+        provideMarkdown()
+      ]
+    });
+
+    expect(trackingService.getById).toHaveBeenCalledWith(expectedUuid);
+    expect(await screen.findByText('Test Post')).toBeTruthy();
   });
 });
