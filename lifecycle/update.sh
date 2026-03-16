@@ -16,7 +16,11 @@ for project in "${FRONTEND_PROJECTS[@]}"; do
 ${project}
 
 EOF
-    (cd "$project" && npm audit fix)
+    if [[ "$project" == "frontend/old-site" || "$project" == "frontend/auth" ]]; then
+      (cd "$project" && npm audit fix --legacy-peer-deps)
+    else
+      (cd "$project" && npm audit fix)
+    fi
   fi
 done
 
