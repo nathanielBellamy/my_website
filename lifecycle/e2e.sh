@@ -3,11 +3,13 @@ cd "$(dirname "$0")/.."
 
 HEADLESS=true
 ENV="localhost"
+SPEC=""
 
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         -h|--head) HEADLESS=false ;;
         -e|--env) ENV="$2"; shift ;;
+        -s|--spec) SPEC="$2"; shift ;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
     esac
     shift
@@ -41,10 +43,19 @@ case $ENV in
         ADMIN_URL="https://admin.dev.nateschieber.dev"
         OLD_SITE_URL="https://old-site.dev.nateschieber.dev"
         ;;
+    "prod")
+        BASE_URL="https://nateschieber.dev"
+        ADMIN_URL="https://admin.nateschieber.dev"
+        OLD_SITE_URL="https://old-site.nateschieber.dev"
+        ;;
     *)
         echo "Unknown environment: $ENV"
         exit 1
         ;;
 esac
 
-cd e2e && $CYPRESS_CMD --env mode=$ENV,baseUrl=$BASE_URL,adminUrl=$ADMIN_URL,oldSiteUrl=$OLD_SITE_URL
+if [ -n "$SPEC" ]; then
+    cd e2e && $CYPRESS_CMD --spec "$SPEC" --env mode=$ENV,baseUrl=$BASE_URL,adminUrl=$ADMIN_URL,oldSiteUrl=$OLD_SITE_URL
+else
+    cd e2e && $CYPRESS_CMD --env mode=$ENV,baseUrl=$BASE_URL,adminUrl=$ADMIN_URL,oldSiteUrl=$OLD_SITE_URL
+fi
