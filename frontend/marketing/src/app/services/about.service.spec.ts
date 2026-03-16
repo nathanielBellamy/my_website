@@ -15,7 +15,7 @@ const mockAboutContent: AboutContent[] = [
 describe('AboutService', () => {
   let service: AboutService;
   let httpMock: HttpTestingController;
-  const API_URL = `${environment.API_BASE_URL}/marketing/about`;
+  const API_URL = `${environment.BASE_URL}/api/marketing/about`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
