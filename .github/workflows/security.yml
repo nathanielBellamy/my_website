@@ -2,7 +2,7 @@ name: Security Audit
 
 on:
   pull_request:
-    branches:
+    branches-ignore:
       - main
       - develop
   workflow_call:
