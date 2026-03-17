@@ -2,9 +2,9 @@
     <app-navbar></app-navbar>
     <div 
         id="main-scroll-container"
-        class="grow flex flex-col items-stretch relative overflow-hidden" 
+        class="grow min-h-0 flex flex-col items-stretch relative overflow-y-auto" 
         data-testid="main-scroll-container">
-        <div class="grow w-full h-full flex flex-col justify-around items-stretch overflow-hidden">
+        <div class="grow w-full flex flex-col items-stretch">
             <router-outlet />
         </div>
     </div>

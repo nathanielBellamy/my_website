@@ -6,6 +6,7 @@ import { Title, Meta } from '@angular/platform-browser';
 import { BlogService } from '../../services/blog.service';
 import { BlogPost } from '../../models/blog-post.model';
 import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
+import { decodeId } from '../../utils/id-encoder';
 
 @Component({
   selector: 'app-blog-content-details',
@@ -53,12 +54,14 @@ export class BlogContentDetailsComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id) {
+    const rawId = this.route.snapshot.paramMap.get('id');
+    if (!rawId) {
       this.error.set('No blog post ID provided');
       this.loading.set(false);
       return;
     }
+
+    const id = decodeId(rawId);
 
     try {
       const post = await this.blogService.getById(id);
