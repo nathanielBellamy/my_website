@@ -418,10 +418,10 @@ func TestSitemapHandler(t *testing.T) {
 	if !strings.Contains(body, "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">") {
 		t.Errorf("sitemap missing urlset tag")
 	}
-	if !strings.Contains(body, "<loc>https://nateschieber.dev/blog/post-1</loc>") {
+	if !strings.Contains(body, "<loc>https://nateschieber.dev/blog/post1</loc>") {
 		t.Errorf("sitemap missing post-1 loc")
 	}
-	if !strings.Contains(body, "<loc>https://nateschieber.dev/blog/post-2</loc>") {
+	if !strings.Contains(body, "<loc>https://nateschieber.dev/blog/post2</loc>") {
 		t.Errorf("sitemap missing post-2 loc")
 	}
 	if !strings.Contains(body, "<loc>https://nateschieber.dev/about</loc>") {

@@ -6,6 +6,7 @@ import { Title, Meta } from '@angular/platform-browser';
 import { HomeService } from '../../services/home.service';
 import { HomeContent } from '../../models/home.model';
 import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
+import { decodeId } from '../../utils/id-encoder';
 
 @Component({
   selector: 'app-home-content-details',
@@ -24,12 +25,14 @@ export class HomeContentDetailsComponent implements OnInit {
   error = signal<string | null>(null);
 
   async ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id) {
+    const rawId = this.route.snapshot.paramMap.get('id');
+    if (!rawId) {
       this.error.set('No home content ID provided');
       this.loading.set(false);
       return;
     }
+
+    const id = decodeId(rawId);
 
     try {
       const content = await this.homeService.getById(id);

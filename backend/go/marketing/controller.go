@@ -317,7 +317,7 @@ func (mc *MarketingController) SitemapHandler(w http.ResponseWriter, r *http.Req
 
 	// Dynamic Blog Posts
 	for _, post := range posts {
-		urlStr := baseUrl + "/blog/" + post.ID
+		urlStr := baseUrl + "/blog/" + strings.ReplaceAll(post.ID, "-", "")
 		lastMod := post.UpdatedAt.Format("2006-01-02")
 		urls = append(urls, URL{
 			Loc:        urlStr,
@@ -404,33 +404,5 @@ func (mc *MarketingController) ImageServingHandler(w http.ResponseWriter, r *htt
 }
 
 func GetMarketingFileServerNoAuth(log *zerolog.Logger) http.Handler {
-	root := http.Dir("build/marketing/browser")
-	fs := http.FileServer(root)
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Add Security Headers
-		w.Header().Set("X-Frame-Options", "DENY")
-		// CSP: strict but allows necessary assets.
-		// script-src 'unsafe-inline' 'unsafe-eval' is often needed for Angular/SPA dev/prod builds unless strictly managed.
-		// style-src 'unsafe-inline' is needed for Angular component styles.
-		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:;")
-
-		// Check if the file exists
-		f, err := root.Open(r.URL.Path)
-		if os.IsNotExist(err) {
-			// If not, serve index.html
-			log.Debug().Str("path", r.URL.Path).Msg("File not found, serving index.html")
-			http.ServeFile(w, r, "build/marketing/browser/index.html")
-			return
-		}
-		// Close the file if it was opened successfully to avoid FD leak
-		if f != nil {
-			if err := f.Close(); err != nil {
-				log.Printf("failed to close file: %v", err)
-			}
-		}
-
-		log.Debug().Str("path", r.URL.Path).Msg("Serving static file")
-		// Otherwise, serve the file
-		fs.ServeHTTP(w, r)
-	})
+	return auth.SpaHandler("build/marketing/browser", "index.html")
 }

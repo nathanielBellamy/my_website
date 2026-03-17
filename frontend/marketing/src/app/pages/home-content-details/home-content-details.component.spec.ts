@@ -7,7 +7,7 @@ import { provideMarkdown } from 'ngx-markdown';
 
 describe('HomeContentDetailsComponent', () => {
   const mockHomeContent: HomeContent = {
-    id: '123',
+    id: '550e8400-e29b-41d4-a716-446655440000',
     title: 'Test Home Title',
     content: 'This is test home content.',
     order: 1,
@@ -78,5 +78,35 @@ describe('HomeContentDetailsComponent', () => {
     });
 
     expect(await screen.findByText('Failed to load home content')).toBeTruthy();
+  });
+
+  it('should decode a hex-encoded UUID from the URL before calling the service', async () => {
+    const hexId = '550e8400e29b41d4a716446655440000';
+    const expectedUuid = '550e8400-e29b-41d4-a716-446655440000';
+
+    const hexIdRoute = {
+      snapshot: {
+        paramMap: {
+          get: jest.fn().mockReturnValue(hexId),
+        },
+      },
+    };
+
+    const trackingService = {
+      getById: jest.fn().mockResolvedValue(mockHomeContent),
+    };
+
+    await render(HomeContentDetailsComponent, {
+      componentProviders: [
+        { provide: HomeService, useValue: trackingService },
+        { provide: ActivatedRoute, useValue: hexIdRoute },
+      ],
+      providers: [
+        provideMarkdown(),
+      ],
+    });
+
+    expect(trackingService.getById).toHaveBeenCalledWith(expectedUuid);
+    expect(await screen.findByText('Test Home Title')).toBeTruthy();
   });
 });

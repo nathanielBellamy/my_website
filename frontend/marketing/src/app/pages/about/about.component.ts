@@ -6,6 +6,7 @@ import { InfiniteScrollComponent } from '../../components/infinite-scroll/infini
 import { CardComponent } from '../../components/card/card.component';
 import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
 import { PageComponent } from '../../components/page/page.component';
+import { encodeId } from '../../utils/id-encoder';
 
 @Component({
   selector: 'app-about',
@@ -26,7 +27,7 @@ export class AboutComponent implements OnInit {
   }
 
   viewContent(id: string) {
-    this.router.navigate(['/about', id]);
+    this.router.navigate(['/about', encodeId(id)]);
   }
 
   getSnippet(content: string): string {
