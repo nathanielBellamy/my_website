@@ -23,7 +23,7 @@ export function extractYouTubeVideoId(href: string): string | null {
 
 export const markedYouTubeExtension: MarkedExtension = {
   renderer: {
-    link({ href, title, text }: { href: string; title: string | null; text: string }) {
+    link({ href, title, text }: { href: string; title?: string | null; text: string }) {
       const videoId = extractYouTubeVideoId(href);
       if (!videoId) {
         return false;
