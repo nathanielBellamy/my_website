@@ -1,47 +1,21 @@
 import { render, screen } from '@testing-library/angular';
 import { AppComponent } from './app.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { HeaderComponent } from './components/header/header.component';
-import { RouterTestingModule } from '@angular/router/testing';
 import { Component } from '@angular/core';
+import { provideRouter } from '@angular/router';
 
-@Component({ template: '' })
+@Component({ selector: 'app-dummy', template: '<p>dummy</p>' })
 class DummyComponent {}
 
 describe('AppComponent', () => {
-
-    it('should render the navbar', async () => {
-
-      await render(AppComponent, {
-
-        imports: [
-
-          NavbarComponent,
-
-          HeaderComponent,
-
-          RouterTestingModule.withRoutes([
-
-            { path: '', component: DummyComponent },
-
-            { path: 'about', component: DummyComponent },
-
-            { path: 'groovejr', component: DummyComponent },
-
-            { path: 'blog', component: DummyComponent },
-
-          ]),
-
-        ],
-
-        providers: [],
-
-      });
-
-      screen.getByRole('navigation');
-
+  it('should render the router outlet', async () => {
+    await render(AppComponent, {
+      providers: [
+        provideRouter([{ path: '**', component: DummyComponent }]),
+      ],
     });
 
+    expect(screen.getByText('dummy')).toBeInTheDocument();
   });
+});
 
   

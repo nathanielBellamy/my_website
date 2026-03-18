@@ -17,7 +17,23 @@ EOF
 
 # TODO_NS: test future angular auth spa
 
-# Function for marketing SPA tests
+# Function for auth admin SPA tests
+test_auth_admin_spa() {
+  cat << EOF
+
+  📣  🧪   TESTING:
+AUTH ADMIN SPA
+EOF
+  cd frontend/auth/admin && npm test
+  cd ../../..
+  cat << EOF
+
+  📣  🏁  DONE:
+AUTH ADMIN SPA TESTED
+EOF
+}
+
+# Function for admin SPA tests
 test_admin_spa() {
   cat << EOF
 
@@ -58,6 +74,7 @@ cat << EOF
 EOF
 
 test_go_server
+test_auth_admin_spa
 test_admin_spa
 test_marketing_spa
 
