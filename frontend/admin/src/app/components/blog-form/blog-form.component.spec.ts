@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/angular';
 import { BlogFormComponent } from './blog-form.component';
 import { BlogPost } from '../../models/data-models';
+import { provideMarkdown } from 'ngx-markdown';
 
 describe('BlogFormComponent', () => {
   const mockPost: BlogPost = {
@@ -14,12 +15,15 @@ describe('BlogFormComponent', () => {
   };
 
   it('should create', async () => {
-    await render(BlogFormComponent);
+    await render(BlogFormComponent, {
+      providers: [provideMarkdown()],
+    });
     expect(screen.getByText('Blog Post')).toBeInTheDocument();
   });
 
   it('should populate form when post is provided', async () => {
     await render(BlogFormComponent, {
+      providers: [provideMarkdown()],
       componentInputs: {
         post: mockPost,
       },
@@ -34,6 +38,7 @@ describe('BlogFormComponent', () => {
   it('should emit submitForm when valid form is submitted', async () => {
     const submitSpy = jest.fn();
     await render(BlogFormComponent, {
+      providers: [provideMarkdown()],
       on: {
         submitForm: submitSpy,
       },
@@ -60,6 +65,7 @@ describe('BlogFormComponent', () => {
   it('should emit cancel when Cancel button is clicked', async () => {
     const cancelSpy = jest.fn();
     await render(BlogFormComponent, {
+      providers: [provideMarkdown()],
       on: {
         cancel: cancelSpy,
       },

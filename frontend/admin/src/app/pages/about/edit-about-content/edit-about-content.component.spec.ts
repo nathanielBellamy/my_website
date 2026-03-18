@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { AboutContent } from '../../../models/data-models';
+import { provideMarkdown } from 'ngx-markdown';
 
 describe('EditAboutContentComponent', () => {
   let mockAboutService: Partial<AboutService>;
@@ -31,6 +32,7 @@ describe('EditAboutContentComponent', () => {
         { provide: AboutService, useValue: mockAboutService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
     // Wait for the content to be loaded and the form to appear

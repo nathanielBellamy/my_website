@@ -4,6 +4,7 @@ import { BlogService } from '../../../services/blog.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { BlogPost } from '../../../models/data-models';
+import { provideMarkdown } from 'ngx-markdown';
 
 describe('EditBlogPostComponent', () => {
   let mockBlogService: Partial<BlogService>;
@@ -44,6 +45,7 @@ describe('EditBlogPostComponent', () => {
         { provide: BlogService, useValue: mockBlogService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
     expect(screen.getByText('Edit Blog Post')).toBeInTheDocument();
@@ -55,6 +57,7 @@ describe('EditBlogPostComponent', () => {
         { provide: BlogService, useValue: mockBlogService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
 
@@ -71,6 +74,7 @@ describe('EditBlogPostComponent', () => {
         { provide: BlogService, useValue: mockBlogService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
 
@@ -98,6 +102,7 @@ describe('EditBlogPostComponent', () => {
         { provide: BlogService, useValue: mockBlogService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
 

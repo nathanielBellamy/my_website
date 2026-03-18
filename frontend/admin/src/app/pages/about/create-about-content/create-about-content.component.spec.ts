@@ -5,6 +5,7 @@ import { AboutService } from '../../../services/about.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AboutContent } from '../../../models/data-models';
+import { provideMarkdown } from 'ngx-markdown';
 
 describe('CreateAboutContentComponent', () => {
   let mockAboutService: Partial<AboutService>;
@@ -22,6 +23,7 @@ describe('CreateAboutContentComponent', () => {
       providers: [
         { provide: AboutService, useValue: mockAboutService },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
   });

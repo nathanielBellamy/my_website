@@ -5,6 +5,7 @@ import { GrooveJrService } from '../../../services/groove-jr.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { GrooveJrContent } from '../../../models/data-models';
+import { provideMarkdown } from 'ngx-markdown';
 
 describe('CreateGrooveJrContentComponent', () => {
 
@@ -23,6 +24,7 @@ describe('CreateGrooveJrContentComponent', () => {
       providers: [
         { provide: GrooveJrService, useValue: mockGrooveJrService },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
   });

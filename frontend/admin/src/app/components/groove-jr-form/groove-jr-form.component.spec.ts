@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/angular';
 import { GrooveJrFormComponent } from './groove-jr-form.component';
 import { GrooveJrContent } from '../../models/data-models';
+import { provideMarkdown } from 'ngx-markdown';
 
 describe('GrooveJrFormComponent', () => {
   const mockContent: GrooveJrContent = {
@@ -13,12 +14,15 @@ describe('GrooveJrFormComponent', () => {
   };
 
   it('should create', async () => {
-    await render(GrooveJrFormComponent);
+    await render(GrooveJrFormComponent, {
+      providers: [provideMarkdown()],
+    });
     expect(screen.getByText('Groove Jr Content')).toBeInTheDocument();
   });
 
   it('should populate form when contentData is provided', async () => {
     await render(GrooveJrFormComponent, {
+      providers: [provideMarkdown()],
       componentInputs: {
         contentData: mockContent,
       },
@@ -31,6 +35,7 @@ describe('GrooveJrFormComponent', () => {
   it('should emit submitForm when valid form is submitted', async () => {
     const submitSpy = jest.fn();
     await render(GrooveJrFormComponent, {
+      providers: [provideMarkdown()],
       on: {
         submitForm: submitSpy,
       },
@@ -50,6 +55,7 @@ describe('GrooveJrFormComponent', () => {
   it('should emit cancel when Cancel button is clicked', async () => {
     const cancelSpy = jest.fn();
     await render(GrooveJrFormComponent, {
+      providers: [provideMarkdown()],
       on: {
         cancel: cancelSpy,
       },

@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { GrooveJrContent } from '../../../models/data-models';
+import { provideMarkdown } from 'ngx-markdown';
 
 describe('EditGrooveJrContentComponent', () => {
   let mockGrooveJrService: Partial<GrooveJrService>;
@@ -31,6 +32,7 @@ describe('EditGrooveJrContentComponent', () => {
         { provide: GrooveJrService, useValue: mockGrooveJrService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
     // Wait for the content to be loaded and the form to appear

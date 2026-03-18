@@ -3,6 +3,7 @@ import { CreateBlogPostComponent } from './create-blog-post.component';
 import { BlogService } from '../../../services/blog.service';
 import { Router } from '@angular/router';
 import { BlogPost } from '../../../models/data-models';
+import { provideMarkdown } from 'ngx-markdown';
 
 describe('CreateBlogPostComponent', () => {
   let mockBlogService: Partial<BlogService>;
@@ -23,6 +24,7 @@ describe('CreateBlogPostComponent', () => {
       providers: [
         { provide: BlogService, useValue: mockBlogService },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
     expect(screen.getByText('Create New Blog Post')).toBeInTheDocument();
@@ -33,6 +35,7 @@ describe('CreateBlogPostComponent', () => {
       providers: [
         { provide: BlogService, useValue: mockBlogService },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
 
@@ -61,6 +64,7 @@ describe('CreateBlogPostComponent', () => {
       providers: [
         { provide: BlogService, useValue: mockBlogService },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
 

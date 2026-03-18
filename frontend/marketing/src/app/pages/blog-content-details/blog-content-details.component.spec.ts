@@ -47,7 +47,7 @@ describe('BlogContentDetailsComponent', () => {
     expect(await screen.findByText('#angular')).toBeTruthy();
   });
 
-  it('should show error if no id provided', async () => {
+  it('should show loading throbber if no id provided', async () => {
     const routeNoId = {
       snapshot: {
         paramMap: {
@@ -66,10 +66,11 @@ describe('BlogContentDetailsComponent', () => {
       ]
     });
 
-    expect(await screen.findByText('No blog post ID provided')).toBeTruthy();
+    expect(await screen.findByRole('status', { name: 'Loading content' })).toBeTruthy();
+    expect(screen.queryByText('No blog post ID provided')).toBeNull();
   });
 
-  it('should show error if fetch fails', async () => {
+  it('should show loading throbber if fetch fails', async () => {
     const mockErrorService = {
       getById: jest.fn().mockRejectedValue(new Error('Fetch failed')),
     };
@@ -84,7 +85,8 @@ describe('BlogContentDetailsComponent', () => {
       ]
     });
 
-    expect(await screen.findByText('Failed to load blog post')).toBeTruthy();
+    expect(await screen.findByRole('status', { name: 'Loading content' })).toBeTruthy();
+    expect(screen.queryByText('Failed to load blog post')).toBeNull();
   });
 
   it('should decode a hex-encoded UUID from the URL before calling the service', async () => {

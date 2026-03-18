@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/angular';
 import { AboutFormComponent } from './about-form.component';
 import { AboutContent } from '../../models/data-models';
+import { provideMarkdown } from 'ngx-markdown';
 
 describe('AboutFormComponent', () => {
   const mockContent: AboutContent = {
@@ -13,12 +14,15 @@ describe('AboutFormComponent', () => {
   };
 
   it('should create', async () => {
-    await render(AboutFormComponent);
+    await render(AboutFormComponent, {
+      providers: [provideMarkdown()],
+    });
     expect(screen.getByText('About Content')).toBeInTheDocument();
   });
 
   it('should populate form when contentData is provided', async () => {
     await render(AboutFormComponent, {
+      providers: [provideMarkdown()],
       componentInputs: {
         contentData: mockContent,
       },
@@ -31,6 +35,7 @@ describe('AboutFormComponent', () => {
   it('should emit submitForm when valid form is submitted', async () => {
     const submitSpy = jest.fn();
     await render(AboutFormComponent, {
+      providers: [provideMarkdown()],
       on: {
         submitForm: submitSpy,
       },
@@ -50,6 +55,7 @@ describe('AboutFormComponent', () => {
   it('should emit cancel when Cancel button is clicked', async () => {
     const cancelSpy = jest.fn();
     await render(AboutFormComponent, {
+      providers: [provideMarkdown()],
       on: {
         cancel: cancelSpy,
       },

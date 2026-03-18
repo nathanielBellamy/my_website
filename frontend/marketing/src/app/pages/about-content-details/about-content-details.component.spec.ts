@@ -40,7 +40,7 @@ describe('AboutContentDetailsComponent', () => {
     expect(await screen.findByText('This is test about content.')).toBeTruthy();
   });
 
-  it('should show error if no id provided', async () => {
+  it('should show loading throbber if no id provided', async () => {
     const routeNoId = {
       snapshot: {
         paramMap: {
@@ -59,10 +59,11 @@ describe('AboutContentDetailsComponent', () => {
       ],
     });
 
-    expect(await screen.findByText('No about content ID provided')).toBeTruthy();
+    expect(await screen.findByRole('status', { name: 'Loading content' })).toBeTruthy();
+    expect(screen.queryByText('No about content ID provided')).toBeNull();
   });
 
-  it('should show error if fetch fails', async () => {
+  it('should show loading throbber if fetch fails', async () => {
     const mockErrorService = {
       getById: jest.fn().mockRejectedValue(new Error('Fetch failed')),
     };
@@ -77,7 +78,8 @@ describe('AboutContentDetailsComponent', () => {
       ],
     });
 
-    expect(await screen.findByText('Failed to load about content')).toBeTruthy();
+    expect(await screen.findByRole('status', { name: 'Loading content' })).toBeTruthy();
+    expect(screen.queryByText('Failed to load about content')).toBeNull();
   });
 
   it('should decode a hex-encoded UUID from the URL before calling the service', async () => {

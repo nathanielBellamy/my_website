@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { HomeContent } from '../../models/data-models';
+import { provideMarkdown } from 'ngx-markdown';
 
 describe('EditHomeContentComponent', () => {
   let mockHomeService: Partial<HomeService>;
@@ -32,6 +33,7 @@ describe('EditHomeContentComponent', () => {
         { provide: HomeService, useValue: mockHomeService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
     await waitFor(() => {
@@ -45,6 +47,7 @@ describe('EditHomeContentComponent', () => {
         { provide: HomeService, useValue: mockHomeService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
 
@@ -61,6 +64,7 @@ describe('EditHomeContentComponent', () => {
         { provide: HomeService, useValue: mockHomeService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
 
@@ -91,6 +95,7 @@ describe('EditHomeContentComponent', () => {
         { provide: HomeService, useValue: mockHomeService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
 

@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/angular';
 import { HomeFormComponent } from './home-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HomeContent } from '../../models/data-models';
+import { provideMarkdown } from 'ngx-markdown';
 
 describe('HomeFormComponent', () => {
   const mockContent: HomeContent = {
@@ -14,12 +15,15 @@ describe('HomeFormComponent', () => {
   };
 
   it('should create', async () => {
-    await render(HomeFormComponent);
+    await render(HomeFormComponent, {
+      providers: [provideMarkdown()],
+    });
     expect(screen.getByText('Home Content')).toBeInTheDocument();
   });
 
   it('should populate form when contentData is provided', async () => {
     await render(HomeFormComponent, {
+      providers: [provideMarkdown()],
       componentInputs: {
         contentData: mockContent,
       },
@@ -33,6 +37,7 @@ describe('HomeFormComponent', () => {
   it('should emit submitForm when valid form is submitted', async () => {
     const submitSpy = jest.fn();
     await render(HomeFormComponent, {
+      providers: [provideMarkdown()],
       on: {
         submitForm: submitSpy,
       },
@@ -54,6 +59,7 @@ describe('HomeFormComponent', () => {
   it('should emit cancel when Cancel button is clicked', async () => {
     const cancelSpy = jest.fn();
     await render(HomeFormComponent, {
+      providers: [provideMarkdown()],
       on: {
         cancel: cancelSpy,
       },
@@ -64,7 +70,9 @@ describe('HomeFormComponent', () => {
   });
 
   it('should show error if dates are invalid', async () => {
-    await render(HomeFormComponent);
+    await render(HomeFormComponent, {
+      providers: [provideMarkdown()],
+    });
 
     await fireEvent.input(screen.getByLabelText('Activation Time'), { target: { value: '2023-01-02T10:00' } });
     await fireEvent.input(screen.getByLabelText('Deactivation Time'), { target: { value: '2023-01-01T10:00' } });

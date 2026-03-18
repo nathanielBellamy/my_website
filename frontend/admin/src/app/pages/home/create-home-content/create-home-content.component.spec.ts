@@ -4,6 +4,7 @@ import { HomeService } from 'app/services/home.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HomeContent } from '../../models/data-models';
+import { provideMarkdown } from 'ngx-markdown';
 
 describe('CreateHomeContentComponent', () => {
   let mockHomeService: Partial<HomeService>;
@@ -23,6 +24,7 @@ describe('CreateHomeContentComponent', () => {
       providers: [
         { provide: HomeService, useValue: mockHomeService },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
     expect(screen.getByText('Home Content')).toBeInTheDocument();
@@ -33,6 +35,7 @@ describe('CreateHomeContentComponent', () => {
       providers: [
         { provide: HomeService, useValue: mockHomeService },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
 
@@ -58,6 +61,7 @@ describe('CreateHomeContentComponent', () => {
       providers: [
         { provide: HomeService, useValue: mockHomeService },
         { provide: Router, useValue: mockRouter },
+        provideMarkdown(),
       ],
     });
 
