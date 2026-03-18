@@ -7,6 +7,7 @@ import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive
 import { LatestPostsStore } from './latest-posts.store';
 import { PageComponent } from '../../components/page/page.component';
 import { encodeId } from '../../utils/id-encoder';
+import { getSnippet } from '../../utils/snippet';
 
 @Component({
   selector: 'app-latest-posts',
@@ -31,11 +32,6 @@ export class LatestPostsComponent implements OnInit {
   }
 
   getSnippet(content: string): string {
-    if (!content) return '';
-    const firstPeriod = content.indexOf('.');
-    if (firstPeriod > -1 && firstPeriod < 200) {
-      return content.substring(0, firstPeriod + 1);
-    }
-    return content.length > 150 ? content.substring(0, 150) + '...' : content;
+    return getSnippet(content);
   }
 }

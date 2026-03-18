@@ -7,6 +7,7 @@ import { CardComponent } from '../../components/card/card.component';
 import { ScrollFadeInDirective } from '../../directives/scroll-fade-in.directive';
 import { PageComponent } from '../../components/page/page.component';
 import { encodeId } from '../../utils/id-encoder';
+import { getSnippet } from '../../utils/snippet';
 
 @Component({
   selector: 'app-groove-jr',
@@ -31,11 +32,6 @@ export class GrooveJrComponent implements OnInit {
   }
 
   getSnippet(content: string): string {
-    if (!content) return '';
-    const firstPeriod = content.indexOf('.');
-    if (firstPeriod > -1 && firstPeriod < 200) {
-      return content.substring(0, firstPeriod + 1);
-    }
-    return content.length > 150 ? content.substring(0, 150) + '...' : content;
+    return getSnippet(content);
   }
 }

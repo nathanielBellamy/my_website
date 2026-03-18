@@ -9,6 +9,7 @@ import { Tag } from '../../models/blog-post.model';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { PageComponent } from '../../components/page/page.component';
 import { encodeId } from '../../utils/id-encoder';
+import { getSnippet } from '../../utils/snippet';
 
 @Component({
   selector: 'app-blog',
@@ -49,13 +50,7 @@ export class BlogComponent implements OnInit, OnDestroy {
   }
 
   getSnippet(content: string): string {
-    if (!content) return '';
-    // simple snippet: first sentence or first 150 chars
-    const firstPeriod = content.indexOf('.');
-    if (firstPeriod > -1 && firstPeriod < 200) {
-        return content.substring(0, firstPeriod + 1);
-    }
-    return content.length > 150 ? content.substring(0, 150) + '...' : content;
+    return getSnippet(content);
   }
 
   getTags(tags: Tag[]): string[] {
