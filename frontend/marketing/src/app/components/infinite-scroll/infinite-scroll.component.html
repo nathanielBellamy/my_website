@@ -10,14 +10,12 @@
 
   <div #sentinel class="h-4 w-full"></div>
 
-  @if (error()) {
-    <div class="error-message">
-      <p>Error: {{ error() }}</p>
-    </div>
-  }
-
-  @if (loading()) {
-    <div class="loading-indicator">
+  @if (error() || loading()) {
+    <div
+      class="loading-indicator flex justify-center items-center gap-3 py-4"
+      role="status"
+      aria-label="Loading content">
+      <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-current"></div>
       <p>Loading...</p>
     </div>
   }

@@ -6,7 +6,7 @@
 #
 cd "$(dirname "$0")/.."
 
-FRONTEND_PROJECTS=("frontend/marketing" "frontend/admin" "frontend/auth" "frontend/old-site")
+FRONTEND_PROJECTS=("frontend/marketing" "frontend/admin" "frontend/auth/admin" "frontend/old-site")
 
 for project in "${FRONTEND_PROJECTS[@]}"; do
   if [ -d "$project" ] && [ -f "$project/package.json" ]; then

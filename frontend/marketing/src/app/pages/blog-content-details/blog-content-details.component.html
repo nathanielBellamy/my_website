@@ -8,13 +8,12 @@
     </a>
   </div>
 
-  @if (loading()) {
-    <div class="flex justify-center items-center h-64">
+  @if (loading() || error()) {
+    <div
+      class="flex justify-center items-center h-64"
+      role="status"
+      aria-label="Loading content">
       <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-accent"></div>
-    </div>
-  } @else if (error()) {
-    <div class="bg-red-500/10 border border-red-500 text-red-500 p-4 rounded-lg text-center">
-      {{ error() }}
     </div>
   } @else if (blogPost(); as post) {
     <article class="bg-card border border-white/10 rounded-xl p-8 shadow-xl" appScrollFadeIn [delay]="200">
