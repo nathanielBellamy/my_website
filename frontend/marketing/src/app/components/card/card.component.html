@@ -9,7 +9,10 @@
       {{ title() }}
     </div>
     <div class="prose prose-invert max-w-none">
-      <markdown [data]="content()"></markdown>
+      <markdown
+        [data]="content()"
+        [disableSanitizer]="true"
+      ></markdown>
     </div>
   </div>
   @if (tags()) {

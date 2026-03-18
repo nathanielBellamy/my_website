@@ -43,7 +43,10 @@
       </header>
 
       <div class="prose prose-invert prose-lg max-w-none">
-        <markdown [data]="content.content"></markdown>
+        <markdown
+          [data]="content.content"
+          [disableSanitizer]="true"
+        ></markdown>
       </div>
     </article>
   }

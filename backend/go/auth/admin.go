@@ -409,9 +409,9 @@ func WithSecurityHeaders(next http.Handler) http.Handler {
 		// Note: strict-transport-security is handled by Nginx in prod, but good to have if we ever serve HTTPS directly
 		// w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload")
 
-		// CSP: Allow Google Recaptcha, self, and inline styles/scripts (for Angular)
+		// CSP: Allow Google Recaptcha, YouTube embeds, self, and inline styles/scripts (for Angular)
 		// We allow ws: for localhost development
-		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; frame-src https://www.google.com/recaptcha/; connect-src 'self' ws: wss: https://www.google.com/recaptcha/; frame-ancestors 'none'; base-uri 'self';")
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; frame-src https://www.google.com/recaptcha/ https://www.youtube.com/; connect-src 'self' ws: wss: https://www.google.com/recaptcha/; frame-ancestors 'none'; base-uri 'self';")
 
 		w.Header().Set("X-Frame-Options", "DENY")
 		w.Header().Set("X-Content-Type-Options", "nosniff")
