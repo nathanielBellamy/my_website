@@ -82,9 +82,35 @@ jobs:
           name: marketing-test-log
           path: frontend/marketing/marketing-test.log
 
+  auth-admin-test:
+    name: Auth Admin SPA Tests (Angular)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: frontend/auth/admin/package-lock.json
+
+      - name: Install dependencies
+        run: cd frontend/auth/admin && npm ci
+
+      - name: Run Tests
+        run: cd frontend/auth/admin && npm test 2>&1 | tee auth-admin-test.log
+
+      - name: Upload Auth Admin Test Logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auth-admin-test-log
+          path: frontend/auth/admin/auth-admin-test.log
+
   e2e-test:
     name: E2E Tests (Cypress)
-    needs: [backend-test, admin-test, marketing-test]
+    needs: [backend-test, admin-test, marketing-test, auth-admin-test]
     runs-on: ubuntu-latest
     services:
       postgres:
