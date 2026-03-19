@@ -481,7 +481,7 @@ func (ac *AdminController) UploadImageHandler(w http.ResponseWriter, r *http.Req
 
 	// Limit upload size to 10MB
 	r.Body = http.MaxBytesReader(w, r.Body, 10<<20)
-	if err := r.ParseMultipartForm(10 << 20); err != nil {
+	if err := r.ParseMultipartForm(10 << 20); err != nil { // #nosec G120 -- Body is bounded by http.MaxBytesReader on the line above (10MB limit)
 		http.Error(w, "File too large", http.StatusBadRequest)
 		return
 	}

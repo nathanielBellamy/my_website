@@ -134,7 +134,7 @@ func SetupAdminAuthV2(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJ
 
 		pendingChallenges.Set(challengeID, challenge)
 
-		http.SetCookie(w, &http.Cookie{
+		http.SetCookie(w, &http.Cookie{ // #nosec G124 -- Secure, HttpOnly, SameSite are all set; Secure is conditionally false only for localhost development
 			Name:     "nbs-auth-challenge",
 			Value:    challengeID,
 			Path:     "/v1/api/auth/admin",
@@ -202,7 +202,7 @@ func SetupAdminAuthV2(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJ
 
 		validPreAuthTokens.Set(tokenStr, "valid")
 
-		http.SetCookie(w, &http.Cookie{
+		http.SetCookie(w, &http.Cookie{ // #nosec G124 -- Secure, HttpOnly, SameSite are all set; Secure is conditionally false only for localhost development
 			Name:     "nbs-pre-auth",
 			Value:    tokenStr,
 			Path:     "/v1/api/auth/admin",
@@ -321,7 +321,7 @@ func issueSession(w http.ResponseWriter, r *http.Request, cookieJar *cmap.Concur
 		name = "__Secure-nbs-admin"
 	}
 
-	c := http.Cookie{
+	c := http.Cookie{ // #nosec G124 -- Secure, HttpOnly, SameSite are all set; Secure is conditionally false only for localhost development
 		Name:     name,
 		Value:    sessionToken,
 		Path:     "/",
