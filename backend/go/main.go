@@ -80,7 +80,7 @@ func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *ze
   }
 
   // setup recaptcha
-  http.HandleFunc("/recaptcha", func (w http.ResponseWriter, r *http.Request) {
+  http.HandleFunc("/v1/recaptcha", func (w http.ResponseWriter, r *http.Request) {
     ip := auth.GetClientIpAddr(r)
     log.Info().
         Str("ip", ip).
@@ -107,7 +107,7 @@ func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *ze
   wasmPool := websocket.NewPool(log)
   go feedPool.StartFeed()
   go wasmPool.StartWasm()
-  http.HandleFunc("/public-square-feed-ws", func(w http.ResponseWriter, r *http.Request) {
+  http.HandleFunc("/v1/public-square-feed-ws", func(w http.ResponseWriter, r *http.Request) {
     ip := auth.GetClientIpAddr(r)
     if !env.IsProd(mode) {
       // localhost and remote dev require basic login
@@ -140,7 +140,7 @@ func SetupBaseRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *ze
       }
     }
   })
-  http.HandleFunc("/public-square-wasm-ws", func(w http.ResponseWriter, r *http.Request) {
+  http.HandleFunc("/v1/public-square-wasm-ws", func(w http.ResponseWriter, r *http.Request) {
     ip := auth.GetClientIpAddr(r)
     mode := os.Getenv("MODE")
     if !env.IsProd(mode) {

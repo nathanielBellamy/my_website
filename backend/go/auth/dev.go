@@ -14,7 +14,7 @@ func SetupDevAuth(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Lo
   fs_frontend := http.FileServer(http.Dir("frontend"))
   http.Handle("/", http.StripPrefix("/", LogClientIp("/", log, RequireDevAuth(cookieJar, log, fs_frontend))))
   fs_auth := http.FileServer(http.Dir("auth/dev"))
-  http.Handle("/auth/dev/",  LogClientIp("/auth/dev", log, http.StripPrefix("/auth/dev/", fs_auth)))
+  http.Handle("/v1/auth/dev/",  LogClientIp("/v1/auth/dev", log, http.StripPrefix("/v1/auth/dev/", fs_auth)))
 
   // TODO:
   // - set up salt route
@@ -25,7 +25,7 @@ func SetupDevAuth(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zerolog.Lo
   // - sent for comparison
   // - validate or don't
 
-  http.HandleFunc("/auth/dev/dev-auth", func(w http.ResponseWriter, r *http.Request) {
+  http.HandleFunc("/v1/auth/dev/dev-auth", func(w http.ResponseWriter, r *http.Request) {
     mode := os.Getenv("MODE")
     ip := GetClientIpAddr(r)
     log.Info().
@@ -133,7 +133,7 @@ func RedirectToDevAuth(w http.ResponseWriter, r *http.Request, log *zerolog.Logg
   log.Warn().
       Str("ip", GetClientIpAddr(r)).
       Msg("REDIRECT To Dev Auth")
-  http.Redirect(w,r,"/auth/dev/", http.StatusSeeOther)
+  http.Redirect(w,r,"/v1/auth/dev/", http.StatusSeeOther)
 }
 
 func RedirectToHome(w http.ResponseWriter, r *http.Request, log *zerolog.Logger) {

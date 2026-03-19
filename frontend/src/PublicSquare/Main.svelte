@@ -24,7 +24,7 @@
   const protocol: string = import.meta.env.VITE_MODE == ViteMode.localhost
     ? "ws"
     : "wss"
-  const fullUrl: string = `${protocol}://${baseUrl}/public-square-feed-ws`
+  const fullUrl: string = `${protocol}://${baseUrl}/v1/public-square-feed-ws`
 
   let showConnectionError: boolean = false
   let showDisconnected: boolean = false
