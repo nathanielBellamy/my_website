@@ -8,7 +8,7 @@ import { GrooveJrContent, FilterOptions, PaginatedResponse } from '../models/dat
 })
 export class GrooveJrService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = '/api/admin/groovejr'; // Adjust as per your backend URL
+  private readonly apiUrl = '/v1/api/admin/groovejr'; // Adjust as per your backend URL
 
   async getAllGrooveJrContent(options: Partial<FilterOptions> = {}): Promise<PaginatedResponse<GrooveJrContent>> {
     const params: any = {

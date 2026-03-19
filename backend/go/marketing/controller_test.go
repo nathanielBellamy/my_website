@@ -73,7 +73,7 @@ func TestGetAllBlogPostsHandler(t *testing.T) {
 	log := zerolog.New(mockLogOutput)
 	controller := NewMarketingController(&log, mockService)
 
-	req, err := http.NewRequest("GET", "/api/marketing/blog", nil)
+	req, err := http.NewRequest("GET", "/v1/api/marketing/blog", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -112,10 +112,10 @@ func TestGetBlogPostByIDHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/marketing/blog/{id}", controller.GetBlogPostByIDHandler)
+	testMux.HandleFunc("/v1/api/marketing/blog/{id}", controller.GetBlogPostByIDHandler)
 
 	// Test found
-	req, _ := http.NewRequest("GET", "/api/marketing/blog/1", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/marketing/blog/1", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusOK {
@@ -128,7 +128,7 @@ func TestGetBlogPostByIDHandler(t *testing.T) {
 	}
 
 	// Test not found
-	req, _ = http.NewRequest("GET", "/api/marketing/blog/2", nil)
+	req, _ = http.NewRequest("GET", "/v1/api/marketing/blog/2", nil)
 	rr = httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusNotFound {
@@ -151,9 +151,9 @@ func TestGetBlogPostsByTagHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/marketing/blog/tag/{tag}", controller.GetBlogPostsByTagHandler)
+	testMux.HandleFunc("/v1/api/marketing/blog/tag/{tag}", controller.GetBlogPostsByTagHandler)
 
-	req, _ := http.NewRequest("GET", "/api/marketing/blog/tag/test", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/marketing/blog/tag/test", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusOK {
@@ -176,7 +176,7 @@ func TestGetAllHomeContentHandler(t *testing.T) {
 	log := zerolog.New(mockLogOutput)
 	controller := NewMarketingController(&log, mockService)
 
-	req, _ := http.NewRequest("GET", "/api/marketing/home", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/marketing/home", nil)
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(controller.GetAllHomeContentHandler)
 	handler.ServeHTTP(rr, req)
@@ -205,10 +205,10 @@ func TestGetHomeContentByIDHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/marketing/home/{id}", controller.GetHomeContentByIDHandler)
+	testMux.HandleFunc("/v1/api/marketing/home/{id}", controller.GetHomeContentByIDHandler)
 
 	// Test found
-	req, _ := http.NewRequest("GET", "/api/marketing/home/1", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/marketing/home/1", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusOK {
@@ -221,7 +221,7 @@ func TestGetHomeContentByIDHandler(t *testing.T) {
 	}
 
 	// Test not found
-	req, _ = http.NewRequest("GET", "/api/marketing/home/2", nil)
+	req, _ = http.NewRequest("GET", "/v1/api/marketing/home/2", nil)
 	rr = httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusNotFound {
@@ -239,7 +239,7 @@ func TestGetAllGrooveJrContentHandler(t *testing.T) {
 	log := zerolog.New(mockLogOutput)
 	controller := NewMarketingController(&log, mockService)
 
-	req, _ := http.NewRequest("GET", "/api/marketing/groovejr", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/marketing/groovejr", nil)
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(controller.GetAllGrooveJrContentHandler)
 	handler.ServeHTTP(rr, req)
@@ -268,10 +268,10 @@ func TestGetGrooveJrContentByIDHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/marketing/groovejr/{id}", controller.GetGrooveJrContentByIDHandler)
+	testMux.HandleFunc("/v1/api/marketing/groovejr/{id}", controller.GetGrooveJrContentByIDHandler)
 
 	// Test found
-	req, _ := http.NewRequest("GET", "/api/marketing/groovejr/1", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/marketing/groovejr/1", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusOK {
@@ -284,7 +284,7 @@ func TestGetGrooveJrContentByIDHandler(t *testing.T) {
 	}
 
 	// Test not found
-	req, _ = http.NewRequest("GET", "/api/marketing/groovejr/2", nil)
+	req, _ = http.NewRequest("GET", "/v1/api/marketing/groovejr/2", nil)
 	rr = httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusNotFound {
@@ -302,7 +302,7 @@ func TestGetAllAboutContentHandler(t *testing.T) {
 	log := zerolog.New(mockLogOutput)
 	controller := NewMarketingController(&log, mockService)
 
-	req, _ := http.NewRequest("GET", "/api/marketing/about", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/marketing/about", nil)
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(controller.GetAllAboutContentHandler)
 	handler.ServeHTTP(rr, req)
@@ -331,10 +331,10 @@ func TestGetAboutContentByIDHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/marketing/about/{id}", controller.GetAboutContentByIDHandler)
+	testMux.HandleFunc("/v1/api/marketing/about/{id}", controller.GetAboutContentByIDHandler)
 
 	// Test found
-	req, _ := http.NewRequest("GET", "/api/marketing/about/1", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/marketing/about/1", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusOK {
@@ -347,7 +347,7 @@ func TestGetAboutContentByIDHandler(t *testing.T) {
 	}
 
 	// Test not found
-	req, _ = http.NewRequest("GET", "/api/marketing/about/2", nil)
+	req, _ = http.NewRequest("GET", "/v1/api/marketing/about/2", nil)
 	rr = httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusNotFound {

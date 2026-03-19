@@ -15,7 +15,7 @@ const mockHomeContent: HomeContent[] = [
 describe('HomeService', () => {
   let service: HomeService;
   let httpMock: HttpTestingController;
-  const API_URL = `${environment.BASE_URL}/api/marketing/home`;
+  const API_URL = `${environment.BASE_URL}/v1/api/marketing/home`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

@@ -29,7 +29,7 @@ describe('AboutService', () => {
 
     const promise = service.getAllAboutContent();
 
-    const req = httpTestingController.expectOne(req => req.url.startsWith('/api/admin/about'));
+    const req = httpTestingController.expectOne(req => req.url.startsWith('/v1/api/admin/about'));
     expect(req.request.method).toEqual('GET');
     req.flush(mockContent);
 
@@ -41,7 +41,7 @@ describe('AboutService', () => {
 
     const promise = service.getAboutContentById('1');
 
-    const req = httpTestingController.expectOne('/api/admin/about/1');
+    const req = httpTestingController.expectOne('/v1/api/admin/about/1');
     expect(req.request.method).toEqual('GET');
     req.flush(mockContent);
 
@@ -54,7 +54,7 @@ describe('AboutService', () => {
 
     const promise = service.createAboutContent(newContent);
 
-    const req = httpTestingController.expectOne('/api/admin/about');
+    const req = httpTestingController.expectOne('/v1/api/admin/about');
     expect(req.request.method).toEqual('POST');
     expect(req.request.body).toEqual(newContent);
     req.flush(mockResponse);
@@ -68,7 +68,7 @@ describe('AboutService', () => {
 
     const promise = service.updateAboutContent(updatedContent);
 
-    const req = httpTestingController.expectOne('/api/admin/about/1');
+    const req = httpTestingController.expectOne('/v1/api/admin/about/1');
     expect(req.request.method).toEqual('PUT');
     expect(req.request.body).toEqual(updatedContent);
     req.flush(mockResponse);
@@ -79,7 +79,7 @@ describe('AboutService', () => {
   it('should delete About content', async () => {
     const promise = service.deleteAboutContent('1');
 
-    const req = httpTestingController.expectOne('/api/admin/about/1');
+    const req = httpTestingController.expectOne('/v1/api/admin/about/1');
     expect(req.request.method).toEqual('DELETE');
     req.flush(null);
 

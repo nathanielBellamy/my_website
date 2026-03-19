@@ -8,7 +8,7 @@ import { HomeContent } from '../models/home.model';
   providedIn: 'root',
 })
 export class HomeService {
-  private readonly apiUrl = `${environment.BASE_URL}/api/marketing/home`;
+  private readonly apiUrl = `${environment.BASE_URL}/v1/api/marketing/home`;
   private readonly http = inject(HttpClient);
 
   getAll(page: number, limit: number): Promise<HomeContent[]> {

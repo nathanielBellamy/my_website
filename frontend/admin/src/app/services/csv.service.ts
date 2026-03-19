@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class CsvService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = '/api/admin/csv';
+  private readonly apiUrl = '/v1/api/admin/csv';
 
   exportCsv(entity: string) {
     return this.http.get(`${this.apiUrl}/${entity}`, {

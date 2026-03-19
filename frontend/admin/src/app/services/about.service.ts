@@ -8,7 +8,7 @@ import { AboutContent, FilterOptions, PaginatedResponse } from '../models/data-m
 })
 export class AboutService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = '/api/admin/about'; // Adjust as per your backend URL
+  private readonly apiUrl = '/v1/api/admin/about'; // Adjust as per your backend URL
 
   async getAllAboutContent(options: Partial<FilterOptions> = {}): Promise<PaginatedResponse<AboutContent>> {
     const params: any = {

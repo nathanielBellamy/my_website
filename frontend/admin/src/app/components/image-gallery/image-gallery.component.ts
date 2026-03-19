@@ -75,7 +75,7 @@ export class ImageGalleryComponent implements OnInit {
     const size = (this.imageWidth && this.imageHeight)
       ? `|${this.imageWidth}x${this.imageHeight}`
       : '';
-    const markdown = `![${alt}${size}](/api/images/${image.filename})`;
+    const markdown = `![${alt}${size}](/v1/api/images/${image.filename})`;
     navigator.clipboard.writeText(markdown).then(() => {
       this.copiedImageId.set(image.id);
       setTimeout(() => this.copiedImageId.set(''), 2000);

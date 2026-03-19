@@ -31,7 +31,7 @@ describe('CsvService', () => {
       expect(response.body).toEqual(mockBlob);
     });
 
-    const req = httpMock.expectOne(`/api/admin/csv/${entity}`);
+    const req = httpMock.expectOne(`/v1/api/admin/csv/${entity}`);
     expect(req.request.method).toBe('GET');
     expect(req.request.responseType).toBe('blob');
     req.flush(mockBlob);
@@ -45,7 +45,7 @@ describe('CsvService', () => {
       expect(response).toBeTruthy();
     });
 
-    const req = httpMock.expectOne(`/api/admin/csv/${entity}`);
+    const req = httpMock.expectOne(`/v1/api/admin/csv/${entity}`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body instanceof FormData).toBe(true);
     expect(req.request.body.has('file')).toBe(true);

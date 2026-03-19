@@ -35,7 +35,7 @@ impl PubSq {
         } else {
             protocol = "wss".to_string();
         }
-        let url: String = format!("{protocol}://{base_url}/public-square-wasm-ws");
+        let url: String = format!("{protocol}://{base_url}/v1/public-square-wasm-ws");
         // setup websocket
         let ws: WebSocket;
         match WebSocket::new(url.as_str()) {

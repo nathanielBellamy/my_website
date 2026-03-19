@@ -44,7 +44,7 @@ import { OldSiteUrl } from './OldSiteUrl';
     showModalVerify = true
 
     const payload: RecaptchaPayload = { action, token }
-    await fetch('recaptcha', {
+    await fetch('/v1/recaptcha', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

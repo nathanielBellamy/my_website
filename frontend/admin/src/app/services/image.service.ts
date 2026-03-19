@@ -8,7 +8,7 @@ import { Image } from '../models/data-models';
 })
 export class ImageService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = '/api/admin';
+  private readonly apiUrl = '/v1/api/admin';
 
   async listImages(): Promise<Image[]> {
     return await firstValueFrom(this.http.get<Image[]>(`${this.apiUrl}/images`));

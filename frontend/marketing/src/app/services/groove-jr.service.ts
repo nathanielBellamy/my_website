@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class GrooveJrService {
-  private readonly apiUrl = `${environment.BASE_URL}/api/marketing/groovejr`;
+  private readonly apiUrl = `${environment.BASE_URL}/v1/api/marketing/groovejr`;
   private readonly http = inject(HttpClient);
 
   getAll(page: number, limit: number): Promise<GrooveJrContent[]> {

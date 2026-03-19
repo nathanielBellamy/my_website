@@ -15,7 +15,7 @@ const mockGrooveJrContent: GrooveJrContent[] = [
 describe('GrooveJrService', () => {
   let service: GrooveJrService;
   let httpMock: HttpTestingController;
-  const API_URL = `${environment.BASE_URL}/api/marketing/groovejr`;
+  const API_URL = `${environment.BASE_URL}/v1/api/marketing/groovejr`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

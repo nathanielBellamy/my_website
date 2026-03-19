@@ -117,7 +117,7 @@ func SetupAdminAuthV2(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJ
 	marketingMux.Handle("/", WithSecurityHeaders(marketingFileServer))
 
 	// Challenge Endpoint
-	adminMux.HandleFunc("GET /api/auth/admin/challenge", func(w http.ResponseWriter, r *http.Request) {
+	adminMux.HandleFunc("GET /v1/api/auth/admin/challenge", func(w http.ResponseWriter, r *http.Request) {
 		b := make([]byte, 32)
 		if _, err := crand.Read(b); err != nil {
 			http.Error(w, "Internal Error", http.StatusInternalServerError)
@@ -137,7 +137,7 @@ func SetupAdminAuthV2(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJ
 		http.SetCookie(w, &http.Cookie{
 			Name:     "nbs-auth-challenge",
 			Value:    challengeID,
-			Path:     "/api/auth/admin",
+			Path:     "/v1/api/auth/admin",
 			HttpOnly: true,
 			Secure:   !env.IsLocalhost(os.Getenv("MODE")),
 			SameSite: http.SameSiteStrictMode,
@@ -151,7 +151,7 @@ func SetupAdminAuthV2(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJ
 	})
 
 	// Password Validation Endpoint
-	adminMux.HandleFunc("POST /api/auth/admin/password", func(w http.ResponseWriter, r *http.Request) {
+	adminMux.HandleFunc("POST /v1/api/auth/admin/password", func(w http.ResponseWriter, r *http.Request) {
 		var req struct {
 			Hash string `json:"hash"`
 		}
@@ -205,7 +205,7 @@ func SetupAdminAuthV2(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJ
 		http.SetCookie(w, &http.Cookie{
 			Name:     "nbs-pre-auth",
 			Value:    tokenStr,
-			Path:     "/api/auth/admin",
+			Path:     "/v1/api/auth/admin",
 			HttpOnly: true,
 			Secure:   !env.IsLocalhost(os.Getenv("MODE")),
 			SameSite: http.SameSiteStrictMode,
@@ -216,7 +216,7 @@ func SetupAdminAuthV2(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJ
 	})
 
 	// OTP Routes
-	adminMux.HandleFunc("POST /api/auth/admin/otp/request", func(w http.ResponseWriter, r *http.Request) {
+	adminMux.HandleFunc("POST /v1/api/auth/admin/otp/request", func(w http.ResponseWriter, r *http.Request) {
 		// Verify Pre-Auth
 		cookie, err := r.Cookie("nbs-pre-auth")
 		if err != nil {
@@ -271,7 +271,7 @@ func SetupAdminAuthV2(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJ
 		w.WriteHeader(http.StatusOK)
 	})
 
-	adminMux.HandleFunc("POST /api/auth/admin/otp/verify", func(w http.ResponseWriter, r *http.Request) {
+	adminMux.HandleFunc("POST /v1/api/auth/admin/otp/verify", func(w http.ResponseWriter, r *http.Request) {
 		log.Debug().Msg("OTP Verify Endpoint Hit")
 		var req OtpVerify
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {

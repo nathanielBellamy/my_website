@@ -220,7 +220,7 @@ func TestAdminGetAllBlogPostsHandler(t *testing.T) {
 	log := zerolog.New(mockLogOutput)
 	controller := NewAdminController(&log, mockService)
 
-	req, err := http.NewRequest("GET", "/api/admin/blog", nil)
+	req, err := http.NewRequest("GET", "/v1/api/admin/blog", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -259,10 +259,10 @@ func TestAdminGetBlogPostByIDHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/admin/blog/{id}", controller.GetBlogPostByIDHandler)
+	testMux.HandleFunc("/v1/api/admin/blog/{id}", controller.GetBlogPostByIDHandler)
 
 	// Test found
-	req, _ := http.NewRequest("GET", "/api/admin/blog/1", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/admin/blog/1", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req) // Use the testMux
 
@@ -276,7 +276,7 @@ func TestAdminGetBlogPostByIDHandler(t *testing.T) {
 	}
 
 	// Test not found
-	req, _ = http.NewRequest("GET", "/api/admin/blog/2", nil)
+	req, _ = http.NewRequest("GET", "/v1/api/admin/blog/2", nil)
 	rr = httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req) // Use the testMux
 
@@ -300,9 +300,9 @@ func TestAdminGetBlogPostsByTagHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/admin/blog/tag/{tag}", controller.GetBlogPostsByTagHandler)
+	testMux.HandleFunc("/v1/api/admin/blog/tag/{tag}", controller.GetBlogPostsByTagHandler)
 
-	req, _ := http.NewRequest("GET", "/api/admin/blog/tag/test", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/admin/blog/tag/test", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req) // Use the testMux
 
@@ -329,7 +329,7 @@ func TestAdminCreateBlogPostHandler(t *testing.T) {
 
 	postData := models.BlogPost{Title: "New Post"}
 	jsonBody, _ := json.Marshal(postData)
-	req, _ := http.NewRequest("POST", "/api/admin/blog", bytes.NewBuffer(jsonBody))
+	req, _ := http.NewRequest("POST", "/v1/api/admin/blog", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(controller.CreateBlogPostHandler)
@@ -360,11 +360,11 @@ func TestAdminUpdateBlogPostHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/admin/blog/{id}", controller.UpdateBlogPostHandler)
+	testMux.HandleFunc("/v1/api/admin/blog/{id}", controller.UpdateBlogPostHandler)
 
 	postData := models.BlogPost{ID: "1", Title: "Updated Post"}
 	jsonBody, _ := json.Marshal(postData)
-	req, _ := http.NewRequest("PUT", "/api/admin/blog/1", bytes.NewBuffer(jsonBody))
+	req, _ := http.NewRequest("PUT", "/v1/api/admin/blog/1", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req) // Use the testMux
@@ -394,9 +394,9 @@ func TestAdminDeleteBlogPostHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/admin/blog/{id}", controller.DeleteBlogPostHandler)
+	testMux.HandleFunc("/v1/api/admin/blog/{id}", controller.DeleteBlogPostHandler)
 
-	req, _ := http.NewRequest("DELETE", "/api/admin/blog/1", nil)
+	req, _ := http.NewRequest("DELETE", "/v1/api/admin/blog/1", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req) // Use the testMux
 
@@ -415,7 +415,7 @@ func TestAdminGetAllHomeContentHandler(t *testing.T) {
 	log := zerolog.New(mockLogOutput)
 	controller := NewAdminController(&log, mockService)
 
-	req, _ := http.NewRequest("GET", "/api/admin/home", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/admin/home", nil)
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(controller.GetAllHomeContentHandler)
 	handler.ServeHTTP(rr, req)
@@ -446,9 +446,9 @@ func TestAdminGetHomeContentByIDHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/admin/home/{id}", controller.GetHomeContentByIDHandler)
+	testMux.HandleFunc("/v1/api/admin/home/{id}", controller.GetHomeContentByIDHandler)
 
-	req, _ := http.NewRequest("GET", "/api/admin/home/1", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/admin/home/1", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 
@@ -461,7 +461,7 @@ func TestAdminGetHomeContentByIDHandler(t *testing.T) {
 		t.Errorf("expected home content ID 1, got %s", content.ID)
 	}
 
-	req, _ = http.NewRequest("GET", "/api/admin/home/2", nil)
+	req, _ = http.NewRequest("GET", "/v1/api/admin/home/2", nil)
 	rr = httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 
@@ -483,7 +483,7 @@ func TestAdminCreateHomeContentHandler(t *testing.T) {
 
 	contentData := models.HomeContent{Title: "New Home Content"}
 	jsonBody, _ := json.Marshal(contentData)
-	req, _ := http.NewRequest("POST", "/api/admin/home", bytes.NewBuffer(jsonBody))
+	req, _ := http.NewRequest("POST", "/v1/api/admin/home", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(controller.CreateHomeContentHandler)
@@ -514,11 +514,11 @@ func TestAdminUpdateHomeContentHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/admin/home/{id}", controller.UpdateHomeContentHandler)
+	testMux.HandleFunc("/v1/api/admin/home/{id}", controller.UpdateHomeContentHandler)
 
 	contentData := models.HomeContent{ID: "1", Title: "Updated Home Content"}
 	jsonBody, _ := json.Marshal(contentData)
-	req, _ := http.NewRequest("PUT", "/api/admin/home/1", bytes.NewBuffer(jsonBody))
+	req, _ := http.NewRequest("PUT", "/v1/api/admin/home/1", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
@@ -548,9 +548,9 @@ func TestAdminDeleteHomeContentHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/admin/home/{id}", controller.DeleteHomeContentHandler)
+	testMux.HandleFunc("/v1/api/admin/home/{id}", controller.DeleteHomeContentHandler)
 
-	req, _ := http.NewRequest("DELETE", "/api/admin/home/1", nil)
+	req, _ := http.NewRequest("DELETE", "/v1/api/admin/home/1", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 
@@ -569,7 +569,7 @@ func TestAdminGetAllGrooveJrContentHandler(t *testing.T) {
 	log := zerolog.New(mockLogOutput)
 	controller := NewAdminController(&log, mockService)
 
-	req, _ := http.NewRequest("GET", "/api/admin/groovejr", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/admin/groovejr", nil)
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(controller.GetAllGrooveJrContentHandler)
 	handler.ServeHTTP(rr, req)
@@ -600,9 +600,9 @@ func TestAdminGetGrooveJrContentByIDHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/admin/groovejr/{id}", controller.GetGrooveJrContentByIDHandler)
+	testMux.HandleFunc("/v1/api/admin/groovejr/{id}", controller.GetGrooveJrContentByIDHandler)
 
-	req, _ := http.NewRequest("GET", "/api/admin/groovejr/1", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/admin/groovejr/1", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 
@@ -615,7 +615,7 @@ func TestAdminGetGrooveJrContentByIDHandler(t *testing.T) {
 		t.Errorf("expected GrooveJr content ID 1, got %s", content.ID)
 	}
 
-	req, _ = http.NewRequest("GET", "/api/admin/groovejr/2", nil)
+	req, _ = http.NewRequest("GET", "/v1/api/admin/groovejr/2", nil)
 	rr = httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 
@@ -637,7 +637,7 @@ func TestAdminCreateGrooveJrContentHandler(t *testing.T) {
 
 	contentData := models.GrooveJrContent{Title: "New GrooveJr Content"}
 	jsonBody, _ := json.Marshal(contentData)
-	req, _ := http.NewRequest("POST", "/api/admin/groovejr", bytes.NewBuffer(jsonBody))
+	req, _ := http.NewRequest("POST", "/v1/api/admin/groovejr", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(controller.CreateGrooveJrContentHandler)
@@ -668,11 +668,11 @@ func TestAdminUpdateGrooveJrContentHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/admin/groovejr/{id}", controller.UpdateGrooveJrContentHandler)
+	testMux.HandleFunc("/v1/api/admin/groovejr/{id}", controller.UpdateGrooveJrContentHandler)
 
 	contentData := models.GrooveJrContent{ID: "1", Title: "Updated GrooveJr Content"}
 	jsonBody, _ := json.Marshal(contentData)
-	req, _ := http.NewRequest("PUT", "/api/admin/groovejr/1", bytes.NewBuffer(jsonBody))
+	req, _ := http.NewRequest("PUT", "/v1/api/admin/groovejr/1", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
@@ -702,9 +702,9 @@ func TestAdminDeleteGrooveJrContentHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/admin/groovejr/{id}", controller.DeleteGrooveJrContentHandler)
+	testMux.HandleFunc("/v1/api/admin/groovejr/{id}", controller.DeleteGrooveJrContentHandler)
 
-	req, _ := http.NewRequest("DELETE", "/api/admin/groovejr/1", nil)
+	req, _ := http.NewRequest("DELETE", "/v1/api/admin/groovejr/1", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 
@@ -722,7 +722,7 @@ func TestAdminGetAllAboutContentHandler(t *testing.T) {
 	log := zerolog.New(mockLogOutput)
 	controller := NewAdminController(&log, mockService)
 
-	req, _ := http.NewRequest("GET", "/api/admin/about", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/admin/about", nil)
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(controller.GetAllAboutContentHandler)
 	handler.ServeHTTP(rr, req)
@@ -753,9 +753,9 @@ func TestAdminGetAboutContentByIDHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/admin/about/{id}", controller.GetAboutContentByIDHandler)
+	testMux.HandleFunc("/v1/api/admin/about/{id}", controller.GetAboutContentByIDHandler)
 
-	req, _ := http.NewRequest("GET", "/api/admin/about/1", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/admin/about/1", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 
@@ -768,7 +768,7 @@ func TestAdminGetAboutContentByIDHandler(t *testing.T) {
 		t.Errorf("expected About content ID 1, got %s", content.ID)
 	}
 
-	req, _ = http.NewRequest("GET", "/api/admin/about/2", nil)
+	req, _ = http.NewRequest("GET", "/v1/api/admin/about/2", nil)
 	rr = httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 
@@ -790,7 +790,7 @@ func TestAdminCreateAboutContentHandler(t *testing.T) {
 
 	contentData := models.AboutContent{Title: "New About Content"}
 	jsonBody, _ := json.Marshal(contentData)
-	req, _ := http.NewRequest("POST", "/api/admin/about", bytes.NewBuffer(jsonBody))
+	req, _ := http.NewRequest("POST", "/v1/api/admin/about", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(controller.CreateAboutContentHandler)
@@ -821,11 +821,11 @@ func TestAdminUpdateAboutContentHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/admin/about/{id}", controller.UpdateAboutContentHandler)
+	testMux.HandleFunc("/v1/api/admin/about/{id}", controller.UpdateAboutContentHandler)
 
 	contentData := models.AboutContent{ID: "1", Title: "Updated About Content"}
 	jsonBody, _ := json.Marshal(contentData)
-	req, _ := http.NewRequest("PUT", "/api/admin/about/1", bytes.NewBuffer(jsonBody))
+	req, _ := http.NewRequest("PUT", "/v1/api/admin/about/1", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
@@ -855,9 +855,9 @@ func TestAdminDeleteAboutContentHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/admin/about/{id}", controller.DeleteAboutContentHandler)
+	testMux.HandleFunc("/v1/api/admin/about/{id}", controller.DeleteAboutContentHandler)
 
-	req, _ := http.NewRequest("DELETE", "/api/admin/about/1", nil)
+	req, _ := http.NewRequest("DELETE", "/v1/api/admin/about/1", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 
@@ -877,9 +877,9 @@ func TestAdminExportCSVHandler(t *testing.T) {
 	controller := NewAdminController(&log, mockService)
 
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/admin/csv/{entity}", controller.ExportCSVHandler)
+	testMux.HandleFunc("/v1/api/admin/csv/{entity}", controller.ExportCSVHandler)
 
-	req, _ := http.NewRequest("GET", "/api/admin/csv/blog", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/admin/csv/blog", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 
@@ -908,7 +908,7 @@ func TestAdminImportCSVHandler(t *testing.T) {
 	controller := NewAdminController(&log, mockService)
 
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/api/admin/csv/{entity}", controller.ImportCSVHandler)
+	testMux.HandleFunc("/v1/api/admin/csv/{entity}", controller.ImportCSVHandler)
 
 	csvContent := "title,content,ordering,created_at,updated_at,activated_at,deactivated_at,tags\nImported Post,Content,1,2023-01-01T00:00:00Z,2023-01-01T00:00:00Z,,,"
 	body := new(bytes.Buffer)
@@ -917,7 +917,7 @@ func TestAdminImportCSVHandler(t *testing.T) {
 	part.Write([]byte(csvContent))
 	writer.Close()
 
-	req, _ := http.NewRequest("POST", "/api/admin/csv/blog", body)
+	req, _ := http.NewRequest("POST", "/v1/api/admin/csv/blog", body)
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)

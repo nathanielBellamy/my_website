@@ -4,8 +4,8 @@ import { MarkedExtension } from 'marked';
  * Custom marked extension that parses image size from alt text.
  * Syntax: ![alt text|WIDTHxHEIGHT](url)
  * Examples:
- *   ![photo|400x300](/api/images/pic.jpg)  → 400×300
- *   ![photo](/api/images/pic.jpg)          → natural size
+ *   ![photo|400x300](/v1/api/images/pic.jpg)  → 400×300
+ *   ![photo](/v1/api/images/pic.jpg)          → natural size
  */
 export const markedImageResizeExtension: MarkedExtension = {
   renderer: {
