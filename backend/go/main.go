@@ -130,28 +130,28 @@ func SetupBaseRoutes(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJa
 		Msg("Setting up BaseRoutes")
 
 	// old-site routes
-	oldSiteMux.HandleFunc("POST /recaptcha", oldSiteController.RecaptchaHandler)
-	oldSiteMux.HandleFunc("GET /public-square-feed-ws", oldSiteController.PublicSquareFeedWsHandler)
-	oldSiteMux.HandleFunc("GET /public-square-wasm-ws", oldSiteController.PublicSquareWasmWsHandler)
+	oldSiteMux.HandleFunc("POST /v1/recaptcha", oldSiteController.RecaptchaHandler)
+	oldSiteMux.HandleFunc("GET /v1/public-square-feed-ws", oldSiteController.PublicSquareFeedWsHandler)
+	oldSiteMux.HandleFunc("GET /v1/public-square-wasm-ws", oldSiteController.PublicSquareWasmWsHandler)
 
 	// marketing routes
 	// Blog
-	marketingMux.HandleFunc("GET /api/marketing/blog", marketingController.GetAllBlogPostsHandler)
-	marketingMux.HandleFunc("GET /api/marketing/blog/{id}", marketingController.GetBlogPostByIDHandler)
-	marketingMux.HandleFunc("GET /api/marketing/blog/tag/{tag}", marketingController.GetBlogPostsByTagHandler)
-	marketingMux.HandleFunc("GET /api/marketing/tags", marketingController.GetTagsHandler)
+	marketingMux.HandleFunc("GET /v1/api/marketing/blog", marketingController.GetAllBlogPostsHandler)
+	marketingMux.HandleFunc("GET /v1/api/marketing/blog/{id}", marketingController.GetBlogPostByIDHandler)
+	marketingMux.HandleFunc("GET /v1/api/marketing/blog/tag/{tag}", marketingController.GetBlogPostsByTagHandler)
+	marketingMux.HandleFunc("GET /v1/api/marketing/tags", marketingController.GetTagsHandler)
 
 	// Home
-	marketingMux.HandleFunc("GET /api/marketing/home", marketingController.GetAllHomeContentHandler)
-	marketingMux.HandleFunc("GET /api/marketing/home/{id}", marketingController.GetHomeContentByIDHandler)
+	marketingMux.HandleFunc("GET /v1/api/marketing/home", marketingController.GetAllHomeContentHandler)
+	marketingMux.HandleFunc("GET /v1/api/marketing/home/{id}", marketingController.GetHomeContentByIDHandler)
 
 	// GrooveJr
-	marketingMux.HandleFunc("GET /api/marketing/groovejr", marketingController.GetAllGrooveJrContentHandler)
-	marketingMux.HandleFunc("GET /api/marketing/groovejr/{id}", marketingController.GetGrooveJrContentByIDHandler)
+	marketingMux.HandleFunc("GET /v1/api/marketing/groovejr", marketingController.GetAllGrooveJrContentHandler)
+	marketingMux.HandleFunc("GET /v1/api/marketing/groovejr/{id}", marketingController.GetGrooveJrContentByIDHandler)
 
 	// About
-	marketingMux.HandleFunc("GET /api/marketing/about", marketingController.GetAllAboutContentHandler)
-	marketingMux.HandleFunc("GET /api/marketing/about/{id}", marketingController.GetAboutContentByIDHandler)
+	marketingMux.HandleFunc("GET /v1/api/marketing/about", marketingController.GetAllAboutContentHandler)
+	marketingMux.HandleFunc("GET /v1/api/marketing/about/{id}", marketingController.GetAboutContentByIDHandler)
 
 	// Sitemap
 	marketingMux.HandleFunc("GET /sitemap.xml", marketingController.SitemapHandler)
@@ -159,47 +159,47 @@ func SetupBaseRoutes(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJa
 	marketingMux.HandleFunc("GET /robots.txt", marketingController.RobotsTxtHandler)
 
 	// Images
-	marketingMux.HandleFunc("GET /api/images/{filename}", marketingController.ImageServingHandler)
+	marketingMux.HandleFunc("GET /v1/api/images/{filename}", marketingController.ImageServingHandler)
 
 	// admin routes
 	// Blog
-	adminMux.Handle("GET /api/admin/blog", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllBlogPostsHandler)))
-	adminMux.Handle("GET /api/admin/blog/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetBlogPostByIDHandler)))
-	adminMux.Handle("GET /api/admin/blog/tag/{tag}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetBlogPostsByTagHandler)))
-	adminMux.Handle("GET /api/admin/tags", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetTagsHandler)))
-	adminMux.Handle("POST /api/admin/blog", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateBlogPostHandler)))
-	adminMux.Handle("PUT /api/admin/blog/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateBlogPostHandler)))
-	adminMux.Handle("DELETE /api/admin/blog/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteBlogPostHandler)))
+	adminMux.Handle("GET /v1/api/admin/blog", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllBlogPostsHandler)))
+	adminMux.Handle("GET /v1/api/admin/blog/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetBlogPostByIDHandler)))
+	adminMux.Handle("GET /v1/api/admin/blog/tag/{tag}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetBlogPostsByTagHandler)))
+	adminMux.Handle("GET /v1/api/admin/tags", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetTagsHandler)))
+	adminMux.Handle("POST /v1/api/admin/blog", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateBlogPostHandler)))
+	adminMux.Handle("PUT /v1/api/admin/blog/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateBlogPostHandler)))
+	adminMux.Handle("DELETE /v1/api/admin/blog/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteBlogPostHandler)))
 
 	// Home
-	adminMux.Handle("GET /api/admin/home", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllHomeContentHandler)))
-	adminMux.Handle("GET /api/admin/home/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetHomeContentByIDHandler)))
-	adminMux.Handle("POST /api/admin/home", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateHomeContentHandler)))
-	adminMux.Handle("PUT /api/admin/home/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateHomeContentHandler)))
-	adminMux.Handle("DELETE /api/admin/home/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteHomeContentHandler)))
+	adminMux.Handle("GET /v1/api/admin/home", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllHomeContentHandler)))
+	adminMux.Handle("GET /v1/api/admin/home/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetHomeContentByIDHandler)))
+	adminMux.Handle("POST /v1/api/admin/home", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateHomeContentHandler)))
+	adminMux.Handle("PUT /v1/api/admin/home/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateHomeContentHandler)))
+	adminMux.Handle("DELETE /v1/api/admin/home/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteHomeContentHandler)))
 
 	// GrooveJr
-	adminMux.Handle("GET /api/admin/groovejr", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllGrooveJrContentHandler)))
-	adminMux.Handle("GET /api/admin/groovejr/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetGrooveJrContentByIDHandler)))
-	adminMux.Handle("POST /api/admin/groovejr", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateGrooveJrContentHandler)))
-	adminMux.Handle("PUT /api/admin/groovejr/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateGrooveJrContentHandler)))
-	adminMux.Handle("DELETE /api/admin/groovejr/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteGrooveJrContentHandler)))
+	adminMux.Handle("GET /v1/api/admin/groovejr", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllGrooveJrContentHandler)))
+	adminMux.Handle("GET /v1/api/admin/groovejr/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetGrooveJrContentByIDHandler)))
+	adminMux.Handle("POST /v1/api/admin/groovejr", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateGrooveJrContentHandler)))
+	adminMux.Handle("PUT /v1/api/admin/groovejr/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateGrooveJrContentHandler)))
+	adminMux.Handle("DELETE /v1/api/admin/groovejr/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteGrooveJrContentHandler)))
 
 	// About
-	adminMux.Handle("GET /api/admin/about", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllAboutContentHandler)))
-	adminMux.Handle("GET /api/admin/about/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAboutContentByIDHandler)))
-	adminMux.Handle("POST /api/admin/about", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateAboutContentHandler)))
-	adminMux.Handle("PUT /api/admin/about/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateAboutContentHandler)))
-	adminMux.Handle("DELETE /api/admin/about/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteAboutContentHandler)))
+	adminMux.Handle("GET /v1/api/admin/about", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAllAboutContentHandler)))
+	adminMux.Handle("GET /v1/api/admin/about/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.GetAboutContentByIDHandler)))
+	adminMux.Handle("POST /v1/api/admin/about", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.CreateAboutContentHandler)))
+	adminMux.Handle("PUT /v1/api/admin/about/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UpdateAboutContentHandler)))
+	adminMux.Handle("DELETE /v1/api/admin/about/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteAboutContentHandler)))
 
 	// CSV
-	adminMux.Handle("GET /api/admin/csv/{entity}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.ExportCSVHandler)))
-	adminMux.Handle("POST /api/admin/csv/{entity}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.ImportCSVHandler)))
+	adminMux.Handle("GET /v1/api/admin/csv/{entity}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.ExportCSVHandler)))
+	adminMux.Handle("POST /v1/api/admin/csv/{entity}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.ImportCSVHandler)))
 
 	// Images
-	adminMux.Handle("POST /api/admin/upload", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UploadImageHandler)))
-	adminMux.Handle("GET /api/admin/images", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.ListImagesHandler)))
-	adminMux.Handle("DELETE /api/admin/images/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteImageHandler)))
+	adminMux.Handle("POST /v1/api/admin/upload", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UploadImageHandler)))
+	adminMux.Handle("GET /v1/api/admin/images", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.ListImagesHandler)))
+	adminMux.Handle("DELETE /v1/api/admin/images/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteImageHandler)))
 }
 
 func SetupRemotedevRoutes(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, adminController *admin.AdminController, marketingFileServer http.Handler) {

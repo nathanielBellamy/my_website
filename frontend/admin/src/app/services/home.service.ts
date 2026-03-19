@@ -8,7 +8,7 @@ import { HomeContent, FilterOptions, PaginatedResponse } from '../models/data-mo
 })
 export class HomeService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = '/api/admin/home'; // Adjust as per your backend URL
+  private readonly apiUrl = '/v1/api/admin/home'; // Adjust as per your backend URL
 
   async getAllHomeContent(options: Partial<FilterOptions> = {}): Promise<PaginatedResponse<HomeContent>> {
     const params: any = {

@@ -60,7 +60,7 @@ func TestSetupBaseRoutes_MarketingBlogPosts(t *testing.T) {
 	SetupBaseRoutes(adminMux, oldSiteMux, marketingMux, &cookieJar, &log, nil, marketing.NewMarketingController(&log, marketingService), nil)
 
 	// Create a request to the marketing blog posts endpoint
-	req, err := http.NewRequest("GET", "/api/marketing/blog?page=1&limit=5", nil)
+	req, err := http.NewRequest("GET", "/v1/api/marketing/blog?page=1&limit=5", nil)
 	if err != nil {
 		t.Fatalf("Failed to create request: %v", err)
 	}

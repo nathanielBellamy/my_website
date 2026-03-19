@@ -38,7 +38,7 @@ describe('BlogService', () => {
     const mockResponse = { data: [mockPost], total: 1 };
     const promise = service.getAllBlogPosts();
 
-    const req = httpTestingController.expectOne(req => req.url.startsWith('/api/admin/blog'));
+    const req = httpTestingController.expectOne(req => req.url.startsWith('/v1/api/admin/blog'));
     expect(req.request.method).toEqual('GET');
     req.flush(mockResponse);
 
@@ -50,7 +50,7 @@ describe('BlogService', () => {
   it('should retrieve blog post by ID', async () => {
     const promise = service.getBlogPostById('1');
 
-    const req = httpTestingController.expectOne('/api/admin/blog/1');
+    const req = httpTestingController.expectOne('/v1/api/admin/blog/1');
     expect(req.request.method).toEqual('GET');
     req.flush(mockPost);
 
@@ -60,7 +60,7 @@ describe('BlogService', () => {
   it('should create blog post', async () => {
     const promise = service.createBlogPost(mockPost);
 
-    const req = httpTestingController.expectOne('/api/admin/blog');
+    const req = httpTestingController.expectOne('/v1/api/admin/blog');
     expect(req.request.method).toEqual('POST');
     expect(req.request.body).toEqual(mockPost);
     req.flush(mockPost);
@@ -71,7 +71,7 @@ describe('BlogService', () => {
   it('should update blog post', async () => {
     const promise = service.updateBlogPost(mockPost);
 
-    const req = httpTestingController.expectOne('/api/admin/blog/1');
+    const req = httpTestingController.expectOne('/v1/api/admin/blog/1');
     expect(req.request.method).toEqual('PUT');
     expect(req.request.body).toEqual(mockPost);
     req.flush(mockPost);
@@ -82,7 +82,7 @@ describe('BlogService', () => {
   it('should delete blog post', async () => {
     const promise = service.deleteBlogPost('1');
 
-    const req = httpTestingController.expectOne('/api/admin/blog/1');
+    const req = httpTestingController.expectOne('/v1/api/admin/blog/1');
     expect(req.request.method).toEqual('DELETE');
     req.flush(null);
 

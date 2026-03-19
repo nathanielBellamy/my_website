@@ -45,7 +45,7 @@ func TestRecaptchaHandler(t *testing.T) {
 	})
 
 	// Test Case 1: Successful Recaptcha validation
-	req, err := http.NewRequest("POST", "/old-site/recaptcha", strings.NewReader("g-recaptcha-response=mock_success_token"))
+	req, err := http.NewRequest("POST", "/v1/recaptcha", strings.NewReader("g-recaptcha-response=mock_success_token"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -71,7 +71,7 @@ func TestRecaptchaHandler(t *testing.T) {
 	}
 
 	// Test Case 2: Failed Recaptcha validation
-	req, err = http.NewRequest("POST", "/old-site/recaptcha", strings.NewReader("g-recaptcha-response=mock_fail_token"))
+	req, err = http.NewRequest("POST", "/v1/recaptcha", strings.NewReader("g-recaptcha-response=mock_fail_token"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -129,7 +129,7 @@ func TestPublicSquareFeedWsHandler(t *testing.T) {
 		serveWsCalled = true
 	}
 
-	req, _ := http.NewRequest("GET", "/old-site/public-square-feed-ws", nil)
+	req, _ := http.NewRequest("GET", "/v1/public-square-feed-ws", nil)
 	rr := httptest.NewRecorder()
 	osc.PublicSquareFeedWsHandler(rr, req)
 
@@ -148,7 +148,7 @@ func TestPublicSquareFeedWsHandler(t *testing.T) {
 	redirectCalled = false
 	serveWsCalled = false
 
-	req, _ = http.NewRequest("GET", "/old-site/public-square-feed-ws", nil)
+	req, _ = http.NewRequest("GET", "/v1/public-square-feed-ws", nil)
 	rr = httptest.NewRecorder()
 	osc.PublicSquareFeedWsHandler(rr, req)
 
@@ -167,7 +167,7 @@ func TestPublicSquareFeedWsHandler(t *testing.T) {
 	redirectCalled = false
 	serveWsCalled = false
 
-	req, _ = http.NewRequest("GET", "/old-site/public-square-feed-ws", nil)
+	req, _ = http.NewRequest("GET", "/v1/public-square-feed-ws", nil)
 	rr = httptest.NewRecorder()
 	osc.PublicSquareFeedWsHandler(rr, req)
 
@@ -186,7 +186,7 @@ func TestPublicSquareFeedWsHandler(t *testing.T) {
 	redirectCalled = false
 	serveWsCalled = false
 
-	req, _ = http.NewRequest("GET", "/old-site/public-square-feed-ws", nil)
+	req, _ = http.NewRequest("GET", "/v1/public-square-feed-ws", nil)
 	rr = httptest.NewRecorder()
 	osc.PublicSquareFeedWsHandler(rr, req)
 
@@ -230,7 +230,7 @@ func TestPublicSquareWasmWsHandler(t *testing.T) {
 		serveWsCalled = true
 	}
 
-	req, _ := http.NewRequest("GET", "/old-site/public-square-wasm-ws", nil)
+	req, _ := http.NewRequest("GET", "/v1/public-square-wasm-ws", nil)
 	rr := httptest.NewRecorder()
 	osc.PublicSquareWasmWsHandler(rr, req)
 
@@ -249,7 +249,7 @@ func TestPublicSquareWasmWsHandler(t *testing.T) {
 	redirectCalled = false
 	serveWsCalled = false
 
-	req, _ = http.NewRequest("GET", "/old-site/public-square-wasm-ws", nil)
+	req, _ = http.NewRequest("GET", "/v1/public-square-wasm-ws", nil)
 	rr = httptest.NewRecorder()
 	osc.PublicSquareWasmWsHandler(rr, req)
 
@@ -268,7 +268,7 @@ func TestPublicSquareWasmWsHandler(t *testing.T) {
 	redirectCalled = false
 	serveWsCalled = false
 
-	req, _ = http.NewRequest("GET", "/old-site/public-square-wasm-ws", nil)
+	req, _ = http.NewRequest("GET", "/v1/public-square-wasm-ws", nil)
 	rr = httptest.NewRecorder()
 	osc.PublicSquareWasmWsHandler(rr, req)
 
@@ -287,7 +287,7 @@ func TestPublicSquareWasmWsHandler(t *testing.T) {
 	redirectCalled = false
 	serveWsCalled = false
 
-	req, _ = http.NewRequest("GET", "/old-site/public-square-wasm-ws", nil)
+	req, _ = http.NewRequest("GET", "/v1/public-square-wasm-ws", nil)
 	rr = httptest.NewRecorder()
 	osc.PublicSquareWasmWsHandler(rr, req)
 

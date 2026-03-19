@@ -8,7 +8,7 @@ describe('Rate Limiting', () => {
     // triggering the rate limiter which allows a burst of 10.
     for (let i = 0; i < requestCount; i++) {
       cy.request({
-        url: '/api/marketing/home',
+        url: '/v1/api/marketing/home',
         failOnStatusCode: false // Prevent Cypress from failing the test when we hit 429
       }).then(response => {
         statuses.push(response.status);
