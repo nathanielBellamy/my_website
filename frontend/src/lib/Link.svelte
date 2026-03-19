@@ -12,16 +12,16 @@
     var newSection: SiteSection = SiteSection.home
 
     switch (href) {
-      case "/about":
+      case "/v1/about":
         newSection = SiteSection.about
         break
-      case "/magic_square":
+      case "/v1/magic_square":
         newSection = SiteSection.magicSquare
         break
-      case "/give_me_a_sine":
+      case "/v1/give_me_a_sine":
         newSection = SiteSection.giveMeASine
         break
-      case "/":
+      case "/v1/":
       default:
         break
     }

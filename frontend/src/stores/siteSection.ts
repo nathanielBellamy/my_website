@@ -31,18 +31,18 @@ export function intoSiteSection(s: string | null | undefined): SiteSection {
 export function intoUrl(s: SiteSection) {
   switch (s) {
     case SiteSection.about:
-      return '/about'
+      return '/v1/about'
     case SiteSection.home:
-      return '/'
+      return '/v1/'
     case SiteSection.giveMeASine:
-      return '/give-me-a-sine'
+      return '/v1/give-me-a-sine'
     case SiteSection.magicSquare:
-      return '/magic-square'
+      return '/v1/magic-square'
     case SiteSection.publicSquare:
-      return '/public-square'
+      return '/v1/public-square'
     case SiteSection.none:
     default:
-      return '/'
+      return '/v1/'
   }
 }
 

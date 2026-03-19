@@ -13,7 +13,7 @@ Cypress.Commands.add('epilepsy_warning', (accept: boolean) => {
     case false:
       cy.get('[data-testid="epilepsy_warning_go_home"]')
         .click()
-      cy.url().should('eq', 'http://localhost:8080/#/')
+      cy.url().should('eq', 'http://localhost:8080/#/v1/')
       break
   }
 })

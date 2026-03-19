@@ -28,22 +28,22 @@
   }
 
   const routes: { [key: string]: any } = {
-    '/': wrap({
+    '/v1/': wrap({
       asyncComponent: () => import('./Home.svelte')
     }),
-    '/about': wrap({
+    '/v1/about': wrap({
       asyncComponent: () => import('./About.svelte')
     }),
-    '/give-me-a-sine': wrap({
+    '/v1/give-me-a-sine': wrap({
       asyncComponent: () => import('./GiveMeASine.svelte')
     }),
-    '/magic-square': wrap({
+    '/v1/magic-square': wrap({
       asyncComponent: () => import('./MagicSquare/Container.svelte')
     }),
-    '/public-square': wrap({
+    '/v1/public-square': wrap({
       asyncComponent: () => import('./PublicSquare/Container.svelte')
     }),
-    '/system-diagram': wrap({
+    '/v1/system-diagram': wrap({
       asyncComponent: () => import('./SystemDiagram.svelte')
     })
   }

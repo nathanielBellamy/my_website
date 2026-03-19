@@ -99,7 +99,7 @@
       </p>
       <p class="text-cyan-600">
         {i18n.t("failed_3", langVal)}
-        <Link href="/magic-square"
+        <Link href="/v1/magic-square"
               title={i18n.t("magicSquare", langVal)}
               sameOrigin={true}/>
       </p>

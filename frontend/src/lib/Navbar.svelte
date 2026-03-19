@@ -54,7 +54,7 @@
           <SidebarItem class="hover:bg-transparent !list-none flex items-center font-bold text-blue-200"
                        tabIndex="0"
                        on:click={() => hiddenDrawer = true}
-                       href="/#/"
+                       href="/#/v1/"
                        data-testid="nav_dropdown_home"
                        label={i18n.t("nav/home", langVal)}>
             <svelte:fragment slot="icon">
@@ -64,7 +64,7 @@
           <SidebarItem class="hover:bg-transparent flex items-center font-bold text-blue-200"
                        tabIndex="0"
                        on:click={() => hiddenDrawer = true}
-                       href="/#/public-square"
+                       href="/#/v1/public-square"
                        data-testid="nav_dropdown_public_square"
                        label={i18n.t("nav/publicSquare", langVal)}>
             <svelte:fragment slot="icon">
@@ -74,7 +74,7 @@
           <SidebarItem class="hover:bg-transparent flex items-center font-bold text-blue-200"
                        tabIndex="0"
                        on:click={() => hiddenDrawer = true}
-                       href="/#/magic-square"
+                       href="/#/v1/magic-square"
                        data-testid="nav_dropdown_magic_square"
                        label={i18n.t("nav/magicSquare", langVal)}>
             <svelte:fragment slot="icon">
@@ -84,7 +84,7 @@
           <SidebarItem class="hover:bg-transparent flex items-center font-bold text-blue-200"
                        tabIndex="0"
                        on:click={() => hiddenDrawer = true}
-                       href="/#/give-me-a-sine"
+                       href="/#/v1/give-me-a-sine"
                        data-testid="nav_dropdown_give_me_a_sine"
                        label={i18n.t("nav/giveMeASine", langVal)}>
             <svelte:fragment slot="icon">
@@ -94,7 +94,7 @@
           <SidebarItem class="hover:bg-transparent flex items-center font-bold text-blue-200"
                        tabIndex="0"
                        on:click={() => hiddenDrawer = true}
-                       href="/#/about"
+                       href="/#/v1/about"
                        data-testid="nav_dropdown_about"
                        label={i18n.t("nav/about", langVal)}>
             <svelte:fragment slot="icon">
@@ -104,7 +104,7 @@
           <SidebarItem class="hover:bg-transparent flex items-center font-bold text-blue-200"
                        tabIndex="0"
                        on:click={() => hiddenDrawer = true}
-                       href="/#/system-diagram"
+                       href="/#/v1/system-diagram"
                        data-testid="nav_dropdown_system_diagram"
                        label={i18n.t("nav/systemDiagram", langVal)}>
             <svelte:fragment slot="icon">

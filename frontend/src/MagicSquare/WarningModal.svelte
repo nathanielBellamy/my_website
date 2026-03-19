@@ -18,7 +18,7 @@
   }
 
   function handleGoBack() {
-    push("/")
+    push("/v1/")
   }
 
   $: body_3 = body3(langVal)

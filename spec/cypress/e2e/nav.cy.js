@@ -20,7 +20,7 @@ describe('nav', () => {
           .click()
       })
 
-    cy.url().should('eq', 'http://localhost:8080/#/about')
+    cy.url().should('eq', 'http://localhost:8080/#/v1/about')
     
     cy.get('[data-testid="about_personal_projects"]')
       .contains('Personal projects')
@@ -39,7 +39,7 @@ describe('nav', () => {
           .click()
       })
 
-    cy.url().should('eq', 'http://localhost:8080/#/give-me-a-sine')
+    cy.url().should('eq', 'http://localhost:8080/#/v1/give-me-a-sine')
 
     cy.get('[data-testid="gmas_form_header"]')
       .contains("f(x) = a * sin(b*x + c)")
@@ -56,7 +56,7 @@ describe('nav', () => {
           .click()
       })
 
-    cy.url().should('eq', 'http://localhost:8080/#/system-diagram')
+    cy.url().should('eq', 'http://localhost:8080/#/v1/system-diagram')
 
     cy.get('[data-testid="system_diagram"]')
       .should('have.attr', 'alt', 'System Diagram')
@@ -73,7 +73,7 @@ describe('nav', () => {
           .click()
       })
 
-    cy.url().should('eq', 'http://localhost:8080/#/public-square')
+    cy.url().should('eq', 'http://localhost:8080/#/v1/public-square')
 
     cy.wait_for_loading_screen()
     cy.get('[data-testid="public_square_info_gate_welcome"]')
@@ -94,7 +94,7 @@ describe('nav', () => {
               .click()
           })
 
-        cy.url().should('eq', 'http://localhost:8080/#/magic-square')
+        cy.url().should('eq', 'http://localhost:8080/#/v1/magic-square')
 
         cy.wait_for_loading_screen()
         cy.epilepsy_warning(true)
@@ -115,7 +115,7 @@ describe('nav', () => {
               .click()
           })
 
-        cy.url().should('eq', 'http://localhost:8080/#/magic-square')
+        cy.url().should('eq', 'http://localhost:8080/#/v1/magic-square')
 
         cy.wait_for_loading_screen()
         cy.epilepsy_warning(false) // this command checks after navigation home URL
