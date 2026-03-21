@@ -6,7 +6,7 @@ describe('Admin App', () => {
   })
 
   it('should display the admin panel', () => {
-    cy.contains('Home Content').should('be.visible')
+    cy.contains('Work Content').should('be.visible')
   })
 
   it('should navigate between admin sections', () => {
@@ -22,9 +22,9 @@ describe('Admin App', () => {
     cy.url().should('include', '/groovejr')
     cy.contains('GrooveJr Content').should('be.visible')
 
-    cy.get('[data-testid="nav-admin-home"]').click()
-    cy.url().should('include', '/home')
-    cy.contains('Home Content').should('be.visible')
+    cy.get('[data-testid="nav-admin-work"]').click()
+    cy.url().should('include', '/work')
+    cy.contains('Work Content').should('be.visible')
   })
 
   const performCrud = (section, createTestid, title, content) => {
@@ -62,9 +62,9 @@ describe('Admin App', () => {
     cy.contains(updatedTitle).should('not.exist')
   }
 
-  it('should perform CRUD for Home content', () => {
-    cy.get('[data-testid="nav-admin-home"]').click()
-    performCrud('home', 'create-new-home-content', 'E2E Home', 'Home content test.')
+  it('should perform CRUD for Work content', () => {
+    cy.get('[data-testid="nav-admin-work"]').click()
+    performCrud('work', 'create-new-work-content', 'E2E Work', 'Work content test.')
   })
 
   it('should perform CRUD for About content', () => {
