@@ -1,8 +1,11 @@
 package main
 
 import (
+	"fmt"
+	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/go-pg/pg/v10/orm"
@@ -12,20 +15,39 @@ import (
 	"github.com/nathanielBellamy/my_website/backend/go/db"
 	"github.com/nathanielBellamy/my_website/backend/go/env"
 	"github.com/nathanielBellamy/my_website/backend/go/interfaces"
+	appLogs "github.com/nathanielBellamy/my_website/backend/go/logs"
 	"github.com/nathanielBellamy/my_website/backend/go/marketing"
+	appMetrics "github.com/nathanielBellamy/my_website/backend/go/metrics"
 	"github.com/nathanielBellamy/my_website/backend/go/middleware"
 	"github.com/nathanielBellamy/my_website/backend/go/models"
+	"github.com/nathanielBellamy/my_website/backend/go/monitoring"
 	"github.com/nathanielBellamy/my_website/backend/go/old_site"
 	"github.com/nathanielBellamy/my_website/backend/go/websocket"
 	cmap "github.com/orcaman/concurrent-map/v2"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog"
 	"golang.org/x/time/rate"
 )
 
 // MODE=<mode> ./main
 func main() {
-	// init log
-	log := zerolog.New(os.Stdout).With().Timestamp().Logger()
+	startAt := time.Now()
+
+	// Set up log file writer (tee to stdout + file for SSE streaming)
+	logFile, err := openLogFile("log", startAt)
+	if err != nil {
+		// Fall back to stdout-only if log dir is not writable
+		fmt.Fprintf(os.Stderr, "Warning: could not open log file: %v (falling back to stdout only)\n", err)
+	}
+	var logWriter io.Writer
+	if logFile != nil {
+		logWriter = io.MultiWriter(os.Stdout, logFile)
+		defer logFile.Close()
+	} else {
+		logWriter = os.Stdout
+	}
+
+	log := zerolog.New(logWriter).With().Timestamp().Logger()
 
 	// determine runtime env
 	mode := os.Getenv("MODE")
@@ -70,7 +92,9 @@ func main() {
 	go feedPool.StartFeed()
 	go wasmPool.StartWasm()
 
-	hostRouter := SetupRoutes(&cookieJar, &log, feedPool, wasmPool, db.NewPgDBAdapter(dbClient))
+	pgAdapter := db.NewPgDBAdapter(dbClient)
+
+	hostRouter := SetupRoutes(&cookieJar, &log, feedPool, wasmPool, pgAdapter, startAt)
 
 	// Setup Global Rate Limiter: Allows 5 requests per second per IP with a burst of 10
 	limiter := middleware.NewIPRateLimiter(rate.Limit(5), 10)
@@ -92,7 +116,7 @@ func main() {
 		Msg("Now serving on 8080")
 }
 
-func SetupRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, feedPool *websocket.Pool, wasmPool *websocket.Pool, db interfaces.PgxDB) http.Handler {
+func SetupRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, feedPool *websocket.Pool, wasmPool *websocket.Pool, db interfaces.PgxDB, startAt time.Time) http.Handler {
 	mode := os.Getenv("MODE")
 	oldSiteController := old_site.NewOldSiteController(cookieJar, log, feedPool, wasmPool)
 
@@ -102,11 +126,16 @@ func SetupRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolo
 	adminService := admin.NewService(db, log)
 	adminController := admin.NewAdminController(log, adminService)
 
+	logsController := appLogs.NewLogsController(log, "log", startAt)
+	healthController := appLogs.NewHealthController(log, startAt, db)
+
+	grafanaProxy := monitoring.NewGrafanaProxy(log, "http://grafana:3000")
+
 	adminMux := http.NewServeMux()
 	oldSiteMux := http.NewServeMux()
 	marketingMux := http.NewServeMux()
 
-	SetupBaseRoutes(adminMux, oldSiteMux, marketingMux, cookieJar, log, oldSiteController, marketingController, adminController)
+	SetupBaseRoutes(adminMux, oldSiteMux, marketingMux, cookieJar, log, oldSiteController, marketingController, adminController, logsController, healthController, grafanaProxy)
 
 	marketingFileServer := marketing.GetMarketingFileServerNoAuth(log)
 
@@ -118,14 +147,14 @@ func SetupRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolo
 		SetupLocalhostRoutes(adminMux, oldSiteMux, marketingMux, cookieJar, log, oldSiteController, adminController, marketingFileServer)
 	}
 
-	return &middleware.HostRouter{
+	return appMetrics.InstrumentHandler(log, &middleware.HostRouter{
 		AdminMux:     adminMux,
 		OldSiteMux:   oldSiteMux,
 		MarketingMux: marketingMux,
-	}
+	})
 }
 
-func SetupBaseRoutes(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, marketingController *marketing.MarketingController, adminController *admin.AdminController) {
+func SetupBaseRoutes(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, marketingController *marketing.MarketingController, adminController *admin.AdminController, logsController *appLogs.LogsController, healthController *appLogs.HealthController, grafanaProxy *monitoring.GrafanaProxy) {
 	log.Info().
 		Msg("Setting up BaseRoutes")
 
@@ -200,6 +229,22 @@ func SetupBaseRoutes(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJa
 	adminMux.Handle("POST /v1/api/admin/upload", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.UploadImageHandler)))
 	adminMux.Handle("GET /v1/api/admin/images", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.ListImagesHandler)))
 	adminMux.Handle("DELETE /v1/api/admin/images/{id}", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(adminController.DeleteImageHandler)))
+
+	// Logs & Health
+	adminMux.Handle("GET /v1/api/admin/logs/stream", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(logsController.StreamLogsHandler)))
+	adminMux.Handle("GET /v1/api/admin/logs/history", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(logsController.GetLogHistoryHandler)))
+	adminMux.Handle("GET /v1/api/admin/logs/files", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(logsController.GetLogFilesHandler)))
+	adminMux.Handle("GET /v1/api/admin/health", auth.RequireAdminAuthV2(cookieJar, log, http.HandlerFunc(healthController.GetHealthHandler)))
+
+	// Prometheus Metrics (auth-protected for external access)
+	adminMux.Handle("GET /v1/api/admin/metrics", auth.RequireAdminAuthV2(cookieJar, log, promhttp.Handler()))
+	// Internal metrics endpoint for Prometheus scraper (no auth — only accessible within Docker network)
+	// Registered on both adminMux and marketingMux so Prometheus can reach it via Host: backend:8080
+	adminMux.Handle("GET /internal/metrics", promhttp.Handler())
+	marketingMux.Handle("GET /internal/metrics", promhttp.Handler())
+
+	// Grafana Proxy
+	adminMux.Handle("/grafana/", auth.RequireAdminAuthV2(cookieJar, log, grafanaProxy))
 }
 
 func SetupRemotedevRoutes(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolog.Logger, oldSiteController *old_site.OldSiteController, adminController *admin.AdminController, marketingFileServer http.Handler) {
@@ -215,5 +260,25 @@ func SetupProdRoutes(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJa
 		Msg("Setting up ProdRoutes")
 
 	auth.SetupAdminAuthV2(adminMux, oldSiteMux, marketingMux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer(), auth.LogClientIp("/", log, marketingFileServer))
+}
+
+// openLogFile creates a timestamped log file in logDir/YYYY/MM/
+func openLogFile(logDir string, startAt time.Time) (*os.File, error) {
+	year := startAt.UTC().Format("2006")
+	month := startAt.UTC().Format("01")
+	dir := filepath.Join(logDir, year, month)
+
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return nil, fmt.Errorf("failed to create log directory %s: %w", dir, err)
+	}
+
+	filename := startAt.UTC().Format("2006-01-02T15-04-05Z") + "-log.txt"
+	filePath := filepath.Join(dir, filename)
+
+	f, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open log file %s: %w", filePath, err)
+	}
+	return f, nil
 }
 

@@ -6,11 +6,15 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+	"time"
 
+	"github.com/nathanielBellamy/my_website/backend/go/admin"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
+	appLogs "github.com/nathanielBellamy/my_website/backend/go/logs"
 	"github.com/nathanielBellamy/my_website/backend/go/marketing"
 	"github.com/nathanielBellamy/my_website/backend/go/models"
-	"github.com/nathanielBellamy/my_website/backend/go/testutils" // Import the new testutils package
+	"github.com/nathanielBellamy/my_website/backend/go/monitoring"
+	"github.com/nathanielBellamy/my_website/backend/go/testutils"
 
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"github.com/rs/zerolog"
@@ -54,10 +58,15 @@ func TestSetupBaseRoutes_MarketingBlogPosts(t *testing.T) {
 	// Call SetupBaseRoutes to register handlers
 	// Pass nil for oldSiteController as it's not relevant for this marketing test
 	marketingService := marketing.NewService(mockDB)
+	adminService := admin.NewService(mockDB, &log)
 	marketingMux := http.NewServeMux()
 	adminMux := http.NewServeMux()
 	oldSiteMux := http.NewServeMux()
-	SetupBaseRoutes(adminMux, oldSiteMux, marketingMux, &cookieJar, &log, nil, marketing.NewMarketingController(&log, marketingService), nil)
+	startAt := time.Now()
+	logsController := appLogs.NewLogsController(&log, "log", startAt)
+	healthController := appLogs.NewHealthController(&log, startAt, mockDB)
+	grafanaProxy := monitoring.NewGrafanaProxy(&log, "http://localhost:3000")
+	SetupBaseRoutes(adminMux, oldSiteMux, marketingMux, &cookieJar, &log, nil, marketing.NewMarketingController(&log, marketingService), admin.NewAdminController(&log, adminService), logsController, healthController, grafanaProxy)
 
 	// Create a request to the marketing blog posts endpoint
 	req, err := http.NewRequest("GET", "/v1/api/marketing/blog?page=1&limit=5", nil)
