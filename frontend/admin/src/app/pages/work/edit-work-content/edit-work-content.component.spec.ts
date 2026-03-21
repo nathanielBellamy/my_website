@@ -41,7 +41,7 @@ describe('EditWorkContentComponent', () => {
     });
   });
 
-  it('should fetch home content on init and populate form', async () => {
+  it('should fetch work content on init and populate form', async () => {
     await render(EditWorkContentComponent, {
       providers: [
         { provide: WorkService, useValue: mockWorkService },
@@ -58,7 +58,7 @@ describe('EditWorkContentComponent', () => {
     });
   });
 
-  it('should update home content and navigate on success', async () => {
+  it('should update work content and navigate on success', async () => {
     await render(EditWorkContentComponent, {
       providers: [
         { provide: WorkService, useValue: mockWorkService },

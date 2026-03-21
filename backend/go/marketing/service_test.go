@@ -130,7 +130,7 @@ func TestGetAllWorkContent(t *testing.T) {
 }
 
 func TestGetWorkContentByID(t *testing.T) {
-	// Test case: Home content found
+	// Test case: Work content found
 	var foundMockQuery *testutils.MockPgQuery // Declare first
 	foundMockQuery = &testutils.MockPgQuery{  // Initialize
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
@@ -158,7 +158,7 @@ func TestGetWorkContentByID(t *testing.T) {
 		t.Errorf("expected content with ID '1' and Title 'Test Work 1', got %v", content)
 	}
 
-	// Test case: Home content not found
+	// Test case: Work content not found
 	notFoundMockQuery := &testutils.MockPgQuery{} // SelectFunc can be nil, default behavior handles ErrNoRows
 	notFoundMockDB := &testutils.MockPgDB{MockQuery: notFoundMockQuery}
 	notFoundService := NewService(notFoundMockDB)
