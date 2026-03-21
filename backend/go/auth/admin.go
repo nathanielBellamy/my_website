@@ -139,7 +139,7 @@ func SetupAdminAuthV2(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJ
 			Value:    challengeID,
 			Path:     "/v1/api/auth/admin",
 			HttpOnly: true,
-			Secure:   !env.IsLocalhost(os.Getenv("MODE")),
+			Secure:   true,
 			SameSite: http.SameSiteStrictMode,
 			MaxAge:   300, // 5 minutes
 		})
@@ -207,7 +207,7 @@ func SetupAdminAuthV2(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJ
 			Value:    tokenStr,
 			Path:     "/v1/api/auth/admin",
 			HttpOnly: true,
-			Secure:   !env.IsLocalhost(os.Getenv("MODE")),
+			Secure:   true,
 			SameSite: http.SameSiteStrictMode,
 			MaxAge:   300, // 5 minutes
 		})
@@ -326,7 +326,7 @@ func issueSession(w http.ResponseWriter, r *http.Request, cookieJar *cmap.Concur
 		Value:    sessionToken,
 		Path:     "/",
 		MaxAge:   60 * 60 * 48,
-		Secure:   !isLocalhost,
+		Secure:   true,
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
 	}

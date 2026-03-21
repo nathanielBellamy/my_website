@@ -480,20 +480,57 @@ func (ac *AdminController) UploadImageHandler(w http.ResponseWriter, r *http.Req
 	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UploadImageHandler Hit")
 
 	// Limit upload size to 10MB
-	r.Body = http.MaxBytesReader(w, r.Body, 10<<20)
-	if err := r.ParseMultipartForm(10 << 20); err != nil {
-		http.Error(w, "File too large", http.StatusBadRequest)
-		return
-	}
+	const maxUploadSize = 10 << 20
+	r.Body = http.MaxBytesReader(w, r.Body, maxUploadSize)
 
-	file, header, err := r.FormFile("image")
+	reader, err := r.MultipartReader()
 	if err != nil {
-		http.Error(w, "Error retrieving file", http.StatusBadRequest)
+		ac.Log.Error().Err(err).Msg("Error creating multipart reader")
+		http.Error(w, "Invalid multipart request", http.StatusBadRequest)
 		return
 	}
-	defer file.Close()
 
-	altText := r.FormValue("altText")
+	var fileData bytes.Buffer
+	var originalFilename string
+	var altText string
+
+	for {
+		part, err := reader.NextPart()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			ac.Log.Error().Err(err).Msg("Error reading multipart part")
+			http.Error(w, "Error reading form data", http.StatusBadRequest)
+			return
+		}
+
+		switch part.FormName() {
+		case "image":
+			originalFilename = part.FileName()
+			if _, cpErr := io.Copy(&fileData, part); cpErr != nil {
+				ac.Log.Error().Err(cpErr).Msg("Error reading image data")
+				http.Error(w, "File too large", http.StatusBadRequest)
+				return
+			}
+		case "altText":
+			b, rdErr := io.ReadAll(part)
+			if rdErr != nil {
+				ac.Log.Error().Err(rdErr).Msg("Error reading altText")
+				http.Error(w, "Error reading form data", http.StatusBadRequest)
+				return
+			}
+			altText = string(b)
+		}
+		if clErr := part.Close(); clErr != nil {
+			ac.Log.Error().Err(clErr).Msg("Error closing multipart part")
+		}
+	}
+
+	if originalFilename == "" {
+		http.Error(w, "No image file provided", http.StatusBadRequest)
+		return
+	}
 
 	// Create directory if it doesn't exist
 	uploadDir := "uploads/images"
@@ -504,7 +541,7 @@ func (ac *AdminController) UploadImageHandler(w http.ResponseWriter, r *http.Req
 	}
 
 	// Generate unique filename
-	ext := strings.ToLower(header.Filename[strings.LastIndex(header.Filename, "."):])
+	ext := strings.ToLower(originalFilename[strings.LastIndex(originalFilename, "."):])
 	filename := fmt.Sprintf("%d%s", time.Now().UnixNano(), ext)
 
 	// Use os.Root to scope file access under uploadDir and prevent directory traversal
@@ -524,7 +561,7 @@ func (ac *AdminController) UploadImageHandler(w http.ResponseWriter, r *http.Req
 	}
 	defer dst.Close()
 
-	if _, err := io.Copy(dst, file); err != nil {
+	if _, err := io.Copy(dst, &fileData); err != nil {
 		ac.Log.Error().Err(err).Msg("Error copying file content")
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
@@ -532,7 +569,7 @@ func (ac *AdminController) UploadImageHandler(w http.ResponseWriter, r *http.Req
 
 	// Save metadata to DB
 	filePath := filepath.Join(uploadDir, filename)
-	image, err := ac.Service.UploadImage(filename, header.Filename, altText)
+	image, err := ac.Service.UploadImage(filename, originalFilename, altText)
 	if err != nil {
 		ac.Log.Error().Err(err).Msg("Error saving image metadata")
 		// Clean up file if DB fails
