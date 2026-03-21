@@ -54,7 +54,7 @@ func (lc *LogsController) StreamLogsHandler(w http.ResponseWriter, r *http.Reque
 	linesStr := r.URL.Query().Get("lines")
 	backfillLines := 100
 	if linesStr != "" {
-		if n, err := strconv.Atoi(linesStr); err == nil && n > 0 {
+		if n, err := strconv.Atoi(linesStr); err == nil && n >= 0 {
 			backfillLines = n
 		}
 	}
@@ -167,13 +167,17 @@ func (lc *LogsController) streamNewLines(w http.ResponseWriter, flusher http.Flu
 }
 
 func (lc *LogsController) findLatestLogFile() (string, error) {
-	var files []string
+	type logFile struct {
+		path    string
+		modTime time.Time
+	}
+	var files []logFile
 	err := filepath.Walk(lc.LogDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return nil // skip errors
 		}
 		if !info.IsDir() && strings.HasSuffix(info.Name(), "-log.txt") {
-			files = append(files, path)
+			files = append(files, logFile{path: path, modTime: info.ModTime()})
 		}
 		return nil
 	})
@@ -185,8 +189,11 @@ func (lc *LogsController) findLatestLogFile() (string, error) {
 		return "", fmt.Errorf("no log files found in %s", lc.LogDir)
 	}
 
-	sort.Strings(files)
-	return files[len(files)-1], nil
+	// Sort by modification time (most recent last)
+	sort.Slice(files, func(i, j int) bool {
+		return files[i].modTime.Before(files[j].modTime)
+	})
+	return files[len(files)-1].path, nil
 }
 
 func (lc *LogsController) tailLogFile(filePath string, n int, levelFilter, searchFilter string) ([]string, error) {

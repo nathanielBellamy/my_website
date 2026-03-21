@@ -64,9 +64,9 @@ func (lc *LogsController) GetLogFilesHandler(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	// Sort by path descending (newest first)
+	// Sort by date descending (newest first)
 	sort.Slice(files, func(i, j int) bool {
-		return files[i].Path > files[j].Path
+		return files[i].Date > files[j].Date
 	})
 
 	response := LogFilesResponse{

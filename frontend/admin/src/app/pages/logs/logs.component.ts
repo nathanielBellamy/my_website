@@ -90,7 +90,6 @@ export class LogsComponent implements OnInit, OnDestroy {
 
   protected connectSSE(): void {
     this.disconnectSSE();
-    this.isHistoryMode.set(false);
     this.entries.set([]);
     this.connectionStatus.set(ConnectionStatus.RECONNECTING);
 
@@ -124,10 +123,13 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.eventSource.onerror = () => {
       this.connectionStatus.set(ConnectionStatus.DISCONNECTED);
       this.disconnectSSE();
-      this.reconnectTimeout = setTimeout(() => {
-        this.connectionStatus.set(ConnectionStatus.RECONNECTING);
-        this.connectSSE();
-      }, 3000);
+      // Only auto-reconnect if we're still in live mode
+      if (!this.isHistoryMode()) {
+        this.reconnectTimeout = setTimeout(() => {
+          this.connectionStatus.set(ConnectionStatus.RECONNECTING);
+          this.connectSSE();
+        }, 3000);
+      }
     };
 
     this.eventSource.onopen = () => {
@@ -136,6 +138,10 @@ export class LogsComponent implements OnInit, OnDestroy {
   }
 
   protected disconnectSSE(): void {
+    if (this.reconnectTimeout) {
+      clearTimeout(this.reconnectTimeout);
+      this.reconnectTimeout = null;
+    }
     if (this.eventSource) {
       this.eventSource.close();
       this.eventSource = null;

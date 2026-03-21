@@ -1,8 +1,11 @@
 package main
 
 import (
+	"fmt"
+	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/go-pg/pg/v10/orm"
@@ -28,10 +31,23 @@ import (
 
 // MODE=<mode> ./main
 func main() {
-	// init log
-	log := zerolog.New(os.Stdout).With().Timestamp().Logger()
-
 	startAt := time.Now()
+
+	// Set up log file writer (tee to stdout + file for SSE streaming)
+	logFile, err := openLogFile("log", startAt)
+	if err != nil {
+		// Fall back to stdout-only if log dir is not writable
+		fmt.Fprintf(os.Stderr, "Warning: could not open log file: %v (falling back to stdout only)\n", err)
+	}
+	var logWriter io.Writer
+	if logFile != nil {
+		logWriter = io.MultiWriter(os.Stdout, logFile)
+		defer logFile.Close()
+	} else {
+		logWriter = os.Stdout
+	}
+
+	log := zerolog.New(logWriter).With().Timestamp().Logger()
 
 	// determine runtime env
 	mode := os.Getenv("MODE")
@@ -223,7 +239,9 @@ func SetupBaseRoutes(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJa
 	// Prometheus Metrics (auth-protected for external access)
 	adminMux.Handle("GET /v1/api/admin/metrics", auth.RequireAdminAuthV2(cookieJar, log, promhttp.Handler()))
 	// Internal metrics endpoint for Prometheus scraper (no auth — only accessible within Docker network)
+	// Registered on both adminMux and marketingMux so Prometheus can reach it via Host: backend:8080
 	adminMux.Handle("GET /internal/metrics", promhttp.Handler())
+	marketingMux.Handle("GET /internal/metrics", promhttp.Handler())
 
 	// Grafana Proxy
 	adminMux.Handle("/grafana/", auth.RequireAdminAuthV2(cookieJar, log, grafanaProxy))
@@ -242,5 +260,25 @@ func SetupProdRoutes(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJa
 		Msg("Setting up ProdRoutes")
 
 	auth.SetupAdminAuthV2(adminMux, oldSiteMux, marketingMux, cookieJar, log, oldSiteController.OldSiteFileServer(), adminController.AdminFileServer(), auth.LogClientIp("/", log, marketingFileServer))
+}
+
+// openLogFile creates a timestamped log file in logDir/YYYY/MM/
+func openLogFile(logDir string, startAt time.Time) (*os.File, error) {
+	year := startAt.UTC().Format("2006")
+	month := startAt.UTC().Format("01")
+	dir := filepath.Join(logDir, year, month)
+
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return nil, fmt.Errorf("failed to create log directory %s: %w", dir, err)
+	}
+
+	filename := startAt.UTC().Format("2006-01-02T15-04-05Z") + "-log.txt"
+	filePath := filepath.Join(dir, filename)
+
+	f, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open log file %s: %w", filePath, err)
+	}
+	return f, nil
 }
 

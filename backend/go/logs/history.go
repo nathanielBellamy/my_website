@@ -9,6 +9,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
 )
@@ -103,7 +104,11 @@ func (lc *LogsController) GetLogHistoryHandler(w http.ResponseWriter, r *http.Re
 }
 
 func (lc *LogsController) findLogFilesByDate(dateFilter string) ([]string, error) {
-	var files []string
+	type logFile struct {
+		path    string
+		modTime time.Time
+	}
+	var files []logFile
 
 	err := filepath.Walk(lc.LogDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -123,15 +128,23 @@ func (lc *LogsController) findLogFilesByDate(dateFilter string) ([]string, error
 			}
 		}
 
-		files = append(files, path)
+		files = append(files, logFile{path: path, modTime: info.ModTime()})
 		return nil
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	sort.Strings(files)
-	return files, nil
+	// Sort by modification time (oldest first)
+	sort.Slice(files, func(i, j int) bool {
+		return files[i].modTime.Before(files[j].modTime)
+	})
+
+	result := make([]string, len(files))
+	for i, f := range files {
+		result[i] = f.path
+	}
+	return result, nil
 }
 
 func (lc *LogsController) readLogFileEntries(filePath, levelFilter, searchFilter string) ([]LogEntry, error) {

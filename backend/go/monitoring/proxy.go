@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"strings"
 
 	"github.com/rs/zerolog"
 )
@@ -28,11 +27,7 @@ func NewGrafanaProxy(log *zerolog.Logger, grafanaURL string) *GrafanaProxy {
 		originalDirector(req)
 		// Set auth proxy header so Grafana trusts the request
 		req.Header.Set("X-WEBAUTH-USER", "admin")
-		// Strip the /grafana prefix
-		req.URL.Path = strings.TrimPrefix(req.URL.Path, "/grafana")
-		if req.URL.Path == "" {
-			req.URL.Path = "/"
-		}
+		// Keep /grafana/ prefix — Grafana uses serve_from_sub_path to handle it
 	}
 
 	proxy.ErrorHandler = func(w http.ResponseWriter, r *http.Request, err error) {
