@@ -50,9 +50,9 @@ type BlogPostTag struct {
 	TagID      string   `json:"tagId" pg:",pk,type:uuid"`
 }
 
-// HomeContent represents content for the home page.
-type HomeContent struct {
-	tableName     struct{}   `pg:"home_contents"`
+// WorkContent represents content for the work page.
+type WorkContent struct {
+	tableName     struct{}   `pg:"work_contents"`
 	ID            string     `json:"id" pg:",pk,type:uuid"`
 	Title         string     `json:"title"`
 	Content       string     `json:"content"`

@@ -225,16 +225,16 @@ func (ac *AdminController) DeleteBlogPostHandler(w http.ResponseWriter, r *http.
 	w.WriteHeader(http.StatusNoContent)
 }
 
-// Home
-func (ac *AdminController) GetAllHomeContentHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllHomeContentHandler Hit")
+// Work
+func (ac *AdminController) GetAllWorkContentHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllWorkContentHandler Hit")
 	opts := getFilterOptions(r)
-	content, total, err := ac.Service.GetAllHomeContent(opts)
+	content, total, err := ac.Service.GetAllWorkContent(opts)
 	if err != nil {
-		utils.HandleDBError(w, err, "Error fetching home content")
+		utils.HandleDBError(w, err, "Error fetching work content")
 		return
 	}
-	resp := models.PaginatedResponse[models.HomeContent]{
+	resp := models.PaginatedResponse[models.WorkContent]{
 		Data:  content,
 		Total: total,
 		Page:  opts.Page,
@@ -243,65 +243,65 @@ func (ac *AdminController) GetAllHomeContentHandler(w http.ResponseWriter, r *ht
 	ac.sendJSON(w, resp)
 }
 
-func (ac *AdminController) GetHomeContentByIDHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetHomeContentByIDHandler Hit")
+func (ac *AdminController) GetWorkContentByIDHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetWorkContentByIDHandler Hit")
 	id := r.PathValue("id")
-	content, err := ac.Service.GetHomeContentByID(id)
+	content, err := ac.Service.GetWorkContentByID(id)
 	if err != nil {
-		utils.HandleDBError(w, err, "Error fetching home content")
+		utils.HandleDBError(w, err, "Error fetching work content")
 		return
 	}
 
 	if content == nil {
-		http.Error(w, "Home content not found", http.StatusNotFound)
+		http.Error(w, "Work content not found", http.StatusNotFound)
 		return
 	}
 
 	ac.sendJSON(w, content)
 }
 
-func (ac *AdminController) CreateHomeContentHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateHomeContentHandler Hit")
-	var content models.HomeContent
+func (ac *AdminController) CreateWorkContentHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateWorkContentHandler Hit")
+	var content models.WorkContent
 	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	newContent, err := ac.Service.CreateHomeContent(&content)
+	newContent, err := ac.Service.CreateWorkContent(&content)
 	if err != nil {
-		utils.HandleDBError(w, err, "Error creating home content")
+		utils.HandleDBError(w, err, "Error creating work content")
 		return
 	}
 
 	ac.sendJSON(w, newContent)
 }
 
-func (ac *AdminController) UpdateHomeContentHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateHomeContentHandler Hit")
+func (ac *AdminController) UpdateWorkContentHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateWorkContentHandler Hit")
 	id := r.PathValue("id")
-	var content models.HomeContent
+	var content models.WorkContent
 	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 	content.ID = id
 
-	updatedContent, err := ac.Service.UpdateHomeContent(&content)
+	updatedContent, err := ac.Service.UpdateWorkContent(&content)
 	if err != nil {
-		utils.HandleDBError(w, err, "Error updating home content")
+		utils.HandleDBError(w, err, "Error updating work content")
 		return
 	}
 
 	ac.sendJSON(w, updatedContent)
 }
 
-func (ac *AdminController) DeleteHomeContentHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("DeleteHomeContentHandler Hit")
+func (ac *AdminController) DeleteWorkContentHandler(w http.ResponseWriter, r *http.Request) {
+	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("DeleteWorkContentHandler Hit")
 	id := r.PathValue("id")
 
-	if err := ac.Service.DeleteHomeContent(id); err != nil {
-		utils.HandleDBError(w, err, "Error deleting home content")
+	if err := ac.Service.DeleteWorkContent(id); err != nil {
+		utils.HandleDBError(w, err, "Error deleting work content")
 		return
 	}
 
@@ -644,10 +644,10 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 				return
 			}
 		}
-	case "home":
-		content, err := ac.Service.ExportHomeContent()
+	case "work":
+		content, err := ac.Service.ExportWorkContent()
 		if err != nil {
-			utils.HandleDBError(w, err, "Error exporting home content")
+			utils.HandleDBError(w, err, "Error exporting work content")
 			return
 		}
 		if err := writer.Write([]string{"id", "title", "content", "ordering", "activated_at", "deactivated_at"}); err != nil {
@@ -847,10 +847,10 @@ func (ac *AdminController) ImportCSVHandler(w http.ResponseWriter, r *http.Reque
 			return
 		}
 
-	case "home":
-		var content []models.HomeContent
+	case "work":
+		var content []models.WorkContent
 		for _, row := range records[1:] {
-			c := models.HomeContent{}
+			c := models.WorkContent{}
 			if idx, ok := colIdx["id"]; ok {
 				c.ID = row[idx]
 			}
@@ -871,8 +871,8 @@ func (ac *AdminController) ImportCSVHandler(w http.ResponseWriter, r *http.Reque
 			}
 			content = append(content, c)
 		}
-		if err := ac.Service.ImportHomeContent(content); err != nil {
-			utils.HandleDBError(w, err, "Error importing home content")
+		if err := ac.Service.ImportWorkContent(content); err != nil {
+			utils.HandleDBError(w, err, "Error importing work content")
 			return
 		}
 

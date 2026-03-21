@@ -4,16 +4,16 @@ import { LatestPostsComponent } from './latest-posts.component';
 import { CardComponent } from '../../components/card/card.component';
 import { LatestPostsStore } from './latest-posts.store';
 import { signal, WritableSignal } from '@angular/core';
-import { HomeContent } from '../../models/home.model';
+import { WorkContent } from '../../models/work.model';
 import { provideRouter } from '@angular/router';
 
-const mockHomeContent: HomeContent[] = [
+const mockWorkContent: WorkContent[] = [
   { id: '1', title: 'Title 1', content: 'Body 1', order: 1 },
   { id: '2', title: 'Title 2', content: 'Body 2', order: 2 },
 ];
 
 describe('LatestPostsComponent', () => {
-  let contentSignal: WritableSignal<HomeContent[]>;
+  let contentSignal: WritableSignal<WorkContent[]>;
   let loadingSignal: WritableSignal<boolean>;
   let errorSignal: WritableSignal<string | null>;
   let allLoadedSignal: WritableSignal<boolean>;
@@ -50,7 +50,7 @@ describe('LatestPostsComponent', () => {
   });
 
   it('should render cards based on store content', async () => {
-    contentSignal.set(mockHomeContent);
+    contentSignal.set(mockWorkContent);
 
     await waitFor(() => {
       expect(screen.getAllByRole('article').length).toBe(2);

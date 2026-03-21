@@ -30,11 +30,11 @@ type MockAdminService struct {
 	UpdateBlogPostFunc         func(post *models.BlogPost) (*models.BlogPost, error)
 	DeleteBlogPostFunc         func(id string) error
 	GetTagsFunc                func(search string, limit int) ([]models.TagWithUsage, error)
-	GetAllHomeContentFunc      func(filter models.FilterOptions) ([]models.HomeContent, int, error)
-	GetHomeContentByIDFunc     func(id string) (*models.HomeContent, error)
-	CreateHomeContentFunc      func(content *models.HomeContent) (*models.HomeContent, error)
-	UpdateHomeContentFunc      func(content *models.HomeContent) (*models.HomeContent, error)
-	DeleteHomeContentFunc      func(id string) error
+	GetAllWorkContentFunc      func(filter models.FilterOptions) ([]models.WorkContent, int, error)
+	GetWorkContentByIDFunc     func(id string) (*models.WorkContent, error)
+	CreateWorkContentFunc      func(content *models.WorkContent) (*models.WorkContent, error)
+	UpdateWorkContentFunc      func(content *models.WorkContent) (*models.WorkContent, error)
+	DeleteWorkContentFunc      func(id string) error
 	GetAllGrooveJrContentFunc  func(filter models.FilterOptions) ([]models.GrooveJrContent, int, error)
 	GetGrooveJrContentByIDFunc func(id string) (*models.GrooveJrContent, error)
 	CreateGrooveJrContentFunc  func(content *models.GrooveJrContent) (*models.GrooveJrContent, error)
@@ -48,8 +48,8 @@ type MockAdminService struct {
 
 	ExportBlogPostsFunc       func() ([]models.BlogPost, error)
 	ImportBlogPostsFunc       func(posts []models.BlogPost) error
-	ExportHomeContentFunc     func() ([]models.HomeContent, error)
-	ImportHomeContentFunc     func(content []models.HomeContent) error
+	ExportWorkContentFunc     func() ([]models.WorkContent, error)
+	ImportWorkContentFunc     func(content []models.WorkContent) error
 	ExportGrooveJrContentFunc func() ([]models.GrooveJrContent, error)
 	ImportGrooveJrContentFunc func(content []models.GrooveJrContent) error
 	ExportAboutContentFunc    func() ([]models.AboutContent, error)
@@ -81,20 +81,20 @@ func (m *MockAdminService) DeleteBlogPost(id string) error {
 func (m *MockAdminService) GetTags(search string, limit int) ([]models.TagWithUsage, error) {
 	return m.GetTagsFunc(search, limit)
 }
-func (m *MockAdminService) GetAllHomeContent(filter models.FilterOptions) ([]models.HomeContent, int, error) {
-	return m.GetAllHomeContentFunc(filter)
+func (m *MockAdminService) GetAllWorkContent(filter models.FilterOptions) ([]models.WorkContent, int, error) {
+	return m.GetAllWorkContentFunc(filter)
 }
-func (m *MockAdminService) GetHomeContentByID(id string) (*models.HomeContent, error) {
-	return m.GetHomeContentByIDFunc(id)
+func (m *MockAdminService) GetWorkContentByID(id string) (*models.WorkContent, error) {
+	return m.GetWorkContentByIDFunc(id)
 }
-func (m *MockAdminService) CreateHomeContent(content *models.HomeContent) (*models.HomeContent, error) {
-	return m.CreateHomeContentFunc(content)
+func (m *MockAdminService) CreateWorkContent(content *models.WorkContent) (*models.WorkContent, error) {
+	return m.CreateWorkContentFunc(content)
 }
-func (m *MockAdminService) UpdateHomeContent(content *models.HomeContent) (*models.HomeContent, error) {
-	return m.UpdateHomeContentFunc(content)
+func (m *MockAdminService) UpdateWorkContent(content *models.WorkContent) (*models.WorkContent, error) {
+	return m.UpdateWorkContentFunc(content)
 }
-func (m *MockAdminService) DeleteHomeContent(id string) error {
-	return m.DeleteHomeContentFunc(id)
+func (m *MockAdminService) DeleteWorkContent(id string) error {
+	return m.DeleteWorkContentFunc(id)
 }
 func (m *MockAdminService) GetAllGrooveJrContent(filter models.FilterOptions) ([]models.GrooveJrContent, int, error) {
 	return m.GetAllGrooveJrContentFunc(filter)
@@ -139,15 +139,15 @@ func (m *MockAdminService) ImportBlogPosts(posts []models.BlogPost) error {
 	}
 	return nil
 }
-func (m *MockAdminService) ExportHomeContent() ([]models.HomeContent, error) {
-	if m.ExportHomeContentFunc != nil {
-		return m.ExportHomeContentFunc()
+func (m *MockAdminService) ExportWorkContent() ([]models.WorkContent, error) {
+	if m.ExportWorkContentFunc != nil {
+		return m.ExportWorkContentFunc()
 	}
 	return nil, nil
 }
-func (m *MockAdminService) ImportHomeContent(content []models.HomeContent) error {
-	if m.ImportHomeContentFunc != nil {
-		return m.ImportHomeContentFunc(content)
+func (m *MockAdminService) ImportWorkContent(content []models.WorkContent) error {
+	if m.ImportWorkContentFunc != nil {
+		return m.ImportWorkContentFunc(content)
 	}
 	return nil
 }
@@ -405,37 +405,37 @@ func TestAdminDeleteBlogPostHandler(t *testing.T) {
 	}
 }
 
-func TestAdminGetAllHomeContentHandler(t *testing.T) {
+func TestAdminGetAllWorkContentHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		GetAllHomeContentFunc: func(filter models.FilterOptions) ([]models.HomeContent, int, error) {
-			return []models.HomeContent{{ID: "1", Title: "Test Home Admin"}}, 1, nil
+		GetAllWorkContentFunc: func(filter models.FilterOptions) ([]models.WorkContent, int, error) {
+			return []models.WorkContent{{ID: "1", Title: "Test Work Admin"}}, 1, nil
 		},
 	}
 	mockLogOutput := &MockLogger{}
 	log := zerolog.New(mockLogOutput)
 	controller := NewAdminController(&log, mockService)
 
-	req, _ := http.NewRequest("GET", "/v1/api/admin/home", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/admin/work", nil)
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(controller.GetAllHomeContentHandler)
+	handler := http.HandlerFunc(controller.GetAllWorkContentHandler)
 	handler.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var resp models.PaginatedResponse[models.HomeContent]
+	var resp models.PaginatedResponse[models.WorkContent]
 	if err := json.Unmarshal(rr.Body.Bytes(), &resp); err != nil {
 		t.Fatal(err)
 	}
 	if len(resp.Data) != 1 {
-		t.Errorf("expected 1 home content, got %d", len(resp.Data))
+		t.Errorf("expected 1 work content, got %d", len(resp.Data))
 	}
 }
 
-func TestAdminGetHomeContentByIDHandler(t *testing.T) {
+func TestAdminGetWorkContentByIDHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		GetHomeContentByIDFunc: func(id string) (*models.HomeContent, error) {
+		GetWorkContentByIDFunc: func(id string) (*models.WorkContent, error) {
 			if id == "1" {
-				return &models.HomeContent{ID: "1", Title: "Test Home"}, nil
+				return &models.WorkContent{ID: "1", Title: "Test Work"}, nil
 			}
 			return nil, nil
 		},
@@ -446,22 +446,22 @@ func TestAdminGetHomeContentByIDHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/v1/api/admin/home/{id}", controller.GetHomeContentByIDHandler)
+	testMux.HandleFunc("/v1/api/admin/work/{id}", controller.GetWorkContentByIDHandler)
 
-	req, _ := http.NewRequest("GET", "/v1/api/admin/home/1", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/admin/work/1", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var content models.HomeContent
+	var content models.WorkContent
 	json.Unmarshal(rr.Body.Bytes(), &content)
 	if content.ID != "1" {
-		t.Errorf("expected home content ID 1, got %s", content.ID)
+		t.Errorf("expected work content ID 1, got %s", content.ID)
 	}
 
-	req, _ = http.NewRequest("GET", "/v1/api/admin/home/2", nil)
+	req, _ = http.NewRequest("GET", "/v1/api/admin/work/2", nil)
 	rr = httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 
@@ -470,10 +470,10 @@ func TestAdminGetHomeContentByIDHandler(t *testing.T) {
 	}
 }
 
-func TestAdminCreateHomeContentHandler(t *testing.T) {
+func TestAdminCreateWorkContentHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		CreateHomeContentFunc: func(content *models.HomeContent) (*models.HomeContent, error) {
-			content.ID = "new-id-home"
+		CreateWorkContentFunc: func(content *models.WorkContent) (*models.WorkContent, error) {
+			content.ID = "new-id-work"
 			return content, nil
 		},
 	}
@@ -481,28 +481,28 @@ func TestAdminCreateHomeContentHandler(t *testing.T) {
 	log := zerolog.New(mockLogOutput)
 	controller := NewAdminController(&log, mockService)
 
-	contentData := models.HomeContent{Title: "New Home Content"}
+	contentData := models.WorkContent{Title: "New Work Content"}
 	jsonBody, _ := json.Marshal(contentData)
-	req, _ := http.NewRequest("POST", "/v1/api/admin/home", bytes.NewBuffer(jsonBody))
+	req, _ := http.NewRequest("POST", "/v1/api/admin/work", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(controller.CreateHomeContentHandler)
+	handler := http.HandlerFunc(controller.CreateWorkContentHandler)
 	handler.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var newContent models.HomeContent
+	var newContent models.WorkContent
 	json.Unmarshal(rr.Body.Bytes(), &newContent)
-	if newContent.ID != "new-id-home" {
-		t.Errorf("expected new home content ID 'new-id-home', got %s", newContent.ID)
+	if newContent.ID != "new-id-work" {
+		t.Errorf("expected new work content ID 'new-id-work', got %s", newContent.ID)
 	}
 }
 
-func TestAdminUpdateHomeContentHandler(t *testing.T) {
+func TestAdminUpdateWorkContentHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		UpdateHomeContentFunc: func(content *models.HomeContent) (*models.HomeContent, error) {
+		UpdateWorkContentFunc: func(content *models.WorkContent) (*models.WorkContent, error) {
 			if content.ID == "1" {
-				content.Title = "Updated Home Title"
+				content.Title = "Updated Work Title"
 				return content, nil
 			}
 			return nil, errors.New("not found")
@@ -514,11 +514,11 @@ func TestAdminUpdateHomeContentHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/v1/api/admin/home/{id}", controller.UpdateHomeContentHandler)
+	testMux.HandleFunc("/v1/api/admin/work/{id}", controller.UpdateWorkContentHandler)
 
-	contentData := models.HomeContent{ID: "1", Title: "Updated Home Content"}
+	contentData := models.WorkContent{ID: "1", Title: "Updated Work Content"}
 	jsonBody, _ := json.Marshal(contentData)
-	req, _ := http.NewRequest("PUT", "/v1/api/admin/home/1", bytes.NewBuffer(jsonBody))
+	req, _ := http.NewRequest("PUT", "/v1/api/admin/work/1", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
@@ -526,16 +526,16 @@ func TestAdminUpdateHomeContentHandler(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var updatedContent models.HomeContent
+	var updatedContent models.WorkContent
 	json.Unmarshal(rr.Body.Bytes(), &updatedContent)
-	if updatedContent.Title != "Updated Home Title" {
-		t.Errorf("expected updated title 'Updated Home Title', got %s", updatedContent.Title)
+	if updatedContent.Title != "Updated Work Title" {
+		t.Errorf("expected updated title 'Updated Work Title', got %s", updatedContent.Title)
 	}
 }
 
-func TestAdminDeleteHomeContentHandler(t *testing.T) {
+func TestAdminDeleteWorkContentHandler(t *testing.T) {
 	mockService := &MockAdminService{
-		DeleteHomeContentFunc: func(id string) error {
+		DeleteWorkContentFunc: func(id string) error {
 			if id == "1" {
 				return nil
 			}
@@ -548,9 +548,9 @@ func TestAdminDeleteHomeContentHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/v1/api/admin/home/{id}", controller.DeleteHomeContentHandler)
+	testMux.HandleFunc("/v1/api/admin/work/{id}", controller.DeleteWorkContentHandler)
 
-	req, _ := http.NewRequest("DELETE", "/v1/api/admin/home/1", nil)
+	req, _ := http.NewRequest("DELETE", "/v1/api/admin/work/1", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 

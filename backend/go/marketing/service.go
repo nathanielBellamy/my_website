@@ -13,8 +13,8 @@ type Service interface {
 	GetBlogPostByID(id string) (*models.BlogPost, error)
 	GetBlogPostsByTag(tag string, page, limit int) ([]models.BlogPost, error)
 	GetTags(search string, limit int) ([]models.TagWithUsage, error)
-	GetAllHomeContent(page, limit int) ([]models.HomeContent, error)
-	GetHomeContentByID(id string) (*models.HomeContent, error)
+	GetAllWorkContent(page, limit int) ([]models.WorkContent, error)
+	GetWorkContentByID(id string) (*models.WorkContent, error)
 	GetAllGrooveJrContent(page, limit int) ([]models.GrooveJrContent, error)
 	GetGrooveJrContentByID(id string) (*models.GrooveJrContent, error)
 	GetAllAboutContent(page, limit int) ([]models.AboutContent, error)
@@ -111,22 +111,22 @@ func (s *service) GetTags(search string, limit int) ([]models.TagWithUsage, erro
 	return tags, err
 }
 
-func (s *service) GetAllHomeContent(page, limit int) ([]models.HomeContent, error) {
-	content := make([]models.HomeContent, 0)
+func (s *service) GetAllWorkContent(page, limit int) ([]models.WorkContent, error) {
+	content := make([]models.WorkContent, 0)
 	err := s.DB.Model(&content).
-		Where("home_content.activated_at IS NOT NULL AND home_content.activated_at < NOW() AND (home_content.deactivated_at IS NULL OR home_content.deactivated_at > NOW())").
-		Order("home_content.ordering ASC", "home_content.activated_at DESC").
+		Where("work_content.activated_at IS NOT NULL AND work_content.activated_at < NOW() AND (work_content.deactivated_at IS NULL OR work_content.deactivated_at > NOW())").
+		Order("work_content.ordering ASC", "work_content.activated_at DESC").
 		Limit(limit).
 		Offset((page - 1) * limit).
 		Select()
 	return content, err
 }
 
-func (s *service) GetHomeContentByID(id string) (*models.HomeContent, error) {
-	var content models.HomeContent
+func (s *service) GetWorkContentByID(id string) (*models.WorkContent, error) {
+	var content models.WorkContent
 	err := s.DB.Model(&content).
-		Where("home_content.id = ?", id).
-		Where("home_content.activated_at IS NOT NULL AND home_content.activated_at < NOW() AND (home_content.deactivated_at IS NULL OR home_content.deactivated_at > NOW())").
+		Where("work_content.id = ?", id).
+		Where("work_content.activated_at IS NOT NULL AND work_content.activated_at < NOW() AND (work_content.deactivated_at IS NULL OR work_content.deactivated_at > NOW())").
 		Select()
 	if err != nil {
 		return nil, err

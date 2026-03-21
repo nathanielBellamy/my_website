@@ -28,7 +28,7 @@ export class LatestPostsComponent implements OnInit {
   }
 
   viewContent(id: string) {
-    this.router.navigate(['/home', encodeId(id)]);
+    this.router.navigate(['/work', encodeId(id)]);
   }
 
   getSnippet(content: string): string {

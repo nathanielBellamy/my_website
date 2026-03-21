@@ -20,12 +20,12 @@ type Service interface {
 	UpdateBlogPost(post *models.BlogPost) (*models.BlogPost, error)
 	DeleteBlogPost(id string) error
 
-	// Home
-	GetAllHomeContent(filter models.FilterOptions) ([]models.HomeContent, int, error)
-	GetHomeContentByID(id string) (*models.HomeContent, error)
-	CreateHomeContent(content *models.HomeContent) (*models.HomeContent, error)
-	UpdateHomeContent(content *models.HomeContent) (*models.HomeContent, error)
-	DeleteHomeContent(id string) error
+	// Work
+	GetAllWorkContent(filter models.FilterOptions) ([]models.WorkContent, int, error)
+	GetWorkContentByID(id string) (*models.WorkContent, error)
+	CreateWorkContent(content *models.WorkContent) (*models.WorkContent, error)
+	UpdateWorkContent(content *models.WorkContent) (*models.WorkContent, error)
+	DeleteWorkContent(id string) error
 
 	// GrooveJr
 	GetAllGrooveJrContent(filter models.FilterOptions) ([]models.GrooveJrContent, int, error)
@@ -50,8 +50,8 @@ type Service interface {
 	ExportBlogPosts() ([]models.BlogPost, error)
 	ImportBlogPosts(posts []models.BlogPost) error
 
-	ExportHomeContent() ([]models.HomeContent, error)
-	ImportHomeContent(content []models.HomeContent) error
+	ExportWorkContent() ([]models.WorkContent, error)
+	ImportWorkContent(content []models.WorkContent) error
 
 	ExportGrooveJrContent() ([]models.GrooveJrContent, error)
 	ImportGrooveJrContent(content []models.GrooveJrContent) error
@@ -332,9 +332,9 @@ func (s *service) DeleteBlogPost(id string) error {
 	return err
 }
 
-// Home
-func (s *service) GetAllHomeContent(filter models.FilterOptions) ([]models.HomeContent, int, error) {
-	var content []models.HomeContent
+// Work
+func (s *service) GetAllWorkContent(filter models.FilterOptions) ([]models.WorkContent, int, error) {
+	var content []models.WorkContent
 	query := s.DB.Model(&content)
 
 	switch filter.Status {
@@ -364,8 +364,8 @@ func (s *service) GetAllHomeContent(filter models.FilterOptions) ([]models.HomeC
 	return content, count, err
 }
 
-func (s *service) GetHomeContentByID(id string) (*models.HomeContent, error) {
-	var content models.HomeContent
+func (s *service) GetWorkContentByID(id string) (*models.WorkContent, error) {
+	var content models.WorkContent
 	err := s.DB.Model(&content).
 		Where("id = ?", id).
 		Select()
@@ -375,18 +375,18 @@ func (s *service) GetHomeContentByID(id string) (*models.HomeContent, error) {
 	return &content, nil
 }
 
-func (s *service) CreateHomeContent(content *models.HomeContent) (*models.HomeContent, error) {
+func (s *service) CreateWorkContent(content *models.WorkContent) (*models.WorkContent, error) {
 	_, err := s.DB.Model(content).Insert()
 	return content, err
 }
 
-func (s *service) UpdateHomeContent(content *models.HomeContent) (*models.HomeContent, error) {
+func (s *service) UpdateWorkContent(content *models.WorkContent) (*models.WorkContent, error) {
 	_, err := s.DB.Model(content).Column("title", "content", "activated_at", "deactivated_at", "ordering").Where("id = ?", content.ID).Update()
 	return content, err
 }
 
-func (s *service) DeleteHomeContent(id string) error {
-	_, err := s.DB.Model(&models.HomeContent{}).Where("id = ?", id).Delete()
+func (s *service) DeleteWorkContent(id string) error {
+	_, err := s.DB.Model(&models.WorkContent{}).Where("id = ?", id).Delete()
 	return err
 }
 
@@ -660,13 +660,13 @@ func (s *service) ImportBlogPosts(posts []models.BlogPost) error {
 	})
 }
 
-func (s *service) ExportHomeContent() ([]models.HomeContent, error) {
-	var content []models.HomeContent
+func (s *service) ExportWorkContent() ([]models.WorkContent, error) {
+	var content []models.WorkContent
 	err := s.DB.Model(&content).Order("ordering ASC", "activated_at DESC").Select()
 	return content, err
 }
 
-func (s *service) ImportHomeContent(content []models.HomeContent) error {
+func (s *service) ImportWorkContent(content []models.WorkContent) error {
 	return s.DB.RunInTransaction(func(tx interfaces.PgxDB) error {
 		for _, item := range content {
 			if item.ID != "" {

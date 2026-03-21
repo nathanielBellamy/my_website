@@ -1,10 +1,10 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { HomeContent } from '../../models/home.model';
+import { WorkContent } from '../../models/work.model';
 import { inject } from '@angular/core';
-import { HomeService } from '../../services/home.service';
+import { WorkService } from '../../services/work.service';
 
 type LatestPostsState = {
-  content: HomeContent[];
+  content: WorkContent[];
   loading: boolean;
   error: string | null;
   page: number;
@@ -22,7 +22,7 @@ const initialState: LatestPostsState = {
 export const LatestPostsStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withMethods((store, homeService = inject(HomeService)) => ({
+  withMethods((store, workService = inject(WorkService)) => ({
     async loadMore() {
       if (store.loading() || store.allLoaded()) return;
 
@@ -30,7 +30,7 @@ export const LatestPostsStore = signalStore(
 
       patchState(store, { loading: true });
       try {
-        const newContent: HomeContent[] = await homeService.getAll(store.page(), pageSize);
+        const newContent: WorkContent[] = await workService.getAll(store.page(), pageSize);
 
         if (newContent.length < pageSize) {
           patchState(store, { allLoaded: true });

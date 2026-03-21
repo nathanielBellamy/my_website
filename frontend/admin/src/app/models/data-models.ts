@@ -26,7 +26,7 @@ export interface BlogPost {
   order: number;
 }
 
-export interface HomeContent {
+export interface WorkContent {
   id: string;
   title: string;
   content: string;
