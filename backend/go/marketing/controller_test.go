@@ -20,8 +20,8 @@ type MockMarketingService struct {
 	GetBlogPostByIDFunc        func(id string) (*models.BlogPost, error)
 	GetBlogPostsByTagFunc      func(tag string, page, limit int) ([]models.BlogPost, error)
 	GetTagsFunc                func(search string, limit int) ([]models.TagWithUsage, error)
-	GetAllHomeContentFunc      func(page, limit int) ([]models.HomeContent, error)
-	GetHomeContentByIDFunc     func(id string) (*models.HomeContent, error)
+	GetAllWorkContentFunc      func(page, limit int) ([]models.WorkContent, error)
+	GetWorkContentByIDFunc     func(id string) (*models.WorkContent, error)
 	GetAllGrooveJrContentFunc  func(page, limit int) ([]models.GrooveJrContent, error)
 	GetGrooveJrContentByIDFunc func(id string) (*models.GrooveJrContent, error)
 	GetAllAboutContentFunc     func(page, limit int) ([]models.AboutContent, error)
@@ -41,11 +41,11 @@ func (m *MockMarketingService) GetBlogPostsByTag(tag string, page, limit int) ([
 func (m *MockMarketingService) GetTags(search string, limit int) ([]models.TagWithUsage, error) {
 	return m.GetTagsFunc(search, limit)
 }
-func (m *MockMarketingService) GetAllHomeContent(page, limit int) ([]models.HomeContent, error) {
-	return m.GetAllHomeContentFunc(page, limit)
+func (m *MockMarketingService) GetAllWorkContent(page, limit int) ([]models.WorkContent, error) {
+	return m.GetAllWorkContentFunc(page, limit)
 }
-func (m *MockMarketingService) GetHomeContentByID(id string) (*models.HomeContent, error) {
-	return m.GetHomeContentByIDFunc(id)
+func (m *MockMarketingService) GetWorkContentByID(id string) (*models.WorkContent, error) {
+	return m.GetWorkContentByIDFunc(id)
 }
 func (m *MockMarketingService) GetAllGrooveJrContent(page, limit int) ([]models.GrooveJrContent, error) {
 	return m.GetAllGrooveJrContentFunc(page, limit)
@@ -166,35 +166,35 @@ func TestGetBlogPostsByTagHandler(t *testing.T) {
 	}
 }
 
-func TestGetAllHomeContentHandler(t *testing.T) {
+func TestGetAllWorkContentHandler(t *testing.T) {
 	mockService := &MockMarketingService{
-		GetAllHomeContentFunc: func(page, limit int) ([]models.HomeContent, error) {
-			return []models.HomeContent{{ID: "1", Title: "Home Content"}}, nil
+		GetAllWorkContentFunc: func(page, limit int) ([]models.WorkContent, error) {
+			return []models.WorkContent{{ID: "1", Title: "Work Content"}}, nil
 		},
 	}
 	mockLogOutput := &testutils.MockLogger{}
 	log := zerolog.New(mockLogOutput)
 	controller := NewMarketingController(&log, mockService)
 
-	req, _ := http.NewRequest("GET", "/v1/api/marketing/home", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/marketing/work", nil)
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(controller.GetAllHomeContentHandler)
+	handler := http.HandlerFunc(controller.GetAllWorkContentHandler)
 	handler.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var content []models.HomeContent
+	var content []models.WorkContent
 	json.Unmarshal(rr.Body.Bytes(), &content)
 	if len(content) != 1 {
-		t.Errorf("expected 1 home content, got %d", len(content))
+		t.Errorf("expected 1 work content, got %d", len(content))
 	}
 }
 
-func TestGetHomeContentByIDHandler(t *testing.T) {
+func TestGetWorkContentByIDHandler(t *testing.T) {
 	mockService := &MockMarketingService{
-		GetHomeContentByIDFunc: func(id string) (*models.HomeContent, error) {
+		GetWorkContentByIDFunc: func(id string) (*models.WorkContent, error) {
 			if id == "1" {
-				return &models.HomeContent{ID: "1", Title: "Home Content"}, nil
+				return &models.WorkContent{ID: "1", Title: "Work Content"}, nil
 			}
 			return nil, nil
 		},
@@ -205,23 +205,23 @@ func TestGetHomeContentByIDHandler(t *testing.T) {
 
 	// Create a test mux to handle path parameters
 	testMux := http.NewServeMux()
-	testMux.HandleFunc("/v1/api/marketing/home/{id}", controller.GetHomeContentByIDHandler)
+	testMux.HandleFunc("/v1/api/marketing/work/{id}", controller.GetWorkContentByIDHandler)
 
 	// Test found
-	req, _ := http.NewRequest("GET", "/v1/api/marketing/home/1", nil)
+	req, _ := http.NewRequest("GET", "/v1/api/marketing/work/1", nil)
 	rr := httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
-	var content models.HomeContent
+	var content models.WorkContent
 	json.Unmarshal(rr.Body.Bytes(), &content)
 	if content.ID != "1" {
-		t.Errorf("expected home content ID 1, got %s", content.ID)
+		t.Errorf("expected work content ID 1, got %s", content.ID)
 	}
 
 	// Test not found
-	req, _ = http.NewRequest("GET", "/v1/api/marketing/home/2", nil)
+	req, _ = http.NewRequest("GET", "/v1/api/marketing/work/2", nil)
 	rr = httptest.NewRecorder()
 	testMux.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusNotFound {

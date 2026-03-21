@@ -104,14 +104,14 @@ func TestGetBlogPostsByTag(t *testing.T) {
 	}
 }
 
-func TestGetAllHomeContent(t *testing.T) {
+func TestGetAllWorkContent(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*[]models.HomeContent); ok {
-				*v = []models.HomeContent{{ID: "1", Title: "Test Home"}}
+			if v, ok := modelDest.(*[]models.WorkContent); ok {
+				*v = []models.WorkContent{{ID: "1", Title: "Test Work"}}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*[]models.HomeContent); ok {
-					*v = []models.HomeContent{{ID: "1", Title: "Test Home"}}
+				if v, ok := dest[0].(*[]models.WorkContent); ok {
+					*v = []models.WorkContent{{ID: "1", Title: "Test Work"}}
 				}
 			}
 			return nil
@@ -120,7 +120,7 @@ func TestGetAllHomeContent(t *testing.T) {
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
 	service := NewService(mockDB)
 
-	content, err := service.GetAllHomeContent(1, 10)
+	content, err := service.GetAllWorkContent(1, 10)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
@@ -129,16 +129,16 @@ func TestGetAllHomeContent(t *testing.T) {
 	}
 }
 
-func TestGetHomeContentByID(t *testing.T) {
-	// Test case: Home content found
+func TestGetWorkContentByID(t *testing.T) {
+	// Test case: Work content found
 	var foundMockQuery *testutils.MockPgQuery // Declare first
 	foundMockQuery = &testutils.MockPgQuery{  // Initialize
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*models.HomeContent); ok {
-				*v = models.HomeContent{ID: foundMockQuery.WhereID, Title: "Test Home " + foundMockQuery.WhereID}
+			if v, ok := modelDest.(*models.WorkContent); ok {
+				*v = models.WorkContent{ID: foundMockQuery.WhereID, Title: "Test Work " + foundMockQuery.WhereID}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*models.HomeContent); ok {
-					*v = models.HomeContent{ID: foundMockQuery.WhereID, Title: "Test Home " + foundMockQuery.WhereID}
+				if v, ok := dest[0].(*models.WorkContent); ok {
+					*v = models.WorkContent{ID: foundMockQuery.WhereID, Title: "Test Work " + foundMockQuery.WhereID}
 				}
 			}
 			return nil
@@ -147,24 +147,24 @@ func TestGetHomeContentByID(t *testing.T) {
 	foundMockDB := &testutils.MockPgDB{MockQuery: foundMockQuery}
 	foundService := NewService(foundMockDB)
 
-	content, err := foundService.GetHomeContentByID("1")
+	content, err := foundService.GetWorkContentByID("1")
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
 	if content == nil {
 		t.Error("expected content, got nil")
 	}
-	if content.ID != "1" || content.Title != "Test Home 1" {
-		t.Errorf("expected content with ID '1' and Title 'Test Home 1', got %v", content)
+	if content.ID != "1" || content.Title != "Test Work 1" {
+		t.Errorf("expected content with ID '1' and Title 'Test Work 1', got %v", content)
 	}
 
-	// Test case: Home content not found
+	// Test case: Work content not found
 	notFoundMockQuery := &testutils.MockPgQuery{} // SelectFunc can be nil, default behavior handles ErrNoRows
 	notFoundMockDB := &testutils.MockPgDB{MockQuery: notFoundMockQuery}
 	notFoundService := NewService(notFoundMockDB)
 
-	content, err = notFoundService.GetHomeContentByID("not-found")
-	fmt.Printf("TEST: TestGetHomeContentByID - err from service: %v\n", err)
+	content, err = notFoundService.GetWorkContentByID("not-found")
+	fmt.Printf("TEST: TestGetWorkContentByID - err from service: %v\n", err)
 	if !errors.Is(err, pg.ErrNoRows) { // Use errors.Is
 		t.Errorf("expected pg.ErrNoRows, got %v", err)
 	}

@@ -1,22 +1,22 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
-import { HomeService } from '../../../services/home.service';
+import { WorkService } from '../../../services/work.service';
 import { WorkContent, FilterOptions } from '../../../models/data-models';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CsvControlsComponent } from '../../../components/csv-controls/csv-controls.component';
 
 @Component({
-  selector: 'app-home-content-list',
+  selector: 'app-work-content-list',
   standalone: true,
   imports: [RouterLink, CommonModule, CsvControlsComponent],
-  templateUrl: './home-content-list.component.html',
-  styleUrl: './home-content-list.component.css',
+  templateUrl: './work-content-list.component.html',
+  styleUrl: './work-content-list.component.css',
 })
 export class WorkContentListComponent implements OnInit {
-  private readonly homeService = inject(HomeService);
-  
+  private readonly workService = inject(WorkService);
+
   // State
-  homeContent = signal<WorkContent[]>([]);
+  workContent = signal<WorkContent[]>([]);
   total = signal<number>(0);
   page = signal<number>(1);
   limit = signal<number>(10);
@@ -39,11 +39,11 @@ export class WorkContentListComponent implements OnInit {
       sortOrder: this.sortOrder(),
     };
 
-    this.homeService.getAllWorkContent(options).then((response) => {
-      this.homeContent.set(response.data);
+    this.workService.getAllWorkContent(options).then((response) => {
+      this.workContent.set(response.data);
       this.total.set(response.total);
     }).catch((error) => {
-      console.error('Error fetching home content:', error);
+      console.error('Error fetching work content:', error);
     });
   }
 
@@ -72,10 +72,10 @@ export class WorkContentListComponent implements OnInit {
 
   deleteContent(id: string) {
     if(confirm('Are you sure you want to delete this content?')) {
-        this.homeService.deleteWorkContent(id).then(() => {
+        this.workService.deleteWorkContent(id).then(() => {
         this.fetchWorkContent();
         }).catch((error) => {
-        console.error('Error deleting home content:', error);
+        console.error('Error deleting work content:', error);
         });
     }
   }

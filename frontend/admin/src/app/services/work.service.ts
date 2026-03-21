@@ -6,9 +6,9 @@ import { WorkContent, FilterOptions, PaginatedResponse } from '../models/data-mo
 @Injectable({
   providedIn: 'root',
 })
-export class HomeService {
+export class WorkService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = '/v1/api/admin/home'; // Adjust as per your backend URL
+  private readonly apiUrl = '/v1/api/admin/work';
 
   async getAllWorkContent(options: Partial<FilterOptions> = {}): Promise<PaginatedResponse<WorkContent>> {
     const params: any = {

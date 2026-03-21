@@ -1,10 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/angular';
-import { HomeFormComponent } from './home-form.component';
+import { WorkFormComponent } from './work-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { WorkContent } from '../../models/data-models';
 import { provideMarkdown } from 'ngx-markdown';
 
-describe('HomeFormComponent', () => {
+describe('WorkFormComponent', () => {
   const mockContent: WorkContent = {
     id: '1',
     title: 'Test Title',
@@ -15,14 +15,14 @@ describe('HomeFormComponent', () => {
   };
 
   it('should create', async () => {
-    await render(HomeFormComponent, {
+    await render(WorkFormComponent, {
       providers: [provideMarkdown()],
     });
-    expect(screen.getByText('Home Content')).toBeInTheDocument();
+    expect(screen.getByText('Work Content')).toBeInTheDocument();
   });
 
   it('should populate form when contentData is provided', async () => {
-    await render(HomeFormComponent, {
+    await render(WorkFormComponent, {
       providers: [provideMarkdown()],
       componentInputs: {
         contentData: mockContent,
@@ -36,7 +36,7 @@ describe('HomeFormComponent', () => {
 
   it('should emit submitForm when valid form is submitted', async () => {
     const submitSpy = jest.fn();
-    await render(HomeFormComponent, {
+    await render(WorkFormComponent, {
       providers: [provideMarkdown()],
       on: {
         submitForm: submitSpy,
@@ -58,7 +58,7 @@ describe('HomeFormComponent', () => {
 
   it('should emit cancel when Cancel button is clicked', async () => {
     const cancelSpy = jest.fn();
-    await render(HomeFormComponent, {
+    await render(WorkFormComponent, {
       providers: [provideMarkdown()],
       on: {
         cancel: cancelSpy,
@@ -70,7 +70,7 @@ describe('HomeFormComponent', () => {
   });
 
   it('should show error if dates are invalid', async () => {
-    await render(HomeFormComponent, {
+    await render(WorkFormComponent, {
       providers: [provideMarkdown()],
     });
 

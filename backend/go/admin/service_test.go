@@ -160,14 +160,14 @@ func TestAdminDeleteBlogPost(t *testing.T) {
 	}
 }
 
-func TestAdminGetAllHomeContent(t *testing.T) {
+func TestAdminGetAllWorkContent(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*[]models.HomeContent); ok {
-				*v = []models.HomeContent{{ID: "1", Title: "Test Home Content"}}
+			if v, ok := modelDest.(*[]models.WorkContent); ok {
+				*v = []models.WorkContent{{ID: "1", Title: "Test Work Content"}}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*[]models.HomeContent); ok {
-					*v = []models.HomeContent{{ID: "1", Title: "Test Home Content"}}
+				if v, ok := dest[0].(*[]models.WorkContent); ok {
+					*v = []models.WorkContent{{ID: "1", Title: "Test Work Content"}}
 				}
 			}
 			return nil
@@ -176,7 +176,7 @@ func TestAdminGetAllHomeContent(t *testing.T) {
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
 	service := NewService(mockDB, &zerolog.Logger{})
 
-	content, _, err := service.GetAllHomeContent(models.FilterOptions{Page: 1, Limit: 10})
+	content, _, err := service.GetAllWorkContent(models.FilterOptions{Page: 1, Limit: 10})
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
@@ -185,15 +185,15 @@ func TestAdminGetAllHomeContent(t *testing.T) {
 	}
 }
 
-func TestAdminGetHomeContentByID(t *testing.T) {
-	// Test case: Home content found
+func TestAdminGetWorkContentByID(t *testing.T) {
+	// Test case: Work content found
 	foundMockQuery := &testutils.MockPgQuery{
 		SelectFunc: func(modelDest any, dest ...interface{}) error {
-			if v, ok := modelDest.(*models.HomeContent); ok {
-				*v = models.HomeContent{ID: "1", Title: "Test Home Content"}
+			if v, ok := modelDest.(*models.WorkContent); ok {
+				*v = models.WorkContent{ID: "1", Title: "Test Work Content"}
 			} else if len(dest) > 0 {
-				if v, ok := dest[0].(*models.HomeContent); ok {
-					*v = models.HomeContent{ID: "1", Title: "Test Home Content"}
+				if v, ok := dest[0].(*models.WorkContent); ok {
+					*v = models.WorkContent{ID: "1", Title: "Test Work Content"}
 				}
 			}
 			return nil
@@ -202,24 +202,24 @@ func TestAdminGetHomeContentByID(t *testing.T) {
 	foundMockDB := &testutils.MockPgDB{MockQuery: foundMockQuery}
 	foundService := NewService(foundMockDB, &zerolog.Logger{})
 
-	content, err := foundService.GetHomeContentByID("1")
+	content, err := foundService.GetWorkContentByID("1")
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
 	if content == nil {
 		t.Error("expected content, got nil")
 	}
-	if content.ID != "1" || content.Title != "Test Home Content" {
-		t.Errorf("expected content with ID '1' and Title 'Test Home Content', got %v", content)
+	if content.ID != "1" || content.Title != "Test Work Content" {
+		t.Errorf("expected content with ID '1' and Title 'Test Work Content', got %v", content)
 	}
 
-	// Test case: Home content not found
+	// Test case: Work content not found
 	notFoundMockQuery := &testutils.MockPgQuery{} // SelectFunc can be nil, default behavior handles ErrNoRows
 	notFoundMockDB := &testutils.MockPgDB{MockQuery: notFoundMockQuery}
 	notFoundService := NewService(notFoundMockDB, &zerolog.Logger{})
 
-	content, err = notFoundService.GetHomeContentByID("not-found")
-	fmt.Printf("TEST: TestAdminGetHomeContentByID - err from service: %v\n", err)
+	content, err = notFoundService.GetWorkContentByID("not-found")
+	fmt.Printf("TEST: TestAdminGetWorkContentByID - err from service: %v\n", err)
 	if !errors.Is(err, pg.ErrNoRows) { // Use errors.Is
 		t.Errorf("expected pg.ErrNoRows, got %v", err)
 	}
@@ -228,10 +228,10 @@ func TestAdminGetHomeContentByID(t *testing.T) {
 	}
 }
 
-func TestAdminCreateHomeContent(t *testing.T) {
+func TestAdminCreateWorkContent(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		InsertFunc: func(modelDest any, dest ...interface{}) (pg.Result, error) {
-			if v, ok := modelDest.(*models.HomeContent); ok {
+			if v, ok := modelDest.(*models.WorkContent); ok {
 				// Simulate database setting an ID
 				v.ID = "3"
 			}
@@ -241,8 +241,8 @@ func TestAdminCreateHomeContent(t *testing.T) {
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
 	service := NewService(mockDB, &zerolog.Logger{})
 
-	content := &models.HomeContent{Title: "New Home Content"} // ID will be set by the mock InsertFunc
-	newContent, err := service.CreateHomeContent(content)
+	content := &models.WorkContent{Title: "New Work Content"} // ID will be set by the mock InsertFunc
+	newContent, err := service.CreateWorkContent(content)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
@@ -251,12 +251,12 @@ func TestAdminCreateHomeContent(t *testing.T) {
 	}
 }
 
-func TestAdminUpdateHomeContent(t *testing.T) {
+func TestAdminUpdateWorkContent(t *testing.T) {
 	mockQuery := &testutils.MockPgQuery{
 		UpdateFunc: func(modelDest any, dest ...interface{}) (pg.Result, error) {
-			if v, ok := modelDest.(*models.HomeContent); ok {
+			if v, ok := modelDest.(*models.WorkContent); ok {
 				// Simulate database returning the updated object
-				*v = models.HomeContent{ID: v.ID, Title: v.Title} // The passed 'content' already has the updated title
+				*v = models.WorkContent{ID: v.ID, Title: v.Title} // The passed 'content' already has the updated title
 			}
 			return &testutils.MockPgResult{NumRowsAffected: 1}, nil
 		},
@@ -264,21 +264,21 @@ func TestAdminUpdateHomeContent(t *testing.T) {
 	mockDB := &testutils.MockPgDB{MockQuery: mockQuery}
 	service := NewService(mockDB, &zerolog.Logger{})
 
-	content := &models.HomeContent{ID: "1", Title: "Updated Home Content"}
-	updatedContent, err := service.UpdateHomeContent(content)
+	content := &models.WorkContent{ID: "1", Title: "Updated Work Content"}
+	updatedContent, err := service.UpdateWorkContent(content)
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
-	if updatedContent.Title != "Updated Home Content" {
-		t.Errorf("expected title 'Updated Home Content', got %s", updatedContent.Title)
+	if updatedContent.Title != "Updated Work Content" {
+		t.Errorf("expected title 'Updated Work Content', got %s", updatedContent.Title)
 	}
 }
 
-func TestAdminDeleteHomeContent(t *testing.T) {
+func TestAdminDeleteWorkContent(t *testing.T) {
 	mockDB := &testutils.MockPgDB{}
 	service := NewService(mockDB, &zerolog.Logger{})
 
-	err := service.DeleteHomeContent("1")
+	err := service.DeleteWorkContent("1")
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}

@@ -136,39 +136,39 @@ func (mc *MarketingController) GetTagsHandler(w http.ResponseWriter, r *http.Req
 	mc.sendJSON(w, tags)
 }
 
-// Home
+// Work
 
-// GetAllHomeContentHandler handles fetching all home content.
+// GetAllWorkContentHandler handles fetching all work content.
 
-func (mc *MarketingController) GetAllHomeContentHandler(w http.ResponseWriter, r *http.Request) {
-	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllHomeContentHandler Hit")
+func (mc *MarketingController) GetAllWorkContentHandler(w http.ResponseWriter, r *http.Request) {
+	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllWorkContentHandler Hit")
 	page, limit := getPaginationParams(r)
 
-	content, err := mc.Service.GetAllHomeContent(page, limit)
+	content, err := mc.Service.GetAllWorkContent(page, limit)
 	if err != nil {
-		mc.Log.Error().Err(err).Msg("Error fetching home content")
-		utils.HandleDBError(w, err, "Error fetching home content")
+		mc.Log.Error().Err(err).Msg("Error fetching work content")
+		utils.HandleDBError(w, err, "Error fetching work content")
 		return
 	}
 
 	mc.sendJSON(w, content)
 }
 
-// GetHomeContentByIDHandler handles fetching home content by ID.
+// GetWorkContentByIDHandler handles fetching work content by ID.
 
-func (mc *MarketingController) GetHomeContentByIDHandler(w http.ResponseWriter, r *http.Request) {
-	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetHomeContentByIDHandler Hit")
+func (mc *MarketingController) GetWorkContentByIDHandler(w http.ResponseWriter, r *http.Request) {
+	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetWorkContentByIDHandler Hit")
 	id := r.PathValue("id")
 
-	content, err := mc.Service.GetHomeContentByID(id)
+	content, err := mc.Service.GetWorkContentByID(id)
 	if err != nil {
-		mc.Log.Error().Err(err).Msg("Error fetching home content")
-		utils.HandleDBError(w, err, "Error fetching home content")
+		mc.Log.Error().Err(err).Msg("Error fetching work content")
+		utils.HandleDBError(w, err, "Error fetching work content")
 		return
 	}
 
 	if content == nil {
-		http.Error(w, "Home content not found", http.StatusNotFound)
+		http.Error(w, "Work content not found", http.StatusNotFound)
 		return
 	}
 
@@ -302,7 +302,7 @@ func (mc *MarketingController) SitemapHandler(w http.ResponseWriter, r *http.Req
 	var urls []URL
 
 	// Static Pages
-	pages := []string{"", "focus", "latest-posts", "about", "groovejr", "blog", "privacy-policy"}
+	pages := []string{"", "focus", "work", "about", "groovejr", "blog", "privacy-policy"}
 	for _, page := range pages {
 		urlStr := baseUrl
 		if page != "" {

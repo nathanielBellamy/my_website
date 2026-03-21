@@ -1,17 +1,17 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { HomeContent } from '../../models/home.model';
+import { WorkContent } from '../../models/work.model';
 import { inject } from '@angular/core';
-import { HomeService } from '../../services/home.service';
+import { WorkService } from '../../services/work.service';
 
-type LatestPostsState = {
-  content: HomeContent[];
+type WorkState = {
+  content: WorkContent[];
   loading: boolean;
   error: string | null;
   page: number;
   allLoaded: boolean;
 };
 
-const initialState: LatestPostsState = {
+const initialState: WorkState = {
   content: [],
   loading: false,
   error: null,
@@ -19,10 +19,10 @@ const initialState: LatestPostsState = {
   allLoaded: false,
 };
 
-export const LatestPostsStore = signalStore(
+export const WorkStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withMethods((store, homeService = inject(HomeService)) => ({
+  withMethods((store, workService = inject(WorkService)) => ({
     async loadMore() {
       if (store.loading() || store.allLoaded()) return;
 
@@ -30,7 +30,7 @@ export const LatestPostsStore = signalStore(
 
       patchState(store, { loading: true });
       try {
-        const newContent: HomeContent[] = await homeService.getAll(store.page(), pageSize);
+        const newContent: WorkContent[] = await workService.getAll(store.page(), pageSize);
 
         if (newContent.length < pageSize) {
           patchState(store, { allLoaded: true });
@@ -43,7 +43,7 @@ export const LatestPostsStore = signalStore(
           error: null,
         });
       } catch (error) {
-        patchState(store, { error: `Failed to fetch latest posts content. \nMessage: ${error}`, loading: false });
+        patchState(store, { error: `Failed to fetch work content. \nMessage: ${error}`, loading: false });
       }
     },
   }))

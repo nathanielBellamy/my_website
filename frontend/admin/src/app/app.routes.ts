@@ -2,9 +2,9 @@ import { Routes } from '@angular/router';
 import { BlogComponent } from './pages/blog/blog-content-list/blog.component';
 import { CreateBlogPostComponent } from './pages/blog/create-blog-post/create-blog-post.component';
 import { EditBlogPostComponent } from './pages/blog/edit-blog-post/edit-blog-post.component';
-import { HomeContentListComponent } from './pages/home/home-content-list/home-content-list.component';
-import { CreateHomeContentComponent } from './pages/home/create-home-content/create-home-content.component';
-import { EditHomeContentComponent } from './pages/home/edit-home-content/edit-home-content.component';
+import { WorkContentListComponent } from './pages/work/work-content-list/work-content-list.component';
+import { CreateWorkContentComponent } from './pages/work/create-work-content/create-work-content.component';
+import { EditWorkContentComponent } from './pages/work/edit-work-content/edit-work-content.component';
 import { GrooveJrContentListComponent } from './pages/groovejr/groove-jr-content-list/groove-jr-content-list.component';
 import { CreateGrooveJrContentComponent } from './pages/groovejr/create-groove-jr-content/create-groove-jr-content.component';
 import { EditGrooveJrContentComponent } from './pages/groovejr/edit-groove-jr-content/edit-groove-jr-content.component';
@@ -16,20 +16,20 @@ import { GalleryComponent } from './pages/gallery/gallery.component';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'work',
     pathMatch: 'full'
   },
   {
-    path: 'home',
-    component: HomeContentListComponent,
+    path: 'work',
+    component: WorkContentListComponent,
   },
   {
-    path: 'home/new',
-    component: CreateHomeContentComponent,
+    path: 'work/new',
+    component: CreateWorkContentComponent,
   },
   {
-    path: 'home/:id/edit',
-    component: EditHomeContentComponent,
+    path: 'work/:id/edit',
+    component: EditWorkContentComponent,
   },
   {
     path: 'groovejr',

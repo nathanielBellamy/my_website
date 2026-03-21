@@ -69,7 +69,7 @@ func (mq *MockPgQuery) Offset(offset int) interfaces.PgxQuerySeter {
 }
 
 func (mq *MockPgQuery) Where(query string, params ...interface{}) interfaces.PgxQuerySeter {
-	if (query == "id = ?" || query == "blog_post.id = ?" || query == "home_content.id = ?" || query == "groove_jr_content.id = ?" || query == "about_content.id = ?") && len(params) > 0 {
+	if (query == "id = ?" || query == "blog_post.id = ?" || query == "work_content.id = ?" || query == "groove_jr_content.id = ?" || query == "about_content.id = ?") && len(params) > 0 {
 		if id, ok := params[0].(string); ok {
 			mq.WhereID = id
 		}

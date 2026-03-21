@@ -5,13 +5,13 @@ import { MarkdownComponent } from 'ngx-markdown';
 import { ImageGalleryComponent } from '../image-gallery/image-gallery.component';
 
 @Component({
-  selector: 'app-home-form',
+  selector: 'app-work-form',
   standalone: true,
   imports: [ReactiveFormsModule, MarkdownComponent, ImageGalleryComponent],
-  templateUrl: './home-form.component.html',
-  styleUrl: './home-form.component.css',
+  templateUrl: './work-form.component.html',
+  styleUrl: './work-form.component.css',
 })
-export class HomeFormComponent implements OnInit {
+export class WorkFormComponent implements OnInit {
   contentData = input<WorkContent | undefined>();
   submitForm = output<WorkContent>();
   cancel = output<void>();

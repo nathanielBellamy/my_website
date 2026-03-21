@@ -60,9 +60,9 @@ describe('AppComponent', () => {
   });
 
   it('should display navigation links', () => {
-    const homeLink = screen.getByText('Home');
-    expect(homeLink).toBeInTheDocument();
-    expect(homeLink).toHaveAttribute('routerLink', '/home');
+    const workLink = screen.getByText('Work');
+    expect(workLink).toBeInTheDocument();
+    expect(workLink).toHaveAttribute('routerLink', '/work');
 
     const grooveJrLink = screen.getByText('GrooveJr');
     expect(grooveJrLink).toBeInTheDocument();
@@ -79,10 +79,10 @@ describe('AppComponent', () => {
 
   // TODO: fix test router implementation, it's always a pain
 
-  // it('should navigate to home when Home link is clicked', async () => {
-  //   const homeLink = screen.getByText('Home');
-  //   await userEvent.click(homeLink);
-  //   expect(routerSpy.navigate).toHaveBeenCalledWith(['/home']);
+  // it('should navigate to work when Work link is clicked', async () => {
+  //   const workLink = screen.getByText('Work');
+  //   await userEvent.click(workLink);
+  //   expect(routerSpy.navigate).toHaveBeenCalledWith(['/work']);
   // });
 
   // it('should navigate to groovejr when GrooveJr link is clicked', async () => {

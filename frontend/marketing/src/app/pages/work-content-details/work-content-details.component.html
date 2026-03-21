@@ -28,14 +28,14 @@
       aria-label="Loading content">
       <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-accent"></div>
     </div>
-  } @else if (homeContent(); as content) {
+  } @else if (workContent(); as content) {
     <article
       class="bg-card border border-white/10 rounded-xl p-8 shadow-xl"
       appScrollFadeIn
       [delay]="200">
       <header class="mb-8 border-b border-white/10 pb-8">
         <h1
-          data-testid="home-content-details-title"
+          data-testid="work-content-details-title"
           class="font-heading text-4xl md:text-5xl font-bold text-heading-text mb-4">
           {{ content.title }}
         </h1>
