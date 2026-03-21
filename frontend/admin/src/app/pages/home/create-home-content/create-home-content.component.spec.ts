@@ -1,18 +1,18 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/angular';
-import { CreateHomeContentComponent } from './create-home-content.component';
+import { CreateWorkContentComponent } from './create-home-content.component';
 import { HomeService } from 'app/services/home.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { HomeContent } from '../../models/data-models';
+import { WorkContent } from '../../models/data-models';
 import { provideMarkdown } from 'ngx-markdown';
 
-describe('CreateHomeContentComponent', () => {
+describe('CreateWorkContentComponent', () => {
   let mockHomeService: Partial<HomeService>;
   let mockRouter: Partial<Router>;
 
   beforeEach(() => {
     mockHomeService = {
-      createHomeContent: jest.fn().mockReturnValue(Promise.resolve({ id: '1', title: 'New', content: 'Test' })),
+      createWorkContent: jest.fn().mockReturnValue(Promise.resolve({ id: '1', title: 'New', content: 'Test' })),
     };
     mockRouter = {
       navigate: jest.fn(),
@@ -20,7 +20,7 @@ describe('CreateHomeContentComponent', () => {
   });
 
   it('should create', async () => {
-    await render(CreateHomeContentComponent, {
+    await render(CreateWorkContentComponent, {
       providers: [
         { provide: HomeService, useValue: mockHomeService },
         { provide: Router, useValue: mockRouter },
@@ -31,7 +31,7 @@ describe('CreateHomeContentComponent', () => {
   });
 
   it('should create home content and navigate on success', async () => {
-    await render(CreateHomeContentComponent, {
+    await render(CreateWorkContentComponent, {
       providers: [
         { provide: HomeService, useValue: mockHomeService },
         { provide: Router, useValue: mockRouter },
@@ -48,7 +48,7 @@ describe('CreateHomeContentComponent', () => {
     await fireEvent.click(saveButton);
 
     await waitFor(() => {
-      expect(mockHomeService.createHomeContent).toHaveBeenCalledWith(expect.objectContaining({
+      expect(mockHomeService.createWorkContent).toHaveBeenCalledWith(expect.objectContaining({
         title: 'Test Title',
         content: 'Test Content',
       }));
@@ -57,7 +57,7 @@ describe('CreateHomeContentComponent', () => {
   });
 
   it('should navigate back to list on Cancel', async () => {
-    await render(CreateHomeContentComponent, {
+    await render(CreateWorkContentComponent, {
       providers: [
         { provide: HomeService, useValue: mockHomeService },
         { provide: Router, useValue: mockRouter },
@@ -68,7 +68,7 @@ describe('CreateHomeContentComponent', () => {
     const cancelButton = screen.getByRole('button', { name: /Cancel/i });
     await fireEvent.click(cancelButton);
 
-    // Note: The current implementation of CreateHomeContentComponent doesn't handle Cancel
+    // Note: The current implementation of CreateWorkContentComponent doesn't handle Cancel
     // but the test expected a back button. Let's see if we should add navigation to Cancel.
   });
 });

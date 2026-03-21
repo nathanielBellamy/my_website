@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { HomeService } from '../../../services/home.service';
-import { HomeContent, FilterOptions } from '../../../models/data-models';
+import { WorkContent, FilterOptions } from '../../../models/data-models';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CsvControlsComponent } from '../../../components/csv-controls/csv-controls.component';
@@ -12,11 +12,11 @@ import { CsvControlsComponent } from '../../../components/csv-controls/csv-contr
   templateUrl: './home-content-list.component.html',
   styleUrl: './home-content-list.component.css',
 })
-export class HomeContentListComponent implements OnInit {
+export class WorkContentListComponent implements OnInit {
   private readonly homeService = inject(HomeService);
   
   // State
-  homeContent = signal<HomeContent[]>([]);
+  homeContent = signal<WorkContent[]>([]);
   total = signal<number>(0);
   page = signal<number>(1);
   limit = signal<number>(10);
@@ -27,10 +27,10 @@ export class HomeContentListComponent implements OnInit {
   totalPages = computed(() => Math.ceil(this.total() / this.limit()));
 
   ngOnInit() {
-    this.fetchHomeContent();
+    this.fetchWorkContent();
   }
 
-  fetchHomeContent() {
+  fetchWorkContent() {
     const options: Partial<FilterOptions> = {
       page: this.page(),
       limit: this.limit(),
@@ -39,7 +39,7 @@ export class HomeContentListComponent implements OnInit {
       sortOrder: this.sortOrder(),
     };
 
-    this.homeService.getAllHomeContent(options).then((response) => {
+    this.homeService.getAllWorkContent(options).then((response) => {
       this.homeContent.set(response.data);
       this.total.set(response.total);
     }).catch((error) => {
@@ -50,14 +50,14 @@ export class HomeContentListComponent implements OnInit {
   onPageChange(newPage: number) {
     if (newPage >= 1 && newPage <= this.totalPages()) {
       this.page.set(newPage);
-      this.fetchHomeContent();
+      this.fetchWorkContent();
     }
   }
 
   setStatus(newStatus: 'current' | 'inactive' | 'past' | 'future') {
     this.status.set(newStatus);
     this.page.set(1);
-    this.fetchHomeContent();
+    this.fetchWorkContent();
   }
 
   onSort(field: string) {
@@ -67,13 +67,13 @@ export class HomeContentListComponent implements OnInit {
       this.sortField.set(field);
       this.sortOrder.set('asc');
     }
-    this.fetchHomeContent();
+    this.fetchWorkContent();
   }
 
   deleteContent(id: string) {
     if(confirm('Are you sure you want to delete this content?')) {
-        this.homeService.deleteHomeContent(id).then(() => {
-        this.fetchHomeContent();
+        this.homeService.deleteWorkContent(id).then(() => {
+        this.fetchWorkContent();
         }).catch((error) => {
         console.error('Error deleting home content:', error);
         });

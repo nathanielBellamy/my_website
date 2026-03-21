@@ -1,11 +1,11 @@
 import { render, screen, fireEvent } from '@testing-library/angular';
 import { HomeFormComponent } from './home-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HomeContent } from '../../models/data-models';
+import { WorkContent } from '../../models/data-models';
 import { provideMarkdown } from 'ngx-markdown';
 
 describe('HomeFormComponent', () => {
-  const mockContent: HomeContent = {
+  const mockContent: WorkContent = {
     id: '1',
     title: 'Test Title',
     content: 'Test Content',

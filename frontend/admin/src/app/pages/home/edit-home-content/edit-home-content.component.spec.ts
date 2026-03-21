@@ -1,23 +1,23 @@
 import { render, screen, fireEvent, waitFor, RenderResult } from '@testing-library/angular';
-import { EditHomeContentComponent } from './edit-home-content.component';
+import { EditWorkContentComponent } from './edit-home-content.component';
 import { HomeService } from 'app/services/home.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
-import { HomeContent } from '../../models/data-models';
+import { WorkContent } from '../../models/data-models';
 import { provideMarkdown } from 'ngx-markdown';
 
-describe('EditHomeContentComponent', () => {
+describe('EditWorkContentComponent', () => {
   let mockHomeService: Partial<HomeService>;
   let mockActivatedRoute: Partial<ActivatedRoute>;
   let mockRouter: Partial<Router>;
 
-  const mockHomeContent: HomeContent = { id: '1', title: 'Existing Home', content: 'Existing Content', activatedAt: null, deactivatedAt: null };
+  const mockWorkContent: WorkContent = { id: '1', title: 'Existing Home', content: 'Existing Content', activatedAt: null, deactivatedAt: null };
 
   beforeEach(() => {
     mockHomeService = {
-      getHomeContentById: jest.fn().mockReturnValue(Promise.resolve(mockHomeContent)),
-      updateHomeContent: jest.fn().mockReturnValue(Promise.resolve(mockHomeContent)),
+      getWorkContentById: jest.fn().mockReturnValue(Promise.resolve(mockWorkContent)),
+      updateWorkContent: jest.fn().mockReturnValue(Promise.resolve(mockWorkContent)),
     };
     mockActivatedRoute = {
       paramMap: of(new Map([['id', '1']])),
@@ -28,7 +28,7 @@ describe('EditHomeContentComponent', () => {
   });
 
   it('should create', async () => {
-    await render(EditHomeContentComponent, {
+    await render(EditWorkContentComponent, {
       providers: [
         { provide: HomeService, useValue: mockHomeService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
@@ -42,7 +42,7 @@ describe('EditHomeContentComponent', () => {
   });
 
   it('should fetch home content on init and populate form', async () => {
-    await render(EditHomeContentComponent, {
+    await render(EditWorkContentComponent, {
       providers: [
         { provide: HomeService, useValue: mockHomeService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
@@ -51,15 +51,15 @@ describe('EditHomeContentComponent', () => {
       ],
     });
 
-    expect(mockHomeService.getHomeContentById).toHaveBeenCalledWith('1');
+    expect(mockHomeService.getWorkContentById).toHaveBeenCalledWith('1');
     await waitFor(() => {
-      expect(screen.getByLabelText('Title')).toHaveValue(mockHomeContent.title);
-      expect(screen.getByLabelText('Content')).toHaveValue(mockHomeContent.content);
+      expect(screen.getByLabelText('Title')).toHaveValue(mockWorkContent.title);
+      expect(screen.getByLabelText('Content')).toHaveValue(mockWorkContent.content);
     });
   });
 
   it('should update home content and navigate on success', async () => {
-    await render(EditHomeContentComponent, {
+    await render(EditWorkContentComponent, {
       providers: [
         { provide: HomeService, useValue: mockHomeService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
@@ -81,7 +81,7 @@ describe('EditHomeContentComponent', () => {
     await fireEvent.click(saveButton);
 
     await waitFor(() => {
-      expect(mockHomeService.updateHomeContent).toHaveBeenCalledWith(expect.objectContaining({
+      expect(mockHomeService.updateWorkContent).toHaveBeenCalledWith(expect.objectContaining({
         title: 'Updated Title',
         content: 'Updated Content'
       }));
@@ -90,7 +90,7 @@ describe('EditHomeContentComponent', () => {
   });
 
   it('should navigate back to list on Cancel', async () => {
-    await render(EditHomeContentComponent, {
+    await render(EditWorkContentComponent, {
       providers: [
         { provide: HomeService, useValue: mockHomeService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },

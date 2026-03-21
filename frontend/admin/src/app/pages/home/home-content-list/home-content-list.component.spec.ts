@@ -1,25 +1,25 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/angular';
-import { HomeContentListComponent } from './home-content-list.component';
+import { WorkContentListComponent } from './home-content-list.component';
 import { HomeService } from 'app/services/home.service';
 import { of } from 'rxjs';
-import { HomeContent } from '../../models/data-models';
+import { WorkContent } from '../../models/data-models';
 
 
-describe('HomeContentListComponent', () => {
+describe('WorkContentListComponent', () => {
   let mockHomeService: Partial<HomeService>;
-  const mockHomeContent: HomeContent[] = [
+  const mockWorkContent: WorkContent[] = [
     { id: '1', title: 'Home 1', content: 'Content 1' },
     { id: '2', title: 'Home 2', content: 'Content 2' },
   ];
   beforeEach(() => {
     mockHomeService = {
-      getAllHomeContent: jest.fn().mockReturnValue(Promise.resolve({ data: mockHomeContent, total: mockHomeContent.length })),
-      deleteHomeContent: jest.fn().mockReturnValue(Promise.resolve()),
+      getAllWorkContent: jest.fn().mockReturnValue(Promise.resolve({ data: mockWorkContent, total: mockWorkContent.length })),
+      deleteWorkContent: jest.fn().mockReturnValue(Promise.resolve()),
     };
   });
 
   it('should create', async () => {
-    await render(HomeContentListComponent, {
+    await render(WorkContentListComponent, {
       providers: [{ provide: HomeService, useValue: mockHomeService }],
 
     });
@@ -27,12 +27,12 @@ describe('HomeContentListComponent', () => {
   });
 
   it('should fetch home content on ngOnInit', async () => {
-    await render(HomeContentListComponent, {
+    await render(WorkContentListComponent, {
       providers: [{ provide: HomeService, useValue: mockHomeService }],
 
     });
 
-    expect(mockHomeService.getAllHomeContent).toHaveBeenCalled();
+    expect(mockHomeService.getAllWorkContent).toHaveBeenCalled();
     // Use waitFor to wait for the content to appear
     await waitFor(() => {
       expect(screen.getByText('Home 1')).toBeInTheDocument();
@@ -41,7 +41,7 @@ describe('HomeContentListComponent', () => {
   });
 
   it('should delete home content and refresh the list', async () => {
-    await render(HomeContentListComponent, {
+    await render(WorkContentListComponent, {
       providers: [{ provide: HomeService, useValue: mockHomeService }],
 
     });
@@ -56,10 +56,10 @@ describe('HomeContentListComponent', () => {
 
     await fireEvent.click(deleteButton);
 
-    expect(mockHomeService.deleteHomeContent).toHaveBeenCalledWith('1');
-    // Wait for the list to refresh (getAllHomeContent called again)
+    expect(mockHomeService.deleteWorkContent).toHaveBeenCalledWith('1');
+    // Wait for the list to refresh (getAllWorkContent called again)
     await waitFor(() => {
-      expect(mockHomeService.getAllHomeContent).toHaveBeenCalledTimes(2); // Initial fetch + refresh
+      expect(mockHomeService.getAllWorkContent).toHaveBeenCalledTimes(2); // Initial fetch + refresh
     });
   });
 });

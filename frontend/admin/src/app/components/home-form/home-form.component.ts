@@ -1,6 +1,6 @@
 import { Component, input, output, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
-import { HomeContent } from '../../models/data-models';
+import { WorkContent } from '../../models/data-models';
 import { MarkdownComponent } from 'ngx-markdown';
 import { ImageGalleryComponent } from '../image-gallery/image-gallery.component';
 
@@ -12,8 +12,8 @@ import { ImageGalleryComponent } from '../image-gallery/image-gallery.component'
   styleUrl: './home-form.component.css',
 })
 export class HomeFormComponent implements OnInit {
-  contentData = input<HomeContent | undefined>();
-  submitForm = output<HomeContent>();
+  contentData = input<WorkContent | undefined>();
+  submitForm = output<WorkContent>();
   cancel = output<void>();
 
   private readonly fb = inject(FormBuilder);
@@ -38,7 +38,7 @@ export class HomeFormComponent implements OnInit {
   saveForm() {
     if (this.form.valid) {
       const formValue = this.form.value;
-      const content: HomeContent = {
+      const content: WorkContent = {
         ...formValue,
         activatedAt: formValue.activatedAt ? new Date(formValue.activatedAt).toISOString() : null,
         deactivatedAt: formValue.deactivatedAt ? new Date(formValue.deactivatedAt).toISOString() : null,
