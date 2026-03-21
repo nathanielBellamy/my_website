@@ -4,6 +4,14 @@
       <h1 class="text-2xl font-bold">Admin Panel</h1>
       <nav>
         <div class="flex gap-2">
+          <a routerLink="/dashboard" data-testid="nav-admin-dashboard">Dashboard</a>
+          <a routerLink="/logs" data-testid="nav-admin-logs">Logs</a>
+          <a
+            href="/grafana/"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-testid="nav-admin-grafana"
+          >Grafana</a>
           <a routerLink="/work" data-testid="nav-admin-work">Work</a>
           <a routerLink="/groovejr" data-testid="nav-admin-groovejr">GrooveJr</a>
           <a routerLink="/about" data-testid="nav-admin-about">About</a>

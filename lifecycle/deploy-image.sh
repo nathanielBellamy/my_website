@@ -49,6 +49,15 @@ echo "   Ensuring database directory exists..."
 $SSH_CMD $SSH_USER@$SSH_HOST "mkdir -p ~/database"
 $SCP_CMD database/init.sql $SSH_USER@$SSH_HOST:~/database/init.sql
 
+# Transfer monitoring configs
+echo "   Transferring monitoring configs..."
+$SSH_CMD $SSH_USER@$SSH_HOST "mkdir -p ~/docker/monitoring/prometheus ~/docker/monitoring/loki ~/docker/monitoring/promtail ~/docker/monitoring/grafana/provisioning/datasources ~/docker/monitoring/grafana/provisioning/dashboards ~/docker/monitoring/grafana/provisioning/alerting"
+$SCP_CMD docker/monitoring/prometheus/prometheus.yml $SSH_USER@$SSH_HOST:~/docker/monitoring/prometheus/prometheus.yml
+$SCP_CMD docker/monitoring/loki/loki-config.yml $SSH_USER@$SSH_HOST:~/docker/monitoring/loki/loki-config.yml
+$SCP_CMD docker/monitoring/promtail/promtail-config.yml $SSH_USER@$SSH_HOST:~/docker/monitoring/promtail/promtail-config.yml
+$SCP_CMD docker/monitoring/grafana/grafana.ini $SSH_USER@$SSH_HOST:~/docker/monitoring/grafana/grafana.ini
+$SCP_CMD -r docker/monitoring/grafana/provisioning/ $SSH_USER@$SSH_HOST:~/docker/monitoring/grafana/provisioning/
+
 echo "   Transferring lifecycle scripts..."
 $SSH_CMD $SSH_USER@$SSH_HOST "mkdir -p ~/lifecycle"
 $SCP_CMD nixos/lifecycle/*.sh $SSH_USER@$SSH_HOST:~/lifecycle/

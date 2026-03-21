@@ -12,12 +12,22 @@ import { AboutContentListComponent } from './pages/about/about-content-list/abou
 import { CreateAboutContentComponent } from './pages/about/create-about-content/create-about-content.component';
 import { EditAboutContentComponent } from './pages/about/edit-about-content/edit-about-content.component';
 import { GalleryComponent } from './pages/gallery/gallery.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { LogsComponent } from './pages/logs/logs.component';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'work',
+    redirectTo: 'dashboard',
     pathMatch: 'full'
+  },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+  },
+  {
+    path: 'logs',
+    component: LogsComponent,
   },
   {
     path: 'work',
