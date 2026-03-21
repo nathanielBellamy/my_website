@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/angular';
 import { provideMarkdown } from 'ngx-markdown';
-import { LatestPostsComponent } from './latest-posts.component';
+import { WorkComponent } from './work.component';
 import { CardComponent } from '../../components/card/card.component';
-import { LatestPostsStore } from './latest-posts.store';
+import { WorkStore } from './work.store';
 import { signal, WritableSignal } from '@angular/core';
 import { WorkContent } from '../../models/work.model';
 import { provideRouter } from '@angular/router';
@@ -12,7 +12,7 @@ const mockWorkContent: WorkContent[] = [
   { id: '2', title: 'Title 2', content: 'Body 2', order: 2 },
 ];
 
-describe('LatestPostsComponent', () => {
+describe('WorkComponent', () => {
   let contentSignal: WritableSignal<WorkContent[]>;
   let loadingSignal: WritableSignal<boolean>;
   let errorSignal: WritableSignal<string | null>;
@@ -26,13 +26,13 @@ describe('LatestPostsComponent', () => {
     allLoadedSignal = signal(false);
     loadMoreMock = jest.fn();
 
-    await render(LatestPostsComponent, {
+    await render(WorkComponent, {
       imports: [CardComponent],
       providers: [
         provideMarkdown(),
         provideRouter([]),
         {
-          provide: LatestPostsStore,
+          provide: WorkStore,
           useValue: {
             content: contentSignal,
             loading: loadingSignal,

@@ -3,7 +3,7 @@ import { WorkContent } from '../../models/work.model';
 import { inject } from '@angular/core';
 import { WorkService } from '../../services/work.service';
 
-type LatestPostsState = {
+type WorkState = {
   content: WorkContent[];
   loading: boolean;
   error: string | null;
@@ -11,7 +11,7 @@ type LatestPostsState = {
   allLoaded: boolean;
 };
 
-const initialState: LatestPostsState = {
+const initialState: WorkState = {
   content: [],
   loading: false,
   error: null,
@@ -19,7 +19,7 @@ const initialState: LatestPostsState = {
   allLoaded: false,
 };
 
-export const LatestPostsStore = signalStore(
+export const WorkStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withMethods((store, workService = inject(WorkService)) => ({
@@ -43,7 +43,7 @@ export const LatestPostsStore = signalStore(
           error: null,
         });
       } catch (error) {
-        patchState(store, { error: `Failed to fetch latest posts content. \nMessage: ${error}`, loading: false });
+        patchState(store, { error: `Failed to fetch work content. \nMessage: ${error}`, loading: false });
       }
     },
   }))

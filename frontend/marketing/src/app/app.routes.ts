@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { FocusComponent } from './pages/focus/focus.component';
-import { LatestPostsComponent } from './pages/latest-posts/latest-posts.component';
+import { WorkComponent } from './pages/work/work.component';
 import { AboutComponent } from './pages/about/about.component';
 import { AboutContentDetailsComponent } from './pages/about-content-details/about-content-details.component';
 import { GrooveJrComponent } from './pages/groove-jr/groove-jr.component';
@@ -15,7 +15,7 @@ import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.co
 export const routes: Routes = [
   { path: '', component: HomeComponent, title: 'Nate Schieber - Software Engineer' },
   { path: 'focus', component: FocusComponent, title: 'Focus - Nate Schieber' },
-  { path: 'latest-posts', component: LatestPostsComponent, title: 'Latest Posts - Nate Schieber' },
+  { path: 'work', component: WorkComponent, title: 'Work - Nate Schieber' },
   { path: 'about', component: AboutComponent, title: 'About - Nate Schieber' },
   { path: 'about/:id', component: AboutContentDetailsComponent, title: 'About - Nate Schieber' },
   { path: 'groovejr', component: GrooveJrComponent, title: 'Groove Jr. - Nate Schieber' },

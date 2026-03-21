@@ -302,7 +302,7 @@ func (mc *MarketingController) SitemapHandler(w http.ResponseWriter, r *http.Req
 	var urls []URL
 
 	// Static Pages
-	pages := []string{"", "focus", "latest-posts", "about", "groovejr", "blog", "privacy-policy"}
+	pages := []string{"", "focus", "work", "about", "groovejr", "blog", "privacy-policy"}
 	for _, page := range pages {
 		urlStr := baseUrl
 		if page != "" {
