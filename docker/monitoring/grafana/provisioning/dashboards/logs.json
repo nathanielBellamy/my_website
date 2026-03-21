@@ -13,7 +13,7 @@
       "datasource": { "type": "loki", "uid": "loki" },
       "targets": [
         {
-          "expr": "sum(count_over_time({job=\"docker\"} | json | level != `` [5m])) by (level)",
+          "expr": "sum(count_over_time({job=~\"docker|app_logs\"} | json | level != `` [5m])) by (level)",
           "legendFormat": "{{ level }}",
           "refId": "A"
         }
@@ -49,7 +49,7 @@
       "datasource": { "type": "loki", "uid": "loki" },
       "targets": [
         {
-          "expr": "sum(count_over_time({job=\"docker\"} | json | level = `error` [1m]))",
+          "expr": "sum(count_over_time({job=~\"docker|app_logs\"} | json | level = `error` [1m]))",
           "legendFormat": "Errors/min",
           "refId": "A"
         }
@@ -74,7 +74,7 @@
       "datasource": { "type": "loki", "uid": "loki" },
       "targets": [
         {
-          "expr": "sum(count_over_time({job=\"docker\"} | json | level = `warn` [1m]))",
+          "expr": "sum(count_over_time({job=~\"docker|app_logs\"} | json | level = `warn` [1m]))",
           "legendFormat": "Warnings/min",
           "refId": "A"
         }
@@ -99,7 +99,7 @@
       "datasource": { "type": "loki", "uid": "loki" },
       "targets": [
         {
-          "expr": "sum(count_over_time({job=\"docker\"}[1h]))",
+          "expr": "sum(count_over_time({job=~\"docker|app_logs\"}[1h]))",
           "legendFormat": "Total",
           "refId": "A"
         }
@@ -112,7 +112,7 @@
       "datasource": { "type": "loki", "uid": "loki" },
       "targets": [
         {
-          "expr": "{job=\"docker\"} | json",
+          "expr": "{job=~\"docker|app_logs\"} | json",
           "refId": "A"
         }
       ],
