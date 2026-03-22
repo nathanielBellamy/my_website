@@ -44,6 +44,8 @@ describe('Admin App', () => {
   })
 
   it('should have a working refresh button', () => {
+    // Wait for initial health data to load before testing refresh
+    cy.get('[data-testid="dashboard-uptime-card"]', { timeout: 10000 }).should('be.visible')
     cy.get('[data-testid="dashboard-refresh-btn"]').should('be.visible')
     cy.get('[data-testid="dashboard-refresh-btn"]').click()
     cy.get('[data-testid="dashboard-uptime-card"]', { timeout: 10000 }).should('be.visible')
