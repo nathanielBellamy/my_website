@@ -19,15 +19,21 @@ import (
 type LogsController struct {
 	Log     *zerolog.Logger
 	LogDir  string
+	LogRoot *os.Root
 	StartAt time.Time
 }
 
-func NewLogsController(log *zerolog.Logger, logDir string, startAt time.Time) *LogsController {
+func NewLogsController(log *zerolog.Logger, logDir string, startAt time.Time) (*LogsController, error) {
+	root, err := os.OpenRoot(logDir)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open log root directory %s: %w", logDir, err)
+	}
 	return &LogsController{
 		Log:     log,
 		LogDir:  logDir,
+		LogRoot: root,
 		StartAt: startAt,
-	}
+	}, nil
 }
 
 // StreamLogsHandler streams log entries via SSE
@@ -93,9 +99,10 @@ func (lc *LogsController) StreamLogsHandler(w http.ResponseWriter, r *http.Reque
 	var lastOffset int64
 
 	// Start reading from end of file
-	info, err := os.Stat(currentFile)
-	if err == nil {
-		lastOffset = info.Size()
+	if relCurrent, relErr := filepath.Rel(lc.LogDir, currentFile); relErr == nil {
+		if info, statErr := lc.LogRoot.Stat(relCurrent); statErr == nil {
+			lastOffset = info.Size()
+		}
 	}
 
 	ctx := r.Context()
@@ -126,7 +133,13 @@ func (lc *LogsController) StreamLogsHandler(w http.ResponseWriter, r *http.Reque
 }
 
 func (lc *LogsController) streamNewLines(w http.ResponseWriter, flusher http.Flusher, filePath string, lastOffset *int64, levelFilter, searchFilter string) {
-	info, err := os.Stat(filePath)
+	relPath, err := filepath.Rel(lc.LogDir, filePath)
+	if err != nil {
+		lc.Log.Error().Err(err).Str("file", filePath).Msg("Error computing relative log path")
+		return
+	}
+
+	info, err := lc.LogRoot.Stat(relPath)
 	if err != nil {
 		return
 	}
@@ -135,7 +148,7 @@ func (lc *LogsController) streamNewLines(w http.ResponseWriter, flusher http.Flu
 		return
 	}
 
-	f, err := os.Open(filePath)
+	f, err := lc.LogRoot.Open(relPath)
 	if err != nil {
 		lc.Log.Error().Err(err).Str("file", filePath).Msg("Error opening log file for streaming")
 		return
@@ -197,7 +210,11 @@ func (lc *LogsController) findLatestLogFile() (string, error) {
 }
 
 func (lc *LogsController) tailLogFile(filePath string, n int, levelFilter, searchFilter string) ([]string, error) {
-	f, err := os.Open(filePath)
+	relPath, err := filepath.Rel(lc.LogDir, filePath)
+	if err != nil {
+		return nil, fmt.Errorf("error computing relative log path: %w", err)
+	}
+	f, err := lc.LogRoot.Open(relPath)
 	if err != nil {
 		return nil, fmt.Errorf("error opening log file: %w", err)
 	}

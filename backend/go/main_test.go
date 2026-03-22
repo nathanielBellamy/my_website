@@ -63,7 +63,11 @@ func TestSetupBaseRoutes_MarketingBlogPosts(t *testing.T) {
 	adminMux := http.NewServeMux()
 	oldSiteMux := http.NewServeMux()
 	startAt := time.Now()
-	logsController := appLogs.NewLogsController(&log, "log", startAt)
+	logDir := t.TempDir()
+	logsController, err := appLogs.NewLogsController(&log, logDir, startAt)
+	if err != nil {
+		t.Fatalf("Failed to create logs controller: %v", err)
+	}
 	healthController := appLogs.NewHealthController(&log, startAt, mockDB)
 	grafanaProxy := monitoring.NewGrafanaProxy(&log, "http://localhost:3000")
 	SetupBaseRoutes(adminMux, oldSiteMux, marketingMux, &cookieJar, &log, nil, marketing.NewMarketingController(&log, marketingService), admin.NewAdminController(&log, adminService), logsController, healthController, grafanaProxy)

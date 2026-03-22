@@ -3,6 +3,7 @@ package logs
 import (
 	"bufio"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -148,7 +149,11 @@ func (lc *LogsController) findLogFilesByDate(dateFilter string) ([]string, error
 }
 
 func (lc *LogsController) readLogFileEntries(filePath, levelFilter, searchFilter string) ([]LogEntry, error) {
-	f, err := os.Open(filePath)
+	relPath, err := filepath.Rel(lc.LogDir, filePath)
+	if err != nil {
+		return nil, fmt.Errorf("error computing relative log path: %w", err)
+	}
+	f, err := lc.LogRoot.Open(relPath)
 	if err != nil {
 		return nil, err
 	}

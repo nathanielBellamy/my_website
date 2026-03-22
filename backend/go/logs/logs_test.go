@@ -47,7 +47,11 @@ func setupTestLogDir(t *testing.T) string {
 func newTestLogsController(t *testing.T, logDir string) *LogsController {
 	t.Helper()
 	log := zerolog.New(os.Stdout).With().Timestamp().Logger()
-	return NewLogsController(&log, logDir, time.Now())
+	lc, err := NewLogsController(&log, logDir, time.Now())
+	if err != nil {
+		t.Fatalf("Failed to create logs controller: %v", err)
+	}
+	return lc
 }
 
 func TestParseLogLine(t *testing.T) {

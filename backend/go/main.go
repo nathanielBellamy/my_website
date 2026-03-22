@@ -126,7 +126,10 @@ func SetupRoutes(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], log *zerolo
 	adminService := admin.NewService(db, log)
 	adminController := admin.NewAdminController(log, adminService)
 
-	logsController := appLogs.NewLogsController(log, "log", startAt)
+	logsController, err := appLogs.NewLogsController(log, "log", startAt)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to initialize logs controller")
+	}
 	healthController := appLogs.NewHealthController(log, startAt, db)
 
 	grafanaProxy := monitoring.NewGrafanaProxy(log, "http://grafana:3000")
@@ -268,16 +271,21 @@ func openLogFile(logDir string, startAt time.Time) (*os.File, error) {
 	month := startAt.UTC().Format("01")
 	dir := filepath.Join(logDir, year, month)
 
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	if err := os.MkdirAll(dir, 0750); err != nil {
 		return nil, fmt.Errorf("failed to create log directory %s: %w", dir, err)
 	}
 
 	filename := startAt.UTC().Format("2006-01-02T15-04-05Z") + "-log.txt"
-	filePath := filepath.Join(dir, filename)
 
-	f, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	root, err := os.OpenRoot(dir)
 	if err != nil {
-		return nil, fmt.Errorf("failed to open log file %s: %w", filePath, err)
+		return nil, fmt.Errorf("failed to open log root directory %s: %w", dir, err)
+	}
+	defer root.Close()
+
+	f, err := root.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0600)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open log file %s: %w", filename, err)
 	}
 	return f, nil
 }
