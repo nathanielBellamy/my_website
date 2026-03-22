@@ -56,6 +56,9 @@ case "$1" in
         copy_logs
         echo "Tearing down entire docker compose stack..."
         docker compose down || echo "No running compose stack to tear down."
+        # Remove stale Grafana data volume for clean dashboard provisioning on redeploy
+        GRAFANA_VOL=$(docker volume ls -q --filter "name=grafana_data" 2>/dev/null | head -1)
+        [ -n "$GRAFANA_VOL" ] && docker volume rm "$GRAFANA_VOL" 2>/dev/null && echo "Removed Grafana data volume: $GRAFANA_VOL" || true
         echo "Entire docker compose stack torn down."
         ;;
     -d|--db)

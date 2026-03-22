@@ -66,6 +66,17 @@
         proxyPass = "http://localhost:8080";
         proxyWebsockets = true;
       };
+      locations."/grafana/" = {
+        proxyPass = "http://localhost:8080";
+        proxyWebsockets = true;
+        extraConfig = ''
+          # Override restrictive global CSP/X-Frame-Options for Grafana compatibility
+          # (adding any add_header in a location block replaces all inherited ones from http block)
+          add_header X-Content-Type-Options nosniff always;
+          add_header Referrer-Policy 'origin-when-cross-origin' always;
+          add_header Strict-Transport-Security $hsts_header;
+        '';
+      };
     };
 
     virtualHosts."old-site.mydomain.dev" = {
