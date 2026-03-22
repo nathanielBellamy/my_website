@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"strings"
 	"sync"
 
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
@@ -52,8 +53,16 @@ func (i *IPRateLimiter) GetLimiter(ip string) *rate.Limiter {
 }
 
 // RateLimitMiddleware is an HTTP middleware that applies rate limiting based on the client's IP address.
-func RateLimitMiddleware(limiter *IPRateLimiter, log *zerolog.Logger, next http.Handler) http.Handler {
+// Paths in exemptPrefixes bypass rate limiting (e.g. Grafana proxy which makes many internal requests).
+func RateLimitMiddleware(limiter *IPRateLimiter, log *zerolog.Logger, next http.Handler, exemptPrefixes ...string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		for _, prefix := range exemptPrefixes {
+			if strings.HasPrefix(r.URL.Path, prefix) {
+				next.ServeHTTP(w, r)
+				return
+			}
+		}
+
 		ip := auth.GetClientIpAddr(r)
 		limiterForIP := limiter.GetLimiter(ip)
 

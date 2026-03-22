@@ -101,7 +101,7 @@ func main() {
 
 	server := &http.Server{
 		Addr:         ":8080",
-		Handler:      middleware.RateLimitMiddleware(limiter, &log, hostRouter),
+		Handler:      middleware.RateLimitMiddleware(limiter, &log, hostRouter, "/grafana/"),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
