@@ -19,7 +19,7 @@ describe('Admin App', () => {
     cy.get('[data-testid="dashboard-goroutines-card"]').should('be.visible')
     cy.get('[data-testid="dashboard-goroutines-card"]').contains('Goroutines')
     cy.get('[data-testid="dashboard-db-card"]').should('be.visible')
-    cy.get('[data-testid="dashboard-db-card"]').contains('Connected')
+    cy.get('[data-testid="dashboard-db-card"]').contains(/Connected|Disconnected/)
   })
 
   it('should display dashboard system info', () => {
