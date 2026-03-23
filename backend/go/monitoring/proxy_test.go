@@ -43,14 +43,14 @@ func TestGrafanaProxy_ForwardsRequests(t *testing.T) {
 		t.Errorf("expected 'grafana response', got %q", string(body))
 	}
 
-	// Verify path is passed through (not stripped)
+	// Verify path is stripped of /grafana prefix (proxy strips it, Grafana serves at root)
 	receivedPath := rr.Header().Get("X-Received-Path")
-	if receivedPath != "/grafana/d/system-overview" {
-		t.Errorf("expected path '/grafana/d/system-overview', got %q", receivedPath)
+	if receivedPath != "/d/system-overview" {
+		t.Errorf("expected path '/d/system-overview', got %q", receivedPath)
 	}
 }
 
-func TestGrafanaProxy_PreservesGrafanaPrefix(t *testing.T) {
+func TestGrafanaProxy_StripsGrafanaPrefix(t *testing.T) {
 	grafanaServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("X-Received-Path", r.URL.Path)
 		w.WriteHeader(http.StatusOK)
@@ -66,19 +66,24 @@ func TestGrafanaProxy_PreservesGrafanaPrefix(t *testing.T) {
 		expectedPath string
 	}{
 		{
-			name:         "grafana with trailing slash",
+			name:         "grafana root with trailing slash",
 			inputPath:    "/grafana/",
-			expectedPath: "/grafana/",
+			expectedPath: "/",
+		},
+		{
+			name:         "grafana root without trailing slash",
+			inputPath:    "/grafana",
+			expectedPath: "/",
 		},
 		{
 			name:         "grafana dashboard",
 			inputPath:    "/grafana/d/system-overview?orgId=1",
-			expectedPath: "/grafana/d/system-overview",
+			expectedPath: "/d/system-overview",
 		},
 		{
 			name:         "grafana api",
 			inputPath:    "/grafana/api/health",
-			expectedPath: "/grafana/api/health",
+			expectedPath: "/api/health",
 		},
 	}
 

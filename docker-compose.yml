@@ -128,6 +128,9 @@ services:
       - grafana_data:/var/lib/grafana
     environment:
       GF_SERVER_ROOT_URL: ${BASE_URL_GRAFANA}
+      GF_SERVER_DOMAIN: admin.localhost
+      GF_SERVER_PROTOCOL: http
+      GF_AUTH_PROXY_ENABLE_LOGIN_TOKEN: "false"
       GF_SMTP_HOST: ${SMTP_HOST:-localhost:587}
       GF_SMTP_USER: ${SMTP_USER:-}
       GF_SMTP_PASSWORD: ${SMTP_PASSWORD:-}

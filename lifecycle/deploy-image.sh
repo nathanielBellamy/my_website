@@ -57,6 +57,7 @@ $SCP_CMD docker/monitoring/loki/loki-config.yml $SSH_USER@$SSH_HOST:~/docker/mon
 $SCP_CMD docker/monitoring/promtail/promtail-config.yml $SSH_USER@$SSH_HOST:~/docker/monitoring/promtail/promtail-config.yml
 $SCP_CMD docker/monitoring/grafana/grafana.ini $SSH_USER@$SSH_HOST:~/docker/monitoring/grafana/grafana.ini
 $SCP_CMD -r docker/monitoring/grafana/provisioning/ $SSH_USER@$SSH_HOST:~/docker/monitoring/grafana/provisioning/
+$SSH_CMD $SSH_USER@$SSH_HOST "chmod -R a+r ~/docker/monitoring/grafana/"
 
 echo "   Transferring lifecycle scripts..."
 $SSH_CMD $SSH_USER@$SSH_HOST "mkdir -p ~/lifecycle"
