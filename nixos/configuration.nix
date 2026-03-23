@@ -73,7 +73,7 @@
           # Re-declare all parent security headers with Grafana-compatible values
           # (add_header in a location block replaces all inherited ones from http block)
           add_header Strict-Transport-Security $hsts_header;
-          add_header Content-Security-Policy "script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' ws: wss:; frame-ancestors 'self'; object-src 'none'; base-uri 'self';" always;
+          add_header Content-Security-Policy "script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' ws: wss:; worker-src 'self' blob:; frame-ancestors 'self'; object-src 'none'; base-uri 'self';" always;
           add_header Referrer-Policy 'origin-when-cross-origin' always;
           add_header X-Frame-Options SAMEORIGIN always;
           add_header X-Content-Type-Options nosniff always;

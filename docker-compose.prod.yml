@@ -116,6 +116,12 @@ services:
       - ./docker/monitoring/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
       - ./docker/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
       - grafana_data:/var/lib/grafana
+    environment:
+      GF_SERVER_ROOT_URL: ${BASE_URL_GRAFANA}
+      GF_SMTP_HOST: ${SMTP_HOST:-localhost:587}
+      GF_SMTP_USER: ${SMTP_USER:-}
+      GF_SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      GF_SMTP_FROM_ADDRESS: ${SMTP_FROM:-noreply@nateschieber.dev}
     env_file:
       - .env/.env.docker
     depends_on:
