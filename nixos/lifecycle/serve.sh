@@ -59,12 +59,13 @@ echo "DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-db:
 echo "📄 Generated $DOCKER_ENV_FILE with DATABASE_URL pointing to postgres-db"
 
 # Start the containers in detached mode
-# No compose-level ${} interpolation needed — everything comes from env_file
-docker compose up -d
+# --env-file provides vars for compose-level ${} interpolation in the YAML
+# (env_file: in the YAML only injects vars INTO containers, not for YAML substitution)
+docker compose --env-file "$DOCKER_ENV_FILE" up -d
 
 echo "✅ Services are running in the background."
 
 if [ "$DETACH" = false ]; then
   echo "➡️ Tailing logs from the backend service. Press Ctrl+C to stop tailing."
-  docker compose logs -f backend
+  docker compose --env-file "$DOCKER_ENV_FILE" logs -f backend
 fi
