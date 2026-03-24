@@ -2,7 +2,44 @@
   <header class="bg-gray-800 text-white p-4 shadow-md">
     <div class="container mx-auto flex justify-between items-center">
       <h1 class="text-2xl font-bold">Admin Panel</h1>
-      <nav>
+
+      <!-- Hamburger button (mobile only) -->
+      <button
+        class="md:hidden p-2 rounded hover:bg-gray-700"
+        data-testid="nav-hamburger"
+        (click)="toggleMobileMenu()"
+        aria-label="Toggle navigation menu"
+        [attr.aria-expanded]="mobileMenuOpen()"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          @if (mobileMenuOpen()) {
+            <!-- X icon -->
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          } @else {
+            <!-- Hamburger icon -->
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          }
+        </svg>
+      </button>
+
+      <!-- Desktop nav -->
+      <nav class="hidden md:block">
         <div class="flex gap-2">
           <a routerLink="/dashboard" data-testid="nav-admin-dashboard">Dashboard</a>
           <a routerLink="/logs" data-testid="nav-admin-logs">Logs</a>
@@ -20,6 +57,67 @@
         </div>
       </nav>
     </div>
+
+    <!-- Mobile dropdown -->
+    @if (mobileMenuOpen()) {
+      <nav
+        class="md:hidden mt-3 border-t border-gray-700 pt-3"
+        data-testid="nav-mobile-menu"
+      >
+        <div class="flex flex-col gap-2">
+          <a
+            routerLink="/dashboard"
+            data-testid="nav-mobile-dashboard"
+            (click)="closeMobileMenu()"
+            class="px-2 py-1 rounded hover:bg-gray-700"
+          >Dashboard</a>
+          <a
+            routerLink="/logs"
+            data-testid="nav-mobile-logs"
+            (click)="closeMobileMenu()"
+            class="px-2 py-1 rounded hover:bg-gray-700"
+          >Logs</a>
+          <a
+            href="/grafana/"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-testid="nav-mobile-grafana"
+            (click)="closeMobileMenu()"
+            class="px-2 py-1 rounded hover:bg-gray-700"
+          >Grafana</a>
+          <a
+            routerLink="/work"
+            data-testid="nav-mobile-work"
+            (click)="closeMobileMenu()"
+            class="px-2 py-1 rounded hover:bg-gray-700"
+          >Work</a>
+          <a
+            routerLink="/groovejr"
+            data-testid="nav-mobile-groovejr"
+            (click)="closeMobileMenu()"
+            class="px-2 py-1 rounded hover:bg-gray-700"
+          >GrooveJr</a>
+          <a
+            routerLink="/about"
+            data-testid="nav-mobile-about"
+            (click)="closeMobileMenu()"
+            class="px-2 py-1 rounded hover:bg-gray-700"
+          >About</a>
+          <a
+            routerLink="/blog"
+            data-testid="nav-mobile-blog"
+            (click)="closeMobileMenu()"
+            class="px-2 py-1 rounded hover:bg-gray-700"
+          >Blog</a>
+          <a
+            routerLink="/gallery"
+            data-testid="nav-mobile-gallery"
+            (click)="closeMobileMenu()"
+            class="px-2 py-1 rounded hover:bg-gray-700"
+          >Gallery</a>
+        </div>
+      </nav>
+    }
   </header>
 
   <main class="container mx-auto p-4">

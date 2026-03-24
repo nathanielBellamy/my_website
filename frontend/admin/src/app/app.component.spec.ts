@@ -59,22 +59,55 @@ describe('AppComponent', () => {
     expect(screen.getByText('Admin Panel')).toBeInTheDocument();
   });
 
-  it('should display navigation links', () => {
-    const workLink = screen.getByText('Work');
+  it('should display desktop navigation links', () => {
+    const workLink = screen.getByTestId('nav-admin-work');
     expect(workLink).toBeInTheDocument();
     expect(workLink).toHaveAttribute('routerLink', '/work');
 
-    const grooveJrLink = screen.getByText('GrooveJr');
+    const grooveJrLink = screen.getByTestId('nav-admin-groovejr');
     expect(grooveJrLink).toBeInTheDocument();
     expect(grooveJrLink).toHaveAttribute('routerLink', '/groovejr');
 
-    const aboutLink = screen.getByText('About');
+    const aboutLink = screen.getByTestId('nav-admin-about');
     expect(aboutLink).toBeInTheDocument();
     expect(aboutLink).toHaveAttribute('routerLink', '/about');
 
-    const blogLink = screen.getByText('Blog');
+    const blogLink = screen.getByTestId('nav-admin-blog');
     expect(blogLink).toBeInTheDocument();
     expect(blogLink).toHaveAttribute('routerLink', '/blog');
+  });
+
+  it('should show hamburger button', () => {
+    const hamburger = screen.getByTestId('nav-hamburger');
+    expect(hamburger).toBeInTheDocument();
+    expect(hamburger).toHaveAttribute('aria-label', 'Toggle navigation menu');
+    expect(hamburger).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('should not show mobile menu by default', () => {
+    expect(screen.queryByTestId('nav-mobile-menu')).not.toBeInTheDocument();
+  });
+
+  it('should toggle mobile menu when hamburger is clicked', async () => {
+    const hamburger = screen.getByTestId('nav-hamburger');
+
+    await userEvent.click(hamburger);
+    expect(screen.getByTestId('nav-mobile-menu')).toBeInTheDocument();
+    expect(hamburger).toHaveAttribute('aria-expanded', 'true');
+
+    await userEvent.click(hamburger);
+    expect(screen.queryByTestId('nav-mobile-menu')).not.toBeInTheDocument();
+    expect(hamburger).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('should close mobile menu when a nav link is clicked', async () => {
+    const hamburger = screen.getByTestId('nav-hamburger');
+    await userEvent.click(hamburger);
+    expect(screen.getByTestId('nav-mobile-menu')).toBeInTheDocument();
+
+    const mobileWorkLink = screen.getByTestId('nav-mobile-work');
+    await userEvent.click(mobileWorkLink);
+    expect(screen.queryByTestId('nav-mobile-menu')).not.toBeInTheDocument();
   });
 
   // TODO: fix test router implementation, it's always a pain

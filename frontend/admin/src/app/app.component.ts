@@ -9,4 +9,13 @@ import { RouterOutlet, RouterLink } from '@angular/router';
 })
 export class AppComponent {
   protected readonly title = signal('admin');
+  protected readonly mobileMenuOpen = signal(false);
+
+  protected toggleMobileMenu(): void {
+    this.mobileMenuOpen.update(open => !open);
+  }
+
+  protected closeMobileMenu(): void {
+    this.mobileMenuOpen.set(false);
+  }
 }
