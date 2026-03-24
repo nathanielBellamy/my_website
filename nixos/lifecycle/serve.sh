@@ -65,6 +65,37 @@ docker compose --env-file "$DOCKER_ENV_FILE" up -d
 
 echo "✅ Services are running in the background."
 
+# --- Verify Grafana health ---
+echo ""
+echo "🔍 Verifying Grafana container health..."
+GRAFANA_OK=false
+for i in 1 2 3 4 5 6; do
+  sleep 5
+  HEALTH=$(docker exec my_website_grafana wget -qO- http://localhost:3000/api/health 2>/dev/null)
+  if echo "$HEALTH" | grep -q '"database": "ok"'; then
+    echo "✅ Grafana is healthy: $HEALTH"
+    GRAFANA_OK=true
+    break
+  fi
+  echo "   Attempt $i/6: Grafana not ready yet..."
+done
+
+if [ "$GRAFANA_OK" = false ]; then
+  echo "⚠️  Grafana may not be healthy. Dumping diagnostics:"
+  echo "--- Container status ---"
+  docker inspect --format='{{.State.Status}} (health: {{.State.Health.Status}})' my_website_grafana 2>/dev/null || echo "Container not found"
+  echo "--- Provisioning files ---"
+  docker exec my_website_grafana ls -la /etc/grafana/provisioning/dashboards/ 2>/dev/null || echo "Cannot list provisioning dir"
+  echo "--- Grafana config ---"
+  docker exec my_website_grafana cat /etc/grafana/grafana.ini 2>/dev/null | head -20
+  echo "--- Last 50 Grafana logs ---"
+  docker logs my_website_grafana 2>&1 | tail -50
+  echo "--- Home dashboard test ---"
+  docker exec my_website_grafana wget -qO- http://localhost:3000/api/dashboards/home 2>&1 | head -5
+  echo ""
+  echo "⚠️  Review the above output to diagnose Grafana startup issues."
+fi
+
 if [ "$DETACH" = false ]; then
   echo "➡️ Tailing logs from the backend service. Press Ctrl+C to stop tailing."
   docker compose --env-file "$DOCKER_ENV_FILE" logs -f backend

@@ -58,7 +58,16 @@ case "$1" in
         docker compose down || echo "No running compose stack to tear down."
         # Remove stale Grafana data volume for clean dashboard provisioning on redeploy
         GRAFANA_VOL=$(docker volume ls -q --filter "name=grafana_data" 2>/dev/null | head -1)
-        [ -n "$GRAFANA_VOL" ] && docker volume rm "$GRAFANA_VOL" 2>/dev/null && echo "Removed Grafana data volume: $GRAFANA_VOL" || true
+        if [ -n "$GRAFANA_VOL" ]; then
+            if docker volume rm "$GRAFANA_VOL" 2>&1; then
+                echo "✅ Removed Grafana data volume: $GRAFANA_VOL"
+            else
+                echo "⚠️  Failed to remove Grafana data volume: $GRAFANA_VOL"
+                echo "   You may need to remove it manually: docker volume rm $GRAFANA_VOL"
+            fi
+        else
+            echo "   No Grafana data volume found (clean state)."
+        fi
         echo "Entire docker compose stack torn down."
         ;;
     -d|--db)

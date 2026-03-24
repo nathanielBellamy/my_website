@@ -49,9 +49,22 @@ echo "   Ensuring database directory exists..."
 $SSH_CMD $SSH_USER@$SSH_HOST "mkdir -p ~/database"
 $SCP_CMD database/init.sql $SSH_USER@$SSH_HOST:~/database/init.sql
 
+# Transfer monitoring configs
+echo "   Transferring monitoring configs..."
+$SSH_CMD $SSH_USER@$SSH_HOST "mkdir -p ~/docker/monitoring/prometheus ~/docker/monitoring/loki ~/docker/monitoring/promtail ~/docker/monitoring/grafana"
+$SCP_CMD docker/monitoring/prometheus/prometheus.yml $SSH_USER@$SSH_HOST:~/docker/monitoring/prometheus/prometheus.yml
+$SCP_CMD docker/monitoring/loki/loki-config.yml $SSH_USER@$SSH_HOST:~/docker/monitoring/loki/loki-config.yml
+$SCP_CMD docker/monitoring/promtail/promtail-config.yml $SSH_USER@$SSH_HOST:~/docker/monitoring/promtail/promtail-config.yml
+$SCP_CMD docker/monitoring/grafana/grafana.ini $SSH_USER@$SSH_HOST:~/docker/monitoring/grafana/grafana.ini
+# Remove stale provisioning dir first — scp -r into an existing dir
+# nests it (creates provisioning/provisioning/), which breaks Grafana.
+$SSH_CMD $SSH_USER@$SSH_HOST "rm -rf ~/docker/monitoring/grafana/provisioning"
+$SCP_CMD -r docker/monitoring/grafana/provisioning $SSH_USER@$SSH_HOST:~/docker/monitoring/grafana/
+$SSH_CMD $SSH_USER@$SSH_HOST "chmod -R a+rX ~/docker/monitoring/grafana/"
+
 echo "   Transferring lifecycle scripts..."
 $SSH_CMD $SSH_USER@$SSH_HOST "mkdir -p ~/lifecycle"
-$SCP_CMD lifecycle/*.sh $SSH_USER@$SSH_HOST:~/lifecycle/
+$SCP_CMD nixos/lifecycle/*.sh $SSH_USER@$SSH_HOST:~/lifecycle/
 $SSH_CMD $SSH_USER@$SSH_HOST "chmod +x ~/lifecycle/*.sh"
 echo "✅ Files transferred."
 
