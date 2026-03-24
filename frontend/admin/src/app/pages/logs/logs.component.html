@@ -80,6 +80,28 @@
         Clear
       </button>
 
+      <div class="h-6 w-px bg-gray-300 mx-1"></div>
+
+      <!-- Copy CSV -->
+      <button
+        class="px-3 py-1.5 text-sm rounded font-medium transition-colors"
+        [class.bg-emerald-600]="copiedFeedback()"
+        [class.text-white]="copiedFeedback()"
+        [class.bg-gray-200]="!copiedFeedback()"
+        [class.text-gray-700]="!copiedFeedback()"
+        [class.hover:bg-gray-300]="!copiedFeedback()"
+        (click)="copyLogsToClipboard()"
+        [disabled]="filteredEntries().length === 0"
+        data-testid="logs-copy-csv-btn"
+        aria-label="Copy displayed logs to clipboard as CSV"
+      >
+        @if (copiedFeedback()) {
+          ✓ Copied!
+        } @else {
+          📋 Copy CSV
+        }
+      </button>
+
       @if (isHistoryMode()) {
         <input
           type="date"
@@ -111,6 +133,32 @@
         >
           🔍
         </span>
+      </div>
+
+      <!-- Time Range -->
+      <div
+        class="flex gap-1"
+        role="group"
+        aria-label="Filter by time range"
+        data-testid="logs-time-range-group"
+      >
+        @for (range of [TimeRange.ONE_HOUR, TimeRange.SIX_HOURS, TimeRange.TWENTY_FOUR_HOURS, TimeRange.ALL]; track range) {
+          <button
+            class="px-2 py-1 text-xs rounded font-medium border transition-colors"
+            [class.bg-indigo-100]="selectedTimeRange() === range"
+            [class.border-indigo-400]="selectedTimeRange() === range"
+            [class.text-indigo-800]="selectedTimeRange() === range"
+            [class.bg-white]="selectedTimeRange() !== range"
+            [class.border-gray-300]="selectedTimeRange() !== range"
+            [class.text-gray-600]="selectedTimeRange() !== range"
+            (click)="setTimeRange(range)"
+            [attr.data-testid]="'logs-time-range-' + range"
+            [attr.aria-pressed]="selectedTimeRange() === range"
+            [attr.aria-label]="'Show logs from last ' + range"
+          >
+            {{ range === 'all' ? 'All' : range }}
+          </button>
+        }
       </div>
 
       <!-- Level Chips -->
@@ -151,7 +199,7 @@
   <div
     #logContainer
     class="bg-gray-900 rounded-lg shadow overflow-auto font-mono text-xs leading-relaxed"
-    style="height: calc(100vh - 320px); min-height: 300px;"
+    style="height: calc(100vh - 360px); min-height: 300px;"
     role="log"
     aria-label="Log entries"
     aria-live="polite"
@@ -169,36 +217,84 @@
       <div class="p-3 space-y-0.5">
         @for (entry of filteredEntries(); track $index) {
           <div
-            class="flex gap-2 px-2 py-0.5 rounded hover:bg-gray-800/50 transition-colors group"
             [attr.data-testid]="'log-entry-' + $index"
           >
-            <!-- Level badge -->
-            <span
-              class="inline-block w-12 text-center py-0.5 rounded text-[10px] font-bold uppercase shrink-0"
-              [class]="getLevelBgClass(entry.level)"
-              [class.text-red-300]="entry.level === 'error' || entry.level === 'fatal'"
-              [class.text-yellow-300]="entry.level === 'warn'"
-              [class.text-blue-300]="entry.level === 'info'"
-              [class.text-gray-400]="entry.level === 'debug'"
+            <!-- Main row -->
+            <div
+              class="flex gap-2 px-2 py-0.5 rounded hover:bg-gray-800/50 transition-colors cursor-pointer"
+              (click)="toggleEntryExpanded($index)"
+              [attr.data-testid]="'log-entry-row-' + $index"
+              [attr.aria-expanded]="isEntryExpanded($index)"
+              role="button"
+              [attr.aria-label]="'Log entry: ' + entry.level + ' - ' + entry.message"
             >
-              {{ entry.level }}
-            </span>
-
-            <!-- Timestamp -->
-            <span class="text-gray-500 shrink-0 w-24">
-              {{ formatTime(entry.time) }}
-            </span>
-
-            <!-- Message -->
-            <span class="text-gray-200 break-all">
-              {{ entry.message }}
-            </span>
-
-            <!-- Fields -->
-            @if (entry.fields && (entry.fields | keyvalue).length > 0) {
-              <span class="text-gray-500 break-all opacity-0 group-hover:opacity-100 transition-opacity">
-                {{ formatFields(entry.fields) }}
+              <!-- Level badge -->
+              <span
+                class="inline-block w-12 text-center py-0.5 rounded text-[10px] font-bold uppercase shrink-0"
+                [class]="getLevelBgClass(entry.level)"
+                [class.text-red-300]="entry.level === 'error' || entry.level === 'fatal'"
+                [class.text-yellow-300]="entry.level === 'warn'"
+                [class.text-blue-300]="entry.level === 'info'"
+                [class.text-gray-400]="entry.level === 'debug'"
+              >
+                {{ entry.level }}
               </span>
+
+              <!-- Timestamp -->
+              <span class="text-gray-500 shrink-0 w-24">
+                {{ formatTime(entry.time) }}
+              </span>
+
+              <!-- Message -->
+              <span class="text-gray-200 break-all flex-1">
+                {{ entry.message }}
+              </span>
+
+              <!-- Field count indicator -->
+              @if (fieldCount(entry.fields) > 0) {
+                <span
+                  class="text-gray-500 text-[10px] shrink-0 px-1.5 py-0.5 rounded bg-gray-800 border border-gray-700"
+                  [attr.data-testid]="'log-entry-field-count-' + $index"
+                >
+                  {{ fieldCount(entry.fields) }} fields
+                </span>
+              }
+            </div>
+
+            <!-- Expanded fields detail -->
+            @if (isEntryExpanded($index)) {
+              <div
+                class="ml-16 pl-2 border-l-2 border-gray-700 py-1 mb-1"
+                [attr.data-testid]="'log-entry-fields-' + $index"
+              >
+                @if (entry.time) {
+                  <div class="flex gap-2 py-0.5">
+                    <span class="text-gray-500 w-24 shrink-0 text-right">
+                      time
+                    </span>
+                    <span class="text-gray-300 break-all">
+                      {{ entry.time }}
+                    </span>
+                  </div>
+                }
+                @if (entry.fields) {
+                  @for (field of entry.fields | keyvalue; track field.key) {
+                    <div class="flex gap-2 py-0.5">
+                      <span class="text-gray-500 w-24 shrink-0 text-right">
+                        {{ field.key }}
+                      </span>
+                      <span class="text-gray-300 break-all">
+                        {{ field.value }}
+                      </span>
+                    </div>
+                  }
+                }
+                @if (fieldCount(entry.fields) === 0 && !entry.time) {
+                  <div class="text-gray-600 italic py-0.5">
+                    No additional metadata
+                  </div>
+                }
+              </div>
             }
           </div>
         }
@@ -247,7 +343,7 @@
   <!-- Footer status -->
   <div class="text-xs text-gray-500 text-center">
     {{ filteredEntries().length }} entries displayed
-    @if (selectedLevel() || searchText()) {
+    @if (selectedLevel() || searchText() || selectedTimeRange() !== TimeRange.ALL) {
       <span>(filtered)</span>
     }
   </div>

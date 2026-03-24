@@ -19,6 +19,13 @@ enum ConnectionStatus {
   RECONNECTING = 'reconnecting',
 }
 
+enum TimeRange {
+  ONE_HOUR = '1h',
+  SIX_HOURS = '6h',
+  TWENTY_FOUR_HOURS = '24h',
+  ALL = 'all',
+}
+
 @Component({
   selector: 'app-logs',
   imports: [CommonModule, FormsModule],
@@ -31,19 +38,24 @@ export class LogsComponent implements OnInit, OnDestroy {
   private readonly logsService: LogsService = inject(LogsService);
   private eventSource: EventSource | null = null;
   private reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
+  private copiedTimeout: ReturnType<typeof setTimeout> | null = null;
 
   protected readonly LogLevel = LogLevel;
   protected readonly ConnectionStatus = ConnectionStatus;
+  protected readonly TimeRange = TimeRange;
 
   protected readonly entries = signal<LogEntry[]>([]);
   protected readonly connectionStatus = signal<ConnectionStatus>(ConnectionStatus.DISCONNECTED);
   protected readonly autoScroll = signal(true);
   protected readonly searchText = signal('');
   protected readonly selectedLevel = signal<string>('');
+  protected readonly selectedTimeRange = signal<TimeRange>(TimeRange.ONE_HOUR);
   protected readonly isHistoryMode = signal(false);
   protected readonly selectedDate = signal('');
   protected readonly historyPage = signal(1);
   protected readonly historyTotal = signal(0);
+  protected readonly expandedEntries = signal<Set<number>>(new Set());
+  protected readonly copiedFeedback = signal(false);
 
   protected readonly levelCounts = computed(() => {
     const counts: Record<string, number> = {
@@ -65,9 +77,22 @@ export class LogsComponent implements OnInit, OnDestroy {
   protected readonly filteredEntries = computed(() => {
     const search = this.searchText().toLowerCase();
     const level = this.selectedLevel();
+    const timeRange = this.selectedTimeRange();
+    const cutoff = this.getTimeCutoff(timeRange);
+
     return this.entries().filter((entry) => {
       if (level && entry.level?.toLowerCase() !== level.toLowerCase()) {
         return false;
+      }
+      if (cutoff && entry.time) {
+        try {
+          const entryTime = new Date(entry.time).getTime();
+          if (entryTime < cutoff) {
+            return false;
+          }
+        } catch {
+          // keep entries with unparseable times
+        }
       }
       if (search) {
         const text = `${entry.level} ${entry.time} ${entry.message} ${JSON.stringify(entry.fields ?? {})}`.toLowerCase();
@@ -85,6 +110,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.disconnectSSE();
     if (this.reconnectTimeout) {
       clearTimeout(this.reconnectTimeout);
+    }
+    if (this.copiedTimeout) {
+      clearTimeout(this.copiedTimeout);
     }
   }
 
@@ -163,8 +191,47 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
   }
 
+  protected setTimeRange(range: TimeRange): void {
+    this.selectedTimeRange.set(range);
+  }
+
   protected clearEntries(): void {
     this.entries.set([]);
+  }
+
+  protected toggleEntryExpanded(index: number): void {
+    this.expandedEntries.update((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
+  }
+
+  protected isEntryExpanded(index: number): boolean {
+    return this.expandedEntries().has(index);
+  }
+
+  protected fieldCount(fields: Record<string, string> | undefined): number {
+    if (!fields) return 0;
+    return Object.keys(fields).length;
+  }
+
+  protected copyLogsToClipboard(): void {
+    const entries = this.filteredEntries();
+    const csv = this.buildCsv(entries);
+    navigator.clipboard.writeText(csv).then(() => {
+      this.copiedFeedback.set(true);
+      if (this.copiedTimeout) {
+        clearTimeout(this.copiedTimeout);
+      }
+      this.copiedTimeout = setTimeout(() => {
+        this.copiedFeedback.set(false);
+      }, 2000);
+    });
   }
 
   protected async loadHistory(): Promise<void> {
@@ -255,6 +322,58 @@ export class LogsComponent implements OnInit, OnDestroy {
     return Object.entries(fields)
       .map(([k, v]) => `${k}=${v}`)
       .join(' ');
+  }
+
+  private getTimeCutoff(range: TimeRange): number | null {
+    const now = Date.now();
+    switch (range) {
+      case TimeRange.ONE_HOUR:
+        return now - 60 * 60 * 1000;
+      case TimeRange.SIX_HOURS:
+        return now - 6 * 60 * 60 * 1000;
+      case TimeRange.TWENTY_FOUR_HOURS:
+        return now - 24 * 60 * 60 * 1000;
+      case TimeRange.ALL:
+        return null;
+    }
+  }
+
+  private buildCsv(entries: LogEntry[]): string {
+    // Collect all unique field keys across entries
+    const fieldKeys = new Set<string>();
+    for (const entry of entries) {
+      if (entry.fields) {
+        for (const key of Object.keys(entry.fields)) {
+          fieldKeys.add(key);
+        }
+      }
+    }
+    const sortedFieldKeys = [...fieldKeys].sort();
+
+    const headers = ['level', 'time', 'message', ...sortedFieldKeys];
+    const rows = [headers.map(this.csvEscape).join(',')];
+
+    for (const entry of entries) {
+      const row = [
+        entry.level ?? '',
+        entry.time ?? '',
+        entry.message ?? '',
+        ...sortedFieldKeys.map((key) => {
+          const val = entry.fields?.[key];
+          return val != null ? String(val) : '';
+        }),
+      ];
+      rows.push(row.map(this.csvEscape).join(','));
+    }
+
+    return rows.join('\n');
+  }
+
+  private csvEscape(value: string): string {
+    if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+      return '"' + value.replace(/"/g, '""') + '"';
+    }
+    return value;
   }
 
   private scrollToBottom(): void {
