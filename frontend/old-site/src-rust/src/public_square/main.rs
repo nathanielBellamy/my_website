@@ -30,7 +30,7 @@ impl PubSq {
         
         let base_url: String = serde_wasm_bindgen::from_value(base_url).unwrap();
         let mut protocol: String;
-        if base_url == "localhost:8080".to_string() {
+        if base_url == "localhost:8080".to_string() || base_url.contains("localhost") {
             protocol = "ws".to_string();
         } else {
             protocol = "wss".to_string();

@@ -116,11 +116,10 @@ func TestPublicSquareFeedWsHandler(t *testing.T) {
 	cookieJar := cmap.New[auth.Cookie]()
 	osc := NewOldSiteController(&cookieJar, &log, &websocket.Pool{}, &websocket.Pool{})
 
-	// Test Case 1: Non-prod, valid dev and recaptcha
-	t.Setenv("MODE", "localhost") // Changed from "dev" to "localhost"
-	auth.HasValidCookie = func(r *http.Request, ct auth.CookieType, cj *cmap.ConcurrentMap[string, auth.Cookie], l *zerolog.Logger) bool {
-		return true
-	}
+	// BYPASS ACTIVE: Recaptcha is disabled, so ServeFeedWs should always be called
+	// regardless of cookie state or environment mode.
+
+	// Test Case 1: Bypass serves websocket directly (no cookies needed)
 	redirectCalled := false
 	auth.RedirectToAdminAuthV2 = func(w http.ResponseWriter, r *http.Request, l *zerolog.Logger) { redirectCalled = true }
 	auth.RedirectToHome = func(w http.ResponseWriter, r *http.Request, l *zerolog.Logger) { redirectCalled = true }
@@ -134,36 +133,14 @@ func TestPublicSquareFeedWsHandler(t *testing.T) {
 	osc.PublicSquareFeedWsHandler(rr, req)
 
 	if redirectCalled {
-		t.Errorf("Non-prod, valid dev/recaptcha: RedirectToAdminAuth or RedirectToHome unexpectedly called")
+		t.Errorf("Bypass active: redirect unexpectedly called")
 	}
 	if !serveWsCalled {
-		t.Errorf("Non-prod, valid dev/recaptcha: ServeFeedWs not called")
+		t.Errorf("Bypass active: ServeFeedWs not called")
 	}
 
-	// Test Case 2: Non-prod, invalid dev
-	t.Setenv("MODE", "localhost") // Changed from "dev" to "localhost"
-	auth.HasValidCookie = func(r *http.Request, ct auth.CookieType, cj *cmap.ConcurrentMap[string, auth.Cookie], l *zerolog.Logger) bool {
-		return ct != auth.CTADMIN
-	}
-	redirectCalled = false
-	serveWsCalled = false
-
-	req, _ = http.NewRequest("GET", "/v1/public-square-feed-ws", nil)
-	rr = httptest.NewRecorder()
-	osc.PublicSquareFeedWsHandler(rr, req)
-
-	if !redirectCalled {
-		t.Errorf("Non-prod, invalid dev: RedirectToAdminAuth not called")
-	}
-	if serveWsCalled {
-		t.Errorf("Non-prod, invalid dev: ServeFeedWs unexpectedly called")
-	}
-
-	// Test Case 3: Prod, valid recaptcha
+	// Test Case 2: Bypass serves websocket even in prod mode
 	t.Setenv("MODE", "prod")
-	auth.HasValidCookie = func(r *http.Request, ct auth.CookieType, cj *cmap.ConcurrentMap[string, auth.Cookie], l *zerolog.Logger) bool {
-		return true
-	}
 	redirectCalled = false
 	serveWsCalled = false
 
@@ -172,29 +149,10 @@ func TestPublicSquareFeedWsHandler(t *testing.T) {
 	osc.PublicSquareFeedWsHandler(rr, req)
 
 	if redirectCalled {
-		t.Errorf("Prod, valid recaptcha: RedirectToHome unexpectedly called")
+		t.Errorf("Bypass active (prod): redirect unexpectedly called")
 	}
 	if !serveWsCalled {
-		t.Errorf("Prod, valid recaptcha: ServeFeedWs not called")
-	}
-
-	// Test Case 4: Prod, invalid recaptcha
-	t.Setenv("MODE", "prod")
-	auth.HasValidCookie = func(r *http.Request, ct auth.CookieType, cj *cmap.ConcurrentMap[string, auth.Cookie], l *zerolog.Logger) bool {
-		return false
-	}
-	redirectCalled = false
-	serveWsCalled = false
-
-	req, _ = http.NewRequest("GET", "/v1/public-square-feed-ws", nil)
-	rr = httptest.NewRecorder()
-	osc.PublicSquareFeedWsHandler(rr, req)
-
-	if !redirectCalled {
-		t.Errorf("Prod, invalid recaptcha: RedirectToHome not called")
-	}
-	if serveWsCalled {
-		t.Errorf("Prod, invalid recaptcha: ServeFeedWs unexpectedly called")
+		t.Errorf("Bypass active (prod): ServeFeedWs not called")
 	}
 }
 
@@ -217,11 +175,10 @@ func TestPublicSquareWasmWsHandler(t *testing.T) {
 	cookieJar := cmap.New[auth.Cookie]()
 	osc := NewOldSiteController(&cookieJar, &log, &websocket.Pool{}, &websocket.Pool{})
 
-	// Test Case 1: Non-prod, valid dev and recaptcha
-	t.Setenv("MODE", "localhost") // Changed from "dev" to "localhost"
-	auth.HasValidCookie = func(r *http.Request, ct auth.CookieType, cj *cmap.ConcurrentMap[string, auth.Cookie], l *zerolog.Logger) bool {
-		return true
-	}
+	// BYPASS ACTIVE: Recaptcha is disabled, so ServeWasmWs should always be called
+	// regardless of cookie state or environment mode.
+
+	// Test Case 1: Bypass serves websocket directly (no cookies needed)
 	redirectCalled := false
 	auth.RedirectToAdminAuthV2 = func(w http.ResponseWriter, r *http.Request, l *zerolog.Logger) { redirectCalled = true }
 	auth.RedirectToHome = func(w http.ResponseWriter, r *http.Request, l *zerolog.Logger) { redirectCalled = true }
@@ -235,36 +192,14 @@ func TestPublicSquareWasmWsHandler(t *testing.T) {
 	osc.PublicSquareWasmWsHandler(rr, req)
 
 	if redirectCalled {
-		t.Errorf("Non-prod, valid dev/recaptcha: RedirectToAdminAuth or RedirectToHome unexpectedly called")
+		t.Errorf("Bypass active: redirect unexpectedly called")
 	}
 	if !serveWsCalled {
-		t.Errorf("Non-prod, valid dev/recaptcha: ServeWasmWs not called")
+		t.Errorf("Bypass active: ServeWasmWs not called")
 	}
 
-	// Test Case 2: Non-prod, invalid dev
-	t.Setenv("MODE", "localhost") // Changed from "dev" to "localhost"
-	auth.HasValidCookie = func(r *http.Request, ct auth.CookieType, cj *cmap.ConcurrentMap[string, auth.Cookie], l *zerolog.Logger) bool {
-		return ct != auth.CTADMIN
-	}
-	redirectCalled = false
-	serveWsCalled = false
-
-	req, _ = http.NewRequest("GET", "/v1/public-square-wasm-ws", nil)
-	rr = httptest.NewRecorder()
-	osc.PublicSquareWasmWsHandler(rr, req)
-
-	if !redirectCalled {
-		t.Errorf("Non-prod, invalid dev: RedirectToAdminAuth not called")
-	}
-	if serveWsCalled {
-		t.Errorf("Non-prod, invalid dev: ServeWasmWs unexpectedly called")
-	}
-
-	// Test Case 3: Prod, valid recaptcha
+	// Test Case 2: Bypass serves websocket even in prod mode
 	t.Setenv("MODE", "prod")
-	auth.HasValidCookie = func(r *http.Request, ct auth.CookieType, cj *cmap.ConcurrentMap[string, auth.Cookie], l *zerolog.Logger) bool {
-		return true
-	}
 	redirectCalled = false
 	serveWsCalled = false
 
@@ -273,29 +208,10 @@ func TestPublicSquareWasmWsHandler(t *testing.T) {
 	osc.PublicSquareWasmWsHandler(rr, req)
 
 	if redirectCalled {
-		t.Errorf("Prod, valid recaptcha: RedirectToHome unexpectedly called")
+		t.Errorf("Bypass active (prod): redirect unexpectedly called")
 	}
 	if !serveWsCalled {
-		t.Errorf("Prod, valid recaptcha: ServeWasmWs not called")
-	}
-
-	// Test Case 4: Prod, invalid recaptcha
-	t.Setenv("MODE", "prod")
-	auth.HasValidCookie = func(r *http.Request, ct auth.CookieType, cj *cmap.ConcurrentMap[string, auth.Cookie], l *zerolog.Logger) bool {
-		return false
-	}
-	redirectCalled = false
-	serveWsCalled = false
-
-	req, _ = http.NewRequest("GET", "/v1/public-square-wasm-ws", nil)
-	rr = httptest.NewRecorder()
-	osc.PublicSquareWasmWsHandler(rr, req)
-
-	if !redirectCalled {
-		t.Errorf("Prod, invalid recaptcha: RedirectToHome not called")
-	}
-	if serveWsCalled {
-		t.Errorf("Prod, invalid recaptcha: ServeWasmWs unexpectedly called")
+		t.Errorf("Bypass active (prod): ServeWasmWs not called")
 	}
 }
 

@@ -6,7 +6,9 @@
   import Loading from "../lib/Loading.svelte";
   import { SquareType } from "../stores/currSquare";
  
-  let hasPassedGate: boolean = false
+  // BYPASS: Recaptcha gate disabled - auto-pass to allow direct websocket access.
+  // To re-enable, set back to false.
+  let hasPassedGate: boolean = true
   let hasAcceptedWarning: boolean = false
 
   let counter: number = 2
