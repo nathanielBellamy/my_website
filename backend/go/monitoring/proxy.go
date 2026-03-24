@@ -53,13 +53,13 @@ func NewGrafanaProxy(log *zerolog.Logger, grafanaURL string) *GrafanaProxy {
 					Int("status", resp.StatusCode).
 					Err(readErr).
 					Str("path", resp.Request.URL.Path).
-					Msg("Grafana returned error (could not read body)")
+					Msgf("Grafana error %d on %s (could not read body)", resp.StatusCode, resp.Request.URL.Path)
 			} else {
 				log.Error().
 					Int("status", resp.StatusCode).
 					Str("body", truncate(string(body), 500)).
 					Str("path", resp.Request.URL.Path).
-					Msg("Grafana returned error")
+					Msgf("Grafana error %d on %s: %s", resp.StatusCode, resp.Request.URL.Path, truncate(string(body), 200))
 				resp.Body = io.NopCloser(bytes.NewReader(body))
 			}
 		}
