@@ -104,9 +104,11 @@ func TestGrafanaProxy_StripsGrafanaPrefix(t *testing.T) {
 
 func TestGrafanaProxy_SetsAuthHeader(t *testing.T) {
 	var receivedHeaders http.Header
+	var receivedHost string
 
 	grafanaServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		receivedHeaders = r.Header.Clone()
+		receivedHost = r.Host
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer grafanaServer.Close()
@@ -121,5 +123,37 @@ func TestGrafanaProxy_SetsAuthHeader(t *testing.T) {
 
 	if receivedHeaders.Get("X-WEBAUTH-USER") != "admin" {
 		t.Errorf("X-WEBAUTH-USER header not set to 'admin'")
+	}
+
+	// Verify Host header is set to the Grafana target (not the original client host)
+	if receivedHost == "" {
+		t.Error("expected Host to be set to Grafana target")
+	}
+}
+
+func TestGrafanaProxy_LogsErrorResponses(t *testing.T) {
+	grafanaServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(`{"message":"Failed to get home dashboard"}`))
+	}))
+	defer grafanaServer.Close()
+
+	log := zerolog.New(os.Stdout).Level(zerolog.Disabled)
+	proxy := NewGrafanaProxy(&log, grafanaServer.URL)
+
+	req := httptest.NewRequest("GET", "/grafana/api/dashboards/home", nil)
+	rr := httptest.NewRecorder()
+
+	proxy.ServeHTTP(rr, req)
+
+	// Verify the 500 is passed through to the client (not swallowed)
+	if rr.Code != http.StatusInternalServerError {
+		t.Errorf("expected 500, got %d", rr.Code)
+	}
+
+	body, _ := io.ReadAll(rr.Body)
+	if string(body) != `{"message":"Failed to get home dashboard"}` {
+		t.Errorf("expected error body to be passed through, got %q", string(body))
 	}
 }
