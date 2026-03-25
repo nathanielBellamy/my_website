@@ -71,4 +71,3 @@ const outputContent = [
 
 const outputPath = path.resolve(__dirname, `.env.${mode}`);
 fs.writeFileSync(outputPath, outputContent);
-console.log(`Generated ${outputPath} from ${envFilePath}`);
