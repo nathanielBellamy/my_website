@@ -43,7 +43,7 @@ export const WorkStore = signalStore(
           error: null,
         });
       } catch (error) {
-        patchState(store, { error: `Failed to fetch work content. \nMessage: ${error}`, loading: false });
+        patchState(store, { error: `Failed to fetch work content. \nMessage: ${JSON.stringify(error)}`, loading: false });
       }
     },
   }))

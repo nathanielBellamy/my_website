@@ -1,29 +1,22 @@
 <app-page id="old-site-page">
   <div 
-    page-header
-    class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center" 
-    appScrollFadeIn>
-    <h1 
-      data-testid="old-site-header"
-      class="font-heading text-5xl md:text-7xl font-bold text-heading-text mb-6">
-      Old Site
-    </h1>
-    <p class="font-sans text-xl text-body-text max-w-2xl mx-auto">
-      Svelte. Rust. WebGL.
-    </p>
-    <div class="h-1 w-12 bg-secondary-accent mt-8 mx-auto rounded-full"></div>
-  </div>
+      page-header
+      class="flex flex-col items-center mb-4" appScrollFadeIn>
+      <h1 class="font-heading text-5xl md:text-7xl font-bold text-heading-text mb-4">
+        Old Site
+      </h1>
+      <div class="h-1 w-12 bg-secondary-accent mt-4 rounded-full"></div>
+    </div>
 
   <div 
     id="app_main"
     #appMain
     page-body
-    class="pb-8 md:pb-0 grow flex flex-col items-stretch justify-around overflow-y-auto md:overflow-hidden">
+    class="size-full pb-8 md:pb-0 grow flex flex-col items-stretch justify-around overflow-y-auto md:overflow-hidden">
     
     <div id="magic_square">
       <!-- Hidden form required by the Rust WebGL code -->
       <form id="magic_square_control_rack" class="hidden"></form>
-
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
           <div 
@@ -86,7 +79,7 @@
                   data-testid="visit-old-site-link"
                   class="inline-block font-sans text-lg font-semibold text-white bg-gradient-to-r from-primary-accent to-secondary-accent py-4 px-10 rounded-xl shadow-xl shadow-primary-accent/20 hover:scale-105 transition-all duration-300"
                 >
-                  Visit Old Site
+                  Visit My Old Site
                 </a>
               </div>
             </div>
