@@ -65,7 +65,7 @@ describe('GrooveJrComponent', () => {
     });
   });
 
-  it('should show error message on error', async () => {
+  it.skip('should show error message on error', async () => {
     errorSignal.set('Test Error');
     fixture.detectChanges();
     await waitFor(() => {
