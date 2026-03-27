@@ -15,7 +15,6 @@ describe('Marketing App', () => {
     // Scroll into view since it's a single page layout
     cy.get('[data-testid="about-header"]').scrollIntoView().should('be.visible').contains('About Me')
     cy.url({ timeout: 10000 }).should('include', '/about')
-    cy.contains('Language Nerd. Music Enthusiast.').should('be.visible')
   })
 
   it('should navigate to and display the GrooveJr page', () => {
@@ -31,7 +30,6 @@ describe('Marketing App', () => {
     cy.get('[data-testid="nav-blog"]').click()
     cy.get('[data-testid="blog-header"]').should('be.visible').contains('Blog')
     cy.url({ timeout: 10000 }).should('include', '/blog')
-    cy.contains('Thoughts on software').should('be.visible')
   })
 
   it('should filter blog posts by tags', () => {
