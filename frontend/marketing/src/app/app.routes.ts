@@ -14,7 +14,7 @@ import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.co
 
 export const routes: Routes = [
   { path: '', component: HomeComponent, title: 'Nate Schieber - Software Engineer' },
-  { path: 'focus', component: FocusComponent, title: 'Focus - Nate Schieber' },
+  // { path: 'focus', component: FocusComponent, title: 'Focus - Nate Schieber' },
   { path: 'work', component: WorkComponent, title: 'Work - Nate Schieber' },
   { path: 'about', component: AboutComponent, title: 'About - Nate Schieber' },
   { path: 'about/:id', component: AboutContentDetailsComponent, title: 'About - Nate Schieber' },

@@ -6,7 +6,7 @@ import { filter, map } from 'rxjs/operators';
 
 const PAGE_ROUTES = [
   '/',
-  '/focus',
+  // '/focus',
   '/work',
   '/about',
   '/groovejr',
