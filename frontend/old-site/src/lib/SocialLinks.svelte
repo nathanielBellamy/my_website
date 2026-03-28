@@ -16,7 +16,7 @@
               data-testid="linkedin_social_icon">
     <Icon icon={Icons.LinkedinSolid}/>
   </FooterIcon>
-  <FooterIcon href="mailto:nbschieber@gmail.com" 
+  <FooterIcon href="mailto:nate@nateschieber.dev" 
               class="text-cyan-700 hover:text-cyan-900 h-10 flex justify-around items-center"
               data-testid="mailto_social_icon">
     <Icon icon={Icons.MailBoxSolid}/>
