@@ -64,6 +64,7 @@ func sendEmail(to, subject, body string) error {
 		mail.WithSMTPAuth(mail.SMTPAuthPlain),
 		mail.WithUsername(user),
 		mail.WithPassword(pass),
+		mail.WithSSL(),
 	)
 	if err != nil {
 		return fmt.Errorf("failed to create mail client: %w", err)
@@ -252,13 +253,10 @@ func SetupAdminAuthV2(adminMux, oldSiteMux, marketingMux *http.ServeMux, cookieJ
 		// Email delivery
 		log.Info().
 			Str("email", adminEmail).
-			Str("otp", otp).
 			Msg("ADMIN OTP GENERATED")
 
-		fmt.Printf("\n--- OTP FOR %s: %s ---\n\n", adminEmail, otp)
-
 		// Send real email
-		err = sendEmail(adminEmail, "Your Admin OTP", fmt.Sprintf("Your OTP is: %s", otp))
+		err = sendEmail(adminEmail, "Be Cool", fmt.Sprintf("==> %s", otp))
 		if err != nil {
 			log.Error().Err(err).Msg("Failed to send OTP email")
 			// We might not want to fail the request if email fails, but for now let's just log it.
