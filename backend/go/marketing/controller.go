@@ -278,7 +278,7 @@ func (mc *MarketingController) determineBaseURL(r *http.Request) string {
 func (mc *MarketingController) SitemapHandler(w http.ResponseWriter, r *http.Request) {
 	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("SitemapHandler Hit")
 
-	posts, err := mc.Service.GetSitemapData()
+	data, err := mc.Service.GetSitemapData()
 	if err != nil {
 		mc.Log.Error().Err(err).Msg("Error fetching sitemap data")
 		utils.HandleDBError(w, err, "Error fetching sitemap data")
@@ -302,7 +302,7 @@ func (mc *MarketingController) SitemapHandler(w http.ResponseWriter, r *http.Req
 	var urls []URL
 
 	// Static Pages
-	pages := []string{"", "focus", "work", "about", "groovejr", "blog", "privacy-policy"}
+	pages := []string{"", "work", "about", "groovejr", "blog", "privacy-policy", "old-site-preview"}
 	for _, page := range pages {
 		urlStr := baseUrl
 		if page != "" {
@@ -316,9 +316,54 @@ func (mc *MarketingController) SitemapHandler(w http.ResponseWriter, r *http.Req
 	}
 
 	// Dynamic Blog Posts
-	for _, post := range posts {
+	for _, post := range data.BlogPosts {
 		urlStr := baseUrl + "/blog/" + strings.ReplaceAll(post.ID, "-", "")
 		lastMod := post.UpdatedAt.Format("2006-01-02")
+		urls = append(urls, URL{
+			Loc:        urlStr,
+			LastMod:    lastMod,
+			ChangeFreq: "monthly",
+			Priority:   "0.6",
+		})
+	}
+
+	// Dynamic Work Content
+	for _, item := range data.WorkContent {
+		urlStr := baseUrl + "/work/" + strings.ReplaceAll(item.ID, "-", "")
+		var lastMod string
+		if item.ActivatedAt != nil {
+			lastMod = item.ActivatedAt.Format("2006-01-02")
+		}
+		urls = append(urls, URL{
+			Loc:        urlStr,
+			LastMod:    lastMod,
+			ChangeFreq: "monthly",
+			Priority:   "0.6",
+		})
+	}
+
+	// Dynamic GrooveJr Content
+	for _, item := range data.GrooveJrContent {
+		urlStr := baseUrl + "/groovejr/" + strings.ReplaceAll(item.ID, "-", "")
+		var lastMod string
+		if item.ActivatedAt != nil {
+			lastMod = item.ActivatedAt.Format("2006-01-02")
+		}
+		urls = append(urls, URL{
+			Loc:        urlStr,
+			LastMod:    lastMod,
+			ChangeFreq: "monthly",
+			Priority:   "0.6",
+		})
+	}
+
+	// Dynamic About Content
+	for _, item := range data.AboutContent {
+		urlStr := baseUrl + "/about/" + strings.ReplaceAll(item.ID, "-", "")
+		var lastMod string
+		if item.ActivatedAt != nil {
+			lastMod = item.ActivatedAt.Format("2006-01-02")
+		}
 		urls = append(urls, URL{
 			Loc:        urlStr,
 			LastMod:    lastMod,

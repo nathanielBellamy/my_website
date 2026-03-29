@@ -19,7 +19,14 @@ type Service interface {
 	GetGrooveJrContentByID(id string) (*models.GrooveJrContent, error)
 	GetAllAboutContent(page, limit int) ([]models.AboutContent, error)
 	GetAboutContentByID(id string) (*models.AboutContent, error)
-	GetSitemapData() ([]models.BlogPost, error)
+	GetSitemapData() (*SitemapData, error)
+}
+
+type SitemapData struct {
+	BlogPosts       []models.BlogPost
+	WorkContent     []models.WorkContent
+	GrooveJrContent []models.GrooveJrContent
+	AboutContent    []models.AboutContent
 }
 
 type service struct {
@@ -30,14 +37,46 @@ func NewService(db interfaces.PgxDB) Service {
 	return &service{DB: db}
 }
 
-func (s *service) GetSitemapData() ([]models.BlogPost, error) {
-	posts := make([]models.BlogPost, 0)
-	err := s.DB.Model(&posts).
+func (s *service) GetSitemapData() (*SitemapData, error) {
+	data := &SitemapData{}
+
+	err := s.DB.Model(&data.BlogPosts).
 		Column("id", "updated_at").
 		Where("activated_at IS NOT NULL AND activated_at < NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())").
 		Order("activated_at DESC").
 		Select()
-	return posts, err
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.DB.Model(&data.WorkContent).
+		Column("id", "activated_at").
+		Where("activated_at IS NOT NULL AND activated_at < NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())").
+		Order("activated_at DESC").
+		Select()
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.DB.Model(&data.GrooveJrContent).
+		Column("id", "activated_at").
+		Where("activated_at IS NOT NULL AND activated_at < NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())").
+		Order("activated_at DESC").
+		Select()
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.DB.Model(&data.AboutContent).
+		Column("id", "activated_at").
+		Where("activated_at IS NOT NULL AND activated_at < NOW() AND (deactivated_at IS NULL OR deactivated_at > NOW())").
+		Order("activated_at DESC").
+		Select()
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
 }
 
 func (s *service) GetAllBlogPosts(page, limit int, tags []string) ([]models.BlogPost, error) {

@@ -26,7 +26,7 @@ type MockMarketingService struct {
 	GetGrooveJrContentByIDFunc func(id string) (*models.GrooveJrContent, error)
 	GetAllAboutContentFunc     func(page, limit int) ([]models.AboutContent, error)
 	GetAboutContentByIDFunc    func(id string) (*models.AboutContent, error)
-	GetSitemapDataFunc         func() ([]models.BlogPost, error)
+	GetSitemapDataFunc         func() (*SitemapData, error)
 }
 
 func (m *MockMarketingService) GetAllBlogPosts(page, limit int, tags []string) ([]models.BlogPost, error) {
@@ -59,7 +59,7 @@ func (m *MockMarketingService) GetAllAboutContent(page, limit int) ([]models.Abo
 func (m *MockMarketingService) GetAboutContentByID(id string) (*models.AboutContent, error) {
 	return m.GetAboutContentByIDFunc(id)
 }
-func (m *MockMarketingService) GetSitemapData() ([]models.BlogPost, error) {
+func (m *MockMarketingService) GetSitemapData() (*SitemapData, error) {
 	return m.GetSitemapDataFunc()
 }
 
@@ -388,11 +388,13 @@ func TestGetMarketingFileServerNoAuth(t *testing.T) {
 
 func TestSitemapHandler(t *testing.T) {
 	mockService := &MockMarketingService{
-		GetSitemapDataFunc: func() ([]models.BlogPost, error) {
+		GetSitemapDataFunc: func() (*SitemapData, error) {
 			now := time.Now()
-			return []models.BlogPost{
-				{ID: "post-1", UpdatedAt: now},
-				{ID: "post-2", UpdatedAt: now},
+			return &SitemapData{
+				BlogPosts: []models.BlogPost{
+					{ID: "post-1", UpdatedAt: now},
+					{ID: "post-2", UpdatedAt: now},
+				},
 			}, nil
 		},
 	}
