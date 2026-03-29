@@ -1,0 +1,139 @@
+import { render, screen } from '@testing-library/angular';
+import { AppComponent } from './app.component';
+import { appConfig } from './app.config';
+import { Router } from '@angular/router';
+import userEvent from '@testing-library/user-event';
+import { LocationStrategy } from '@angular/common';
+
+describe('AppComponent', () => {
+  let routerSpy: any;
+  let locationStrategySpy: any;
+
+  beforeEach(async () => {
+    // Create a spy object for the Router
+    routerSpy = {
+      navigate: jest.fn().mockResolvedValue(true),
+      navigateByUrl: jest.fn().mockResolvedValue(true),
+      url: '/',
+      events: {
+        subscribe: jest.fn(),
+      },
+      routerState: {
+        root: {
+          snapshot: {
+            url: [],
+            params: {},
+            queryParams: {},
+            fragment: null,
+            data: {},
+            children: [],
+            firstChild: null,
+          },
+        },
+      },
+      createUrlTree: jest.fn(),
+      serializeUrl: jest.fn(),
+    };
+
+    // Create a spy object for LocationStrategy
+    locationStrategySpy = {
+      path: jest.fn(() => ''),
+      prepareExternalUrl: jest.fn((internal: string) => internal),
+      pushState: jest.fn(),
+      replaceState: jest.fn(),
+      onPopState: jest.fn(),
+      getBaseHref: jest.fn(() => ''),
+    };
+
+
+    jest.spyOn(routerSpy, 'navigate');
+    await render(AppComponent, {
+      providers: [
+        { provide: Router, useValue: routerSpy },
+        { provide: LocationStrategy, useValue: locationStrategySpy },
+      ],
+    });
+  });
+
+  it('should create the app', () => {
+    expect(screen.getByText('Admin Panel')).toBeInTheDocument();
+  });
+
+  it('should display desktop navigation links', () => {
+    const workLink = screen.getByTestId('nav-admin-work');
+    expect(workLink).toBeInTheDocument();
+    expect(workLink).toHaveAttribute('routerLink', '/work');
+
+    const grooveJrLink = screen.getByTestId('nav-admin-groovejr');
+    expect(grooveJrLink).toBeInTheDocument();
+    expect(grooveJrLink).toHaveAttribute('routerLink', '/groovejr');
+
+    const aboutLink = screen.getByTestId('nav-admin-about');
+    expect(aboutLink).toBeInTheDocument();
+    expect(aboutLink).toHaveAttribute('routerLink', '/about');
+
+    const blogLink = screen.getByTestId('nav-admin-blog');
+    expect(blogLink).toBeInTheDocument();
+    expect(blogLink).toHaveAttribute('routerLink', '/blog');
+  });
+
+  it('should show hamburger button', () => {
+    const hamburger = screen.getByTestId('nav-hamburger');
+    expect(hamburger).toBeInTheDocument();
+    expect(hamburger).toHaveAttribute('aria-label', 'Toggle navigation menu');
+    expect(hamburger).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('should not show mobile menu by default', () => {
+    expect(screen.queryByTestId('nav-mobile-menu')).not.toBeInTheDocument();
+  });
+
+  it('should toggle mobile menu when hamburger is clicked', async () => {
+    const hamburger = screen.getByTestId('nav-hamburger');
+
+    await userEvent.click(hamburger);
+    expect(screen.getByTestId('nav-mobile-menu')).toBeInTheDocument();
+    expect(hamburger).toHaveAttribute('aria-expanded', 'true');
+
+    await userEvent.click(hamburger);
+    expect(screen.queryByTestId('nav-mobile-menu')).not.toBeInTheDocument();
+    expect(hamburger).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('should close mobile menu when a nav link is clicked', async () => {
+    const hamburger = screen.getByTestId('nav-hamburger');
+    await userEvent.click(hamburger);
+    expect(screen.getByTestId('nav-mobile-menu')).toBeInTheDocument();
+
+    const mobileWorkLink = screen.getByTestId('nav-mobile-work');
+    await userEvent.click(mobileWorkLink);
+    expect(screen.queryByTestId('nav-mobile-menu')).not.toBeInTheDocument();
+  });
+
+  // TODO: fix test router implementation, it's always a pain
+
+  // it('should navigate to work when Work link is clicked', async () => {
+  //   const workLink = screen.getByText('Work');
+  //   await userEvent.click(workLink);
+  //   expect(routerSpy.navigate).toHaveBeenCalledWith(['/work']);
+  // });
+
+  // it('should navigate to groovejr when GrooveJr link is clicked', async () => {
+  //   const grooveJrLink = screen.getByText('GrooveJr');
+  //   await userEvent.click(grooveJrLink);
+  //   expect(routerSpy.navigate).toHaveBeenCalledWith(['/groovejr']);
+  // });
+
+  // it('should navigate to about when About link is clicked', async () => {
+  //   const aboutLink = screen.getByText('About');
+  //   await userEvent.click(aboutLink);
+  //   expect(routerSpy.navigate).toHaveBeenCalledWith(['/about']);
+  // });
+
+  // it('should navigate to blog when Blog link is clicked', async () => {
+  //   const blogLink = screen.getByText('Blog');
+  //   await userEvent.click(blogLink);
+  //   expect(routerSpy.navigate).toHaveBeenCalledWith(['/blog']);
+  // });
+});
+

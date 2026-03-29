@@ -1,27 +1,39 @@
 .DS_Store
+**/node_modules/**
 
 # env
 config.env
+
+**/.env.*
 backend/go/.env.prod
 backend/go/.env.remotedev
 
 # Logs
-frontend/logs
-frontend/*.log
-frontend/npm-debug.log*
-frontend/yarn-debug.log*
-frontend/yarn-error.log*
-frontend/pnpm-debug.log*
-frontend/lerna-debug.log*
+backups/
+log/
+old-site/logs
+old-site/*.log
+old-site/npm-debug.log*
+old-site/yarn-debug.log*
+old-site/yarn-error.log*
+old-site/pnpm-debug.log*
+old-site/lerna-debug.log*
 
-# frontend
-frontend/.env.prod
-frontend/.env.remotedev
+# assets
+uploads/
 
-frontend/node_modules
-frontend/dist
-frontend/dist-ssr
-frontend/*.local
+# old-site
+old-site/.env.prod
+old-site/.env.remotedev
+
+old-site/node_modules
+old-site/dist
+old-site/dist-ssr
+old-site/*.local
+old-site/pkg/**
+
+deploy_key
+deploy_key.pub
 
 # auth
 auth/dev/node_modules
@@ -30,20 +42,22 @@ auth/dev/node_modules
 dist/*
 # keep builds out of git
 build/*
+**/target/**
 
 # Editor directories and files
-frontend/.idea
-frontend/*.suo
-frontend/*.ntvs*
-frontend/*.njsproj
-frontend/*.sln
-frontend/*.sw?
+old-site/.idea
+old-site/*.suo
+old-site/*.ntvs*
+old-site/*.njsproj
+old-site/*.sln
+old-site/*.sw?
 
 # rust build
-frontend/src-rust/target/
+old-site/src-rust/target/
 
 # spec
 spec/node_modules
 spec/**/*.swp
 spec/cypress/screenshots/*
 
+\n# User Uploads\nuploads/

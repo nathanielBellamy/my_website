@@ -1,0 +1,123 @@
+import { Component, input, output, EventEmitter, OnInit, inject, signal, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
+import { BlogPost, Tag } from '../../models/data-models';
+import { MarkdownComponent } from 'ngx-markdown';
+import { BlogService } from '../../services/blog.service';
+import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { ImageGalleryComponent } from '../image-gallery/image-gallery.component';
+
+@Component({
+  selector: 'app-blog-form',
+  standalone: true,
+  imports: [ReactiveFormsModule, MarkdownComponent, ImageGalleryComponent], // Add ImageGalleryComponent
+  templateUrl: './blog-form.component.html',
+  styleUrl: './blog-form.component.css',
+})
+export class BlogFormComponent implements OnInit, OnDestroy {
+  post = input<BlogPost | undefined>();
+  submitForm = output<BlogPost>();
+  cancel = output<void>();
+
+  private readonly fb = inject(FormBuilder);
+  private readonly blogService = inject(BlogService);
+  blogForm!: FormGroup;
+  availableTags = signal<Tag[]>([]);
+  tagSearch = signal<string>('');
+  showGallery = signal<boolean>(false);
+
+  private readonly searchSubject = new Subject<string>();
+  private readonly destroy$ = new Subject<void>();
+
+  ngOnInit() {
+    this.fetchTags();
+    // Default activatedAt to now for new posts
+    const initialActivatedAt = this.post()?.activatedAt || (this.post() ? null : new Date().toISOString());
+
+    this.blogForm = this.fb.group({
+      id: [this.post()?.id || ''],
+      title: [this.post()?.title || '', Validators.required],
+      order: [this.post()?.order || 0, Validators.required],
+      content: [this.post()?.content || '', Validators.required],
+      author: this.fb.group({
+        id: [this.post()?.author?.id || ''],
+        name: [this.post()?.author?.name || '', Validators.required],
+      }),
+      tags: [this.post()?.tags?.map(tag => tag.name).join(', ') || ''], // Assuming tags are comma-separated strings for input
+      createdAt: [this.post()?.createdAt || ''],
+      updatedAt: [this.post()?.updatedAt || ''],
+      activatedAt: [this.formatDateForInput(initialActivatedAt)],
+      deactivatedAt: [this.formatDateForInput(this.post()?.deactivatedAt)],
+    }, { validators: this.dateRangeValidator });
+
+    this.searchSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(query => {
+      this.tagSearch.set(query);
+      this.fetchTags();
+    });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  fetchTags() {
+    this.blogService.getTags(this.tagSearch()).then(tags => {
+        this.availableTags.set(tags);
+    });
+  }
+
+  onSearchTags(event: Event) {
+      const input = event.target as HTMLInputElement;
+      this.searchSubject.next(input.value);
+  }
+
+  addTag(tagName: string) {
+      const currentTags = this.blogForm.get('tags')?.value || '';
+      const tagArray = currentTags.split(',').map((t: string) => t.trim()).filter((t: string) => t);
+      if (!tagArray.includes(tagName)) {
+          tagArray.push(tagName);
+          this.blogForm.patchValue({ tags: tagArray.join(', ') });
+      }
+  }
+
+  toggleGallery() {
+    this.showGallery.update(show => !show);
+  }
+
+  saveForm() {
+    if (this.blogForm.valid) {
+      const formValue = this.blogForm.value;
+      const blogPost: BlogPost = {
+        ...formValue,
+        tags: formValue.tags.split(',').map((name: string) => ({ id: '', name: name.trim() })), // Convert back to Tag array
+        activatedAt: formValue.activatedAt ? new Date(formValue.activatedAt).toISOString() : null,
+        deactivatedAt: formValue.deactivatedAt ? new Date(formValue.deactivatedAt).toISOString() : null,
+      };
+      this.submitForm.emit(blogPost);
+    }
+  }
+
+  private formatDateForInput(dateStr?: string | null): string {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 16);
+  }
+
+  private dateRangeValidator(group: AbstractControl): ValidationErrors | null {
+    const start = group.get('activatedAt')?.value;
+    const end = group.get('deactivatedAt')?.value;
+    if (start && end && new Date(start) >= new Date(end)) {
+      return { dateRangeInvalid: true };
+    }
+    return null;
+  }
+
+  onCancel() {
+    this.cancel.emit();
+  }
+}

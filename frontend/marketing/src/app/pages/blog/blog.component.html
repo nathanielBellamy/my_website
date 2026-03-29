@@ -1,0 +1,82 @@
+<app-page
+  id="blog-page"
+  >
+  <div
+    page-header
+    class="w-full px-4 sm:px-6 lg:px-8 text-center" appScrollFadeIn>
+    <h1 
+      data-testid="blog-header"
+      class="font-heading text-3xl md:text-5xl font-bold text-heading-text mb-4">
+      Blog
+    </h1>
+    <div class="h-1 w-12 bg-vibrant-orange mx-auto rounded-full"></div>
+  </div>
+
+  <div
+    page-body>
+    <div class="flex flex-col md:flex-row-reverse gap-6">
+      <div 
+        data-testid="blog-list"
+        class="flex-1 order-2 lg:order-1 min-w-0"
+        appScrollFadeIn
+        [delay]="300">
+        <app-infinite-scroll
+          class="w-full"
+          [items]="store.posts()"
+          [loading]="store.loading()"
+          [allLoaded]="store.allLoaded()"
+          (scrolled)="onScroll()"
+          [itemTemplate]="itemTmpl"
+          [error]="store.error()"
+        ></app-infinite-scroll>
+      </div>
+      <!-- Left Sidebar / Filter Panel -->
+      <aside class="px-[16px] w-full md:pt-[1rem] md:w-80 flex-shrink-0 order-1 md:order-2" appScrollFadeIn [delay]="200">
+        <div class="lg:sticky lg:top-[1rem] bg-card border border-white/10 rounded-xl p-6 shadow-sm lg:max-h-[calc(100vh-10rem)] overflow-y-auto">
+          <h3
+            data-testid="filter-by-tags-heading"
+            class="text-xl font-heading font-semibold text-heading-text mb-4">
+            Filter by Tags
+          </h3>
+          
+          <input 
+            type="text" 
+            placeholder="Search tags..." 
+            class="w-full px-4 py-2 mb-4 rounded-lg bg-background border border-white/10 text-body-text focus:outline-none focus:border-vibrant-orange transition-colors"
+            (input)="onSearchTags($event)"
+          >
+          
+          <div class="flex flex-wrap gap-2">
+            @for (tag of store.availableTags(); track tag.id) {
+              <button 
+                (click)="onToggleTag(tag.id)"
+                class="px-3 py-1 rounded-full text-sm font-medium transition-all duration-200 border"
+                [class.bg-vibrant-orange]="store.selectedTags().includes(tag.id)"
+                [class.border-vibrant-orange]="store.selectedTags().includes(tag.id)"
+                [class.text-white]="store.selectedTags().includes(tag.id)"
+                [class.bg-background]="!store.selectedTags().includes(tag.id)"
+                [class.border-white/10]="!store.selectedTags().includes(tag.id)"
+                [class.text-body-text]="!store.selectedTags().includes(tag.id)"
+                [class.hover:border-vibrant-orange]="!store.selectedTags().includes(tag.id)"
+              >
+                {{ tag.name }}
+                @if (tag.usageCount) {
+                  <span class="ml-1 text-xs opacity-75">({{ tag.usageCount }})</span>
+                }
+              </button>
+            }
+          </div>
+        </div>
+      </aside>
+    </div>
+    <ng-template #itemTmpl let-item>
+      <app-card 
+        appScrollFadeIn
+        [title]="item.title" 
+        [content]="getSnippet(item.content)"
+        [tags]="getTags(item.tags)"
+        (click)="viewPost(item.id)">
+      </app-card>
+    </ng-template>
+  </div>
+</app-page>

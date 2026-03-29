@@ -1,0 +1,267 @@
+name: CI
+
+on:
+  pull_request:
+  workflow_call:
+
+jobs:
+  backend-test:
+    name: Backend Tests (Go)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          cache-dependency-path: go.sum
+
+      - name: Run Go Tests
+        run: go test -v ./backend/go/... 2>&1 | tee backend-test.log
+
+      - name: Upload Backend Test Logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-log
+          path: backend-test.log
+
+  admin-test:
+    name: Admin SPA Tests (Angular)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: frontend/admin/package-lock.json
+
+      - name: Install dependencies
+        run: cd frontend/admin && npm ci
+
+      - name: Run Tests
+        run: cd frontend/admin && npm test 2>&1 | tee admin-test.log
+
+      - name: Upload Admin Test Logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin-test-log
+          path: frontend/admin/admin-test.log
+
+  marketing-test:
+    name: Marketing SPA Tests (Angular)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: frontend/marketing/package-lock.json
+
+      - name: Install dependencies
+        run: cd frontend/marketing && npm ci
+
+      - name: Run Tests
+        run: cd frontend/marketing && npm test 2>&1 | tee marketing-test.log
+
+      - name: Upload Marketing Test Logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: marketing-test-log
+          path: frontend/marketing/marketing-test.log
+
+  auth-admin-test:
+    name: Auth Admin SPA Tests (Angular)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: frontend/auth/admin/package-lock.json
+
+      - name: Install dependencies
+        run: cd frontend/auth/admin && npm ci
+
+      - name: Run Tests
+        run: cd frontend/auth/admin && npm test 2>&1 | tee auth-admin-test.log
+
+      - name: Upload Auth Admin Test Logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auth-admin-test-log
+          path: frontend/auth/admin/auth-admin-test.log
+
+  e2e-test:
+    name: E2E Tests (Cypress)
+    needs: [backend-test, admin-test, marketing-test, auth-admin-test]
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mw_db
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            e2e/package-lock.json
+            frontend/marketing/package-lock.json
+            frontend/admin/package-lock.json
+            frontend/auth/admin/package-lock.json
+
+      - name: Install wasm-pack
+        uses: jetli/wasm-pack-action@v0.4.0
+        with:
+          version: 'latest'
+
+      - name: Install and Build Marketing App
+        run: |
+          cd frontend/marketing
+          if ! npm ci > ../../marketing-install.log 2>&1; then
+            echo "Marketing Install Failed"
+            cat ../../marketing-install.log
+            exit 1
+          fi
+          if ! npm run build-localhost > ../../marketing-build.log 2>&1; then
+            echo "Marketing Build Failed"
+            cat ../../marketing-build.log
+            exit 1
+          fi
+
+      - name: Install and Build Admin App
+        run: |
+          cd frontend/admin
+          if ! npm ci > ../../admin-install.log 2>&1; then
+            echo "Admin Install Failed"
+            cat ../../admin-install.log
+            exit 1
+          fi
+          if ! npm run build-localhost > ../../admin-build.log 2>&1; then
+            echo "Admin Build Failed"
+            cat ../../admin-build.log
+            exit 1
+          fi
+
+      - name: Install and Build Auth Admin App
+        run: |
+          cd frontend/auth/admin
+          if ! npm ci > ../../auth-admin-install.log 2>&1; then
+            echo "Auth Admin Install Failed"
+            cat ../../auth-admin-install.log
+            exit 1
+          fi
+          if ! npm run build-localhost > ../../auth-admin-build.log 2>&1; then
+            echo "Auth Admin Build Failed"
+            cat ../../auth-admin-build.log
+            exit 1
+          fi
+
+      - name: Initialize Database
+        run: |
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+          PGPASSWORD=postgres psql -h localhost -p 5434 -U postgres -d mw_db -f database/init.sql
+
+      - name: Create Environment File
+        env:
+          ENV_FILE_CONTENT: ${{ secrets.DEV_ENV_FILE }}
+        run: |
+          mkdir -p .env
+          echo "$ENV_FILE_CONTENT" > .env/.env.localhost
+
+      - name: Build and Start Backend
+        run: |
+          cd backend/go
+          if ! go build -o ../../backend-server main.go > ../../backend-build.log 2>&1; then
+            echo "Backend Build Failed"
+            cat ../../backend-build.log
+            exit 1
+          fi
+          cd ../..
+          # Use the root .env.localhost but override DATABASE_URL for the service port
+          export DATABASE_URL=postgres://postgres:postgres@localhost:5434/mw_db?sslmode=disable
+          export MODE=localhost
+          export ENABLE_AUTH_LOCAL=false
+          ./backend-server > backend.log 2>&1 &
+          # Wait for backend to be ready
+          timeout 60s bash -c 'until curl -s http://localhost:8080/api/marketing/home; do sleep 2; done' || (echo "Backend failed to start. Logs:" && cat backend.log && exit 1)
+
+      - name: Install E2E dependencies
+        run: cd e2e && npm ci
+
+      - name: Run E2E Tests
+        run: ./lifecycle/e2e.sh --env localhost
+        env:
+          MODE: localhost
+          DATABASE_URL: postgres://postgres:postgres@localhost:5434/mw_db?sslmode=disable
+
+      - name: Upload Build Logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: |
+            *.log
+
+      - name: Upload Backend Logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-logs
+          path: backend.log
+
+      - name: Upload Cypress Screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: e2e/cypress/screenshots
+
+      - name: Upload Cypress Videos
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-videos
+          path: e2e/cypress/videos
+
+      - name: Upload Build Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            backend-server
+            build/

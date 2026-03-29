@@ -1,0 +1,69 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@theme {
+  --color-background: #0B1120;
+  --color-primary-accent: #22D3EE;
+  --color-secondary-accent: #D946EF;
+  --color-body-text: #CBD5E1;
+  --color-heading-text: #FFFFFF;
+  --color-cmyk-c: #00FFFF;
+  --color-cmyk-m: #FF00FF;
+  --color-cmyk-y: #FFFF00;
+  --color-card: #1E293B;
+  --color-vibrant-yellow: #FACC15;
+  --color-vibrant-green: #4ADE80;
+  --color-vibrant-orange: #FB923C;
+
+  --font-sans: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Outfit", ui-sans-serif, system-ui, sans-serif;
+
+  --animate-marquee: marquee 30s linear infinite;
+
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+  }
+}
+
+@layer base {
+  html {
+    @apply w-full h-full overflow-x-hidden;
+  }
+  
+  body {
+    @apply bg-background text-body-text font-sans w-full h-full;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  body::before,
+  body::after {
+    content: '';
+    z-index: -1;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.15;
+  }
+
+  .bg-blob-3 {
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.1;
+    background-color: theme('colors.vibrant-orange');
+    width: 25rem;
+    height: 25rem;
+    top: 40%;
+    right: -10rem;
+  }
+
+  .page-size {
+    min-height: calc(100vh - 100px);
+    max-height: calc(100vh - 100px);
+    min-width: 100vw;
+    max-width: 100vw;
+  }
+}

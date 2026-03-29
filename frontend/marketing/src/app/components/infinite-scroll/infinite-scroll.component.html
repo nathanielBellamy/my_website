@@ -1,0 +1,38 @@
+<div class="infinite-scroll-container flex flex-col items-stretch w-full space-y-8 max-h-[66vh] overflow-y-auto">
+  @for (item of items(); track $index) {
+    <div class="w-full">
+      <ng-container
+        [ngTemplateOutlet]="itemTemplate()"
+        [ngTemplateOutletContext]="{ $implicit: item }"
+      ></ng-container>
+    </div>
+  }
+
+  <div #sentinel class="h-4 w-full"></div>
+
+  <!-- @if (error()) {
+    <div
+      class="error-indicator flex justify-center items-center gap-3 py-4"
+      role="alert"
+      aria-label="Error loading content"
+    >
+      <p>Error: {{ error() }}</p>
+    </div>
+  } @else  -->
+  @if (loading() || error()) {
+    <div
+      class="loading-indicator flex justify-center items-center gap-3 py-4"
+      role="status"
+      aria-label="Loading content"
+    >
+      <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-current"></div>
+      <p>Loading...</p>
+    </div>
+  }
+
+  @if (allLoaded()) {
+    <div class="all-loaded-indicator">
+      <p>All items loaded.</p>
+    </div>
+  }
+</div>

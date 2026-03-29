@@ -1,0 +1,20 @@
+<div class="flex gap-2 items-center">
+  <button
+    (click)="onExport()"
+    class="text-xs py-1 px-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded shadow-sm font-medium transition-colors"
+  >
+    Export CSV
+  </button>
+
+  <label
+    class="text-xs py-1 px-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 rounded shadow-sm font-medium cursor-pointer transition-colors"
+  >
+    Import CSV
+    <input
+      type="file"
+      class="hidden"
+      accept=".csv"
+      (change)="onFileSelected($event)"
+    />
+  </label>
+</div>

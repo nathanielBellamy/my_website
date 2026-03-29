@@ -1,0 +1,43 @@
+<app-page id="home-page" >
+  <span page-header></span>
+  <div
+      page-body
+      class="
+        size-full
+        max-w-4xl mx-auto z-10 text-center text-balance 
+        flex flex-col items-strech justify-between gap-4
+        ">
+      
+    <div class="flex flex-col items-stretch">
+      <h1 
+        appScrollFadeIn
+        [delay]="200"
+        data-testid="hero-heading"
+        class="font-heading text-5xl md:text-8xl font-bold tracking-tight text-white px-4">
+        <span class="bg-gradient-to-r from-white via-white to-primary-accent/50 text-transparent bg-clip-text pr-2">Nate</span>
+        <span class="bg-gradient-to-r from-primary-accent/50 via-white to-white text-transparent bg-clip-text">Schieber</span>
+      </h1>
+      <div 
+        appScrollFadeIn
+        [delay]="300"
+        class="h-2 w-24 bg-gradient-to-r from-primary-accent via-vibrant-orange to-secondary-accent mx-auto mt-6 rounded-full"></div>
+      <div 
+        appScrollFadeIn
+        [delay]="500"
+        class="px-8 mt-12 flex flex-row items-center justify-center gap-6">
+        <a
+          href="mailto:nate@nateschieber.dev"
+          class="inline-block font-sans text-lg font-semibold text-white bg-gradient-to-r from-primary-accent to-secondary-accent py-1 md:py-4 px-4 md:px-10 rounded-xl shadow-xl shadow-primary-accent/20 hover:scale-105 transition-all duration-300"
+        >
+          Get In Touch
+        </a>
+        <a
+          routerLink="/work"
+          class="inline-block font-sans text-lg font-semibold text-body-text border border-white/10 py-1 md:py-4 px-4 md:px-10 rounded-xl hover:bg-white/5 hover:scale-105 transition-all duration-300"
+        >
+          Explore Work
+        </a>
+      </div>
+    </div>
+  </div>
+</app-page>

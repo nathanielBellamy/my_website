@@ -1,0 +1,19 @@
+package models
+
+// FilterOptions contains parameters for filtering and sorting list queries.
+type FilterOptions struct {
+	Page      int
+	Limit     int
+	Status    string // "current", "inactive", "past", "future"
+	SortField string
+	SortOrder string   // "asc" or "desc"
+	Tags      []string // Filter by tag IDs
+}
+
+// PaginatedResponse is a generic response structure for list endpoints.
+type PaginatedResponse[T any] struct {
+	Data  []T `json:"data"`
+	Total int `json:"total"`
+	Page  int `json:"page"`
+	Limit int `json:"limit"`
+}

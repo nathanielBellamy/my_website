@@ -35,16 +35,16 @@
       add_header Strict-Transport-Security $hsts_header;
 
       # Enable CSP for your services.
-      add_header Content-Security-Policy "script-src 'self' 'unsafe-inline' 'unsafe-eval' www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; object-src 'none'; frame-src www.google.com/recaptcha/; connect-src 'self' wss:; base-uri 'none';" always;
+      add_header Content-Security-Policy "script-src 'self' 'unsafe-inline' 'unsafe-eval' www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; object-src 'none'; frame-src www.google.com/recaptcha/ https://www.youtube.com/; connect-src 'self' wss: https://www.google.com/recaptcha/; base-uri 'self';" always;
 
       # Minimize information leaked to other domains
-      add_header 'Referrer-Policy' 'origin-when-cross-origin';
+      add_header 'Referrer-Policy' 'origin-when-cross-origin' always;
 
       # Disable embedding as a frame
-      add_header X-Frame-Options DENY;
+      add_header X-Frame-Options DENY always;
 
       # Prevent injection of code in other mime types (XSS Attacks)
-      add_header X-Content-Type-Options nosniff;
+      add_header X-Content-Type-Options nosniff always;
     '';
 
     virtualHosts."mydomain.dev" = {
@@ -52,6 +52,39 @@
       enableACME = true;
       serverName = "mydomain.dev";
       #root = "/path/to/static/assets/to/serve";
+      locations."/"= {
+        proxyPass = "http://localhost:8080";
+        proxyWebsockets = true;
+      };
+    };
+
+    virtualHosts."admin.mydomain.dev" = {
+      forceSSL = true;
+      enableACME = true;
+      serverName = "admin.mydomain.dev";
+      locations."/"= {
+        proxyPass = "http://localhost:8080";
+        proxyWebsockets = true;
+      };
+      locations."/grafana/" = {
+        proxyPass = "http://localhost:8080";
+        proxyWebsockets = true;
+        extraConfig = ''
+          # Re-declare all parent security headers with Grafana-compatible values
+          # (add_header in a location block replaces all inherited ones from http block)
+          add_header Strict-Transport-Security $hsts_header;
+          add_header Content-Security-Policy "script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' ws: wss:; worker-src 'self' blob:; frame-ancestors 'self'; object-src 'none'; base-uri 'self';" always;
+          add_header Referrer-Policy 'origin-when-cross-origin' always;
+          add_header X-Frame-Options SAMEORIGIN always;
+          add_header X-Content-Type-Options nosniff always;
+        '';
+      };
+    };
+
+    virtualHosts."old-site.mydomain.dev" = {
+      forceSSL = true;
+      enableACME = true;
+      serverName = "old-site.mydomain.dev";
       locations."/"= {
         proxyPass = "http://localhost:8080";
         proxyWebsockets = true;
@@ -74,12 +107,23 @@
   security.acme.certs = {
      "mydomain.dev".email = "example@email.com";
      "mydomain.com".email = "example@email.com";
+     "admin.mydomain.dev".email = "example@email.com";
+     "old-site.mydomain.dev".email = "example@email.com";
   };
+
+  # Enable Docker. NOTE: Ensure containers bind to 127.0.0.1 to avoid bypassing the firewall.
+  virtualisation.docker.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.nate = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" "docker" ]; # Enable ‘sudo’ and 'docker' for the user.
+    openssh.authorizedKeys.keys = ["ssh-ed25519  <Rest of SSH KEY>"];
+   };
+
+  users.users.deploy = {
+    isNormalUser = true;
+    extraGroups = [ "networkmanager" "docker" ]; # Enable 'docker' for the user.
     openssh.authorizedKeys.keys = ["ssh-ed25519  <Rest of SSH KEY>"];
    };
 
@@ -87,6 +131,8 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     certbot
+    docker
+    docker-compose
     git
     go
     inetutils
@@ -100,9 +146,13 @@
 
   # List services that you want to enable:
 
+
+
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.openssh.settings.PermitRootLogin = "no";
+  services.openssh.settings.PasswordAuthentication = false;
+  services.openssh.settings.KbdInteractiveAuthentication = false;
 
   # Disable predictable interface names
   networking.usePredictableInterfaceNames = false;
@@ -110,8 +160,7 @@
   networking.interfaces.eth0.useDHCP = true;
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 22 80 443 ]; # 80 - certs, 22 - http, 443 - https, nginx forces ssl
-  networking.firewall.allowedUDPPorts = [ 8080 ]; # Allow Go to serve on 8080
+  networking.firewall.allowedTCPPorts = [ 22 80 443 ]; # 22: SSH, 80: HTTP (ACME), 443: HTTPS
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 

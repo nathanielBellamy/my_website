@@ -1,0 +1,232 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <h2
+      class="text-2xl font-bold text-gray-800"
+      data-testid="dashboard-title"
+    >
+      System Dashboard
+    </h2>
+
+    <div class="flex items-center gap-3">
+      @if (lastRefresh()) {
+        <span
+          class="text-xs text-gray-500"
+          data-testid="dashboard-last-refresh"
+        >
+          Last refresh: {{ lastRefresh()!.toLocaleTimeString() }}
+        </span>
+      }
+
+      <button
+        class="px-3 py-1.5 text-sm rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors disabled:opacity-50"
+        (click)="refresh()"
+        [disabled]="loading()"
+        data-testid="dashboard-refresh-btn"
+        aria-label="Refresh dashboard data"
+      >
+        @if (loading()) {
+          Refreshing...
+        } @else {
+          ↻ Refresh
+        }
+      </button>
+    </div>
+  </div>
+
+  @if (health(); as h) {
+    <!-- Health Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Uptime -->
+      <div
+        class="bg-white rounded-lg shadow p-4"
+        data-testid="dashboard-uptime-card"
+      >
+        <div class="text-sm text-gray-500 mb-1">Uptime</div>
+        <div class="text-2xl font-bold text-gray-800">
+          {{ h.uptime }}
+        </div>
+      </div>
+
+      <!-- Memory -->
+      <div
+        class="bg-white rounded-lg shadow p-4"
+        data-testid="dashboard-memory-card"
+      >
+        <div class="text-sm text-gray-500 mb-1">Memory (Alloc / Sys)</div>
+        <div class="text-2xl font-bold text-gray-800">
+          {{ formatMb(h.memAllocMb) }}
+        </div>
+        <div class="text-xs text-gray-400">
+          of {{ formatMb(h.memSysMb) }} system
+        </div>
+      </div>
+
+      <!-- Goroutines -->
+      <div
+        class="bg-white rounded-lg shadow p-4"
+        data-testid="dashboard-goroutines-card"
+      >
+        <div class="text-sm text-gray-500 mb-1">Goroutines</div>
+        <div class="text-2xl font-bold text-gray-800">
+          {{ h.goRoutines }}
+        </div>
+      </div>
+
+      <!-- Database -->
+      <div
+        class="bg-white rounded-lg shadow p-4"
+        data-testid="dashboard-db-card"
+      >
+        <div class="text-sm text-gray-500 mb-1">Database</div>
+        <div class="flex items-center gap-2">
+          <span
+            class="inline-block w-3 h-3 rounded-full"
+            [class.bg-green-500]="h.dbConnected"
+            [class.bg-red-500]="!h.dbConnected"
+            aria-hidden="true"
+          ></span>
+          <span
+            class="text-2xl font-bold"
+            [class.text-green-700]="h.dbConnected"
+            [class.text-red-700]="!h.dbConnected"
+          >
+            {{ h.dbConnected ? 'Connected' : 'Disconnected' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Info -->
+    <div
+      class="bg-white rounded-lg shadow p-4"
+      data-testid="dashboard-system-info"
+    >
+      <h3 class="text-lg font-semibold text-gray-700 mb-3">
+        System Info
+      </h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+        <div>
+          <span class="text-gray-500">Go Version</span>
+          <div class="font-medium text-gray-800">{{ h.goVersion }}</div>
+        </div>
+        <div>
+          <span class="text-gray-500">CPUs</span>
+          <div class="font-medium text-gray-800">{{ h.numCpu }}</div>
+        </div>
+        <div>
+          <span class="text-gray-500">GC Cycles</span>
+          <div class="font-medium text-gray-800">{{ h.numGc }}</div>
+        </div>
+        <div>
+          <span class="text-gray-500">Memory (Sys)</span>
+          <div class="font-medium text-gray-800">{{ formatMb(h.memSysMb) }}</div>
+        </div>
+      </div>
+    </div>
+  } @else if (loading()) {
+    <div class="flex items-center justify-center py-12">
+      <span class="text-gray-500">Loading dashboard...</span>
+    </div>
+  }
+
+  <!-- Quick Links -->
+  <div
+    class="bg-white rounded-lg shadow p-4"
+    data-testid="dashboard-quick-links"
+  >
+    <h3 class="text-lg font-semibold text-gray-700 mb-3">
+      Quick Links
+    </h3>
+    <div class="flex flex-wrap gap-2">
+      <a
+        routerLink="/logs"
+        class="px-4 py-2 rounded bg-gray-800 text-white text-sm hover:bg-gray-700 transition-colors"
+        data-testid="dashboard-link-logs"
+        aria-label="View system logs"
+      >
+        📋 System Logs
+      </a>
+      <a
+        href="/grafana/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="px-4 py-2 rounded bg-orange-600 text-white text-sm hover:bg-orange-700 transition-colors"
+        data-testid="dashboard-link-grafana"
+        aria-label="Open Grafana monitoring dashboards"
+      >
+        📊 Grafana
+      </a>
+      <a
+        routerLink="/work"
+        class="px-4 py-2 rounded bg-gray-200 text-gray-700 text-sm hover:bg-gray-300 transition-colors"
+        data-testid="dashboard-link-work"
+        aria-label="Manage work content"
+      >
+        Work
+      </a>
+      <a
+        routerLink="/blog"
+        class="px-4 py-2 rounded bg-gray-200 text-gray-700 text-sm hover:bg-gray-300 transition-colors"
+        data-testid="dashboard-link-blog"
+        aria-label="Manage blog posts"
+      >
+        Blog
+      </a>
+      <a
+        routerLink="/gallery"
+        class="px-4 py-2 rounded bg-gray-200 text-gray-700 text-sm hover:bg-gray-300 transition-colors"
+        data-testid="dashboard-link-gallery"
+        aria-label="Manage image gallery"
+      >
+        Gallery
+      </a>
+    </div>
+  </div>
+
+  <!-- Recent Errors -->
+  <div
+    class="bg-white rounded-lg shadow p-4"
+    data-testid="dashboard-recent-errors"
+  >
+    <h3 class="text-lg font-semibold text-gray-700 mb-3">
+      Recent Errors
+    </h3>
+
+    @if (recentErrors().length === 0) {
+      <p class="text-sm text-gray-500 py-4 text-center">
+        No recent errors — all clear! ✓
+      </p>
+    } @else {
+      <div class="space-y-2">
+        @for (entry of recentErrors(); track $index) {
+          <div
+            class="flex items-start gap-3 p-2 rounded bg-red-50 border border-red-100"
+            [attr.data-testid]="'dashboard-error-' + $index"
+          >
+            <span class="text-red-500 shrink-0">●</span>
+            <div class="min-w-0">
+              <div class="text-sm text-gray-800 break-all">
+                {{ entry.message }}
+              </div>
+              <div class="text-xs text-gray-500 mt-0.5">
+                {{ formatTime(entry.time) }}
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="mt-3 text-center">
+        <a
+          routerLink="/logs"
+          class="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+          data-testid="dashboard-view-all-logs"
+          aria-label="View all log entries"
+        >
+          View all logs →
+        </a>
+      </div>
+    }
+  </div>
+</div>

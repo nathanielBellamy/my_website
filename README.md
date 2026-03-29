@@ -1,42 +1,85 @@
 # Nate's Website
 
+### Project Structure
+
+```text
+my_website/
+├── backend/            # Go backend application (API, models, DB access)
+├── frontend/           # Frontend SPA applications
+│   ├── admin/          # New Angular admin dashboard
+│   ├── auth/           # Authentication app guarding the admin area
+│   ├── marketing/      # New Angular public-facing application
+│   └── old-site/       # Legacy Svelte application
+├── database/           # PostgreSQL initialization and migration scripts
+├── e2e/                # Cypress end-to-end tests
+├── lifecycle/          # Build, deploy, and orchestration shell scripts
+├── nixos/              # NixOS VM configuration files
+├── docker/             # Docker configuration (Dockerfile)
+└── .github/            # CI/CD GitHub Action workflows
+```
+
 ### dev environment
 - suggest [Nix](https://nixos.org/guides/how-nix-works)
 - [rustup](https://rustup.rs/)
-- [wasm-pack](https://rustwasm.github.io/wasm-pack/)
+- [wasm-bindgen](https://github.com/wasm-bindgen/wasm-bindgen)
 - [Go](https://go.dev/)
 - [npm](https://www.npmjs.com/)
 
-### build -- Go server, frontend SPA, auth SPA
-- `./build.sh`
+### build -- Go server, marketing SPA, auth SPA, and old-site SPA
+- `./lifecycle/build.sh`
   - outputs to `build` directory
   - reproduce a prod-like build locally
-- `./build-dist.sh`
+- `./lifecycle/build-dist.sh`
   - outputs to `dist` directory
   - compile locally, transfer build, run remotely
-- Reads `MODE=` from `config.env`
-- NOTE: these scripts alter asset import paths in `index.html` files
+- `./lifecycle/serve.sh`
+  - build + serve site using two docker containers: `my_website_backend` and `my_website_db`
+- `./lifecycel/teardown.sh`
+  - copies logs out of `my_website_backend` onto host machine
+  - tears down docker containers
+- NOTE: these scripts alter asset import paths in `index.html` files for `/old-site`
 
 ### build only Go server (fast)
-`./build.sh --server-only`
+`./lifecycle/build.sh --server-only`
 
 ### serve
-- `MODE=<mode> PW=<my_password> ./serve.sh`
-- or more directly
-  - `cd backend/go && MODE=<mode> PW=<my_password> ./main`
+- `./lifecycle/serve.sh`
 - serves on `localhost:8080`
 
-### config.env
-- `MODE=mode`
+### .env/.env.${MODE}
+```bash
+MODE=localhost # | remotedev | production
+
+# url
+BASE_URL=http://localhost:8080
+BASE_URL_API=http://localhost:8080/api
+BASE_URL_OLD_SITE=http://old-site.localhost:8080
+
+# recaptcha
+GOOGLE_API_KEY=xxxx
+RECAPTCHA_PROJECT_ID=xxxx
+RECAPTCHA_SITE_KEY=xxxx
+
+# totp
+ENABLE_AUTH_LOCAL=false 
+TOTP_SECRET=xxxx
+ADMIN_EMAIL=xxxx
+SMTP_HOST=xxxx
+SMTP_PORT=587
+SMTP_USER=xxxx
+SMTP_PASS=xxxx
+
+# postgres
+DATABASE_URL=postgres://admin:admin@localhost:5432/mw_db?sslmode=disable
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=password
+POSTGRES_DB=my_db
+```
 
 #### mode
 - `localhost`
-- `prod`
+- `production`
 - `remotdev`
-
-#### my_password
-- password for dev site
-- `localhost` and `remotedev` modes only
 
 ### cross-compiling
 - set `MODE` in `config.env`
@@ -45,8 +88,14 @@
 - `MODE=remotedev, prod`
   - build compiles Go for Linux
 
-### local SPA development
-- `cd` into root of SPA
+### local development
+- `./lifecycle/serve.sh`
+- cd into project, either `frontend/marketing` or `frontend/admin`
+- `ng serve` on :4200
+- hmr frontend talks to backend service on :8080
+
+### old-site local SPA development
+- `cd old-site`
 - `npm run dev`
 - serves hot-updated SPA on `localhost:5173`
 - see SPA's `package.json` for more build options
@@ -58,21 +107,4 @@
         - test Recaptcha Key protected by domain (localhost:8080)
         - test Api Key (Credentials) for the Project protected by IP
 
-
-### specs
-- build with `MODE=localhost`
-- start Go server on `localhost:8080` (default) with password `foo`
-```
-MODE=localhost PW=foo ./serve.sh
-```
-- start cypress, use ui to run specs
-```
-cd spec && npx cypress open && cd ..
-```
-
-- NOTE: 
-  - specs are in early development focused on running in Chrome 
-  - [ticket for e2e testing](https://github.com/users/nathanielBellamy/projects/4?pane=issue&itemId=33246560)
-  - [ticket for unit/component testing](https://github.com/users/nathanielBellamy/projects/4?pane=issue&itemId=39606773)
-
-### Made with: RustWasm, Go, Typescript, NixOS, Svelte, WebGL, Tailwind, Flowbite, Sass, Vite, Cypress
+### Made with: Rust (WASM via wasm-bindgen), Go, Typescript, NixOS, Angular, Svelte, WebGL, Tailwind, Flowbite, Sass, Vite, Cypress

@@ -1,0 +1,91 @@
+<app-page id="old-site-page">
+  <div 
+      page-header
+      class="flex flex-col items-center" appScrollFadeIn>
+      <h1 class="font-heading text-3xl md:text-5xl font-bold text-heading-text mb-4">
+        Old Site
+      </h1>
+      <div class="h-1 w-12 bg-secondary-accent rounded-full"></div>
+    </div>
+
+  <div 
+    id="app_main"
+    #appMain
+    page-body
+    class="size-full pb-8 md:pb-0 grow flex flex-col items-stretch justify-around overflow-y-auto md:overflow-hidden">
+    
+    <div id="magic_square">
+      <!-- Hidden form required by the Rust WebGL code -->
+      <form id="magic_square_control_rack" class="hidden"></form>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div 
+            class="flex flex-col items-center justify-around text-center group" 
+            appScrollFadeIn 
+            [delay]="100">
+            <div 
+              id="magic_square_canvas_container"
+              class="
+                w-full aspect-square bg-primary-accent/10 rounded-2xl flex items-center justify-center 
+                overflow-hidden relative group-hover:scale-[1.02] transition-transform">
+              <canvas id="magic_square_canvas" class="w-full h-full cursor-crosshair"></canvas>
+            </div>
+          </div>
+          <div class="size-full flex flex-col items-stretch justify-around">
+            <div class="flex flex-col-reverse md:flex-col items-stretch gap-8">
+              <div 
+                class="flex flex-col items-stretch gap-8 group">
+                <div 
+                  class="flex flex-col items-stretch justify-around"
+                  appScrollFadeIn 
+                  [delay]="200">
+                  <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
+                    WebGL
+                  </h4>
+                  <p class="text-body-text pl-8">
+                    Interactive 3D (Try it with your mouse!)
+                  </p>
+                </div>
+                <div 
+                  class="flex flex-col items-stretch justify-around"
+                  appScrollFadeIn 
+                  [delay]="300">
+                  <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
+                    wasm-bindgen
+                  </h4>
+                  <p class="text-body-text pl-8">
+                    Rust modules compiled to WASM
+                  </p>
+                </div>
+                <div 
+                  class="flex flex-col items-stretch justify-around"
+                  appScrollFadeIn 
+                  [delay]="400">
+                  <h4 class="font-heading text-2xl font-bold text-heading-text mb-4">
+                    Real-time Collaboration
+                  </h4>
+                  <p class="text-body-text pl-8">
+                    Seamless multi-user synchronization
+                  </p>
+                </div>
+              </div>
+              <div 
+                appScrollFadeIn
+                [delay]="500"
+                class="px-4 flex flex-row items-center justify-center gap-6">
+                <a
+                  [href]="oldSiteUrl"
+                  target="_blank"
+                  data-testid="visit-old-site-link"
+                  class="inline-block font-sans text-lg font-semibold text-white bg-gradient-to-r from-primary-accent to-secondary-accent py-4 px-10 rounded-xl shadow-xl shadow-primary-accent/20 hover:scale-105 transition-all duration-300"
+                >
+                  Visit My Old Site
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-page>

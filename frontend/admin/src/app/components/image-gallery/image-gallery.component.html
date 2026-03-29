@@ -1,0 +1,110 @@
+<div class="image-gallery-container bg-white p-6 rounded-lg shadow-md">
+  <h2 class="text-2xl font-bold mb-4">Image Gallery</h2>
+
+  <!-- Upload Section -->
+  <div class="upload-section mb-8 p-4 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
+    <h3 class="text-lg font-semibold mb-2">Upload New Image</h3>
+    <div class="flex flex-col space-y-4">
+      <input 
+        type="file" 
+        (change)="onFileSelected($event)" 
+        accept="image/*"
+        data-testid="image-upload-input"
+        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+      
+      <input 
+        type="text" 
+        [(ngModel)]="altText" 
+        placeholder="Alt Text" 
+        data-testid="image-alt-input"
+        class="p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+
+      <button 
+        type="button"
+        (click)="uploadImage()" 
+        [disabled]="!selectedFile || uploading()"
+        data-testid="upload-button"
+        class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors">
+        {{ uploading() ? 'Uploading...' : 'Upload' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Image Size Controls -->
+  <div class="size-controls mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+    <h3 class="text-sm font-semibold text-gray-700 mb-2">Copy Size (WxH)</h3>
+    <div class="flex items-center gap-2">
+      <input
+        type="number"
+        [(ngModel)]="imageWidth"
+        placeholder="Width"
+        min="1"
+        data-testid="image-width-input"
+        class="w-24 p-2 text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+      <span class="text-gray-500 font-medium">×</span>
+      <input
+        type="number"
+        [(ngModel)]="imageHeight"
+        placeholder="Height"
+        min="1"
+        data-testid="image-height-input"
+        class="w-24 p-2 text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+      <span class="text-xs text-gray-400">px (leave empty for natural size)</span>
+    </div>
+  </div>
+
+  <!-- Image Grid -->
+  <div class="image-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    @for (image of images(); track image.id) {
+      <div
+        class="image-card group bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex flex-col"
+        data-testid="image-card">
+        <div class="relative">
+          <img 
+            [src]="'/api/images/' + image.filename" 
+            [alt]="image.altText"
+            class="w-full h-40 object-cover" />
+          
+          <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center space-y-2 p-2 text-center">
+            <button 
+              type="button"
+              (click)="copyMarkdown(image)"
+              data-testid="copy-markdown-button"
+              class="bg-white text-gray-800 text-xs px-2 py-1 rounded hover:bg-gray-200 transition-colors w-full">
+              {{ copiedImageId() === image.id ? '✓ Copied!' : 'Copy Markdown' }}
+            </button>
+
+            <button 
+              type="button"
+              (click)="deleteImage(image.id)"
+              data-testid="delete-image-button"
+              class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700 transition-colors w-full">
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <div class="p-2 text-xs text-gray-700 border-t border-gray-200 bg-white">
+          <p
+            class="font-medium truncate"
+            [title]="image.originalName"
+            data-testid="image-name">
+            {{ image.originalName }}
+          </p>
+          @if (image.altText) {
+            <p
+              class="text-gray-500 truncate mt-0.5"
+              [title]="image.altText"
+              data-testid="image-alt-text">
+              {{ image.altText }}
+            </p>
+          }
+        </div>
+      </div>
+    } @empty {
+      <div class="col-span-full py-8 text-center text-gray-500">
+        No images uploaded yet.
+      </div>
+    }
+  </div>
+</div>

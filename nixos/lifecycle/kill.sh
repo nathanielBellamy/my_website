@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+# Function to display usage information
+usage() {
+    echo "Usage: $0 [ -f | -d | -b | -l ]"
+    echo "  -f, --full      Teardown both the my_website_db and my_website_backend containers"
+    echo "  -d, --db        Teardown only the my_website_db container"
+    echo "  -b, --be        Teardown only the my_website_backend container"
+    echo "  -l, --logs      Copy logs from the my_website_backend container without tearing down"
+    exit 1
+}
+
+# --- Log copy function ---
+copy_logs() {
+    if ! docker inspect my_website_backend > /dev/null 2>&1; then
+        echo "No existing my_website_backend container found — skipping log copy."
+        return 0
+    fi
+    echo "Copying logs from my_website_backend container..."
+    YEAR=$(date -u +"%Y")
+    MONTH=$(date -u +"%m")
+    mkdir -p "log/$YEAR/$MONTH"
+    TIMESTAMP=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
+    LOG_FILE_NAME="${TIMESTAMP}-log.txt"
+    docker logs my_website_backend > "log/$YEAR/$MONTH/$LOG_FILE_NAME" 2>&1
+    echo "Logs copied to log/$YEAR/$MONTH/$LOG_FILE_NAME"
+}
+
+# --- Teardown functions ---
+teardown_my_website_backend() {
+    echo "Tearing down my_website_backend container..."
+    docker stop my_website_backend
+    docker rm -f my_website_backend
+    echo "my_website_backend container torn down."
+}
+
+teardown_db() {
+    echo "Tearing down db container..."
+    docker stop my_website_db
+    docker rm -f my_website_db
+    echo "DB container torn down."
+}
+
+
+# --- Main script logic ---
+if [ $# -ne 1 ]; then
+    usage
+fi
+
+case "$1" in
+    -f|--full)
+        copy_logs
+        echo "Tearing down entire docker compose stack..."
+        docker compose down || echo "No running compose stack to tear down."
+        # Remove stale Grafana data volume for clean dashboard provisioning on redeploy
+        GRAFANA_VOL=$(docker volume ls -q --filter "name=grafana_data" 2>/dev/null | head -1)
+        if [ -n "$GRAFANA_VOL" ]; then
+            if docker volume rm "$GRAFANA_VOL" 2>&1; then
+                echo "✅ Removed Grafana data volume: $GRAFANA_VOL"
+            else
+                echo "⚠️  Failed to remove Grafana data volume: $GRAFANA_VOL"
+                echo "   You may need to remove it manually: docker volume rm $GRAFANA_VOL"
+            fi
+        else
+            echo "   No Grafana data volume found (clean state)."
+        fi
+        echo "Entire docker compose stack torn down."
+        ;;
+    -d|--db)
+        teardown_db
+        ;;
+    -b|--be)
+        copy_logs
+        teardown_my_website_backend
+        ;;
+    -l|--logs)
+        copy_logs
+        ;;
+    *)
+        usage
+        ;;
+esac
+
+exit 0

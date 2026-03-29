@@ -1,0 +1,12 @@
+<div class="h-full flex flex-col items-stretch justify-between overflow-hidden">
+    <app-navbar></app-navbar>
+    <div 
+        id="main-scroll-container"
+        class="grow min-h-0 flex flex-col items-stretch relative overflow-y-auto" 
+        data-testid="main-scroll-container">
+        <div class="grow w-full flex flex-col items-stretch">
+            <router-outlet />
+        </div>
+    </div>
+    <app-footer></app-footer>
+</div>

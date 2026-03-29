@@ -1,0 +1,29 @@
+<div
+  role="article"
+  class="bg-card border border-white/10 rounded-xl p-6 transition-all duration-300 hover:border-primary-accent/50 hover:shadow-2xl hover:shadow-primary-accent/10 cursor-pointer w-full"
+>
+  <div class="px-2 py-4">
+    <div 
+      data-testid="card-title"
+      class="font-heading text-2xl font-bold mb-2 text-heading-text">
+      {{ title() }}
+    </div>
+    <div class="prose prose-invert max-w-none">
+      <markdown
+        [data]="content()"
+        [disableSanitizer]="true"
+      ></markdown>
+    </div>
+  </div>
+  @if (tags()) {
+    <div class="px-6 pt-4 pb-2">
+      @for (tag of tags(); track tag) {
+        <span
+          class="inline-block bg-primary-accent/10 text-primary-accent rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2"
+        >
+          #{{ tag }}
+        </span>
+      }
+    </div>
+  }
+</div>

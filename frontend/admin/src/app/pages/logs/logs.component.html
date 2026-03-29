@@ -1,0 +1,350 @@
+<div class="space-y-4">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <h2
+      class="text-2xl font-bold text-gray-800"
+      data-testid="logs-page-title"
+    >
+      System Logs
+    </h2>
+
+    <div
+      class="flex items-center gap-2"
+      data-testid="logs-connection-status"
+    >
+      <span
+        class="inline-block w-3 h-3 rounded-full"
+        [class.bg-green-500]="connectionStatus() === ConnectionStatus.CONNECTED"
+        [class.bg-red-500]="connectionStatus() === ConnectionStatus.DISCONNECTED"
+        [class.bg-yellow-500]="connectionStatus() === ConnectionStatus.RECONNECTING"
+        aria-hidden="true"
+      ></span>
+      <span class="text-sm text-gray-600">
+        {{ connectionStatus() }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="bg-white rounded-lg shadow p-4 space-y-3">
+    <!-- Mode Toggle + Actions -->
+    <div class="flex flex-wrap items-center gap-2">
+      <button
+        class="px-3 py-1.5 text-sm rounded font-medium transition-colors"
+        [class.bg-blue-600]="!isHistoryMode()"
+        [class.text-white]="!isHistoryMode()"
+        [class.bg-gray-200]="isHistoryMode()"
+        [class.text-gray-700]="isHistoryMode()"
+        (click)="switchToLive()"
+        data-testid="logs-live-btn"
+        aria-label="Switch to live log streaming"
+      >
+        ● Live
+      </button>
+
+      <button
+        class="px-3 py-1.5 text-sm rounded font-medium transition-colors"
+        [class.bg-blue-600]="isHistoryMode()"
+        [class.text-white]="isHistoryMode()"
+        [class.bg-gray-200]="!isHistoryMode()"
+        [class.text-gray-700]="!isHistoryMode()"
+        (click)="loadHistory()"
+        data-testid="logs-history-btn"
+        aria-label="Switch to historical log browsing"
+      >
+        History
+      </button>
+
+      <div class="h-6 w-px bg-gray-300 mx-1"></div>
+
+      <button
+        class="px-3 py-1.5 text-sm rounded transition-colors"
+        [class.bg-green-100]="autoScroll()"
+        [class.text-green-800]="autoScroll()"
+        [class.bg-gray-200]="!autoScroll()"
+        [class.text-gray-600]="!autoScroll()"
+        (click)="toggleAutoScroll()"
+        data-testid="logs-autoscroll-btn"
+        aria-label="Toggle auto-scroll"
+        [attr.aria-pressed]="autoScroll()"
+      >
+        Auto-scroll {{ autoScroll() ? 'ON' : 'OFF' }}
+      </button>
+
+      <button
+        class="px-3 py-1.5 text-sm rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors"
+        (click)="clearEntries()"
+        data-testid="logs-clear-btn"
+        aria-label="Clear log display"
+      >
+        Clear
+      </button>
+
+      <div class="h-6 w-px bg-gray-300 mx-1"></div>
+
+      <!-- Copy CSV -->
+      <button
+        class="px-3 py-1.5 text-sm rounded font-medium transition-colors"
+        [class.bg-emerald-600]="copiedFeedback()"
+        [class.text-white]="copiedFeedback()"
+        [class.bg-gray-200]="!copiedFeedback()"
+        [class.text-gray-700]="!copiedFeedback()"
+        [class.hover:bg-gray-300]="!copiedFeedback()"
+        (click)="copyLogsToClipboard()"
+        [disabled]="filteredEntries().length === 0"
+        data-testid="logs-copy-csv-btn"
+        aria-label="Copy displayed logs to clipboard as CSV"
+      >
+        @if (copiedFeedback()) {
+          ✓ Copied!
+        } @else {
+          📋 Copy CSV
+        }
+      </button>
+
+      @if (isHistoryMode()) {
+        <input
+          type="date"
+          class="px-3 py-1.5 text-sm border border-gray-300 rounded"
+          [ngModel]="selectedDate()"
+          (ngModelChange)="selectedDate.set($event)"
+          data-testid="logs-date-picker"
+          aria-label="Filter logs by date"
+        />
+      }
+    </div>
+
+    <!-- Filters -->
+    <div class="flex flex-wrap items-center gap-2">
+      <!-- Search -->
+      <div class="relative flex-1 min-w-48">
+        <input
+          type="text"
+          placeholder="Search logs..."
+          class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded pl-8"
+          [ngModel]="searchText()"
+          (ngModelChange)="searchText.set($event)"
+          data-testid="logs-search-input"
+          aria-label="Search log entries"
+        />
+        <span
+          class="absolute left-2.5 top-2 text-gray-400 text-sm"
+          aria-hidden="true"
+        >
+          🔍
+        </span>
+      </div>
+
+      <!-- Time Range -->
+      <div
+        class="flex gap-1"
+        role="group"
+        aria-label="Filter by time range"
+        data-testid="logs-time-range-group"
+      >
+        @for (range of [TimeRange.ONE_HOUR, TimeRange.SIX_HOURS, TimeRange.TWENTY_FOUR_HOURS, TimeRange.ALL]; track range) {
+          <button
+            class="px-2 py-1 text-xs rounded font-medium border transition-colors"
+            [class.bg-indigo-100]="selectedTimeRange() === range"
+            [class.border-indigo-400]="selectedTimeRange() === range"
+            [class.text-indigo-800]="selectedTimeRange() === range"
+            [class.bg-white]="selectedTimeRange() !== range"
+            [class.border-gray-300]="selectedTimeRange() !== range"
+            [class.text-gray-600]="selectedTimeRange() !== range"
+            (click)="setTimeRange(range)"
+            [attr.data-testid]="'logs-time-range-' + range"
+            [attr.aria-pressed]="selectedTimeRange() === range"
+            [attr.aria-label]="'Show logs from last ' + range"
+          >
+            {{ range === 'all' ? 'All' : range }}
+          </button>
+        }
+      </div>
+
+      <!-- Level Chips -->
+      <div
+        class="flex gap-1"
+        role="group"
+        aria-label="Filter by log level"
+      >
+        @for (level of ['info', 'warn', 'error', 'debug', 'fatal']; track level) {
+          <button
+            class="px-2 py-1 text-xs rounded-full font-medium border transition-colors"
+            [class.bg-blue-100]="level === 'info' && selectedLevel() === level"
+            [class.border-blue-400]="level === 'info' && selectedLevel() === level"
+            [class.bg-yellow-100]="level === 'warn' && selectedLevel() === level"
+            [class.border-yellow-400]="level === 'warn' && selectedLevel() === level"
+            [class.bg-red-100]="(level === 'error' || level === 'fatal') && selectedLevel() === level"
+            [class.border-red-400]="(level === 'error' || level === 'fatal') && selectedLevel() === level"
+            [class.bg-gray-100]="level === 'debug' && selectedLevel() === level"
+            [class.border-gray-400]="level === 'debug' && selectedLevel() === level"
+            [class.bg-white]="selectedLevel() !== level"
+            [class.border-gray-300]="selectedLevel() !== level"
+            (click)="setLevelFilter(level)"
+            [attr.data-testid]="'logs-level-chip-' + level"
+            [attr.aria-pressed]="selectedLevel() === level"
+            [attr.aria-label]="'Filter by ' + level + ' level (' + (levelCounts()[level] || 0) + ' entries)'"
+          >
+            {{ level.toUpperCase() }}
+            <span class="ml-1 opacity-70">
+              {{ levelCounts()[level] || 0 }}
+            </span>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Log Display -->
+  <div
+    #logContainer
+    class="bg-gray-900 rounded-lg shadow overflow-auto font-mono text-xs leading-relaxed"
+    style="height: calc(100vh - 360px); min-height: 300px;"
+    role="log"
+    aria-label="Log entries"
+    aria-live="polite"
+    data-testid="logs-container"
+  >
+    @if (filteredEntries().length === 0) {
+      <div class="flex items-center justify-center h-full text-gray-500">
+        @if (connectionStatus() === ConnectionStatus.RECONNECTING) {
+          <p>Connecting to log stream...</p>
+        } @else {
+          <p>No log entries to display</p>
+        }
+      </div>
+    } @else {
+      <div class="p-3 space-y-0.5">
+        @for (entry of filteredEntries(); track $index) {
+          <div
+            [attr.data-testid]="'log-entry-' + $index"
+          >
+            <!-- Main row -->
+            <div
+              class="flex gap-2 px-2 py-0.5 rounded hover:bg-gray-800/50 transition-colors cursor-pointer"
+              (click)="toggleEntryExpanded($index)"
+              [attr.data-testid]="'log-entry-row-' + $index"
+              [attr.aria-expanded]="isEntryExpanded($index)"
+              role="button"
+              [attr.aria-label]="'Log entry: ' + entry.level + ' - ' + entry.message"
+            >
+              <!-- Level badge -->
+              <span
+                class="inline-block w-12 text-center py-0.5 rounded text-[10px] font-bold uppercase shrink-0"
+                [class]="getLevelBgClass(entry.level)"
+                [class.text-red-300]="entry.level === 'error' || entry.level === 'fatal'"
+                [class.text-yellow-300]="entry.level === 'warn'"
+                [class.text-blue-300]="entry.level === 'info'"
+                [class.text-gray-400]="entry.level === 'debug'"
+              >
+                {{ entry.level }}
+              </span>
+
+              <!-- Timestamp -->
+              <span class="text-gray-500 shrink-0 w-24">
+                {{ formatTime(entry.time) }}
+              </span>
+
+              <!-- Message -->
+              <span class="text-gray-200 break-all flex-1">
+                {{ entry.message }}
+              </span>
+
+              <!-- Field count indicator -->
+              @if (fieldCount(entry.fields) > 0) {
+                <span
+                  class="text-gray-500 text-[10px] shrink-0 px-1.5 py-0.5 rounded bg-gray-800 border border-gray-700"
+                  [attr.data-testid]="'log-entry-field-count-' + $index"
+                >
+                  {{ fieldCount(entry.fields) }} fields
+                </span>
+              }
+            </div>
+
+            <!-- Expanded fields detail -->
+            @if (isEntryExpanded($index)) {
+              <div
+                class="ml-16 pl-2 border-l-2 border-gray-700 py-1 mb-1"
+                [attr.data-testid]="'log-entry-fields-' + $index"
+              >
+                @if (entry.time) {
+                  <div class="flex gap-2 py-0.5">
+                    <span class="text-gray-500 w-24 shrink-0 text-right">
+                      time
+                    </span>
+                    <span class="text-gray-300 break-all">
+                      {{ entry.time }}
+                    </span>
+                  </div>
+                }
+                @if (entry.fields) {
+                  @for (field of entry.fields | keyvalue; track field.key) {
+                    <div class="flex gap-2 py-0.5">
+                      <span class="text-gray-500 w-24 shrink-0 text-right">
+                        {{ field.key }}
+                      </span>
+                      <span class="text-gray-300 break-all">
+                        {{ field.value }}
+                      </span>
+                    </div>
+                  }
+                }
+                @if (fieldCount(entry.fields) === 0 && !entry.time) {
+                  <div class="text-gray-600 italic py-0.5">
+                    No additional metadata
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- History Pagination -->
+  @if (isHistoryMode()) {
+    <div
+      class="flex items-center justify-between bg-white rounded-lg shadow p-3"
+      data-testid="logs-pagination"
+    >
+      <span class="text-sm text-gray-600">
+        {{ historyTotal() }} total entries
+      </span>
+
+      <div class="flex items-center gap-2">
+        <button
+          class="px-3 py-1 text-sm rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50 transition-colors"
+          [disabled]="historyPage() <= 1"
+          (click)="historyPrev()"
+          data-testid="logs-page-prev"
+          aria-label="Previous page"
+        >
+          ← Prev
+        </button>
+
+        <span class="text-sm text-gray-600">
+          Page {{ historyPage() }}
+        </span>
+
+        <button
+          class="px-3 py-1 text-sm rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50 transition-colors"
+          [disabled]="historyPage() * 100 >= historyTotal()"
+          (click)="historyNext()"
+          data-testid="logs-page-next"
+          aria-label="Next page"
+        >
+          Next →
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Footer status -->
+  <div class="text-xs text-gray-500 text-center">
+    {{ filteredEntries().length }} entries displayed
+    @if (selectedLevel() || searchText() || selectedTimeRange() !== TimeRange.ALL) {
+      <span>(filtered)</span>
+    }
+  </div>
+</div>

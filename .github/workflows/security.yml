@@ -1,0 +1,141 @@
+name: Security Audit
+
+on:
+  pull_request:
+  workflow_call:
+
+jobs:
+  vulnerability-scan:
+    name: Vulnerability Scan (Trivy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
+          output: 'trivy-report.txt'
+
+      - name: Print Trivy Report
+        if: always() # Print report even if Trivy fails
+        run: cat trivy-report.txt || true
+
+      - name: Upload Trivy Report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-report
+          path: trivy-report.txt
+
+  static-analysis:
+    name: Static Analysis (Go & Node)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Run gosec
+        run: |
+          go install github.com/securego/gosec/v2/cmd/gosec@latest
+          # Run gosec, redirect to file, but capture exit code
+          gosec -fmt=text -out=gosec-report.txt ./backend/go/... || (cat gosec-report.txt && exit 1)
+          cat gosec-report.txt
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run npm audit (Admin)
+        run: |
+          cd frontend/admin
+          npm audit --audit-level=high > ../../npm-audit-admin.txt 2>&1 || (cat ../../npm-audit-admin.txt && exit 1)
+          cat ../../npm-audit-admin.txt
+
+      - name: Run npm audit (Marketing)
+        run: |
+          cd frontend/marketing
+          npm audit --audit-level=high > ../../npm-audit-marketing.txt 2>&1 || (cat ../../npm-audit-marketing.txt && exit 1)
+          cat ../../npm-audit-marketing.txt
+
+      - name: Upload Static Analysis Reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-analysis-reports
+          path: |
+            gosec-report.txt
+            npm-audit-*.txt
+
+  website-audit:
+    name: Website Audit (Squirrel)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mw_db
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Initialize Database
+        run: |
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+          PGPASSWORD=postgres psql -h localhost -p 5434 -U postgres -d mw_db -f database/init.sql
+
+      - name: Create Environment File
+        env:
+          ENV_FILE_CONTENT: ${{ secrets.DEV_ENV_FILE }}
+        run: |
+          mkdir -p .env
+          echo "$ENV_FILE_CONTENT" > .env/.env.localhost
+
+      - name: Build and Start Backend
+        run: |
+          cd backend/go
+          go build -o ../../backend-server main.go
+          cd ../..
+          export DATABASE_URL=postgres://postgres:postgres@localhost:5434/mw_db?sslmode=disable
+          export MODE=localhost
+          ./backend-server > backend.log 2>&1 &
+          timeout 60s bash -c 'until curl -s http://localhost:8080/api/marketing/home; do sleep 2; done' || (echo "Backend failed to start" && exit 1)
+
+      - name: Install Squirrel
+        run: |
+          curl -sSfL https://squirrelscan.com/install.sh | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Run Squirrel Audit
+        run: |
+          squirrel audit http://localhost:8080 --format console --coverage quick > squirrel-report.txt 2>&1 || (cat squirrel-report.txt && exit 1)
+          cat squirrel-report.txt
+      
+      - name: Upload Squirrel Report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: squirrel-report
+          path: squirrel-report.txt

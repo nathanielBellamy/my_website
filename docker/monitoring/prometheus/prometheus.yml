@@ -1,0 +1,18 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['node_exporter:9100']
+        labels:
+          instance: 'vm'
+
+  - job_name: 'backend'
+    static_configs:
+      - targets: ['backend:8080']
+        labels:
+          instance: 'go-backend'
+    metrics_path: '/internal/metrics'
+    scrape_interval: 15s
