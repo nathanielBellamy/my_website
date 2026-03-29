@@ -26,18 +26,26 @@ my_website/
 - [npm](https://www.npmjs.com/)
 
 ### build -- Go server, marketing SPA, auth SPA, and old-site SPA
+- `./lifecycle/backup.sh`
+  - backs up dg
 - `./lifecycle/build.sh`
   - outputs to `build` directory
   - reproduce a prod-like build locally
 - `./lifecycle/build-dist.sh`
   - outputs to `dist` directory
   - compile locally, transfer build, run remotely
+- `./lifecycle/e2e.sh`
+  - runs Cypress tests against locally running server
+- `./lifecycle/kill.sh`
+  - copies logs out of `my_website_backend` onto host machine
+  - tears down docker containers according to arg
 - `./lifecycle/serve.sh`
   - build + serve site using two docker containers: `my_website_backend` and `my_website_db`
-- `./lifecycel/teardown.sh`
-  - copies logs out of `my_website_backend` onto host machine
-  - tears down docker containers
-- NOTE: these scripts alter asset import paths in `index.html` files for `/old-site`
+- `./lifecycle/test.sh`
+  - run unit tests for all projects
+- `./lifescycle/update.sh`
+  - updates dependencies across projects
+    
 
 ### build only Go server (fast)
 `./lifecycle/build.sh --server-only`
@@ -54,6 +62,8 @@ MODE=localhost # | remotedev | production
 BASE_URL=http://localhost:8080
 BASE_URL_API=http://localhost:8080/api
 BASE_URL_OLD_SITE=http://old-site.localhost:8080
+BASE_URL_GRAFANA=https://admin.localhost:8080/grafana/
+GRAFANA_DOMAIN=admin.localhost:8080
 
 # recaptcha
 GOOGLE_API_KEY=xxxx
@@ -99,12 +109,5 @@ POSTGRES_DB=my_db
 - `npm run dev`
 - serves hot-updated SPA on `localhost:5173`
 - see SPA's `package.json` for more build options
-- NOTE: in order to work with `PublicSquare` locally, you will need
-    - to serve on `localhost:8080` or change `VITE_BASE_URL`
-    - either
-      - to disable Recaptcha manually in code
-      - to establish a test Recaptcha Enterprise project, key, and Api Key (Credentials)
-        - test Recaptcha Key protected by domain (localhost:8080)
-        - test Api Key (Credentials) for the Project protected by IP
 
 ### Made with: Rust (WASM via wasm-bindgen), Go, Typescript, NixOS, Angular, Svelte, WebGL, Tailwind, Flowbite, Sass, Vite, Cypress
