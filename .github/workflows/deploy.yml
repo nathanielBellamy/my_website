@@ -30,10 +30,15 @@ jobs:
 
       - name: Generate .env file
         env:
-          ENV_FILE_CONTENT: ${{ github.ref_name == 'main' && secrets.PROD_ENV_FILE || secrets.DEV_ENV_FILE }}
+          PROD_ENV_FILE: ${{ secrets.PROD_ENV_FILE }}
+          DEV_ENV_FILE: ${{ secrets.DEV_ENV_FILE }}
         run: |
           mkdir -p .env
-          echo "$ENV_FILE_CONTENT" > .env/.env.production
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            echo "$PROD_ENV_FILE" > .env/.env.production
+          else
+            echo "$DEV_ENV_FILE" > .env/.env.production
+          fi
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -46,10 +51,15 @@ jobs:
 
       - name: Setup SSH Key
         env:
-          SSH_KEY: ${{ github.ref_name == 'main' && secrets.SSH_PRIVATE_KEY_PROD || secrets.SSH_PRIVATE_KEY_DEV }}
+          SSH_PRIVATE_KEY_PROD: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
+          SSH_PRIVATE_KEY_DEV: ${{ secrets.SSH_PRIVATE_KEY_DEV }}
         run: |
           mkdir -p ~/.ssh
-          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            echo "$SSH_PRIVATE_KEY_PROD" > ~/.ssh/id_rsa
+          else
+            echo "$SSH_PRIVATE_KEY_DEV" > ~/.ssh/id_rsa
+          fi
           chmod 600 ~/.ssh/id_rsa
 
       - name: Deploy to Development
