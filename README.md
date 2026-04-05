@@ -25,9 +25,12 @@ my_website/
 - [Go](https://go.dev/)
 - [npm](https://www.npmjs.com/)
 
-### build -- Go server, marketing SPA, auth SPA, and old-site SPA
+### lifecycle scripts
+- `./lifecycle/init.sh`
+  - full dev environment setup — checks system deps, installs all project dependencies, verifies env files
+  - run this first after cloning the repo
 - `./lifecycle/backup.sh`
-  - backs up dg
+  - backs up db
 - `./lifecycle/build.sh`
   - outputs to `build` directory
   - reproduce a prod-like build locally
@@ -43,7 +46,7 @@ my_website/
   - build + serve site using two docker containers: `my_website_backend` and `my_website_db`
 - `./lifecycle/test.sh`
   - run unit tests for all projects
-- `./lifescycle/update.sh`
+- `./lifecycle/update.sh`
   - updates dependencies across projects
     
 
