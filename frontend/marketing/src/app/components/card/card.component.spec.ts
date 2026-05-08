@@ -16,6 +16,19 @@ describe('CardComponent', () => {
     expect(screen.getByText('Test Content')).toBeTruthy();
   });
 
+  it('should render date if provided', async () => {
+    await render(CardComponent, {
+      componentInputs: {
+        title: 'Test Title',
+        content: 'Test Content',
+        date: '2026-01-15T12:00:00Z',
+      },
+      providers: [provideMarkdown()],
+    });
+
+    expect(screen.getByText('January 15, 2026')).toBeTruthy();
+  });
+
   it('should render tags if provided', async () => {
     await render(CardComponent, {
       componentInputs: {

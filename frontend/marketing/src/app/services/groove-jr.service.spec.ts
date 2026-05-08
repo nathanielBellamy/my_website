@@ -8,8 +8,8 @@ import { GrooveJrContent } from '../models/groove-jr.model';
 import { environment } from '../../environments/environment';
 
 const mockGrooveJrContent: GrooveJrContent[] = [
-  { id: '1', title: 'Groove Jr.', content: 'A music app.', order: 1 },
-  { id: '2', title: 'Features', content: 'It has many features.', order: 2 },
+  { id: '1', title: 'Groove Jr.', content: 'A music app.', activatedAt: '2026-01-15T12:00:00Z', deactivatedAt: '', order: 1 },
+  { id: '2', title: 'Features', content: 'It has many features.', activatedAt: '2026-02-15T12:00:00Z', deactivatedAt: '', order: 2 },
 ];
 
 describe('GrooveJrService', () => {

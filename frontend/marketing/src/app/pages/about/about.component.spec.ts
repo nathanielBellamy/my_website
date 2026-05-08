@@ -7,8 +7,8 @@ import { AboutContent } from '../../models/about.model';
 import { provideRouter } from '@angular/router';
 
 const mockAboutContent: AboutContent[] = [
-  { id: '1', title: 'Title 1', content: 'Body 1', order: 1 },
-  { id: '2', title: 'Title 2', content: 'Body 2', order: 2 },
+  { id: '1', title: 'Title 1', content: 'Body 1', activatedAt: '2026-01-15T12:00:00Z', order: 1 },
+  { id: '2', title: 'Title 2', content: 'Body 2', activatedAt: '2026-02-15T12:00:00Z', order: 2 },
 ];
 
 describe('AboutComponent', () => {
@@ -51,6 +51,7 @@ describe('AboutComponent', () => {
     await waitFor(() => {
       screen.getByText('Title 1');
       screen.getByText('Body 2');
+      screen.getByText('January 15, 2026');
     });
   });
 

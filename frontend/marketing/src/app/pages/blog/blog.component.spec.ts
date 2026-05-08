@@ -8,8 +8,8 @@ import { BlogPost, Tag } from '../../models/blog-post.model';
 import { provideRouter } from '@angular/router';
 
 const mockBlogPosts: BlogPost[] = [
-  { id: '1', title: 'Title 1', content: 'Body 1', author: { id: '1', name: 'Author 1' }, tags: [], createdAt: '', updatedAt: '', order: 1 },
-  { id: '2', title: 'Title 2', content: 'Body 2', author: { id: '2', name: 'Author 2' }, tags: [], createdAt: '', updatedAt: '', order: 2 },
+  { id: '1', title: 'Title 1', content: 'Body 1', author: { id: '1', name: 'Author 1' }, tags: [], createdAt: '2026-01-15T12:00:00Z', updatedAt: '', order: 1 },
+  { id: '2', title: 'Title 2', content: 'Body 2', author: { id: '2', name: 'Author 2' }, tags: [], createdAt: '2026-02-15T12:00:00Z', updatedAt: '', order: 2 },
 ];
 
 describe('BlogComponent', () => {
@@ -69,6 +69,7 @@ describe('BlogComponent', () => {
       expect(screen.getAllByRole('article').length).toBe(2);
       screen.getByText('Title 1');
       screen.getByText('Body 1');
+      screen.getByText('January 15, 2026');
     });
   });
 

@@ -8,8 +8,8 @@ import { AboutContent } from '../models/about.model';
 import { environment } from '../../environments/environment';
 
 const mockAboutContent: AboutContent[] = [
-  { id: '1', title: 'About Me', content: 'I am a software engineer.', order: 1 },
-  { id: '2', title: 'My Hobbies', content: 'I like to code.', order: 2 },
+  { id: '1', title: 'About Me', content: 'I am a software engineer.', activatedAt: '2026-01-15T12:00:00Z', deactivatedAt: '', order: 1 },
+  { id: '2', title: 'My Hobbies', content: 'I like to code.', activatedAt: '2026-02-15T12:00:00Z', deactivatedAt: '', order: 2 },
 ];
 
 describe('AboutService', () => {

@@ -70,13 +70,14 @@
       </aside>
     </div>
     <ng-template #itemTmpl let-item>
-      <app-card 
-        appScrollFadeIn
-        [title]="item.title" 
-        [content]="getSnippet(item.content)"
-        [tags]="getTags(item.tags)"
-        (click)="viewPost(item.id)">
-      </app-card>
+        <app-card 
+          appScrollFadeIn
+          [title]="item.title" 
+          [date]="item.createdAt"
+          [content]="getSnippet(item.content)"
+          [tags]="getTags(item.tags)"
+          (click)="viewPost(item.id)">
+        </app-card>
     </ng-template>
   </div>
 </app-page>
