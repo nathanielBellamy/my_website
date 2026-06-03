@@ -41,4 +41,36 @@ describe('CardComponent', () => {
 
     expect(screen.queryByText(/#/)).toBeNull();
   });
+
+  it('should render inline code without markdown backticks in the DOM', async () => {
+    const { container } = await render(CardComponent, {
+      componentInputs: {
+        title: 'Test Title',
+        content: "Use `const foo = 'bar'` here.",
+      },
+      providers: [provideMarkdown()],
+    });
+
+    const codeElement = container.querySelector('code');
+
+    expect(codeElement).not.toBeNull();
+    expect(codeElement?.textContent).toBe("const foo = 'bar'");
+    expect(container.textContent).not.toContain("`const foo = 'bar'`");
+  });
+
+  it('should render blockquotes without injecting quotation marks into the DOM', async () => {
+    const { container } = await render(CardComponent, {
+      componentInputs: {
+        title: 'Test Title',
+        content: '> foo',
+      },
+      providers: [provideMarkdown()],
+    });
+
+    const blockquoteElement = container.querySelector('blockquote');
+
+    expect(blockquoteElement).not.toBeNull();
+    expect(blockquoteElement?.textContent?.trim()).toBe('foo');
+    expect(container.textContent).not.toContain('"foo"');
+  });
 });
