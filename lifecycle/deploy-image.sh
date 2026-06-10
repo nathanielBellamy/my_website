@@ -13,6 +13,14 @@ if [ -z "$SSH_USER" ] || [ -z "$SSH_HOST" ] || [ -z "$SSH_KEY_PATH" ] || [ -z "$
   exit 1
 fi
 
+# Clean up local artifact and any stale remote artifact on failure
+cleanup() {
+  echo "🧹 Cleaning up artifacts..."
+  rm -f backend.tar.gz
+  ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$SSH_USER@$SSH_HOST" "rm -f /tmp/backend.tar.gz" 2>/dev/null || true
+}
+trap cleanup EXIT
+
 echo "--------------------------------------------------"
 echo "🚀 Starting Deployment to $TARGET_ENV"
 echo "Target: $SSH_USER@$SSH_HOST"
@@ -31,6 +39,8 @@ echo "✅ Image compressed to backend.tar.gz"
 
 # 2. Transfer files
 echo "📤 Transferring files to server..."
+echo "   Cleaning up stale artifacts on remote..."
+$SSH_CMD $SSH_USER@$SSH_HOST "rm -f /tmp/backend.tar.gz"
 $SCP_CMD backend.tar.gz $SSH_USER@$SSH_HOST:/tmp/backend.tar.gz
 $SCP_CMD docker-compose.prod.yml $SSH_USER@$SSH_HOST:~/docker-compose.yml
 
@@ -95,6 +105,3 @@ REMOTE_EOF
 echo "--------------------------------------------------"
 echo "✅ Deployment to $TARGET_ENV complete!"
 echo "--------------------------------------------------"
-
-# Cleanup local artifact
-rm backend.tar.gz
