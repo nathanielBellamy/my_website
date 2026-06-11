@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"net"
 	"net/http"
 	"strings"
 	"sync"
@@ -54,6 +55,8 @@ func (i *IPRateLimiter) GetLimiter(ip string) *rate.Limiter {
 
 // RateLimitMiddleware is an HTTP middleware that applies rate limiting based on the client's IP address.
 // Paths in exemptPrefixes bypass rate limiting (e.g. Grafana proxy which makes many internal requests).
+// Loopback addresses (127.0.0.1, ::1) are always exempt — they cannot originate from the internet
+// and must not be throttled during local development or CI test runs.
 func RateLimitMiddleware(limiter *IPRateLimiter, log *zerolog.Logger, next http.Handler, exemptPrefixes ...string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		for _, prefix := range exemptPrefixes {
@@ -64,6 +67,19 @@ func RateLimitMiddleware(limiter *IPRateLimiter, log *zerolog.Logger, next http.
 		}
 
 		ip := auth.GetClientIpAddr(r)
+
+		// Strip port if present (r.RemoteAddr is "IP:port").
+		host, _, err := net.SplitHostPort(ip)
+		if err == nil {
+			ip = host
+		}
+
+		if parsed := net.ParseIP(ip); parsed != nil && parsed.IsLoopback() {
+			log.Debug().Str("ip", ip).Msg("Rate limiting skipped for loopback address")
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		limiterForIP := limiter.GetLimiter(ip)
 
 		if !limiterForIP.Allow() {

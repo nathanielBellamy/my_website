@@ -96,8 +96,19 @@ func main() {
 
 	hostRouter := SetupRoutes(&cookieJar, &log, feedPool, wasmPool, pgAdapter, startAt)
 
-	// Setup Global Rate Limiter: Allows 5 requests per second per IP with a burst of 10
-	limiter := middleware.NewIPRateLimiter(rate.Limit(5), 10)
+	// Setup Global Rate Limiter.
+	// In localhost/CI mode, use a very permissive limit so development and automated test
+	// traffic is never throttled (Docker NAT means all host traffic arrives from the bridge
+	// gateway IP, not 127.0.0.1, so loopback exemptions cannot help here).
+	// In all other modes, enforce a strict 5 req/sec per IP with a burst of 10.
+	var limiter *middleware.IPRateLimiter
+	if env.IsLocalhost(mode) {
+		log.Info().Msg("Localhost mode: using permissive rate limit (1000 req/s, burst 5000)")
+		limiter = middleware.NewIPRateLimiter(rate.Limit(1000), 5000)
+	} else {
+		log.Info().Msg("Production mode: enforcing rate limit (5 req/s, burst 10)")
+		limiter = middleware.NewIPRateLimiter(rate.Limit(5), 10)
+	}
 
 	server := &http.Server{
 		Addr:         ":8080",

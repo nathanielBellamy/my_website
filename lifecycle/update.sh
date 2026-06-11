@@ -1,7 +1,8 @@
 #!/bin/bash
 #
 # Runs safe dependency updates across all projects.
-#   - npm audit fix   for each frontend project and e2e
+#   - npm update, then npm audit --omit=dev for Angular frontends
+#   - npm audit fix --legacy-peer-deps for legacy frontend
 #   - go get -u=patch for the Go backend (patch-level updates only)
 #
 cd "$(dirname "$0")/.."
@@ -16,10 +17,10 @@ for project in "${FRONTEND_PROJECTS[@]}"; do
 ${project}
 
 EOF
-    if [[ "$project" == "frontend/old-site" || "$project" == "frontend/auth" ]]; then
+    if [[ "$project" == "frontend/old-site" ]]; then
       (cd "$project" && npm audit fix --legacy-peer-deps)
     else
-      (cd "$project" && npm audit fix)
+      (cd "$project" && npm update --audit=false && npm audit --omit=dev)
     fi
   fi
 done

@@ -7,9 +7,11 @@ import (
 	"fmt"
 	"math/big"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	crand "crypto/rand"
@@ -359,7 +361,20 @@ func RequireAdminAuthV2(cookieJar *cmap.ConcurrentMap[string, Cookie], log *zero
 		}
 
 		log.Warn().Str("ip", GetClientIpAddr(r)).Msg("Admin auth required")
-		http.Redirect(w, r, "/auth/?return_to="+r.URL.Path, http.StatusSeeOther)
+
+		// Sanitize the return_to path to prevent open redirect attacks.
+		// r.URL.Path is the raw path from the request, which is user-controlled.
+		// We accept only paths that start with "/" but not "//" (protocol-relative URLs
+		// such as "//evil.com" would be treated as absolute by some redirect handlers).
+		returnTo := r.URL.Path
+		if !strings.HasPrefix(returnTo, "/") || strings.HasPrefix(returnTo, "//") {
+			log.Warn().
+				Str("ip", GetClientIpAddr(r)).
+				Str("rejected_path", returnTo).
+				Msg("Rejected unsafe return_to path; falling back to /")
+			returnTo = "/"
+		}
+		http.Redirect(w, r, "/auth/?return_to="+url.QueryEscape(returnTo), http.StatusSeeOther)
 	})
 }
 
