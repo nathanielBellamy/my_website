@@ -50,10 +50,9 @@ echo "   Transferring monitoring configs..."
 "${SCP_CMD[@]}" docker/monitoring/loki/loki-config.yml "$SSH_USER@$SSH_HOST:~/docker/monitoring/loki/loki-config.yml"
 "${SCP_CMD[@]}" docker/monitoring/promtail/promtail-config.yml "$SSH_USER@$SSH_HOST:~/docker/monitoring/promtail/promtail-config.yml"
 "${SCP_CMD[@]}" docker/monitoring/grafana/grafana.ini "$SSH_USER@$SSH_HOST:~/docker/monitoring/grafana/grafana.ini"
-# Remove stale provisioning dir first — scp -r into an existing dir
-# nests it (creates provisioning/provisioning/), which breaks Grafana.
+# Stream the provisioning directory to avoid brittle scp -r behavior in CI.
 "${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "rm -rf ~/docker/monitoring/grafana/provisioning"
-"${SCP_CMD[@]}" -r docker/monitoring/grafana/provisioning "$SSH_USER@$SSH_HOST:~/docker/monitoring/grafana/"
+tar -C docker/monitoring/grafana -cf - provisioning | "${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "tar -xf - -C ~/docker/monitoring/grafana"
 "${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "chmod -R a+rX ~/docker/monitoring/grafana/"
 
 echo "   Transferring lifecycle scripts..."
