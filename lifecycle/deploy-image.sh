@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -o pipefail
 
 # Usage: ./deploy-image.sh <USER> <HOST> <SSH_KEY_PATH> <TARGET_ENV>
 
@@ -13,14 +14,6 @@ if [ -z "$SSH_USER" ] || [ -z "$SSH_HOST" ] || [ -z "$SSH_KEY_PATH" ] || [ -z "$
   exit 1
 fi
 
-# Clean up local artifact and any stale remote artifact on failure
-cleanup() {
-  echo "🧹 Cleaning up artifacts..."
-  rm -f backend.tar.gz
-  ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$SSH_USER@$SSH_HOST" "rm -f /tmp/backend.tar.gz" 2>/dev/null || true
-}
-trap cleanup EXIT
-
 echo "--------------------------------------------------"
 echo "🚀 Starting Deployment to $TARGET_ENV"
 echo "Target: $SSH_USER@$SSH_HOST"
@@ -28,27 +21,20 @@ echo "--------------------------------------------------"
 
 # Ensure strict host key checking is off for CI/CD automation
 # We use a custom ssh command wrapper for convenience
-SSH_CMD="ssh -o StrictHostKeyChecking=no -i $SSH_KEY_PATH"
-SCP_CMD="scp -o StrictHostKeyChecking=no -i $SSH_KEY_PATH"
+SSH_CMD=(ssh -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH")
+SCP_CMD=(scp -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH")
 
-# 1. Save and compress the Docker image
-echo "📦 Saving and compressing Docker image (my_website_backend:latest)..."
-# We pipe directly to gzip to save disk I/O
-docker save my_website_backend:latest | gzip > backend.tar.gz
-echo "✅ Image compressed to backend.tar.gz"
-
-# 2. Transfer files
+# 1. Transfer files
 echo "📤 Transferring files to server..."
 echo "   Cleaning up stale artifacts on remote..."
-$SSH_CMD $SSH_USER@$SSH_HOST "rm -f /tmp/backend.tar.gz"
-$SCP_CMD backend.tar.gz $SSH_USER@$SSH_HOST:/tmp/backend.tar.gz
-$SCP_CMD docker-compose.prod.yml $SSH_USER@$SSH_HOST:~/docker-compose.yml
+"${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "rm -f /tmp/backend.tar.gz"
+"${SCP_CMD[@]}" docker-compose.prod.yml "$SSH_USER@$SSH_HOST:~/docker-compose.yml"
 
 echo "   Securing .env directory..."
-$SSH_CMD $SSH_USER@$SSH_HOST "if [ -f ~/.env ]; then rm ~/.env; fi && mkdir -p ~/.env && chmod 700 ~/.env"
+"${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "if [ -f ~/.env ]; then rm ~/.env; fi && mkdir -p ~/.env && chmod 700 ~/.env"
 if [ -f .env/.env.production ]; then
-  $SCP_CMD .env/.env.production $SSH_USER@$SSH_HOST:~/.env/.env.production
-  $SSH_CMD $SSH_USER@$SSH_HOST "chmod 600 ~/.env/.env.production"
+  "${SCP_CMD[@]}" .env/.env.production "$SSH_USER@$SSH_HOST:~/.env/.env.production"
+  "${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "chmod 600 ~/.env/.env.production"
 else
   echo "❌ .env/.env.production not found! Aborting."
   exit 1
@@ -56,37 +42,37 @@ fi
 
 # Transfer the database init script (mounted by compose)
 echo "   Ensuring database directory exists..."
-$SSH_CMD $SSH_USER@$SSH_HOST "mkdir -p ~/database"
-$SCP_CMD database/init.sql $SSH_USER@$SSH_HOST:~/database/init.sql
+"${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "mkdir -p ~/database"
+"${SCP_CMD[@]}" database/init.sql "$SSH_USER@$SSH_HOST:~/database/init.sql"
 
 # Transfer monitoring configs
 echo "   Transferring monitoring configs..."
-$SSH_CMD $SSH_USER@$SSH_HOST "mkdir -p ~/docker/monitoring/prometheus ~/docker/monitoring/loki ~/docker/monitoring/promtail ~/docker/monitoring/grafana"
-$SCP_CMD docker/monitoring/prometheus/prometheus.yml $SSH_USER@$SSH_HOST:~/docker/monitoring/prometheus/prometheus.yml
-$SCP_CMD docker/monitoring/loki/loki-config.yml $SSH_USER@$SSH_HOST:~/docker/monitoring/loki/loki-config.yml
-$SCP_CMD docker/monitoring/promtail/promtail-config.yml $SSH_USER@$SSH_HOST:~/docker/monitoring/promtail/promtail-config.yml
-$SCP_CMD docker/monitoring/grafana/grafana.ini $SSH_USER@$SSH_HOST:~/docker/monitoring/grafana/grafana.ini
+"${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "mkdir -p ~/docker/monitoring/prometheus ~/docker/monitoring/loki ~/docker/monitoring/promtail ~/docker/monitoring/grafana"
+"${SCP_CMD[@]}" docker/monitoring/prometheus/prometheus.yml "$SSH_USER@$SSH_HOST:~/docker/monitoring/prometheus/prometheus.yml"
+"${SCP_CMD[@]}" docker/monitoring/loki/loki-config.yml "$SSH_USER@$SSH_HOST:~/docker/monitoring/loki/loki-config.yml"
+"${SCP_CMD[@]}" docker/monitoring/promtail/promtail-config.yml "$SSH_USER@$SSH_HOST:~/docker/monitoring/promtail/promtail-config.yml"
+"${SCP_CMD[@]}" docker/monitoring/grafana/grafana.ini "$SSH_USER@$SSH_HOST:~/docker/monitoring/grafana/grafana.ini"
 # Remove stale provisioning dir first — scp -r into an existing dir
 # nests it (creates provisioning/provisioning/), which breaks Grafana.
-$SSH_CMD $SSH_USER@$SSH_HOST "rm -rf ~/docker/monitoring/grafana/provisioning"
-$SCP_CMD -r docker/monitoring/grafana/provisioning $SSH_USER@$SSH_HOST:~/docker/monitoring/grafana/
-$SSH_CMD $SSH_USER@$SSH_HOST "chmod -R a+rX ~/docker/monitoring/grafana/"
+"${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "rm -rf ~/docker/monitoring/grafana/provisioning"
+"${SCP_CMD[@]}" -r docker/monitoring/grafana/provisioning "$SSH_USER@$SSH_HOST:~/docker/monitoring/grafana/"
+"${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "chmod -R a+rX ~/docker/monitoring/grafana/"
 
 echo "   Transferring lifecycle scripts..."
-$SSH_CMD $SSH_USER@$SSH_HOST "mkdir -p ~/lifecycle"
-$SCP_CMD nixos/lifecycle/*.sh $SSH_USER@$SSH_HOST:~/lifecycle/
-$SSH_CMD $SSH_USER@$SSH_HOST "chmod +x ~/lifecycle/*.sh"
+"${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "mkdir -p ~/lifecycle"
+"${SCP_CMD[@]}" nixos/lifecycle/*.sh "$SSH_USER@$SSH_HOST:~/lifecycle/"
+"${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "chmod +x ~/lifecycle/*.sh"
 echo "✅ Files transferred."
+
+# 2. Stream the Docker image directly to the remote host
+echo "📦 Streaming Docker image to server (my_website_backend:latest)..."
+docker save my_website_backend:latest | gzip | "${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" "gunzip | docker load"
+echo "✅ Docker image loaded on server."
 
 # 3. Execute deployment on server
 echo "⚡ Executing remote deployment commands..."
-$SSH_CMD $SSH_USER@$SSH_HOST << 'REMOTE_EOF'
+"${SSH_CMD[@]}" "$SSH_USER@$SSH_HOST" << 'REMOTE_EOF'
   set -e
-
-  # Load new image
-  echo "   [Remote] Loading Docker image..."
-  gunzip -c /tmp/backend.tar.gz | docker load
-  rm /tmp/backend.tar.gz
 
   # Teardown old containers (graceful on first deploy)
   echo "   [Remote] Tearing down old containers..."
