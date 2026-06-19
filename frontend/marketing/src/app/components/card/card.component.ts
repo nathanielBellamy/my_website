@@ -12,4 +12,5 @@ export class CardComponent {
   title = input.required<string>();
   content = input.required<string>();
   tags = input<string[]>();
+  date = input<string>();
 }

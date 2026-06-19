@@ -8,6 +8,11 @@
       class="font-heading text-2xl font-bold mb-2 text-heading-text">
       {{ title() }}
     </div>
+    @if (date()) {
+      <div class="text-body-text/60 text-sm mb-4">
+        <span>{{ date() | date:'longDate' }}</span>
+      </div>
+    }
     <div class="prose prose-invert max-w-none">
       <markdown
         [data]="content()"

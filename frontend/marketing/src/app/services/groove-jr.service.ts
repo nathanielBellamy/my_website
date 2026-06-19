@@ -19,6 +19,8 @@ export class GrooveJrService {
             id: item.id,
             title: item.title,
             content: item.content,
+            activatedAt: item.activatedAt,
+            deactivatedAt: item.deactivatedAt,
             order: item.order,
           }))
         )
@@ -33,6 +35,8 @@ export class GrooveJrService {
           id: item.id,
           title: item.title,
           content: item.content,
+          activatedAt: item.activatedAt,
+          deactivatedAt: item.deactivatedAt,
           order: item.order,
         }))
       )
