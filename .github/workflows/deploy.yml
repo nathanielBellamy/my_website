@@ -40,6 +40,41 @@ jobs:
             echo "$DEV_ENV_FILE" > .env/.env.production
           fi
 
+      - name: Inject New Relic configuration
+        env:
+          NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+          NEW_RELIC_TRUST_KEY: ${{ secrets.NEW_RELIC_TRUST_KEY }}
+          NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
+          NEW_RELIC_AGENT_ID_MARKETING: ${{ secrets.NEW_RELIC_AGENT_ID_MARKETING }}
+          NEW_RELIC_AGENT_ID_ADMIN: ${{ secrets.NEW_RELIC_AGENT_ID_ADMIN }}
+          NEW_RELIC_AGENT_ID_AUTH: ${{ secrets.NEW_RELIC_AGENT_ID_AUTH }}
+          NEW_RELIC_AGENT_ID_OLDSITE: ${{ secrets.NEW_RELIC_AGENT_ID_OLDSITE }}
+          NEW_RELIC_APP_ID_MARKETING: ${{ secrets.NEW_RELIC_APP_ID_MARKETING }}
+          NEW_RELIC_APP_ID_ADMIN: ${{ secrets.NEW_RELIC_APP_ID_ADMIN }}
+          NEW_RELIC_APP_ID_AUTH: ${{ secrets.NEW_RELIC_APP_ID_AUTH }}
+          NEW_RELIC_APP_ID_OLDSITE: ${{ secrets.NEW_RELIC_APP_ID_OLDSITE }}
+        run: |
+          # Substitute New Relic tokens in frontend index.html files
+          for file in \
+            frontend/marketing/src/index.html \
+            frontend/admin/src/index.html \
+            frontend/auth/admin/src/index.html \
+            frontend/old-site/index.html; do
+            sed -i "s|__NEW_RELIC_ACCOUNT_ID__|${NEW_RELIC_ACCOUNT_ID}|g" "$file"
+            sed -i "s|__NEW_RELIC_TRUST_KEY__|${NEW_RELIC_TRUST_KEY}|g" "$file"
+            sed -i "s|__NEW_RELIC_LICENSE_KEY__|${NEW_RELIC_LICENSE_KEY}|g" "$file"
+          done
+          sed -i "s|__NEW_RELIC_AGENT_ID_MARKETING__|${NEW_RELIC_AGENT_ID_MARKETING}|g" frontend/marketing/src/index.html
+          sed -i "s|__NEW_RELIC_APP_ID_MARKETING__|${NEW_RELIC_APP_ID_MARKETING}|g" frontend/marketing/src/index.html
+          sed -i "s|__NEW_RELIC_AGENT_ID_ADMIN__|${NEW_RELIC_AGENT_ID_ADMIN}|g" frontend/admin/src/index.html
+          sed -i "s|__NEW_RELIC_APP_ID_ADMIN__|${NEW_RELIC_APP_ID_ADMIN}|g" frontend/admin/src/index.html
+          sed -i "s|__NEW_RELIC_AGENT_ID_AUTH__|${NEW_RELIC_AGENT_ID_AUTH}|g" frontend/auth/admin/src/index.html
+          sed -i "s|__NEW_RELIC_APP_ID_AUTH__|${NEW_RELIC_APP_ID_AUTH}|g" frontend/auth/admin/src/index.html
+          sed -i "s|__NEW_RELIC_AGENT_ID_OLDSITE__|${NEW_RELIC_AGENT_ID_OLDSITE}|g" frontend/old-site/index.html
+          sed -i "s|__NEW_RELIC_APP_ID_OLDSITE__|${NEW_RELIC_APP_ID_OLDSITE}|g" frontend/old-site/index.html
+          # Add NEW_RELIC_LICENSE_KEY to .env file for backend Go agent
+          echo "NEW_RELIC_LICENSE_KEY=${NEW_RELIC_LICENSE_KEY}" >> .env/.env.production
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
