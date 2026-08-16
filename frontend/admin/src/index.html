@@ -6,6 +6,12 @@
   <base href="./">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <!-- New Relic Browser Agent -->
+  <script type="text/javascript">
+    ;window.NREUM||(NREUM={});NREUM.init={distributed_tracing:{enabled:true},privacy:{cookies_enabled:true},ajax:{deny_list:["bam.nr-data.net"]}};
+    NREUM.loader_config={accountID:"NEW_RELIC_ACCOUNT_ID_PLACEHOLDER",trustKey:"NEW_RELIC_TRUST_KEY_PLACEHOLDER",agentID:"NEW_RELIC_AGENT_ID_PLACEHOLDER_ADMIN",licenseKey:"NEW_RELIC_API_KEY_PLACEHOLDER",applicationID:"NEW_RELIC_APP_ID_PLACEHOLDER_ADMIN"};
+    NREUM.info={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",licenseKey:"NEW_RELIC_API_KEY_PLACEHOLDER",applicationID:"NEW_RELIC_APP_ID_PLACEHOLDER_ADMIN",sa:1};
+  </script>
 </head>
 <body>
   <app-root></app-root>

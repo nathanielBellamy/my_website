@@ -12,7 +12,8 @@ type Db struct {
 }
 
 type Config struct {
-	Db Db
+	Db                 Db
+	NewRelicLicenseKey string
 }
 
 func NewConfig(mode string) (*Config, error) {
@@ -31,5 +32,6 @@ func NewConfig(mode string) (*Config, error) {
 		Db: Db{
 			Url: os.Getenv("DATABASE_URL"),
 		},
+		NewRelicLicenseKey: os.Getenv("NEW_RELIC_LICENSE_KEY"),
 	}, nil
 }

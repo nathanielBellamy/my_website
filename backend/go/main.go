@@ -110,9 +110,11 @@ func main() {
 		limiter = middleware.NewIPRateLimiter(rate.Limit(5), 10)
 	}
 
+	nrApp := monitoring.NewRelicApp(&log, "my_website_backend", cfg.NewRelicLicenseKey)
+
 	server := &http.Server{
 		Addr:         ":8080",
-		Handler:      middleware.RateLimitMiddleware(limiter, &log, hostRouter, "/grafana/"),
+		Handler:      middleware.RateLimitMiddleware(limiter, &log, monitoring.NewRelicMiddleware(nrApp, hostRouter), "/grafana/"),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
