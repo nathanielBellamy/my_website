@@ -65,6 +65,8 @@ github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 h1:C3w9PqII01/Oq
 github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822/go.mod h1:+n7T8mK8HuQTcFwEeznm/DIxMOiR9yIdICNftLE1DvQ=
 github.com/newrelic/go-agent/v3 v3.44.2 h1:5/a6TTwk0IGgXqAhpABRloYRsw6npAcmnyuH7bOGzlQ=
 github.com/newrelic/go-agent/v3 v3.44.2/go.mod h1:5A2u/S0na/zIg5hS197XdK+ZkLqTRq5baFzJfVWrc3Q=
+github.com/newrelic/go-agent/v3/integrations/logcontext-v2/nrzerolog v1.0.2 h1:pWOEnzA5rdBio2BnsHFYNfXcV4hvXJFEidjKEsdb8lc=
+github.com/newrelic/go-agent/v3/integrations/logcontext-v2/nrzerolog v1.0.2/go.mod h1:Iu/+o4G3iTGGiOQKVxQre6P4vNPzCh3Jo65jnn0Lcjs=
 github.com/nxadm/tail v1.4.4 h1:DQuhQpB1tVlglWS2hLQ5OV6B5r8aGxSrPc5Qo6uTN78=
 github.com/nxadm/tail v1.4.4/go.mod h1:kenIhsEOeOJmVchQTgglprH7qJGnHDVpk1VPCcaMI8A=
 github.com/onsi/ginkgo v1.14.2 h1:8mVmC9kjFFmA8H4pKMUhcblgifdkOIXPvbhN1T36q1M=

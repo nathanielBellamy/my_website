@@ -9,6 +9,7 @@ import (
 	"github.com/nathanielBellamy/my_website/backend/go/websocket"
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 // OldSiteController holds dependencies for old-site handlers.
@@ -32,12 +33,12 @@ func NewOldSiteController(cookieJar *cmap.ConcurrentMap[string, auth.Cookie], lo
 // RecaptchaHandler handles Recaptcha validation for the old site.
 func (osc *OldSiteController) RecaptchaHandler(w http.ResponseWriter, r *http.Request) {
 	ip := auth.GetClientIpAddr(r)
-	osc.Log.Info().
+	log.Ctx(r.Context()).Info().
 		Str("ip", ip).
 		Msg("Recaptcha Endpoint Hit")
 
 	res := auth.ValidateRecaptcha(r, osc.Log)
-	osc.Log.Info().
+	log.Ctx(r.Context()).Info().
 		Str("ip", ip).
 		Bool("res", res).
 		Msg("ValidateRecaptcha")
@@ -59,7 +60,7 @@ func (osc *OldSiteController) PublicSquareFeedWsHandler(w http.ResponseWriter, r
 
 	// BYPASS: Recaptcha validation disabled for public square websockets.
 	// To re-enable, remove this bypass block and uncomment the original logic below.
-	osc.Log.Info().
+	log.Ctx(r.Context()).Info().
 		Str("ip", ip).
 		Msg("PS FEED WS - recaptcha bypass active, serving websocket directly")
 	websocket.ServeFeedWs(osc.FeedPool, w, r, osc.Log)
@@ -69,11 +70,11 @@ func (osc *OldSiteController) PublicSquareFeedWsHandler(w http.ResponseWriter, r
 	// if !env.IsProd(mode) {
 	// 	validAdmin := auth.HasValidCookie(r, auth.CTADMIN, osc.CookieJar, osc.Log)
 	// 	validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, osc.CookieJar, osc.Log)
-	// 	osc.Log.Debug().
+	// 	log.Ctx(r.Context()).Debug().
 	// 		Bool("debug_validAdmin", validAdmin).
 	// 		Bool("debug_validRecaptcha", validRecaptcha).
 	// 		Msg("DEBUG HasValidCookie values")
-	// 	osc.Log.Info().
+	// 	log.Ctx(r.Context()).Info().
 	// 		Str("ip", ip).
 	// 		Bool("validAdmin", validAdmin).
 	// 		Bool("validRecaptcha", validRecaptcha).
@@ -85,7 +86,7 @@ func (osc *OldSiteController) PublicSquareFeedWsHandler(w http.ResponseWriter, r
 	// 	}
 	// } else {
 	// 	validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, osc.CookieJar, osc.Log)
-	// 	osc.Log.Info().
+	// 	log.Ctx(r.Context()).Info().
 	// 		Str("ip", ip).
 	// 		Bool("validRecaptcha", validRecaptcha).
 	// 		Msg("PS FEED WS")
@@ -103,7 +104,7 @@ func (osc *OldSiteController) PublicSquareWasmWsHandler(w http.ResponseWriter, r
 
 	// BYPASS: Recaptcha validation disabled for public square websockets.
 	// To re-enable, remove this bypass block and uncomment the original logic below.
-	osc.Log.Info().
+	log.Ctx(r.Context()).Info().
 		Str("ip", ip).
 		Msg("PS WASM WS - recaptcha bypass active, serving websocket directly")
 	websocket.ServeWasmWs(osc.WasmPool, w, r, osc.Log)
@@ -113,11 +114,11 @@ func (osc *OldSiteController) PublicSquareWasmWsHandler(w http.ResponseWriter, r
 	// if !env.IsProd(mode) {
 	// 	validAdmin := auth.HasValidCookie(r, auth.CTADMIN, osc.CookieJar, osc.Log)
 	// 	validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, osc.CookieJar, osc.Log)
-	// 	osc.Log.Debug().
+	// 	log.Ctx(r.Context()).Debug().
 	// 		Bool("debug_validAdmin", validAdmin).
 	// 		Bool("debug_validRecaptcha", validRecaptcha).
 	// 		Msg("DEBUG HasValidCookie values")
-	// 	osc.Log.Info().
+	// 	log.Ctx(r.Context()).Info().
 	// 		Str("ip", ip).
 	// 		Bool("validAdmin", validAdmin).
 	// 		Bool("validRecaptcha", validRecaptcha).
@@ -129,7 +130,7 @@ func (osc *OldSiteController) PublicSquareWasmWsHandler(w http.ResponseWriter, r
 	// 	}
 	// } else {
 	// 	validRecaptcha := auth.HasValidCookie(r, auth.CTPSR, osc.CookieJar, osc.Log)
-	// 	osc.Log.Info().
+	// 	log.Ctx(r.Context()).Info().
 	// 		Str("ip", ip).
 	// 		Bool("validRecaptcha", validRecaptcha).
 	// 		Msg("PS WASM WS")

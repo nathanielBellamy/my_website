@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
+	"github.com/rs/zerolog/log"
 )
 
 type LogFileInfo struct {
@@ -23,7 +24,7 @@ type LogFilesResponse struct {
 
 // GetLogFilesHandler returns a list of available log files
 func (lc *LogsController) GetLogFilesHandler(w http.ResponseWriter, r *http.Request) {
-	lc.Log.Info().
+	log.Ctx(r.Context()).Info().
 		Str("ip", auth.GetClientIpAddr(r)).
 		Msg("GetLogFilesHandler Hit")
 
@@ -31,7 +32,7 @@ func (lc *LogsController) GetLogFilesHandler(w http.ResponseWriter, r *http.Requ
 
 	err := filepath.Walk(lc.LogDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			lc.Log.Warn().Err(err).Str("path", path).Msg("Error walking log directory")
+			log.Ctx(r.Context()).Warn().Err(err).Str("path", path).Msg("Error walking log directory")
 			return nil
 		}
 		if info.IsDir() {
@@ -59,7 +60,7 @@ func (lc *LogsController) GetLogFilesHandler(w http.ResponseWriter, r *http.Requ
 	})
 
 	if err != nil {
-		lc.Log.Error().Err(err).Msg("Error walking log directory")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error walking log directory")
 		http.Error(w, "Error reading log files", http.StatusInternalServerError)
 		return
 	}
@@ -75,7 +76,7 @@ func (lc *LogsController) GetLogFilesHandler(w http.ResponseWriter, r *http.Requ
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(response); err != nil {
-		lc.Log.Error().Err(err).Msg("Error encoding log files response")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error encoding log files response")
 	}
 }
 

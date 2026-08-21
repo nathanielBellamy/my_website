@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 type GrafanaProxy struct {
@@ -79,7 +80,7 @@ func NewGrafanaProxy(log *zerolog.Logger, grafanaURL string) *GrafanaProxy {
 }
 
 func (gp *GrafanaProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	gp.Log.Debug().
+	log.Ctx(r.Context()).Debug().
 		Str("originalPath", r.URL.Path).
 		Msg("Proxying to Grafana")
 	gp.ReverseProxy.ServeHTTP(w, r)

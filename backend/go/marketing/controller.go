@@ -15,6 +15,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 // MarketingController holds dependencies for marketing-related handlers.
@@ -35,9 +36,9 @@ func NewMarketingController(log *zerolog.Logger, service Service) *MarketingCont
 
 }
 
-func (mc *MarketingController) sendJSON(w http.ResponseWriter, data interface{}) {
+func (mc *MarketingController) sendJSON(w http.ResponseWriter, r *http.Request, data interface{}) {
 	if err := json.NewEncoder(w).Encode(data); err != nil {
-		mc.Log.Error().Err(err).Msg("Error encoding response")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error encoding response")
 	}
 }
 
@@ -61,7 +62,7 @@ func getPaginationParams(r *http.Request) (int, int) {
 // Blog
 // GetAllBlogPostsHandler handles fetching all blog posts.
 func (mc *MarketingController) GetAllBlogPostsHandler(w http.ResponseWriter, r *http.Request) {
-	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllBlogPostsHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllBlogPostsHandler Hit")
 	page, limit := getPaginationParams(r)
 
 	tagsStr := r.URL.Query().Get("tags")
@@ -72,21 +73,21 @@ func (mc *MarketingController) GetAllBlogPostsHandler(w http.ResponseWriter, r *
 
 	posts, err := mc.Service.GetAllBlogPosts(page, limit, tags)
 	if err != nil {
-		mc.Log.Error().Err(err).Msg("Error fetching blog posts")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error fetching blog posts")
 		utils.HandleDBError(w, err, "Error fetching blog posts")
 		return
 	}
-	mc.sendJSON(w, posts)
+	mc.sendJSON(w, r, posts)
 }
 
 // GetBlogPostByIDHandler handles fetching a single blog post by ID.
 func (mc *MarketingController) GetBlogPostByIDHandler(w http.ResponseWriter, r *http.Request) {
-	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetBlogPostByIDHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetBlogPostByIDHandler Hit")
 	id := r.PathValue("id") // Assuming mux or similar router that extracts path variables
-	mc.Log.Debug().Str("idStr", id).Msg("GetBlogPostByIDHandler: PathValue 'id'")
+	log.Ctx(r.Context()).Debug().Str("idStr", id).Msg("GetBlogPostByIDHandler: PathValue 'id'")
 	post, err := mc.Service.GetBlogPostByID(id)
 	if err != nil {
-		mc.Log.Error().Err(err).Msg("Error fetching blog post")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error fetching blog post")
 		utils.HandleDBError(w, err, "Error fetching blog post")
 		return
 	}
@@ -96,29 +97,29 @@ func (mc *MarketingController) GetBlogPostByIDHandler(w http.ResponseWriter, r *
 		return
 	}
 
-	mc.sendJSON(w, post)
+	mc.sendJSON(w, r, post)
 }
 
 // GetBlogPostsByTagHandler handles fetching blog posts by tag.
 
 func (mc *MarketingController) GetBlogPostsByTagHandler(w http.ResponseWriter, r *http.Request) {
-	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetBlogPostsByTagHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetBlogPostsByTagHandler Hit")
 	tag := r.PathValue("tag") // Assuming mux or similar router
 	page, limit := getPaginationParams(r)
 
 	posts, err := mc.Service.GetBlogPostsByTag(tag, page, limit)
 	if err != nil {
-		mc.Log.Error().Err(err).Msg("Error fetching blog posts by tag")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error fetching blog posts by tag")
 		utils.HandleDBError(w, err, "Error fetching blog posts by tag")
 		return
 	}
 
-	mc.sendJSON(w, posts)
+	mc.sendJSON(w, r, posts)
 }
 
 // GetTagsHandler handles fetching tags.
 func (mc *MarketingController) GetTagsHandler(w http.ResponseWriter, r *http.Request) {
-	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetTagsHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetTagsHandler Hit")
 	search := r.URL.Query().Get("search")
 	limitStr := r.URL.Query().Get("limit")
 	limit, err := strconv.Atoi(limitStr)
@@ -128,12 +129,12 @@ func (mc *MarketingController) GetTagsHandler(w http.ResponseWriter, r *http.Req
 
 	tags, err := mc.Service.GetTags(search, limit)
 	if err != nil {
-		mc.Log.Error().Err(err).Msg("Error fetching tags")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error fetching tags")
 		utils.HandleDBError(w, err, "Error fetching tags")
 		return
 	}
 
-	mc.sendJSON(w, tags)
+	mc.sendJSON(w, r, tags)
 }
 
 // Work
@@ -141,28 +142,28 @@ func (mc *MarketingController) GetTagsHandler(w http.ResponseWriter, r *http.Req
 // GetAllWorkContentHandler handles fetching all work content.
 
 func (mc *MarketingController) GetAllWorkContentHandler(w http.ResponseWriter, r *http.Request) {
-	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllWorkContentHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllWorkContentHandler Hit")
 	page, limit := getPaginationParams(r)
 
 	content, err := mc.Service.GetAllWorkContent(page, limit)
 	if err != nil {
-		mc.Log.Error().Err(err).Msg("Error fetching work content")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error fetching work content")
 		utils.HandleDBError(w, err, "Error fetching work content")
 		return
 	}
 
-	mc.sendJSON(w, content)
+	mc.sendJSON(w, r, content)
 }
 
 // GetWorkContentByIDHandler handles fetching work content by ID.
 
 func (mc *MarketingController) GetWorkContentByIDHandler(w http.ResponseWriter, r *http.Request) {
-	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetWorkContentByIDHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetWorkContentByIDHandler Hit")
 	id := r.PathValue("id")
 
 	content, err := mc.Service.GetWorkContentByID(id)
 	if err != nil {
-		mc.Log.Error().Err(err).Msg("Error fetching work content")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error fetching work content")
 		utils.HandleDBError(w, err, "Error fetching work content")
 		return
 	}
@@ -172,7 +173,7 @@ func (mc *MarketingController) GetWorkContentByIDHandler(w http.ResponseWriter, 
 		return
 	}
 
-	mc.sendJSON(w, content)
+	mc.sendJSON(w, r, content)
 }
 
 // GrooveJr
@@ -180,28 +181,28 @@ func (mc *MarketingController) GetWorkContentByIDHandler(w http.ResponseWriter, 
 // GetAllGrooveJrContentHandler handles fetching all groove-jr content.
 
 func (mc *MarketingController) GetAllGrooveJrContentHandler(w http.ResponseWriter, r *http.Request) {
-	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllGrooveJrContentHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllGrooveJrContentHandler Hit")
 	page, limit := getPaginationParams(r)
 
 	content, err := mc.Service.GetAllGrooveJrContent(page, limit)
 	if err != nil {
-		mc.Log.Error().Err(err).Msg("Error fetching groove-jr content")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error fetching groove-jr content")
 		utils.HandleDBError(w, err, "Error fetching groove-jr content")
 		return
 	}
 
-	mc.sendJSON(w, content)
+	mc.sendJSON(w, r, content)
 }
 
 // GetGrooveJrContentByIDHandler handles fetching groove-jr content by ID.
 
 func (mc *MarketingController) GetGrooveJrContentByIDHandler(w http.ResponseWriter, r *http.Request) {
-	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetGrooveJrContentByIDHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetGrooveJrContentByIDHandler Hit")
 	id := r.PathValue("id")
 
 	content, err := mc.Service.GetGrooveJrContentByID(id)
 	if err != nil {
-		mc.Log.Error().Err(err).Msg("Error fetching groove-jr content")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error fetching groove-jr content")
 		utils.HandleDBError(w, err, "Error fetching groove-jr content")
 		return
 	}
@@ -211,7 +212,7 @@ func (mc *MarketingController) GetGrooveJrContentByIDHandler(w http.ResponseWrit
 		return
 	}
 
-	mc.sendJSON(w, content)
+	mc.sendJSON(w, r, content)
 }
 
 // About
@@ -219,28 +220,28 @@ func (mc *MarketingController) GetGrooveJrContentByIDHandler(w http.ResponseWrit
 // GetAllAboutContentHandler handles fetching all about content.
 
 func (mc *MarketingController) GetAllAboutContentHandler(w http.ResponseWriter, r *http.Request) {
-	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllAboutContentHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllAboutContentHandler Hit")
 	page, limit := getPaginationParams(r)
 
 	content, err := mc.Service.GetAllAboutContent(page, limit)
 	if err != nil {
-		mc.Log.Error().Err(err).Msg("Error fetching about content")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error fetching about content")
 		utils.HandleDBError(w, err, "Error fetching about content")
 		return
 	}
 
-	mc.sendJSON(w, content)
+	mc.sendJSON(w, r, content)
 }
 
 // GetAboutContentByIDHandler handles fetching about content by ID.
 
 func (mc *MarketingController) GetAboutContentByIDHandler(w http.ResponseWriter, r *http.Request) {
-	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAboutContentByIDHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAboutContentByIDHandler Hit")
 	id := r.PathValue("id")
 
 	content, err := mc.Service.GetAboutContentByID(id)
 	if err != nil {
-		mc.Log.Error().Err(err).Msg("Error fetching about content")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error fetching about content")
 		utils.HandleDBError(w, err, "Error fetching about content")
 		return
 	}
@@ -250,7 +251,7 @@ func (mc *MarketingController) GetAboutContentByIDHandler(w http.ResponseWriter,
 		return
 	}
 
-	mc.sendJSON(w, content)
+	mc.sendJSON(w, r, content)
 }
 
 func (mc *MarketingController) determineBaseURL(r *http.Request) string {
@@ -276,11 +277,11 @@ func (mc *MarketingController) determineBaseURL(r *http.Request) string {
 
 // SitemapHandler generates the XML sitemap.
 func (mc *MarketingController) SitemapHandler(w http.ResponseWriter, r *http.Request) {
-	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("SitemapHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("SitemapHandler Hit")
 
 	data, err := mc.Service.GetSitemapData()
 	if err != nil {
-		mc.Log.Error().Err(err).Msg("Error fetching sitemap data")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error fetching sitemap data")
 		utils.HandleDBError(w, err, "Error fetching sitemap data")
 		return
 	}
@@ -374,17 +375,17 @@ func (mc *MarketingController) SitemapHandler(w http.ResponseWriter, r *http.Req
 
 	w.Header().Set("Content-Type", "application/xml")
 	if _, err := w.Write([]byte(xml.Header)); err != nil {
-		mc.Log.Error().Err(err).Msg("Error writing XML header")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error writing XML header")
 		return
 	}
 	if err := xml.NewEncoder(w).Encode(URLSet{URLs: urls}); err != nil {
-		mc.Log.Error().Err(err).Msg("Error encoding sitemap")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error encoding sitemap")
 	}
 }
 
 // RobotsTxtHandler serves the robots.txt file.
 func (mc *MarketingController) RobotsTxtHandler(w http.ResponseWriter, r *http.Request) {
-	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("RobotsTxtHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("RobotsTxtHandler Hit")
 
 	baseUrl := mc.determineBaseURL(r)
 
@@ -397,7 +398,7 @@ Sitemap: {{.BaseUrl}}/sitemap.xml
 `
 	tmpl, err := template.New("robots").Parse(robotsTemplate)
 	if err != nil {
-		mc.Log.Error().Err(err).Msg("Error parsing robots.txt template")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error parsing robots.txt template")
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
@@ -409,13 +410,13 @@ Sitemap: {{.BaseUrl}}/sitemap.xml
 	}
 
 	if err := tmpl.Execute(w, data); err != nil {
-		mc.Log.Error().Err(err).Msg("Error executing robots.txt template")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error executing robots.txt template")
 	}
 }
 
 // ImageServingHandler serves images from the uploads directory.
 func (mc *MarketingController) ImageServingHandler(w http.ResponseWriter, r *http.Request) {
-	mc.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("ImageServingHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("ImageServingHandler Hit")
 	filename := r.PathValue("filename")
 
 	// Sanitize filename to prevent directory traversal
@@ -430,7 +431,7 @@ func (mc *MarketingController) ImageServingHandler(w http.ResponseWriter, r *htt
 	// Use os.Root to scope file access under uploadDir
 	root, err := os.OpenRoot(uploadDir)
 	if err != nil {
-		mc.Log.Error().Err(err).Msg("Error opening upload root directory")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error opening upload root directory")
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
