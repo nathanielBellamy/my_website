@@ -74,8 +74,8 @@ AUTH SPA
 
 EOF
   SPA_ENV=$1
-  cd auth/admin && npm run build-$SPA_ENV 
-  cd ../..
+  cd frontend/auth/admin && npm run build-$SPA_ENV
+  cd ../../..
   cat << EOF
 
   📣  🏁  DONE:
@@ -92,8 +92,8 @@ old-site SPA
 EOF
 
   SPA_ENV=$1
-  cd old-site && npm run build-old-site-$SPA_ENV 
-  cd ..
+  cd frontend/old-site && npm run build-old-site-$SPA_ENV
+  cd ../..
   cat << EOF
 
   📣  🏁  DONE:
@@ -120,8 +120,8 @@ MARKETING SPA
 
 EOF
   SPA_ENV=$1
-  cd marketing && npm run build-marketing-$SPA_ENV 
-  cd ..
+  cd frontend/marketing && npm run build-marketing-$SPA_ENV
+  cd ../..
   cat << EOF
 
   📣  🏁  DONE:
@@ -139,12 +139,87 @@ ADMIN SPA
 
 EOF
   SPA_ENV=$1
-  cd admin && npm run build-admin-$SPA_ENV 
-  cd ..
+  cd frontend/admin && npm run build-admin-$SPA_ENV
+  cd ../..
   cat << EOF
 
   📣  🏁  DONE:
 ADMIN SPA BUILT
+
+EOF
+}
+
+# Function to inject New Relic browser agent config into built SPA index.html files.
+# Values are read from the mode's .env file (e.g. .env/.env.localhost), mirroring the
+# secret substitution done in .github/workflows/deploy.yml for remotedev/prod.
+inject_new_relic_config() {
+  ENV_MODE=$1
+  ENV_FILE="./.env/.env.$ENV_MODE"
+
+  if [ ! -f "$ENV_FILE" ] || ! grep -q "^NEW_RELIC_BROWSER_LICENSE_KEY=" "$ENV_FILE"; then
+    cat << EOF
+
+  ⚠️   SKIPPING New Relic browser config injection
+  (no NEW_RELIC_BROWSER_LICENSE_KEY found in ${ENV_FILE})
+
+EOF
+    return
+  fi
+
+  cat << EOF
+
+  📣  💉  INJECTING:
+NEW RELIC BROWSER CONFIG (${ENV_MODE})
+
+EOF
+
+  # Load only the NEW_RELIC_* vars from the mode's env file (scoped to this function)
+  while IFS='=' read -r key value; do
+    export "$key"="$value"
+  done < <(grep '^NEW_RELIC_' "$ENV_FILE")
+
+  inject_file() {
+    FILE=$1
+    AGENT_ID_VALUE=$2
+    APP_ID_VALUE=$3
+    AGENT_PLACEHOLDER=$4
+    APP_PLACEHOLDER=$5
+
+    if [ ! -f "$FILE" ]; then
+      return
+    fi
+
+    sed -i '' \
+      -e "s|__NEW_RELIC_ACCOUNT_ID__|${NEW_RELIC_ACCOUNT_ID}|g" \
+      -e "s|__NEW_RELIC_TRUST_KEY__|${NEW_RELIC_TRUST_KEY}|g" \
+      -e "s|__NEW_RELIC_BROWSER_LICENSE_KEY__|${NEW_RELIC_BROWSER_LICENSE_KEY}|g" \
+      -e "s|${AGENT_PLACEHOLDER}|${AGENT_ID_VALUE}|g" \
+      -e "s|${APP_PLACEHOLDER}|${APP_ID_VALUE}|g" \
+      "$FILE"
+
+    echo "  ✅  Injected New Relic config into $FILE"
+  }
+
+  inject_file "build/marketing/browser/index.html" \
+    "$NEW_RELIC_AGENT_ID_MARKETING" "$NEW_RELIC_APP_ID_MARKETING" \
+    "__NEW_RELIC_AGENT_ID_MARKETING__" "__NEW_RELIC_APP_ID_MARKETING__"
+
+  inject_file "build/admin/browser/index.html" \
+    "$NEW_RELIC_AGENT_ID_ADMIN" "$NEW_RELIC_APP_ID_ADMIN" \
+    "__NEW_RELIC_AGENT_ID_ADMIN__" "__NEW_RELIC_APP_ID_ADMIN__"
+
+  inject_file "build/auth/admin/browser/index.html" \
+    "$NEW_RELIC_AGENT_ID_AUTH" "$NEW_RELIC_APP_ID_AUTH" \
+    "__NEW_RELIC_AGENT_ID_AUTH__" "__NEW_RELIC_APP_ID_AUTH__"
+
+  inject_file "build/old-site/index.html" \
+    "$NEW_RELIC_AGENT_ID_OLDSITE" "$NEW_RELIC_APP_ID_OLDSITE" \
+    "__NEW_RELIC_AGENT_ID_OLDSITE__" "__NEW_RELIC_APP_ID_OLDSITE__"
+
+  cat << EOF
+
+  📣  🏁  DONE:
+NEW RELIC BROWSER CONFIG INJECTED
 
 EOF
 }
@@ -195,6 +270,7 @@ case $MODE in
     fi
     build_marketing_spa "localhost"
     build_admin_spa "localhost"
+    inject_new_relic_config "localhost"
     ;;
   remotedev)
     build_go_server "remotedev"
@@ -202,6 +278,7 @@ case $MODE in
     build_old_site_spa "remotedev"
     build_marketing_spa "remotedev"
     build_admin_spa "remotedev"
+    inject_new_relic_config "remotedev"
     ;;
   prod)
     build_go_server "prod"
@@ -209,6 +286,7 @@ case $MODE in
     build_old_site_spa "prod"
     build_marketing_spa "prod"
     build_admin_spa "prod"
+    inject_new_relic_config "prod"
     ;;
   *)
     echo "Invalid MODE. Choose between localhost, remotedev, or prod."
