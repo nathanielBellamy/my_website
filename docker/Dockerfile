@@ -44,17 +44,62 @@ RUN ln -s /app/.env /.env
 # Accept MODE as a build argument so it's available during RUN steps
 ARG MODE
 
+# Accept New Relic browser agent config as build args (sourced from the mode's .env
+# file via docker-compose --env-file). Mirrors the sed substitution done against
+# frontend/*/src/index.html in .github/workflows/deploy.yml for CI/prod builds, so
+# local docker-compose builds (which build the SPAs from source inside the
+# container, bypassing lifecycle/build.sh's host-side injection) get real values too.
+ARG NEW_RELIC_ACCOUNT_ID
+ARG NEW_RELIC_TRUST_KEY
+ARG NEW_RELIC_BROWSER_LICENSE_KEY
+ARG NEW_RELIC_AGENT_ID_MARKETING
+ARG NEW_RELIC_APP_ID_MARKETING
+ARG NEW_RELIC_AGENT_ID_ADMIN
+ARG NEW_RELIC_APP_ID_ADMIN
+ARG NEW_RELIC_AGENT_ID_AUTH
+ARG NEW_RELIC_APP_ID_AUTH
+ARG NEW_RELIC_AGENT_ID_OLDSITE
+ARG NEW_RELIC_APP_ID_OLDSITE
+
 # Build frontend applications
 COPY frontend/auth/admin ./auth/admin
+RUN sed -i \
+      -e "s|__NEW_RELIC_ACCOUNT_ID__|${NEW_RELIC_ACCOUNT_ID}|g" \
+      -e "s|__NEW_RELIC_TRUST_KEY__|${NEW_RELIC_TRUST_KEY}|g" \
+      -e "s|__NEW_RELIC_BROWSER_LICENSE_KEY__|${NEW_RELIC_BROWSER_LICENSE_KEY}|g" \
+      -e "s|__NEW_RELIC_AGENT_ID_AUTH__|${NEW_RELIC_AGENT_ID_AUTH}|g" \
+      -e "s|__NEW_RELIC_APP_ID_AUTH__|${NEW_RELIC_APP_ID_AUTH}|g" \
+      auth/admin/src/index.html
 RUN npm run build-${MODE} --prefix auth/admin
 
 COPY frontend/old-site ./old-site
+RUN sed -i \
+      -e "s|__NEW_RELIC_ACCOUNT_ID__|${NEW_RELIC_ACCOUNT_ID}|g" \
+      -e "s|__NEW_RELIC_TRUST_KEY__|${NEW_RELIC_TRUST_KEY}|g" \
+      -e "s|__NEW_RELIC_BROWSER_LICENSE_KEY__|${NEW_RELIC_BROWSER_LICENSE_KEY}|g" \
+      -e "s|__NEW_RELIC_AGENT_ID_OLDSITE__|${NEW_RELIC_AGENT_ID_OLDSITE}|g" \
+      -e "s|__NEW_RELIC_APP_ID_OLDSITE__|${NEW_RELIC_APP_ID_OLDSITE}|g" \
+      old-site/index.html
 RUN npm run build-old-site-${MODE} --prefix old-site
 
 COPY frontend/admin ./admin
+RUN sed -i \
+      -e "s|__NEW_RELIC_ACCOUNT_ID__|${NEW_RELIC_ACCOUNT_ID}|g" \
+      -e "s|__NEW_RELIC_TRUST_KEY__|${NEW_RELIC_TRUST_KEY}|g" \
+      -e "s|__NEW_RELIC_BROWSER_LICENSE_KEY__|${NEW_RELIC_BROWSER_LICENSE_KEY}|g" \
+      -e "s|__NEW_RELIC_AGENT_ID_ADMIN__|${NEW_RELIC_AGENT_ID_ADMIN}|g" \
+      -e "s|__NEW_RELIC_APP_ID_ADMIN__|${NEW_RELIC_APP_ID_ADMIN}|g" \
+      admin/src/index.html
 RUN npm run build-${MODE} --prefix admin
 
 COPY frontend/marketing ./marketing
+RUN sed -i \
+      -e "s|__NEW_RELIC_ACCOUNT_ID__|${NEW_RELIC_ACCOUNT_ID}|g" \
+      -e "s|__NEW_RELIC_TRUST_KEY__|${NEW_RELIC_TRUST_KEY}|g" \
+      -e "s|__NEW_RELIC_BROWSER_LICENSE_KEY__|${NEW_RELIC_BROWSER_LICENSE_KEY}|g" \
+      -e "s|__NEW_RELIC_AGENT_ID_MARKETING__|${NEW_RELIC_AGENT_ID_MARKETING}|g" \
+      -e "s|__NEW_RELIC_APP_ID_MARKETING__|${NEW_RELIC_APP_ID_MARKETING}|g" \
+      marketing/src/index.html
 RUN npm run build-marketing-${MODE} --prefix marketing
 
 # Copy the go module files and download dependencies

@@ -424,7 +424,7 @@ func WithSecurityHeaders(next http.Handler) http.Handler {
 
 		// CSP: Allow Google Recaptcha, YouTube embeds, self, and inline styles/scripts (for Angular)
 		// We allow ws: for localhost development
-		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; frame-src https://www.google.com/recaptcha/ https://www.youtube.com/; connect-src 'self' ws: wss: https://www.google.com/recaptcha/; frame-ancestors 'none'; base-uri 'self';")
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ https://js-agent.newrelic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; frame-src https://www.google.com/recaptcha/ https://www.youtube.com/; connect-src 'self' ws: wss: https://www.google.com/recaptcha/ https://bam.nr-data.net https://bam-cell.nr-data.net; frame-ancestors 'none'; base-uri 'self';")
 
 		w.Header().Set("X-Frame-Options", "DENY")
 		w.Header().Set("X-Content-Type-Options", "nosniff")

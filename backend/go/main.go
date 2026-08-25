@@ -23,6 +23,7 @@ import (
 	"github.com/nathanielBellamy/my_website/backend/go/monitoring"
 	"github.com/nathanielBellamy/my_website/backend/go/old_site"
 	"github.com/nathanielBellamy/my_website/backend/go/websocket"
+	"github.com/newrelic/go-agent/v3/integrations/logcontext-v2/nrzerolog"
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog"
@@ -110,9 +111,15 @@ func main() {
 		limiter = middleware.NewIPRateLimiter(rate.Limit(5), 10)
 	}
 
+	nrApp := monitoring.NewRelicApp(&log, "my_website_backend", cfg.NewRelicLicenseKey)
+	if nrApp != nil {
+		hook := nrzerolog.NewRelicHook{App: nrApp}
+		log = log.Hook(hook)
+	}
+
 	server := &http.Server{
 		Addr:         ":8080",
-		Handler:      middleware.RateLimitMiddleware(limiter, &log, hostRouter, "/grafana/"),
+		Handler:      middleware.RateLimitMiddleware(limiter, &log, monitoring.NewRelicMiddleware(nrApp, &log, hostRouter), "/grafana/"),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}

@@ -8,6 +8,8 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.9
 	github.com/microcosm-cc/bluemonday v1.0.27
+	github.com/newrelic/go-agent/v3 v3.44.2
+	github.com/newrelic/go-agent/v3/integrations/logcontext-v2/nrzerolog v1.0.2
 	github.com/orcaman/concurrent-map/v2 v2.0.1
 	github.com/pquerna/otp v1.5.0
 	github.com/prometheus/client_golang v1.23.2
@@ -29,7 +31,7 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.15 // indirect
-	github.com/mattn/go-isatty v0.0.22 // indirect
+	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/prometheus/client_model v0.6.2 // indirect
 	github.com/prometheus/common v0.66.1 // indirect
@@ -43,6 +45,8 @@ require (
 	golang.org/x/net v0.49.0 // indirect
 	golang.org/x/sys v0.40.0 // indirect
 	golang.org/x/text v0.37.0 // indirect
-	google.golang.org/protobuf v1.36.11 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260819154853-08b0e4226688 // indirect
+	google.golang.org/grpc v1.80.0 // indirect
+	google.golang.org/protobuf v1.36.12 // indirect
 	mellium.im/sasl v0.3.2 // indirect
 )

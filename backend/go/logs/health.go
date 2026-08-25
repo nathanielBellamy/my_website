@@ -1,6 +1,7 @@
 package logs
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -11,18 +12,19 @@ import (
 	"github.com/nathanielBellamy/my_website/backend/go/interfaces"
 	"github.com/nathanielBellamy/my_website/backend/go/models"
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 type HealthInfo struct {
-	Uptime        string         `json:"uptime"`
-	UptimeSeconds float64        `json:"uptimeSeconds"`
-	GoRoutines    int            `json:"goRoutines"`
-	MemAllocMB    float64        `json:"memAllocMb"`
-	MemSysMB      float64        `json:"memSysMb"`
-	NumGC         uint32         `json:"numGc"`
-	DbConnected   bool           `json:"dbConnected"`
-	GoVersion     string         `json:"goVersion"`
-	NumCPU        int            `json:"numCpu"`
+	Uptime        string  `json:"uptime"`
+	UptimeSeconds float64 `json:"uptimeSeconds"`
+	GoRoutines    int     `json:"goRoutines"`
+	MemAllocMB    float64 `json:"memAllocMb"`
+	MemSysMB      float64 `json:"memSysMb"`
+	NumGC         uint32  `json:"numGc"`
+	DbConnected   bool    `json:"dbConnected"`
+	GoVersion     string  `json:"goVersion"`
+	NumCPU        int     `json:"numCpu"`
 }
 
 type HealthController struct {
@@ -41,7 +43,7 @@ func NewHealthController(log *zerolog.Logger, startAt time.Time, db interfaces.P
 
 // GetHealthHandler returns system health information
 func (hc *HealthController) GetHealthHandler(w http.ResponseWriter, r *http.Request) {
-	hc.Log.Info().
+	log.Ctx(r.Context()).Info().
 		Str("ip", auth.GetClientIpAddr(r)).
 		Msg("GetHealthHandler Hit")
 
@@ -51,7 +53,7 @@ func (hc *HealthController) GetHealthHandler(w http.ResponseWriter, r *http.Requ
 	uptime := time.Since(hc.StartAt)
 
 	// Test database connectivity
-	dbConnected := hc.checkDBConnection()
+	dbConnected := hc.checkDBConnection(r.Context())
 
 	health := HealthInfo{
 		Uptime:        formatDuration(uptime),
@@ -67,16 +69,16 @@ func (hc *HealthController) GetHealthHandler(w http.ResponseWriter, r *http.Requ
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(health); err != nil {
-		hc.Log.Error().Err(err).Msg("Error encoding health response")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error encoding health response")
 	}
 }
 
-func (hc *HealthController) checkDBConnection() bool {
+func (hc *HealthController) checkDBConnection(ctx context.Context) bool {
 	// Try a simple query to verify DB connectivity
 	var result []models.WorkContent
 	err := hc.DB.Model(&result).Limit(1).Select()
 	if err != nil {
-		hc.Log.Warn().Err(err).Msg("DB health check failed")
+		log.Ctx(ctx).Warn().Err(err).Msg("DB health check failed")
 		return false
 	}
 	return true

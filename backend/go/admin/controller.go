@@ -18,6 +18,7 @@ import (
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
 	"github.com/nathanielBellamy/my_website/backend/go/models"
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 type AdminController struct {
@@ -69,19 +70,19 @@ func getFilterOptions(r *http.Request) models.FilterOptions {
 	}
 }
 
-func (ac *AdminController) sendJSON(w http.ResponseWriter, data interface{}) {
+func (ac *AdminController) sendJSON(w http.ResponseWriter, r *http.Request, data interface{}) {
 	if err := json.NewEncoder(w).Encode(data); err != nil {
-		ac.Log.Error().Err(err).Msg("Error encoding response")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error encoding response")
 	}
 }
 
 // Blog
 func (ac *AdminController) GetAllBlogPostsHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllBlogPostsHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllBlogPostsHandler Hit")
 	opts := getFilterOptions(r)
 	posts, total, err := ac.Service.GetAllBlogPosts(opts)
 	if err != nil {
-		ac.Log.Error().Err(err).Msg("Error fetching blog posts")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error fetching blog posts")
 		utils.HandleDBError(w, err, "Error fetching blog posts")
 		return
 	}
@@ -91,32 +92,32 @@ func (ac *AdminController) GetAllBlogPostsHandler(w http.ResponseWriter, r *http
 		Page:  opts.Page,
 		Limit: opts.Limit,
 	}
-	ac.sendJSON(w, resp)
+	ac.sendJSON(w, r, resp)
 }
 
 func (ac *AdminController) GetBlogPostByIDHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetBlogPostByIDHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetBlogPostByIDHandler Hit")
 	id := r.PathValue("id")
-	ac.Log.Info().Str("id", id).Msg("Fetching blog post by ID")
+	log.Ctx(r.Context()).Info().Str("id", id).Msg("Fetching blog post by ID")
 	post, err := ac.Service.GetBlogPostByID(id)
 	if err != nil {
-		ac.Log.Error().Err(err).Str("id", id).Msg("Error fetching blog post")
+		log.Ctx(r.Context()).Error().Err(err).Str("id", id).Msg("Error fetching blog post")
 		utils.HandleDBError(w, err, "Error fetching blog post")
 		return
 	}
 
 	if post == nil {
-		ac.Log.Warn().Str("id", id).Msg("Blog post not found")
+		log.Ctx(r.Context()).Warn().Str("id", id).Msg("Blog post not found")
 		http.Error(w, "Blog post not found", http.StatusNotFound)
 		return
 	}
 
-	ac.Log.Info().Str("id", id).Interface("post", post).Msg("Successfully fetched blog post")
-	ac.sendJSON(w, post)
+	log.Ctx(r.Context()).Info().Str("id", id).Interface("post", post).Msg("Successfully fetched blog post")
+	ac.sendJSON(w, r, post)
 }
 
 func (ac *AdminController) GetBlogPostsByTagHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetBlogPostsByTagHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetBlogPostsByTagHandler Hit")
 	tag := r.PathValue("tag")
 	opts := getFilterOptions(r)
 
@@ -126,11 +127,11 @@ func (ac *AdminController) GetBlogPostsByTagHandler(w http.ResponseWriter, r *ht
 		return
 	}
 
-	ac.sendJSON(w, posts)
+	ac.sendJSON(w, r, posts)
 }
 
 func (ac *AdminController) GetTagsHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetTagsHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetTagsHandler Hit")
 	search := r.URL.Query().Get("search")
 	limitStr := r.URL.Query().Get("limit")
 	limit, err := strconv.Atoi(limitStr)
@@ -140,21 +141,21 @@ func (ac *AdminController) GetTagsHandler(w http.ResponseWriter, r *http.Request
 
 	tags, err := ac.Service.GetTags(search, limit)
 	if err != nil {
-		ac.Log.Error().Err(err).Msg("Error fetching tags")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error fetching tags")
 		utils.HandleDBError(w, err, "Error fetching tags")
 		return
 	}
 
-	ac.sendJSON(w, tags)
+	ac.sendJSON(w, r, tags)
 }
 
 func (ac *AdminController) CreateBlogPostHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateBlogPostHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateBlogPostHandler Hit")
 
 	var dto models.CreateBlogPostDTO
 	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
-		ac.Log.Error().Err(err).Msg("Error reading request body")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error reading request body")
 		http.Error(w, "Error reading request body", http.StatusInternalServerError)
 		return
 	}
@@ -162,7 +163,7 @@ func (ac *AdminController) CreateBlogPostHandler(w http.ResponseWriter, r *http.
 
 	decoder := json.NewDecoder(bytes.NewReader(bodyBytes))
 	if err := decoder.Decode(&dto); err != nil {
-		ac.Log.Error().Err(err).RawJSON("body", bodyBytes).Msg("Invalid request body")
+		log.Ctx(r.Context()).Error().Err(err).RawJSON("body", bodyBytes).Msg("Invalid request body")
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
@@ -191,11 +192,11 @@ func (ac *AdminController) CreateBlogPostHandler(w http.ResponseWriter, r *http.
 		return
 	}
 
-	ac.sendJSON(w, newPost)
+	ac.sendJSON(w, r, newPost)
 }
 
 func (ac *AdminController) UpdateBlogPostHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateBlogPostHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateBlogPostHandler Hit")
 	id := r.PathValue("id")
 	var post models.BlogPost
 	if err := json.NewDecoder(r.Body).Decode(&post); err != nil {
@@ -210,11 +211,11 @@ func (ac *AdminController) UpdateBlogPostHandler(w http.ResponseWriter, r *http.
 		return
 	}
 
-	ac.sendJSON(w, updatedPost)
+	ac.sendJSON(w, r, updatedPost)
 }
 
 func (ac *AdminController) DeleteBlogPostHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("DeleteBlogPostHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("DeleteBlogPostHandler Hit")
 	id := r.PathValue("id")
 
 	if err := ac.Service.DeleteBlogPost(id); err != nil {
@@ -227,7 +228,7 @@ func (ac *AdminController) DeleteBlogPostHandler(w http.ResponseWriter, r *http.
 
 // Work
 func (ac *AdminController) GetAllWorkContentHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllWorkContentHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllWorkContentHandler Hit")
 	opts := getFilterOptions(r)
 	content, total, err := ac.Service.GetAllWorkContent(opts)
 	if err != nil {
@@ -240,11 +241,11 @@ func (ac *AdminController) GetAllWorkContentHandler(w http.ResponseWriter, r *ht
 		Page:  opts.Page,
 		Limit: opts.Limit,
 	}
-	ac.sendJSON(w, resp)
+	ac.sendJSON(w, r, resp)
 }
 
 func (ac *AdminController) GetWorkContentByIDHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetWorkContentByIDHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetWorkContentByIDHandler Hit")
 	id := r.PathValue("id")
 	content, err := ac.Service.GetWorkContentByID(id)
 	if err != nil {
@@ -257,11 +258,11 @@ func (ac *AdminController) GetWorkContentByIDHandler(w http.ResponseWriter, r *h
 		return
 	}
 
-	ac.sendJSON(w, content)
+	ac.sendJSON(w, r, content)
 }
 
 func (ac *AdminController) CreateWorkContentHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateWorkContentHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateWorkContentHandler Hit")
 	var content models.WorkContent
 	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
@@ -274,11 +275,11 @@ func (ac *AdminController) CreateWorkContentHandler(w http.ResponseWriter, r *ht
 		return
 	}
 
-	ac.sendJSON(w, newContent)
+	ac.sendJSON(w, r, newContent)
 }
 
 func (ac *AdminController) UpdateWorkContentHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateWorkContentHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateWorkContentHandler Hit")
 	id := r.PathValue("id")
 	var content models.WorkContent
 	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
@@ -293,11 +294,11 @@ func (ac *AdminController) UpdateWorkContentHandler(w http.ResponseWriter, r *ht
 		return
 	}
 
-	ac.sendJSON(w, updatedContent)
+	ac.sendJSON(w, r, updatedContent)
 }
 
 func (ac *AdminController) DeleteWorkContentHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("DeleteWorkContentHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("DeleteWorkContentHandler Hit")
 	id := r.PathValue("id")
 
 	if err := ac.Service.DeleteWorkContent(id); err != nil {
@@ -310,7 +311,7 @@ func (ac *AdminController) DeleteWorkContentHandler(w http.ResponseWriter, r *ht
 
 // GrooveJr
 func (ac *AdminController) GetAllGrooveJrContentHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllGrooveJrContentHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllGrooveJrContentHandler Hit")
 	opts := getFilterOptions(r)
 	content, total, err := ac.Service.GetAllGrooveJrContent(opts)
 	if err != nil {
@@ -323,11 +324,11 @@ func (ac *AdminController) GetAllGrooveJrContentHandler(w http.ResponseWriter, r
 		Page:  opts.Page,
 		Limit: opts.Limit,
 	}
-	ac.sendJSON(w, resp)
+	ac.sendJSON(w, r, resp)
 }
 
 func (ac *AdminController) GetGrooveJrContentByIDHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetGrooveJrContentByIDHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetGrooveJrContentByIDHandler Hit")
 	id := r.PathValue("id")
 	content, err := ac.Service.GetGrooveJrContentByID(id)
 	if err != nil {
@@ -340,11 +341,11 @@ func (ac *AdminController) GetGrooveJrContentByIDHandler(w http.ResponseWriter, 
 		return
 	}
 
-	ac.sendJSON(w, content)
+	ac.sendJSON(w, r, content)
 }
 
 func (ac *AdminController) CreateGrooveJrContentHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateGrooveJrContentHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateGrooveJrContentHandler Hit")
 	var content models.GrooveJrContent
 	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
@@ -357,11 +358,11 @@ func (ac *AdminController) CreateGrooveJrContentHandler(w http.ResponseWriter, r
 		return
 	}
 
-	ac.sendJSON(w, newContent)
+	ac.sendJSON(w, r, newContent)
 }
 
 func (ac *AdminController) UpdateGrooveJrContentHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateGrooveJrContentHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateGrooveJrContentHandler Hit")
 	id := r.PathValue("id")
 	var content models.GrooveJrContent
 	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
@@ -376,11 +377,11 @@ func (ac *AdminController) UpdateGrooveJrContentHandler(w http.ResponseWriter, r
 		return
 	}
 
-	ac.sendJSON(w, updatedContent)
+	ac.sendJSON(w, r, updatedContent)
 }
 
 func (ac *AdminController) DeleteGrooveJrContentHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("DeleteGrooveJrContentHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("DeleteGrooveJrContentHandler Hit")
 	id := r.PathValue("id")
 
 	if err := ac.Service.DeleteGrooveJrContent(id); err != nil {
@@ -393,7 +394,7 @@ func (ac *AdminController) DeleteGrooveJrContentHandler(w http.ResponseWriter, r
 
 // About
 func (ac *AdminController) GetAllAboutContentHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllAboutContentHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAllAboutContentHandler Hit")
 	opts := getFilterOptions(r)
 	content, total, err := ac.Service.GetAllAboutContent(opts)
 	if err != nil {
@@ -406,11 +407,11 @@ func (ac *AdminController) GetAllAboutContentHandler(w http.ResponseWriter, r *h
 		Page:  opts.Page,
 		Limit: opts.Limit,
 	}
-	ac.sendJSON(w, resp)
+	ac.sendJSON(w, r, resp)
 }
 
 func (ac *AdminController) GetAboutContentByIDHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAboutContentByIDHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("GetAboutContentByIDHandler Hit")
 	id := r.PathValue("id")
 	content, err := ac.Service.GetAboutContentByID(id)
 	if err != nil {
@@ -423,11 +424,11 @@ func (ac *AdminController) GetAboutContentByIDHandler(w http.ResponseWriter, r *
 		return
 	}
 
-	ac.sendJSON(w, content)
+	ac.sendJSON(w, r, content)
 }
 
 func (ac *AdminController) CreateAboutContentHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateAboutContentHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("CreateAboutContentHandler Hit")
 	var content models.AboutContent
 	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
@@ -440,11 +441,11 @@ func (ac *AdminController) CreateAboutContentHandler(w http.ResponseWriter, r *h
 		return
 	}
 
-	ac.sendJSON(w, newContent)
+	ac.sendJSON(w, r, newContent)
 }
 
 func (ac *AdminController) UpdateAboutContentHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateAboutContentHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UpdateAboutContentHandler Hit")
 	id := r.PathValue("id")
 	var content models.AboutContent
 	if err := json.NewDecoder(r.Body).Decode(&content); err != nil {
@@ -459,11 +460,11 @@ func (ac *AdminController) UpdateAboutContentHandler(w http.ResponseWriter, r *h
 		return
 	}
 
-	ac.sendJSON(w, updatedContent)
+	ac.sendJSON(w, r, updatedContent)
 }
 
 func (ac *AdminController) DeleteAboutContentHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("DeleteAboutContentHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("DeleteAboutContentHandler Hit")
 	id := r.PathValue("id")
 
 	if err := ac.Service.DeleteAboutContent(id); err != nil {
@@ -477,7 +478,7 @@ func (ac *AdminController) DeleteAboutContentHandler(w http.ResponseWriter, r *h
 // Images
 
 func (ac *AdminController) UploadImageHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UploadImageHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("UploadImageHandler Hit")
 
 	// Limit upload size to 10MB
 	const maxUploadSize = 10 << 20
@@ -485,7 +486,7 @@ func (ac *AdminController) UploadImageHandler(w http.ResponseWriter, r *http.Req
 
 	reader, err := r.MultipartReader()
 	if err != nil {
-		ac.Log.Error().Err(err).Msg("Error creating multipart reader")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error creating multipart reader")
 		http.Error(w, "Invalid multipart request", http.StatusBadRequest)
 		return
 	}
@@ -500,7 +501,7 @@ func (ac *AdminController) UploadImageHandler(w http.ResponseWriter, r *http.Req
 			break
 		}
 		if err != nil {
-			ac.Log.Error().Err(err).Msg("Error reading multipart part")
+			log.Ctx(r.Context()).Error().Err(err).Msg("Error reading multipart part")
 			http.Error(w, "Error reading form data", http.StatusBadRequest)
 			return
 		}
@@ -509,21 +510,21 @@ func (ac *AdminController) UploadImageHandler(w http.ResponseWriter, r *http.Req
 		case "image":
 			originalFilename = part.FileName()
 			if _, cpErr := io.Copy(&fileData, part); cpErr != nil {
-				ac.Log.Error().Err(cpErr).Msg("Error reading image data")
+				log.Ctx(r.Context()).Error().Err(cpErr).Msg("Error reading image data")
 				http.Error(w, "File too large", http.StatusBadRequest)
 				return
 			}
 		case "altText":
 			b, rdErr := io.ReadAll(part)
 			if rdErr != nil {
-				ac.Log.Error().Err(rdErr).Msg("Error reading altText")
+				log.Ctx(r.Context()).Error().Err(rdErr).Msg("Error reading altText")
 				http.Error(w, "Error reading form data", http.StatusBadRequest)
 				return
 			}
 			altText = string(b)
 		}
 		if clErr := part.Close(); clErr != nil {
-			ac.Log.Error().Err(clErr).Msg("Error closing multipart part")
+			log.Ctx(r.Context()).Error().Err(clErr).Msg("Error closing multipart part")
 		}
 	}
 
@@ -535,7 +536,7 @@ func (ac *AdminController) UploadImageHandler(w http.ResponseWriter, r *http.Req
 	// Create directory if it doesn't exist
 	uploadDir := "uploads/images"
 	if err := os.MkdirAll(uploadDir, 0750); err != nil {
-		ac.Log.Error().Err(err).Msg("Error creating upload directory")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error creating upload directory")
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
@@ -547,7 +548,7 @@ func (ac *AdminController) UploadImageHandler(w http.ResponseWriter, r *http.Req
 	// Use os.Root to scope file access under uploadDir and prevent directory traversal
 	root, err := os.OpenRoot(uploadDir)
 	if err != nil {
-		ac.Log.Error().Err(err).Msg("Error opening upload root directory")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error opening upload root directory")
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
@@ -555,14 +556,14 @@ func (ac *AdminController) UploadImageHandler(w http.ResponseWriter, r *http.Req
 
 	dst, err := root.Create(filename)
 	if err != nil {
-		ac.Log.Error().Err(err).Msg("Error saving file to disk")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error saving file to disk")
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 	defer dst.Close()
 
 	if _, err := io.Copy(dst, &fileData); err != nil {
-		ac.Log.Error().Err(err).Msg("Error copying file content")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error copying file content")
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
@@ -571,30 +572,30 @@ func (ac *AdminController) UploadImageHandler(w http.ResponseWriter, r *http.Req
 	filePath := filepath.Join(uploadDir, filename)
 	image, err := ac.Service.UploadImage(filename, originalFilename, altText)
 	if err != nil {
-		ac.Log.Error().Err(err).Msg("Error saving image metadata")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error saving image metadata")
 		// Clean up file if DB fails
 		if removeErr := root.Remove(filename); removeErr != nil {
-			ac.Log.Error().Err(removeErr).Str("filePath", filePath).Msg("Error cleaning up file after DB failure")
+			log.Ctx(r.Context()).Error().Err(removeErr).Str("filePath", filePath).Msg("Error cleaning up file after DB failure")
 		}
 		utils.HandleDBError(w, err, "Error saving image metadata")
 		return
 	}
 
-	ac.sendJSON(w, image)
+	ac.sendJSON(w, r, image)
 }
 
 func (ac *AdminController) ListImagesHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("ListImagesHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("ListImagesHandler Hit")
 	images, err := ac.Service.ListImages()
 	if err != nil {
 		utils.HandleDBError(w, err, "Error listing images")
 		return
 	}
-	ac.sendJSON(w, images)
+	ac.sendJSON(w, r, images)
 }
 
 func (ac *AdminController) DeleteImageHandler(w http.ResponseWriter, r *http.Request) {
-	ac.Log.Info().Str("ip", auth.GetClientIpAddr(r)).Msg("DeleteImageHandler Hit")
+	log.Ctx(r.Context()).Info().Str("ip", auth.GetClientIpAddr(r)).Msg("DeleteImageHandler Hit")
 	id := r.PathValue("id")
 
 	if err := ac.Service.DeleteImage(id); err != nil {
@@ -632,7 +633,7 @@ func (ac *AdminController) AdminFileServer() http.Handler {
 
 func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Request) {
 	entity := r.PathValue("entity")
-	ac.Log.Info().Str("entity", entity).Msg("ExportCSVHandler Hit")
+	log.Ctx(r.Context()).Info().Str("entity", entity).Msg("ExportCSVHandler Hit")
 
 	w.Header().Set("Content-Type", "text/csv")
 	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment;filename=%s.csv", entity))
@@ -649,7 +650,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 		}
 		// Headers
 		if err := writer.Write([]string{"id", "title", "content", "author_name", "author_id", "tags", "ordering", "created_at", "updated_at", "activated_at", "deactivated_at"}); err != nil {
-			ac.Log.Error().Err(err).Msg("Error writing CSV header")
+			log.Ctx(r.Context()).Error().Err(err).Msg("Error writing CSV header")
 			return
 		}
 		// Data
@@ -677,7 +678,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 				formatTimePtr(p.ActivatedAt),
 				formatTimePtr(p.DeactivatedAt),
 			}); err != nil {
-				ac.Log.Error().Err(err).Msg("Error writing CSV record")
+				log.Ctx(r.Context()).Error().Err(err).Msg("Error writing CSV record")
 				return
 			}
 		}
@@ -688,7 +689,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 			return
 		}
 		if err := writer.Write([]string{"id", "title", "content", "ordering", "activated_at", "deactivated_at"}); err != nil {
-			ac.Log.Error().Err(err).Msg("Error writing CSV header")
+			log.Ctx(r.Context()).Error().Err(err).Msg("Error writing CSV header")
 			return
 		}
 		for _, c := range content {
@@ -700,7 +701,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 				formatTimePtr(c.ActivatedAt),
 				formatTimePtr(c.DeactivatedAt),
 			}); err != nil {
-				ac.Log.Error().Err(err).Msg("Error writing CSV record")
+				log.Ctx(r.Context()).Error().Err(err).Msg("Error writing CSV record")
 				return
 			}
 		}
@@ -711,7 +712,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 			return
 		}
 		if err := writer.Write([]string{"id", "title", "content", "ordering", "activated_at", "deactivated_at"}); err != nil {
-			ac.Log.Error().Err(err).Msg("Error writing CSV header")
+			log.Ctx(r.Context()).Error().Err(err).Msg("Error writing CSV header")
 			return
 		}
 		for _, c := range content {
@@ -723,7 +724,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 				formatTimePtr(c.ActivatedAt),
 				formatTimePtr(c.DeactivatedAt),
 			}); err != nil {
-				ac.Log.Error().Err(err).Msg("Error writing CSV record")
+				log.Ctx(r.Context()).Error().Err(err).Msg("Error writing CSV record")
 				return
 			}
 		}
@@ -734,7 +735,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 			return
 		}
 		if err := writer.Write([]string{"id", "title", "content", "ordering", "activated_at", "deactivated_at"}); err != nil {
-			ac.Log.Error().Err(err).Msg("Error writing CSV header")
+			log.Ctx(r.Context()).Error().Err(err).Msg("Error writing CSV header")
 			return
 		}
 		for _, c := range content {
@@ -746,7 +747,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 				formatTimePtr(c.ActivatedAt),
 				formatTimePtr(c.DeactivatedAt),
 			}); err != nil {
-				ac.Log.Error().Err(err).Msg("Error writing CSV record")
+				log.Ctx(r.Context()).Error().Err(err).Msg("Error writing CSV record")
 				return
 			}
 		}
@@ -757,7 +758,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 			return
 		}
 		if err := writer.Write([]string{"id", "name", "activated_at", "deactivated_at"}); err != nil {
-			ac.Log.Error().Err(err).Msg("Error writing CSV header")
+			log.Ctx(r.Context()).Error().Err(err).Msg("Error writing CSV header")
 			return
 		}
 		for _, t := range tags {
@@ -767,7 +768,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 				formatTimePtr(t.ActivatedAt),
 				formatTimePtr(t.DeactivatedAt),
 			}); err != nil {
-				ac.Log.Error().Err(err).Msg("Error writing CSV record")
+				log.Ctx(r.Context()).Error().Err(err).Msg("Error writing CSV record")
 				return
 			}
 		}
@@ -778,7 +779,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 			return
 		}
 		if err := writer.Write([]string{"id", "name", "activated_at", "deactivated_at"}); err != nil {
-			ac.Log.Error().Err(err).Msg("Error writing CSV header")
+			log.Ctx(r.Context()).Error().Err(err).Msg("Error writing CSV header")
 			return
 		}
 		for _, a := range authors {
@@ -788,7 +789,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 				formatTimePtr(a.ActivatedAt),
 				formatTimePtr(a.DeactivatedAt),
 			}); err != nil {
-				ac.Log.Error().Err(err).Msg("Error writing CSV record")
+				log.Ctx(r.Context()).Error().Err(err).Msg("Error writing CSV record")
 				return
 			}
 		}
@@ -799,7 +800,7 @@ func (ac *AdminController) ExportCSVHandler(w http.ResponseWriter, r *http.Reque
 
 func (ac *AdminController) ImportCSVHandler(w http.ResponseWriter, r *http.Request) {
 	entity := r.PathValue("entity")
-	ac.Log.Info().Str("entity", entity).Msg("ImportCSVHandler Hit")
+	log.Ctx(r.Context()).Info().Str("entity", entity).Msg("ImportCSVHandler Hit")
 
 	file, _, err := r.FormFile("file")
 	if err != nil {
@@ -879,7 +880,7 @@ func (ac *AdminController) ImportCSVHandler(w http.ResponseWriter, r *http.Reque
 			posts = append(posts, post)
 		}
 		if err := ac.Service.ImportBlogPosts(posts); err != nil {
-			ac.Log.Error().Err(err).Msg("Error importing blog posts")
+			log.Ctx(r.Context()).Error().Err(err).Msg("Error importing blog posts")
 			utils.HandleDBError(w, err, "Error importing blog posts")
 			return
 		}

@@ -2,6 +2,7 @@ package logs
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -14,6 +15,7 @@ import (
 
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 type LogsController struct {
@@ -38,13 +40,13 @@ func NewLogsController(log *zerolog.Logger, logDir string, startAt time.Time) (*
 
 // StreamLogsHandler streams log entries via SSE
 func (lc *LogsController) StreamLogsHandler(w http.ResponseWriter, r *http.Request) {
-	lc.Log.Info().
+	log.Ctx(r.Context()).Info().
 		Str("ip", auth.GetClientIpAddr(r)).
 		Msg("StreamLogsHandler Hit")
 
 	flusher, ok := w.(http.Flusher)
 	if !ok {
-		lc.Log.Error().Msg("Streaming not supported by ResponseWriter")
+		log.Ctx(r.Context()).Error().Msg("Streaming not supported by ResponseWriter")
 		http.Error(w, "Streaming not supported", http.StatusInternalServerError)
 		return
 	}
@@ -52,7 +54,7 @@ func (lc *LogsController) StreamLogsHandler(w http.ResponseWriter, r *http.Reque
 	// Disable the server's write timeout for this long-lived SSE connection
 	rc := http.NewResponseController(w)
 	if err := rc.SetWriteDeadline(time.Time{}); err != nil {
-		lc.Log.Warn().Err(err).Msg("Could not disable write deadline for SSE")
+		log.Ctx(r.Context()).Warn().Err(err).Msg("Could not disable write deadline for SSE")
 	}
 
 	levelFilter := r.URL.Query().Get("level")
@@ -73,7 +75,7 @@ func (lc *LogsController) StreamLogsHandler(w http.ResponseWriter, r *http.Reque
 	// Find the latest log file for backfill
 	latestFile, err := lc.findLatestLogFile()
 	if err != nil {
-		lc.Log.Error().Err(err).Msg("Error finding latest log file")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error finding latest log file")
 		sendSSEEvent(w, "error", `{"error":"no log files found"}`)
 		flusher.Flush()
 		return
@@ -82,7 +84,7 @@ func (lc *LogsController) StreamLogsHandler(w http.ResponseWriter, r *http.Reque
 	// Backfill: send last N lines from the latest log file
 	backfillEntries, err := lc.tailLogFile(latestFile, backfillLines, levelFilter, searchFilter)
 	if err != nil {
-		lc.Log.Warn().Err(err).Msg("Error reading backfill lines")
+		log.Ctx(r.Context()).Warn().Err(err).Msg("Error reading backfill lines")
 	}
 
 	for _, entry := range backfillEntries {
@@ -109,7 +111,7 @@ func (lc *LogsController) StreamLogsHandler(w http.ResponseWriter, r *http.Reque
 	for {
 		select {
 		case <-ctx.Done():
-			lc.Log.Info().
+			log.Ctx(r.Context()).Info().
 				Str("ip", auth.GetClientIpAddr(r)).
 				Msg("SSE client disconnected")
 			return
@@ -122,20 +124,20 @@ func (lc *LogsController) StreamLogsHandler(w http.ResponseWriter, r *http.Reque
 
 			if newestFile != currentFile {
 				// Read remaining lines from old file
-				lc.streamNewLines(w, flusher, currentFile, &lastOffset, levelFilter, searchFilter)
+				lc.streamNewLines(r.Context(), w, flusher, currentFile, &lastOffset, levelFilter, searchFilter)
 				currentFile = newestFile
 				lastOffset = 0
 			}
 
-			lc.streamNewLines(w, flusher, currentFile, &lastOffset, levelFilter, searchFilter)
+			lc.streamNewLines(r.Context(), w, flusher, currentFile, &lastOffset, levelFilter, searchFilter)
 		}
 	}
 }
 
-func (lc *LogsController) streamNewLines(w http.ResponseWriter, flusher http.Flusher, filePath string, lastOffset *int64, levelFilter, searchFilter string) {
+func (lc *LogsController) streamNewLines(ctx context.Context, w http.ResponseWriter, flusher http.Flusher, filePath string, lastOffset *int64, levelFilter, searchFilter string) {
 	relPath, err := filepath.Rel(lc.LogDir, filePath)
 	if err != nil {
-		lc.Log.Error().Err(err).Str("file", filePath).Msg("Error computing relative log path")
+		log.Ctx(ctx).Error().Err(err).Str("file", filePath).Msg("Error computing relative log path")
 		return
 	}
 
@@ -150,13 +152,13 @@ func (lc *LogsController) streamNewLines(w http.ResponseWriter, flusher http.Flu
 
 	f, err := lc.LogRoot.Open(relPath)
 	if err != nil {
-		lc.Log.Error().Err(err).Str("file", filePath).Msg("Error opening log file for streaming")
+		log.Ctx(ctx).Error().Err(err).Str("file", filePath).Msg("Error opening log file for streaming")
 		return
 	}
 	defer f.Close()
 
 	if _, err := f.Seek(*lastOffset, 0); err != nil {
-		lc.Log.Error().Err(err).Msg("Error seeking in log file")
+		log.Ctx(ctx).Error().Err(err).Msg("Error seeking in log file")
 		return
 	}
 

@@ -27,6 +27,20 @@ services:
       dockerfile: docker/Dockerfile
       args:
         MODE: ${MODE:-localhost}
+        # New Relic browser agent config, sourced from .env/.env.localhost (loaded via
+        # `docker-compose --env-file` in lifecycle/serve.sh) so the SPAs built inside
+        # the container get real values instead of literal __PLACEHOLDER__ tokens.
+        NEW_RELIC_ACCOUNT_ID: ${NEW_RELIC_ACCOUNT_ID}
+        NEW_RELIC_TRUST_KEY: ${NEW_RELIC_TRUST_KEY}
+        NEW_RELIC_BROWSER_LICENSE_KEY: ${NEW_RELIC_BROWSER_LICENSE_KEY}
+        NEW_RELIC_AGENT_ID_MARKETING: ${NEW_RELIC_AGENT_ID_MARKETING}
+        NEW_RELIC_APP_ID_MARKETING: ${NEW_RELIC_APP_ID_MARKETING}
+        NEW_RELIC_AGENT_ID_ADMIN: ${NEW_RELIC_AGENT_ID_ADMIN}
+        NEW_RELIC_APP_ID_ADMIN: ${NEW_RELIC_APP_ID_ADMIN}
+        NEW_RELIC_AGENT_ID_AUTH: ${NEW_RELIC_AGENT_ID_AUTH}
+        NEW_RELIC_APP_ID_AUTH: ${NEW_RELIC_APP_ID_AUTH}
+        NEW_RELIC_AGENT_ID_OLDSITE: ${NEW_RELIC_AGENT_ID_OLDSITE}
+        NEW_RELIC_APP_ID_OLDSITE: ${NEW_RELIC_APP_ID_OLDSITE}
     container_name: my_website_backend
     ports:
       - "8080:8080"

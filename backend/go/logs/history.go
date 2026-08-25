@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/nathanielBellamy/my_website/backend/go/auth"
+	"github.com/rs/zerolog/log"
 )
 
 type LogEntry struct {
@@ -31,7 +32,7 @@ type PaginatedLogResponse struct {
 
 // GetLogHistoryHandler returns paginated historical log entries
 func (lc *LogsController) GetLogHistoryHandler(w http.ResponseWriter, r *http.Request) {
-	lc.Log.Info().
+	log.Ctx(r.Context()).Info().
 		Str("ip", auth.GetClientIpAddr(r)).
 		Msg("GetLogHistoryHandler Hit")
 
@@ -57,7 +58,7 @@ func (lc *LogsController) GetLogHistoryHandler(w http.ResponseWriter, r *http.Re
 	// Collect matching log files
 	logFiles, err := lc.findLogFilesByDate(dateFilter)
 	if err != nil {
-		lc.Log.Error().Err(err).Msg("Error finding log files")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error finding log files")
 		http.Error(w, "Error reading logs", http.StatusInternalServerError)
 		return
 	}
@@ -67,7 +68,7 @@ func (lc *LogsController) GetLogHistoryHandler(w http.ResponseWriter, r *http.Re
 	for i := len(logFiles) - 1; i >= 0; i-- {
 		entries, err := lc.readLogFileEntries(logFiles[i], levelFilter, searchFilter)
 		if err != nil {
-			lc.Log.Warn().Err(err).Str("file", logFiles[i]).Msg("Error reading log file")
+			log.Ctx(r.Context()).Warn().Err(err).Str("file", logFiles[i]).Msg("Error reading log file")
 			continue
 		}
 		// Prepend so newest entries are first
@@ -100,7 +101,7 @@ func (lc *LogsController) GetLogHistoryHandler(w http.ResponseWriter, r *http.Re
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(response); err != nil {
-		lc.Log.Error().Err(err).Msg("Error encoding log history response")
+		log.Ctx(r.Context()).Error().Err(err).Msg("Error encoding log history response")
 	}
 }
 
